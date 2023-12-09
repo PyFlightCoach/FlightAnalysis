@@ -7,7 +7,7 @@ from flightdata import Flight, State, Origin, Collection
 
 from flightanalysis import Element, SchedDef,  ManDef, ElDef, Manoeuvre
 from flightanalysis.scoring import *
-from flightanalysis.definition.manoeuvre_info import Position
+from flightanalysis.definition.maninfo import Position
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from geometry import Transformation, Quaternion, Q0, Coord
 from typing import Any, List, Tuple
@@ -124,9 +124,12 @@ class ManoeuvreAnalysis:
 
     @staticmethod
     def alignment(template: State, man: Manoeuvre, flown: State, radius=10) -> Tuple(float, State):
-        aligned = State.align(flown, template, radius=10)[1]
+        dist, aligned = State.align(flown, template, radius=10)
         int_tp = man.match_intention(template[0], aligned)[1]
-        return State.align(aligned, int_tp, radius=radius, mirror=False)
+        try:
+            return State.align(aligned, int_tp, radius=radius, mirror=False)
+        except Exception as e:
+            return dist, aligned
 
     @staticmethod
     def intention(man: Manoeuvre, aligned: State, template: State) -> Tuple[Manoeuvre, State]:

@@ -4,6 +4,7 @@ import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass, field
 
+
 @dataclass
 class Combination(Criteria):
     desired: np.ndarray = field(default_factory=lambda : None)
@@ -40,4 +41,12 @@ class Combination(Criteria):
             rolls = [float(rollstring[0])/float(rollstring[2])]
         elif rollstring[1] in ["X", "x", "*"]:
             rolls = [1/int(rollstring[2]) for _ in range(int(rollstring[0]))]        
-        return Combination.rolllist(rolls, reversable)
+        return Combination.rolllist([2 * np.pi * r for r in rolls], reversable)
+    
+    def append_roll_sum(self, inplace=False) -> Combination:
+        """Add a roll sum to the end of the desired list"""
+        des = np.column_stack([self.desired, np.cumsum(self.desired, axis=1)])
+        if inplace:
+            self.desired = des
+            return self
+        return Combination(self.lookup, self.comparison, des)

@@ -1,6 +1,8 @@
 from pytest import fixture
 from flightanalysis.scoring.criteria import Criteria, Single, Exponential, Continuous, Combination, Comparison
 from numpy.testing import assert_array_almost_equal
+import numpy as np
+
 
 @fixture
 def single():
@@ -59,3 +61,17 @@ def test_combination_from_dict(combination):
 def test_comparison_call(comparison):
     ids, res = comparison(['a', 'b', 'c', 'd'], [1,1.3,1.2,1])
     assert_array_almost_equal(res, [0, 0.3, 1.3/1.2-1, 0.2])
+
+
+def test_combination_append_roll_sum():
+    combo = Combination.rollcombo('4X4')
+    combo = combo.append_roll_sum()
+    assert combo.desired.shape==(2,8)
+
+    np.testing.assert_array_equal(
+        combo.desired / (2*np.pi),
+        np.array(
+            [[0.25,0.25,0.25,0.25,0.25,0.5,0.75,1],
+            [-0.25,-0.25,-0.25,-0.25,-0.25,-0.5,-0.75,-1]]
+        )
+    )

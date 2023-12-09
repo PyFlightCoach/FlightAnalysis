@@ -2,10 +2,10 @@
 from numbers import Number
 
 from .operations import *
-from .manoeuvre_info import ManInfo, BoxLocation, Orientation, Direction, Height, Position
+from .maninfo import ManInfo, BoxLocation, Orientation, Direction, Height, Position
 from .collectors import Collector, Collectors
 
-from .manoeuvre_parameters import ManParm, ManParms
+from .manparm import ManParm, ManParms, DummyMPs
 
 def _a(arg):
     if isinstance(arg, ManParm):
@@ -16,7 +16,7 @@ def _a(arg):
         return arg
     
 
-from .element_definition import ElDef, ElDefs
-from .manoeuvre_definition import ManDef
-from .sched_def import SchedDef, ScheduleInfo
-from .manoeuvre_builder import ManoeuvreBuilder, f3amb, MBTags, centred, imacmb
+from .eldef import ElDef, ElDefs
+from .mandef import ManDef
+from .scheddef import SchedDef, ScheduleInfo
+from .builders.manbuilder import ManBuilder, f3amb, MBTags, centred, imacmb, r, c45, dp

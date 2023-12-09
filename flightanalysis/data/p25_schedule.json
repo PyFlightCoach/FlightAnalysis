@@ -115,33 +115,6 @@
           "e_3_0.rate": "e_3_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              1.5707963267948966,
-              1.5707963267948966
-            ],
-            [
-              -1.5707963267948966,
-              -1.5707963267948966
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll",
-          "e_1_1.roll": "e_1_1.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -159,30 +132,6 @@
           "e_1_pad2.length": "(e_1_pad2.length+40)"
         }
       },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              6.283185307179586
-            ],
-            [
-              -6.283185307179586
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll"
-        }
-      },
       "e_3_pad_length": {
         "name": "e_3_pad_length",
         "criteria": {
@@ -198,33 +147,6 @@
         "collectors": {
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
-        }
-      },
-      "e_5_rolls": {
-        "name": "e_5_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              1.5707963267948966,
-              1.5707963267948966
-            ],
-            [
-              -1.5707963267948966,
-              -1.5707963267948966
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_5_0.roll": "e_5_0.roll",
-          "e_5_1.roll": "e_5_1.roll"
         }
       },
       "e_5_pad_length": {
@@ -253,8 +175,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -262,7 +184,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -271,8 +193,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_1_1_pause": {
@@ -289,8 +211,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[1])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[1]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_1_pad2": {
@@ -298,7 +220,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -309,8 +231,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-2.356194490192345",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -318,7 +240,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*((1.4142135623730951*line_length)-(0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))))",
+          "length": "(0.5*((1.4142135623730951*line_length)-(0+(188.49555921538757/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -327,8 +249,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/full_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(188.49555921538757/full_roll_rate)",
+          "roll": "6.283185307179586"
         }
       },
       "e_3_pad2": {
@@ -336,7 +258,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*((1.4142135623730951*line_length)-(0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))))",
+          "length": "(0.5*((1.4142135623730951*line_length)-(0+(188.49555921538757/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -347,8 +269,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-2.356194490192345",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_5_pad1": {
@@ -356,7 +278,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_5_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -365,8 +287,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_5_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_5_rolls[0]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_5_1_pause": {
@@ -383,8 +305,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_5_rolls[1])*30.0)/partial_roll_rate)",
-          "roll": "e_5_rolls[1]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_5_pad2": {
@@ -392,7 +314,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_5_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -403,8 +325,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -478,30 +400,6 @@
           "e_1_0.rate": "e_1_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              6.283185307179586
-            ],
-            [
-              -6.283185307179586
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -528,8 +426,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -537,7 +435,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(188.49555921538757/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -546,8 +444,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/full_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(188.49555921538757/full_roll_rate)",
+          "roll": "6.283185307179586"
         }
       },
       "e_1_pad2": {
@@ -555,7 +453,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(188.49555921538757/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -566,8 +464,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -658,30 +556,6 @@
           "e_7_0.rate": "e_7_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -697,30 +571,6 @@
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
-        }
-      },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll"
         }
       },
       "e_3_pad_length": {
@@ -740,30 +590,6 @@
           "e_3_pad2.length": "(e_3_pad2.length+40)"
         }
       },
-      "e_5_rolls": {
-        "name": "e_5_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_5_0.roll": "e_5_0.roll"
-        }
-      },
       "e_5_pad_length": {
         "name": "e_5_pad_length",
         "criteria": {
@@ -779,30 +605,6 @@
         "collectors": {
           "e_5_pad1.length": "(e_5_pad1.length+40)",
           "e_5_pad2.length": "(e_5_pad2.length+40)"
-        }
-      },
-      "e_7_rolls": {
-        "name": "e_7_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_7_0.roll": "e_7_0.roll"
         }
       },
       "e_7_pad_length": {
@@ -831,8 +633,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -840,7 +642,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -849,8 +651,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_1_pad2": {
@@ -858,7 +660,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -869,8 +671,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -878,7 +680,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -887,8 +689,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_3_pad2": {
@@ -896,7 +698,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -907,8 +709,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_5_pad1": {
@@ -916,7 +718,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -925,8 +727,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_5_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_5_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_5_pad2": {
@@ -934,7 +736,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -945,8 +747,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_7_pad1": {
@@ -954,7 +756,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_7_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -963,8 +765,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_7_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_7_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_7_pad2": {
@@ -972,7 +774,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_7_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -983,8 +785,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -1058,30 +860,6 @@
           "e_1_0.rate": "e_1_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -1108,8 +886,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -1117,7 +895,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1126,8 +904,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_1_pad2": {
@@ -1135,7 +913,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1146,8 +924,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "4.71238898038469",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -1213,45 +991,6 @@
           "e_0_4.rate": "e_0_4.rate",
           "e_0_5.rate": "e_0_5.rate"
         }
-      },
-      "e_0_rolls": {
-        "name": "e_0_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              1.5707963267948966,
-              1.5707963267948966,
-              1.5707963267948966,
-              -1.5707963267948966,
-              -1.5707963267948966,
-              -1.5707963267948966
-            ],
-            [
-              -1.5707963267948966,
-              -1.5707963267948966,
-              -1.5707963267948966,
-              1.5707963267948966,
-              1.5707963267948966,
-              1.5707963267948966
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_0_0.roll": "e_0_0.roll",
-          "e_0_1.roll": "e_0_1.roll",
-          "e_0_2.roll": "e_0_2.roll",
-          "e_0_3.roll": "e_0_3.roll",
-          "e_0_4.roll": "e_0_4.roll",
-          "e_0_5.roll": "e_0_5.roll"
-        }
       }
     },
     "eds": {
@@ -1260,8 +999,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_0_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_0_rolls[0]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_0_1_pause": {
@@ -1278,8 +1017,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_0_rolls[1])*30.0)/partial_roll_rate)",
-          "roll": "e_0_rolls[1]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_0_2_pause": {
@@ -1296,8 +1035,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_0_rolls[2])*30.0)/partial_roll_rate)",
-          "roll": "e_0_rolls[2]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_0_3": {
@@ -1305,8 +1044,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_0_rolls[3])*30.0)/partial_roll_rate)",
-          "roll": "e_0_rolls[3]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "-1.5707963267948966"
         }
       },
       "e_0_4_pause": {
@@ -1323,8 +1062,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_0_rolls[4])*30.0)/partial_roll_rate)",
-          "roll": "e_0_rolls[4]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "-1.5707963267948966"
         }
       },
       "e_0_5_pause": {
@@ -1341,8 +1080,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_0_rolls[5])*30.0)/partial_roll_rate)",
-          "roll": "e_0_rolls[5]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "-1.5707963267948966"
         }
       }
     }
@@ -1416,30 +1155,6 @@
           "e_2.yaw_rate": "e_2.yaw_rate"
         }
       },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll"
-        }
-      },
       "e_3_pad_length": {
         "name": "e_3_pad_length",
         "criteria": {
@@ -1466,8 +1181,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1": {
@@ -1492,7 +1207,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(180-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(180-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1501,8 +1216,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_3_pad2": {
@@ -1510,7 +1225,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(180-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(180-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1521,8 +1236,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -1629,54 +1344,6 @@
           "e_2_roll.roll": "e_2_roll.roll",
           "e_4_roll.roll": "e_4_roll.roll"
         }
-      },
-      "e_0_rolls": {
-        "name": "e_0_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              6.283185307179586
-            ],
-            [
-              -6.283185307179586
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_0_0.roll": "e_0_0.roll"
-        }
-      },
-      "e_6_rolls": {
-        "name": "e_6_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_6_0.roll": "e_6_0.roll"
-        }
       }
     },
     "eds": {
@@ -1685,8 +1352,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_0_rolls[0])*30.0)/full_roll_rate)",
-          "roll": "e_0_rolls[0]"
+          "length": "(188.49555921538757/full_roll_rate)",
+          "roll": "6.283185307179586"
         }
       },
       "e_1": {
@@ -1696,8 +1363,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_2_roll": {
@@ -1734,8 +1401,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_6_0": {
@@ -1743,8 +1410,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_6_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_6_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       }
     }
@@ -1822,33 +1489,6 @@
           "e_3_0.rate": "e_3_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793,
-              -3.141592653589793
-            ],
-            [
-              -3.141592653589793,
-              3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll",
-          "e_1_1.roll": "e_1_1.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -1864,30 +1504,6 @@
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
-        }
-      },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll"
         }
       },
       "e_3_pad_length": {
@@ -1916,8 +1532,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -1925,7 +1541,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-((0+(94.24777960769379/partial_roll_rate))+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1934,8 +1550,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_1_1": {
@@ -1943,8 +1559,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[1])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[1]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "-3.141592653589793"
         }
       },
       "e_1_pad2": {
@@ -1952,7 +1568,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-((0+(94.24777960769379/partial_roll_rate))+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1963,8 +1579,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -1972,7 +1588,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1981,8 +1597,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_3_pad2": {
@@ -1990,7 +1606,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2001,8 +1617,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -2023,102 +1639,73 @@
         "d": "DRIVEN",
         "o": "DRIVEN"
       },
-      "centre_points": [
-        2
-      ],
+      "centre_points": [],
       "centred_els": []
     },
     "mps": {
-      "loop_radius": {
-        "name": "loop_radius",
+      "e_0_radius": {
+        "name": "e_0_radius",
         "criteria": {
           "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
-          },
-          "comparison": "ratio"
-        },
-        "default": 100,
-        "collectors": {
-          "e_0.radius": "e_0.radius",
-          "e_1.radius": "e_1.radius",
-          "e_2.radius": "e_2.radius",
-          "e_3.radius": "e_3.radius"
-        }
-      },
-      "roll_option": {
-        "name": "roll_option",
-        "criteria": {
-          "kind": "Combination",
           "lookup": {
             "factor": 0,
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793,
-              -3.141592653589793
-            ],
-            [
-              -3.141592653589793,
-              3.141592653589793
-            ]
-          ]
+          "comparison": "ratio"
         },
-        "default": 0,
+        "default": 100,
         "collectors": {
-          "e_1.roll": "e_1.roll",
-          "e_2.roll": "e_2.roll"
+          "e_0_pad1.radius": "e_0_pad1.radius",
+          "e_0_0.radius": "e_0_0.radius",
+          "e_0_1.radius": "e_0_1.radius",
+          "e_0_pad2.radius": "e_0_pad2.radius"
         }
       }
     },
     "eds": {
-      "e_0": {
-        "name": "e_0",
+      "e_0_pad1": {
+        "name": "e_0_pad1",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_0_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
-      "e_1": {
-        "name": "e_1",
+      "e_0_0": {
+        "name": "e_0_0",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_0_radius",
           "angle": "1.5707963267948966",
-          "roll": "roll_option[0]",
-          "ke": "False"
+          "roll": "3.141592653589793",
+          "ke": "0"
         }
       },
-      "e_2": {
-        "name": "e_2",
+      "e_0_1": {
+        "name": "e_0_1",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
-          "angle": "-1.5707963267948966",
-          "roll": "roll_option[1]",
-          "ke": "False"
+          "radius": "e_0_radius",
+          "angle": "1.5707963267948966",
+          "roll": "-3.141592653589793",
+          "ke": "-3.141592653589793"
         }
       },
-      "e_3": {
-        "name": "e_3",
+      "e_0_pad2": {
+        "name": "e_0_pad2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_0_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0.0"
         }
       }
     }
@@ -2195,30 +1782,6 @@
           "e_3_0.rate": "e_3_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -2234,30 +1797,6 @@
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
-        }
-      },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll"
         }
       },
       "e_3_pad_length": {
@@ -2286,8 +1825,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2295,7 +1834,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2304,8 +1843,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_1_pad2": {
@@ -2313,7 +1852,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2324,8 +1863,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -2333,7 +1872,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2342,8 +1881,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_3_pad2": {
@@ -2351,7 +1890,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2362,8 +1901,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -2450,30 +1989,6 @@
           "e_5_0.rate": "e_5_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -2491,30 +2006,6 @@
           "e_1_pad2.length": "(e_1_pad2.length+40)"
         }
       },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll"
-        }
-      },
       "e_3_pad_length": {
         "name": "e_3_pad_length",
         "criteria": {
@@ -2530,30 +2021,6 @@
         "collectors": {
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
-        }
-      },
-      "e_5_rolls": {
-        "name": "e_5_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_5_0.roll": "e_5_0.roll"
         }
       },
       "e_5_pad_length": {
@@ -2582,8 +2049,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2591,7 +2058,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2600,8 +2067,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_1_pad2": {
@@ -2609,7 +2076,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2620,8 +2087,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-4.71238898038469",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -2629,7 +2096,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*((loop_radius*2.0)-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*((loop_radius*2.0)-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2638,8 +2105,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_3_pad2": {
@@ -2647,7 +2114,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*((loop_radius*2.0)-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*((loop_radius*2.0)-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2658,8 +2125,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "4.71238898038469",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_5_pad1": {
@@ -2667,7 +2134,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2676,8 +2143,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_5_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_5_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_5_pad2": {
@@ -2685,7 +2152,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2696,8 +2163,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -2790,30 +2257,6 @@
           "e_3_1.rate": "e_3_1.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -2829,33 +2272,6 @@
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
-        }
-      },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              1.5707963267948966,
-              1.5707963267948966
-            ],
-            [
-              -1.5707963267948966,
-              -1.5707963267948966
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll",
-          "e_3_1.roll": "e_3_1.roll"
         }
       },
       "e_3_pad_length": {
@@ -2884,8 +2300,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2893,7 +2309,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*((line_length/0.7071067811865476)-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*((line_length/0.7071067811865476)-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2902,8 +2318,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_1_pad2": {
@@ -2911,7 +2327,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*((line_length/0.7071067811865476)-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*((line_length/0.7071067811865476)-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2922,8 +2338,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "3.9269908169872414",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -2931,7 +2347,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2940,8 +2356,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_3_1_pause": {
@@ -2958,8 +2374,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[1])*30.0)/partial_roll_rate)",
-          "roll": "e_3_rolls[1]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_3_pad2": {
@@ -2967,7 +2383,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2978,8 +2394,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -3054,30 +2470,6 @@
           "e_0_autorotation.rate": "e_0_autorotation.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              3.141592653589793
-            ],
-            [
-              -3.141592653589793
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -3112,7 +2504,7 @@
         "props": {
           "speed": "10",
           "length": "(125.66370614359172/spin_rate)",
-          "roll": "2"
+          "roll": "12.566370614359172"
         }
       },
       "e_0_recovery": {
@@ -3128,7 +2520,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(165-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(165-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3137,8 +2529,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(94.24777960769379/partial_roll_rate)",
+          "roll": "3.141592653589793"
         }
       },
       "e_1_pad2": {
@@ -3146,7 +2538,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(165-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(165-(0+(94.24777960769379/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3157,8 +2549,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -3252,33 +2644,6 @@
           "e_1_1.rate": "e_1_1.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              1.5707963267948966,
-              1.5707963267948966
-            ],
-            [
-              -1.5707963267948966,
-              -1.5707963267948966
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll",
-          "e_1_1.roll": "e_1_1.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -3305,8 +2670,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -3314,7 +2679,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3323,8 +2688,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_1_1_pause": {
@@ -3341,8 +2706,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[1])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[1]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_1_pad2": {
@@ -3350,7 +2715,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3361,8 +2726,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3": {
@@ -3381,8 +2746,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_5": {
@@ -3401,8 +2766,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -3462,7 +2827,7 @@
         },
         "default": 60,
         "collectors": {
-          "e_1": "(((((0+e_1_pad1.length)+e_1_break.length)+e_1_autorotation_0.length)+e_1_recovery.length)+e_1_pad2.length)"
+          "e_1": "(((((0+e_1_pad1.length)+e_1_0_break.length)+e_1_0_autorotation.length)+e_1_0_recovery.length)+e_1_pad2.length)"
         }
       },
       "snap_rate": {
@@ -3478,7 +2843,7 @@
         },
         "default": 12.566370614359172,
         "collectors": {
-          "e_1_autorotation_0.rate": "e_1_autorotation_0.rate"
+          "e_1_0_autorotation.rate": "e_1_0_autorotation.rate"
         }
       },
       "e_1_pad_length": {
@@ -3507,8 +2872,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "2.356194490192345",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -3520,8 +2885,8 @@
           "roll": "0"
         }
       },
-      "e_1_break": {
-        "name": "e_1_break",
+      "e_1_0_break": {
+        "name": "e_1_0_break",
         "Kind": "PitchBreak",
         "props": {
           "speed": "30.0",
@@ -3529,17 +2894,17 @@
           "break_angle": "0.17453292519943295"
         }
       },
-      "e_1_autorotation_0": {
-        "name": "e_1_autorotation_0",
+      "e_1_0_autorotation": {
+        "name": "e_1_0_autorotation",
         "Kind": "Autorotation",
         "props": {
           "speed": "30.0",
           "length": "(188.49555921538757/snap_rate)",
-          "roll": "1"
+          "roll": "6.283185307179586"
         }
       },
-      "e_1_recovery": {
-        "name": "e_1_recovery",
+      "e_1_0_recovery": {
+        "name": "e_1_0_recovery",
         "Kind": "Recovery",
         "props": {
           "speed": "30.0",
@@ -3562,8 +2927,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-2.356194490192345",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -3672,33 +3037,6 @@
           "e_3_0.rate": "e_3_0.rate"
         }
       },
-      "e_1_rolls": {
-        "name": "e_1_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              1.5707963267948966,
-              1.5707963267948966
-            ],
-            [
-              -1.5707963267948966,
-              -1.5707963267948966
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_1_0.roll": "e_1_0.roll",
-          "e_1_1.roll": "e_1_1.roll"
-        }
-      },
       "e_1_pad_length": {
         "name": "e_1_pad_length",
         "criteria": {
@@ -3714,30 +3052,6 @@
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
-        }
-      },
-      "e_3_rolls": {
-        "name": "e_3_rolls",
-        "criteria": {
-          "kind": "Combination",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          },
-          "comparison": "absolute",
-          "desired": [
-            [
-              6.283185307179586
-            ],
-            [
-              -6.283185307179586
-            ]
-          ]
-        },
-        "default": 0,
-        "collectors": {
-          "e_3_0.roll": "e_3_0.roll"
         }
       },
       "e_3_pad_length": {
@@ -3766,8 +3080,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -3775,7 +3089,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3784,8 +3098,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[0]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_1_1_pause": {
@@ -3802,8 +3116,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_1_rolls[1])*30.0)/partial_roll_rate)",
-          "roll": "e_1_rolls[1]"
+          "length": "(47.12388980384689/partial_roll_rate)",
+          "roll": "1.5707963267948966"
         }
       },
       "e_1_pad2": {
@@ -3811,7 +3125,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+(47.12388980384689/partial_roll_rate))+point_length)+(47.12388980384689/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3822,8 +3136,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "-4.71238898038469",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -3831,7 +3145,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(188.49555921538757/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3840,8 +3154,8 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "((abs(e_3_rolls[0])*30.0)/full_roll_rate)",
-          "roll": "e_3_rolls[0]"
+          "length": "(188.49555921538757/full_roll_rate)",
+          "roll": "6.283185307179586"
         }
       },
       "e_3_pad2": {
@@ -3849,7 +3163,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(line_length-(0+(188.49555921538757/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3860,8 +3174,8 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       }
     }
@@ -3904,9 +3218,7 @@
         "default": 55.0,
         "collectors": {
           "e_0.radius": "e_0.radius",
-          "e_1.radius": "e_1.radius",
-          "e_2.radius": "e_2.radius",
-          "e_3.radius": "e_3.radius"
+          "e_2.radius": "e_2.radius"
         }
       },
       "rke_opt": {
@@ -3922,24 +3234,56 @@
           "desired": [
             [
               1.5707963267948966,
-              2.356194490192345,
-              0.7853981633974483,
+              14.804406601634037,
+              4.934802200544679,
               1.5707963267948966
             ],
             [
               -1.5707963267948966,
-              -2.356194490192345,
-              -0.7853981633974483,
+              -14.804406601634037,
+              -4.934802200544679,
               -1.5707963267948966
             ]
           ]
         },
         "default": 0,
         "collectors": {
-          "e_1.roll": "e_1.roll",
+          "e_1_rolls.roll": "e_1_rolls.roll",
           "e_2.angle": "e_2.angle",
-          "e_3.angle": "e_3.angle",
-          "e_3.roll": "e_3.roll"
+          "e_3_rolls.angle": "e_3_rolls.angle",
+          "e_3_rolls.roll": "e_3_rolls.roll"
+        }
+      },
+      "e_1_radius": {
+        "name": "e_1_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_1_rolls.radius": "e_1_rolls.radius"
+        }
+      },
+      "e_3_radius": {
+        "name": "e_3_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_3_rolls.radius": "e_3_rolls.radius"
         }
       }
     },
@@ -3951,19 +3295,19 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "2.356194490192345",
-          "roll": "0.0",
-          "ke": "False"
+          "roll": "0",
+          "ke": "0"
         }
       },
-      "e_1": {
-        "name": "e_1",
+      "e_1_rolls": {
+        "name": "e_1_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_1_radius",
           "angle": "0.7853981633974483",
           "roll": "rke_opt[0]",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_2": {
@@ -3973,19 +3317,19 @@
           "speed": "30.0",
           "radius": "loop_radius",
           "angle": "rke_opt[1]",
-          "roll": "0.0",
-          "ke": "True"
+          "roll": "0",
+          "ke": "1.5707963267948966"
         }
       },
-      "e_3": {
-        "name": "e_3",
+      "e_3_rolls": {
+        "name": "e_3_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_3_radius",
           "angle": "rke_opt[2]",
           "roll": "rke_opt[3]",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       }
     }

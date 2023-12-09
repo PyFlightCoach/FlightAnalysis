@@ -72,10 +72,10 @@ class Opp:
     def parse_f(inp, parser, name=None):
         """Parse a an Operation from a string"""
         for test in [
+            lambda inp : float(inp),
             lambda inp : FunOpp.parse_f(inp, parser, name),
             lambda inp : MathOpp.parse_f(inp, parser, name),
             lambda inp : ItemOpp.parse_f(inp, parser, name),
-            lambda inp : float(inp),
             lambda inp : literal_eval(inp)
         ]: 
             try: 
@@ -90,12 +90,14 @@ class Opp:
         """Parse a an Operation from a string
         TODO move to the subclass and call parse_f"""
         for test in [
+            lambda inp, mps : float(inp),
             lambda inp, mps : FunOpp.parse(inp, coll, name),
             lambda inp, mps : MathOpp.parse(inp, coll, name),
             lambda inp, mps : ItemOpp.parse(inp, coll, name),
-            lambda inp, mps : float(inp),
             lambda inp, mps : literal_eval(inp)
-        ]: 
+        ]:
+            if isinstance(inp, Number) or isinstance(inp, Opp):
+                return inp 
             try: 
                 return test(inp.strip(" "), coll)
             except ValueError:

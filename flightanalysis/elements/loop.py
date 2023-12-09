@@ -22,7 +22,7 @@ class Loop(Element):
         self.radius = radius
         self.roll = roll
         if not isinstance(ke, Number):
-            ke=0 if ke else np.pi/2
+            0 if not ke else np.pi/2
         self.ke = ke
 
     @property

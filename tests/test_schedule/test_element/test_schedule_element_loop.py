@@ -2,7 +2,7 @@
 
 from flightanalysis import Loop, Element
 from pytest import approx, fixture, mark
-from flightdata import State
+from flightdata import State, Time
 from geometry import Transformation, Point, Quaternion, PZ, PX, Euler, P0
 import numpy as np
 from geometry.testing import assert_almost_equal, assert_equal
@@ -128,3 +128,14 @@ def test_serialization(half_loop):
     hl = Element.from_dict(dhl)
 
     assert half_loop == hl
+
+
+def test_create_template_new_time(half_loop: Loop):
+    tp = half_loop.create_template(
+        State.from_transform(Transformation(), vel=PX(30)), 
+        Time.from_t(np.linspace(0,3, 20))
+    )
+    from flightplotting import plotsec
+    plotsec(tp, nmodels=10).show()
+    assert sum((tp.q * tp.dt)[:-1]) == approx(np.pi, abs=1e-3)
+    

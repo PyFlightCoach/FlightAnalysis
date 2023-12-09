@@ -1,7 +1,7 @@
 """This file defines a P23 sequence using the ManDef Classes and helper functions."""
-from flightanalysis.schedule.definition import *
-from flightanalysis.schedule.elements import *
-from flightanalysis.schedule.scoring import *
+from flightanalysis.definition import *
+from flightanalysis.elements import *
+from flightanalysis.scoring import *
 import numpy as np
 
 c45 = np.cos(np.radians(45))
@@ -57,7 +57,7 @@ p23_def = SchedDef([
             BoxLocation(Height.TOP)
         ),[
             f3amb.loop(-np.pi/4),
-            centred(f3amb.snap(1.5)),
+            centred(f3amb.snap(r(1.5))),
             f3amb.loop(-np.pi/4) 
         ], line_length=110 + 130/c45),
     f3amb.create(ManInfo("Half 8 Sided Loop", "h8L", 3, Position.END,
@@ -90,7 +90,7 @@ p23_def = SchedDef([
             BoxLocation(Height.BTM)
         ),[
             0,
-            f3amb.spin(2.5),
+            f3amb.spin(r(2.5)),
             f3amb.line(speed=25),
             f3amb.loop(np.pi/2)
         ]),
@@ -202,7 +202,7 @@ p23_def = SchedDef([
             f3amb.loop(np.pi/2),
             f3amb.roll("1/2", line_length=80),
             f3amb.loop(-np.pi*3/4),
-            f3amb.roll("2X4", line_length=80/c45 + 60),
+            f3amb.roll("2X4", line_length=80/c45 + 60), #ll / c45 + 2*r
             f3amb.loop(-np.pi/4),
         ],loop_radius=30),
     f3amb.create(ManInfo("Loop", "loop", 3,Position.CENTRE,
@@ -211,7 +211,7 @@ p23_def = SchedDef([
         ),[
             0,
             f3amb.loop(-np.pi*3/4),
-            centred(f3amb.loop(-np.pi/2,roll="roll_option")),
+            centred(f3amb.loop(-np.pi/2,rolls="roll_option")),
             f3amb.loop(np.pi*3/4),
             0
         ],
@@ -224,6 +224,6 @@ p23_def = SchedDef([
 
 if __name__ == "__main__":
     
-#    p23_def.plot().show()
+ #   p23_def.plot().show()
 #    p23_def.create_fcj('P23', 'p23_template_fcj.json')
     p23_def.to_json("flightanalysis/data/p23_schedule.json")

@@ -2,7 +2,7 @@ from flightanalysis.definition import *
 from flightanalysis.elements import *
 from flightanalysis.scoring.criteria import *
 import numpy as np
-from flightanalysis.definition.angles import *
+
 
 c45 = np.cos(np.radians(45))
 
@@ -13,7 +13,7 @@ sdef = SchedDef([
             start=BoxLocation(Height.MID, Direction.UPWIND, Orientation.UPRIGHT),
             end=BoxLocation(Height.BTM)
         ),[
-            imacmb.roll([r0125, r0125, -r175], rolltypes='rrs', padded=False),
+            imacmb.roll([r(1/8), r(1/8), -r(1.75)], rolltypes='rrs', padded=False),
             imacmb.loop(-2*np.pi*7/8),
             imacmb.roll('2x2'),
             imacmb.loop(-np.pi/4)
@@ -23,23 +23,24 @@ sdef = SchedDef([
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.INVERTED), 
             end=BoxLocation(Height.BTM)
         ),[
-            imacmb.loop(-r05),
-            imacmb.roll([r025, -r125], rolltypes='rs'),
+            imacmb.loop(-r(1/4)),
+            imacmb.roll([r(1/4), -r(1.25)], rolltypes='rs'),
             imacmb.stallturn(),
             imacmb.roll('2x4'),
-            imacmb.loop(r025),
+            imacmb.loop(r(1/4)),
         ]),
     imacmb.create(ManInfo(
             "Rolling Circle", "rcirc", k=46, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT), 
             end=BoxLocation(Height.BTM)
         ),[
-            imacmb.loop('directions[0]', ke=True, roll='directions[1]', radius='loop_radius'),
-            imacmb.loop('directions[2]', ke=True, roll='directions[3]', radius='loop_radius'),
+            imacmb.loop('directions[0]', ke=True, rolls='directions[1]', radius='loop_radius'),
+            imacmb.loop('directions[2]', ke=True, rolls=0, radius='loop_radius'),
+            imacmb.loop('directions[3]', ke=True, rolls='directions[4]', radius='loop_radius'),
         ], 
         directions=ManParm('directions', Combination(desired=[
-            [r05, -r1, r05, r1],
-            [-r05, r1, -r05, -r1]
+            [r(0.49), -r(1), r(0.02), r(0.49), r(1)],
+            [-r(0.49), r(1), -r(0.02), -r(0.49), -r(1)]
         ]), 1),
         loop_radius=100),
     imacmb.create(ManInfo(
@@ -47,9 +48,9 @@ sdef = SchedDef([
                 start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT), 
                 end=BoxLocation(Height.TOP)
             ),[
-                imacmb.roll([r075, -r025, -r025, -r025], padded=False),
+                imacmb.roll([r(3/4), -r(1/4), -r(1/4), -r(1/4)], padded=False),
                 imacmb.loop(np.pi, radius=100),
-                imacmb.snap(r15, break_angle=np.radians(-15), padded=False),            
+                imacmb.snap(r(1.5), break_angle=np.radians(-15), padded=False),            
             ]
         ),
     imacmb.create(ManInfo(
@@ -58,31 +59,81 @@ sdef = SchedDef([
             end=BoxLocation(Height.TOP)
         ),[
             imacmb.loop(-3*np.pi/4, radius=40),
-            imacmb.roll([r175, -r025], rolltypes='sr', break_angle=np.radians(-15)),
+            imacmb.roll([r(1.75), -r(1/4)], rolltypes='sr', break_angle=np.radians(-15)),
             imacmb.loop(np.pi, radius=40),
             imacmb.roll('4x4'),
-            imacmb.loop(np.pi/8)
+            imacmb.loop(r(1/8))
         ]
-    ),imacmb.create(ManInfo(
+    ),
+    imacmb.create(ManInfo(
             "Double Humpty", "dhb", k=68, position=Position.END, 
             start=BoxLocation(Height.TOP, Direction.UPWIND, Orientation.INVERTED), 
             end=BoxLocation(Height.BTM)
         ),[
             imacmb.spin('directions[0]'),
-            imacmb.snap(1),
+            imacmb.snap(r(1)),
             imacmb.loop(np.pi),
-            imacmb.snap(2),
+            imacmb.snap(r(2)),
             imacmb.loop(np.pi),
             imacmb.roll('directions[1]'),
             imacmb.loop(np.pi/2)
         ],
         directions=ManParm('directions', Combination(desired=[
-            [r175, r175],
-            [-r175, -r175]
+            [-r(1.75), r(1.75)],
+            [r(1.75), -r(1.75)]
         ]), 1),
         full_roll_rate=2*np.pi
     ),
-    
+    imacmb.create(ManInfo(
+            "Loop", "Loop", k=2, position=Position.CENTRE, 
+            start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT), 
+            end=BoxLocation(Height.BTM)
+        ),[
+            imacmb.loop(r(1), rolls=[r(1/8), r(1/8), r(1.25)], rolltypes='rrs', radius=100, rollangle=r(1/8))  
+        ],
+    ),
+    imacmb.create(ManInfo(
+            "Sharks Tooth", "sTooth", k=45, position=Position.END, 
+            start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.INVERTED), 
+            end=BoxLocation(Height.BTM)
+        ),[
+            imacmb.loop(-r(1/8)),
+            imacmb.roll('4x8', line_length=110 / c45 + 2*50),
+            imacmb.loop(r(-3/8)),
+            imacmb.roll([r(1.25), r(-0.75)], rolltypes='rs', line_length=110),
+            imacmb.loop(r(1/4)),
+        ], partial_roll_rate=np.pi/2, full_roll_rate=1.5*np.pi
+    ),
+    imacmb.create(ManInfo(
+            "Teardrop", "TD", k=49, position=Position.CENTRE, 
+            start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT), 
+            end=BoxLocation(Height.BTM)
+        ),[
+            imacmb.loop(r(1/8)),
+            imacmb.roll('3x2', line_length=130 / c45),
+            imacmb.loop(r(-5/8)),
+            imacmb.roll([r(1/4), r(1/4), r(1)], rolltypes='rrs', line_length=130, break_angle=-np.radians(15)),
+            imacmb.loop(r(1/4)),
+        ]),
+    imacmb.create(ManInfo(
+            "Half Cuban", "hcu", k=41, position=Position.END, 
+            start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT), 
+            end=BoxLocation(Height.BTM)
+        ),[
+            imacmb.snap(r(1.5), padded=False),
+            imacmb.loop(-r(5/8)),
+            imacmb.roll([r(1/4), r(1/4), -r(1)], line_length=130 / c45),
+        ]),
+    imacmb.create(ManInfo(
+            "Half Cuban", "hcu", k=41, position=Position.END, 
+            start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT), 
+            end=BoxLocation(Height.BTM)
+        ),[
+            imacmb.snap(r(1.5), padded=False),
+            imacmb.loop(-r(5/8), radius=75),
+            imacmb.roll([r(1/4), r(1/4), -r(1)], line_length=150),
+            imacmb.loop(-r(1/8), radius=75)
+        ], loop_radius=75, partial_roll_rate=np.pi*1.25, full_roll_rate=np.pi*1.25, point_length=10)
     
 ])
 
@@ -91,6 +142,6 @@ sdef = SchedDef([
 if __name__ == "__main__":
 
  
-    sdef.plot().show()
-#    f25_def.create_fcj('F25', 'f25_template_fcj.json')
+#    sdef.plot().show()
+    sdef.create_fcj('Unl2024', 'imac_unlimited_2024.json')
 #    sdef.to_json("flightanalysis/data/f25_schedule.json")

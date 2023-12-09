@@ -1,4 +1,4 @@
-from flightanalysis.definition.manoeuvre_info import *
+from flightanalysis.definition.maninfo import *
 import numpy as np
 from pytest import fixture
 from geometry import PX

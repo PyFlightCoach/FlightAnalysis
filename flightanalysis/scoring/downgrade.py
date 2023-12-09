@@ -78,7 +78,7 @@ class DownGrade:
             
             tempvals = np.full(len(fl), np.mean(vals))
             tempvals[endcut:-endcut] = vals[endcut:-endcut]
-            tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 10)
+            #tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 10)
        
             id, error, dg = self.criteria(
                 list(range(len(fl))),#list(range(endcut,len(fl)-endcut)), 

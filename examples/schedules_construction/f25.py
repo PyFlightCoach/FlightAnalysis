@@ -1,6 +1,6 @@
-from flightanalysis.schedule.definition import *
-from flightanalysis.schedule.elements import *
-from flightanalysis.schedule.scoring.criteria import *
+from flightanalysis.definition import *
+from flightanalysis.elements import *
+from flightanalysis.scoring.criteria import *
 import numpy as np
 
 c45 = np.cos(np.radians(45))
@@ -14,15 +14,15 @@ f25_def = SchedDef([
             end=BoxLocation(Height.BTM)
         ),[
             MBTags.CENTRE,
-            f3amb.loop(np.pi/4, roll="roll_option[0]"),
+            f3amb.loop(np.pi/4, rolls="roll_option[0]"),
             f3amb.line(),
-            f3amb.loop("roll_option[1]", roll=np.pi, ke=True),
+            f3amb.loop("roll_option[1]", rolls=np.pi, ke=True),
             f3amb.line(),
-            centred(f3amb.loop("roll_option[2]", roll=np.pi, ke=True)),
+            centred(f3amb.loop("roll_option[2]", rolls=np.pi, ke=True)),
             f3amb.line(),
-            f3amb.loop("roll_option[3]", roll=np.pi, ke=True),
+            f3amb.loop("roll_option[3]", rolls=np.pi, ke=True),
             f3amb.line(),
-            f3amb.loop("roll_option[4]", roll="roll_option[5]", ke=True),
+            f3amb.loop("roll_option[4]", rolls="roll_option[5]", ke=True),
             MBTags.CENTRE
         ], 
         roll_option=ManParm("roll_option", Combination(desired=[
@@ -55,7 +55,7 @@ f25_def = SchedDef([
             start=BoxLocation(Height.MID, Direction.DOWNWIND, Orientation.INVERTED),
             end=BoxLocation(Height.TOP)
         ),[
-            f3amb.loop(-np.pi, roll=np.pi)
+            f3amb.loop(-np.pi, rolls=np.pi)
         ], ),
     f3amb.create(ManInfo(
             "Humpty", "hB", k=5, position=Position.CENTRE, 
@@ -64,7 +64,7 @@ f25_def = SchedDef([
         ),[
             f3amb.loop(np.pi/2),
             f3amb.snap(1.5),
-            centred(f3amb.loop(np.pi, roll=np.pi)),
+            centred(f3amb.loop(np.pi, rolls=np.pi)),
             f3amb.roll('3/2'),
             f3amb.loop(-np.pi/2)
         ], full_roll_rate=np.pi),
@@ -83,9 +83,9 @@ f25_def = SchedDef([
             end=BoxLocation(Height.BTM)
         ),[
             MBTags.CENTRE,
-            f3amb.loop("roll_option[0]", roll="roll_option[1]", ke=True),
-            centred(f3amb.loop("roll_option[2]", roll="roll_option[3]", ke=True)),
-            f3amb.loop("roll_option[4]", roll="roll_option[5]", ke=True),
+            f3amb.loop("roll_option[0]", rolls="roll_option[1]", ke=True),
+            centred(f3amb.loop("roll_option[2]", rolls="roll_option[3]", ke=True)),
+            f3amb.loop("roll_option[4]", rolls="roll_option[5]", ke=True),
             MBTags.CENTRE
         ], 
         loop_radius=100,
@@ -149,11 +149,11 @@ f25_def = SchedDef([
             start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
             end=BoxLocation(Height.BTM)
         ),[
-            f3amb.loop(3*np.pi/4, roll="roll_option[0]"),
+            f3amb.loop(3*np.pi/4, rolls="roll_option[0]"),
             f3amb.roll('1/2'),
-            centred(f3amb.loop("roll_option[1]", roll=np.pi, ke=True)),
+            centred(f3amb.loop("roll_option[1]", rolls=np.pi, ke=True)),
             f3amb.roll('1/2'),
-            f3amb.loop("roll_option[2]", roll="roll_option[3]", ke=True)
+            f3amb.loop("roll_option[2]", rolls="roll_option[3]", ke=True)
         ], 
         roll_option=ManParm("roll_option", Combination(desired=[
                 [-np.pi/2, -np.pi/2, -3*np.pi/4, -np.pi/2], 
@@ -203,11 +203,11 @@ f25_def = SchedDef([
             end=BoxLocation(Height.TOP)
         ),[
             MBTags.CENTRE,
-            f3amb.loop(np.pi/2, roll="roll_option[0]"),
+            f3amb.loop(np.pi/2, rolls="roll_option[0]"),
             f3amb.loop("roll_option[1]", ke=True),
             centred(f3amb.snap(1, padded=False)),
             f3amb.loop("roll_option[2]", ke=True),
-            f3amb.loop("roll_option[3]", roll="roll_option[4]", ke=True),
+            f3amb.loop("roll_option[3]", rolls="roll_option[4]", ke=True),
             MBTags.CENTRE
         ], loop_radius=100, 
         roll_option=ManParm("roll_option", Combination(desired=[
@@ -257,6 +257,6 @@ f25_def = SchedDef([
 if __name__ == "__main__":
 
  
-#    f25_def.plot().show()
+    f25_def.plot().show()
 #    f25_def.create_fcj('F25', 'f25_template_fcj.json')
-    f25_def.to_json("flightanalysis/data/f25_schedule.json")
+#    f25_def.to_json("flightanalysis/data/f25_schedule.json")
