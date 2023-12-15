@@ -56,7 +56,8 @@ class DownGrade:
         return self.measure.__name__
     
     def __call__(self, fl, tp, coord) -> Result:
-        
+        # TODO this needs to check the element before and after. If there is a step change (for example loop radius) then the 
+        #ends should be cut off. If not (for example track or roll angle) the ends should not be cut off
         if isinstance(self.criteria, Single):
             measurement = self.measure(fl[-1], tp[-1], coord)
             vals = self.criteria.prepare(measurement.value, measurement.expected)    
@@ -78,7 +79,7 @@ class DownGrade:
             
             tempvals = np.full(len(fl), np.mean(vals))
             tempvals[endcut:-endcut] = vals[endcut:-endcut]
-            #tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 10)
+            tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 10)
        
             id, error, dg = self.criteria(
                 list(range(len(fl))),#list(range(endcut,len(fl)-endcut)), 
