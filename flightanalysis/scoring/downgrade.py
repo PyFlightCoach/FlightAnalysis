@@ -66,23 +66,21 @@ class DownGrade:
             dg = dg * measurement.visibility[id]
         elif isinstance(self.criteria, Continuous):
             measurement = self.measure(fl, tp, coord)
-            vals = self.criteria.prepare(
-                remove_outliers(measurement.value), 
-                measurement.expected
-            )    
 
-            if len(measurement) < 18:
-                #for now, if an element lasts less than 0.5 seconds we assume it is perfect
-                return Result(self.measure.__name__, measurement, [0], [0], [0], [0])
+            if self.criteria.comparison == 'ratio':
+                if len(measurement) < 18:
+                    return Result(self.measure.__name__, measurement, [0], [0], [0], [0])
 
-            endcut = 4 #min(3, int((len(vals) - 5) / 2))
-            
-            tempvals = np.full(len(fl), np.mean(vals))
-            tempvals[endcut:-endcut] = vals[endcut:-endcut]
-            tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 10)
-       
+                endcut = 4 #min(3, int((len(vals) - 5) / 2))
+                vals = np.abs(remove_outliers(measurement.value))
+                tempvals = np.full(len(fl), np.mean(vals))
+                tempvals[endcut:-endcut] = vals[endcut:-endcut]
+                tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 10)
+            else:
+                tempvals = measurement.value - measurement.expected
+
             id, error, dg = self.criteria(
-                list(range(len(fl))),#list(range(endcut,len(fl)-endcut)), 
+                list(range(len(fl))),
                 abs(tempvals)
             )
             vals = tempvals
