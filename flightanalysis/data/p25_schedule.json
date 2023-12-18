@@ -1411,7 +1411,7 @@
           },
           "comparison": "ratio"
         },
-        "default": 6.283185307179586,
+        "default": 3.141592653589793,
         "collectors": {
           "e_2.yaw_rate": "e_2.yaw_rate"
         }

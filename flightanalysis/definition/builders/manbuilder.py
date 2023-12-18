@@ -109,7 +109,7 @@ f3amb = ManBuilder(
         ManParm("partial_roll_rate", F3A.inter.roll_rate, np.pi/2),
         ManParm("full_roll_rate", F3A.inter.roll_rate, 3*np.pi/4),
         ManParm("snap_rate", F3A.inter.roll_rate, 4*np.pi),
-        ManParm("stallturn_rate", F3A.inter.roll_rate, 2*np.pi),
+        ManParm("stallturn_rate", F3A.inter.roll_rate, np.pi),
         ManParm("spin_rate", F3A.inter.roll_rate, 1.7*np.pi),
         ManParm("ee_pause", F3A.inter.length, 20.0)
     ]),

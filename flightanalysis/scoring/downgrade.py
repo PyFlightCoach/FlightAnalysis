@@ -68,14 +68,14 @@ class DownGrade:
             measurement = self.measure(fl, tp, coord)
 
             if self.criteria.comparison == 'ratio':
-                if len(measurement) < 18:
+                if len(measurement) < 30:
                     return Result(self.measure.__name__, measurement, [0], [0], [0], [0])
 
                 endcut = 4 #min(3, int((len(vals) - 5) / 2))
                 vals = np.abs(remove_outliers(measurement.value))
                 tempvals = np.full(len(fl), np.mean(vals))
                 tempvals[endcut:-endcut] = vals[endcut:-endcut]
-                tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 10)
+                tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 20)
             else:
                 tempvals = measurement.value - measurement.expected
 
