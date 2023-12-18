@@ -16,7 +16,7 @@ class ItemOpp(Opp):
     item: int
     
     def __call__(self, mps, **kwargs):
-        return self.a.valuefunc(self.item)(mps, **kwargs)
+        return mps.data[self.a.name].value[self.item]
     
     def __str__(self):
         return f"{self.a.name}[{self.item}]"

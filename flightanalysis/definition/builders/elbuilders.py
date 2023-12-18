@@ -14,8 +14,8 @@ def line(name, speed, length, roll):
 
 def loop(name, speed, radius, angle, roll, ke):
     mps = ManParms()
-    ed = ElDef.build(Loop, name, speed, radius, 
-        ManParm.parse(angle, mps), ManParm.parse(roll, mps), ke)
+    ed = ElDef.build(Loop, name, speed, radius, angle, roll, ke)
+    
     return ed, mps
 
 def roll(name, speed, rate, rolls):
@@ -33,22 +33,22 @@ def snap(name, rolls, break_angle, rate, speed, break_rate):
     eds = ElDefs()
     mps = ManParms()
 
-    if isinstance(break_angle, Number):
-        break_angle = ManParm(
-            f"break_angle_{name}",
-            Combination(desired=[[break_angle], [-break_angle]]),
-            0
-        )
-        mps.add(break_angle)
+    #if isinstance(break_angle, Number):
+    #    break_angle = ManParm(
+    #        f"break_angle_{name}",
+    #        Combination(desired=[[break_angle], [-break_angle]]),
+    #        0
+    #    )
+    #    mps.add(break_angle)
     
     eds.add(ElDef.build(PitchBreak, f"{name}_break", speed=speed, 
-        length=speed * abs(break_angle.value[0])/break_rate, break_angle=break_angle.value[0]))
+        length=speed * abs(break_angle)/break_rate, break_angle=break_angle))
     
     eds.add(ElDef.build(Autorotation, f"{name}_autorotation", speed=speed,
         length=speed*abs(rolls)/rate, roll=rolls))
     
     eds.add(ElDef.build(Recovery, f"{name}_recovery", speed=speed,
-                    length=speed * abs(break_angle.value[0])/break_rate))
+                    length=speed * abs(break_angle)/break_rate))
      
     return eds, mps
 
@@ -111,10 +111,9 @@ def roll_combo(
                 rolls[i]
             )[0])
         else:
-            ed, mps = snap(
+            eds.add(snap(
                 f"{name}_{i}", rolls[i], break_angle, snap_rate, speed, break_rate
-            )
-            eds.add(ed)
+            )[0])
 
         if rolltypes[i] == 'r':
             if r < 2*np.pi and mode=='f3a':
@@ -172,9 +171,13 @@ def rollmaker(name, rolls, rolltypes, speed, partial_rate,
     _rolls = mps.parse_rolls(rolls, name, reversible)         
     
     if isinstance(_rolls, ItemOpp):
-        _r=_rolls.a.value[_rolls.item]
-        rate = full_rate if abs(_r)>=2*np.pi else partial_rate
-        eds, rcmps = roll(f"{name}_roll", speed, rate, _rolls)
+        
+        if rolltypes[0] == 'r':
+            _r=_rolls.a.value[_rolls.item]
+            rate = full_rate if abs(_r)>=2*np.pi else partial_rate
+            eds, rcmps = roll(f"{name}_roll", speed, rate, _rolls)
+        else:
+            eds, rcmps = snap(f"{name}_snap", _rolls, break_angle, snap_rate, speed, break_rate)
     else:
         eds, rcmps = roll_combo(
             name, speed, _rolls, rolltypes, 
@@ -203,7 +206,7 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
         rollangle = angle
 
     if isinstance(rolls, Number) and rollangle == angle:
-        return loop(name, speed, radius, angle, 0, ke)
+        return loop(name, speed, radius, angle, rolls, ke)
     
 
 

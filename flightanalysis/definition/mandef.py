@@ -120,15 +120,13 @@ class ManDef:
             Elements([ed(self.mps) for ed in self.eds]),
             None,
             uid=self.info.name
-        )
+        ) 
 
-
-    def get_f3a_rates(self, rolls: ManParm) -> List[ManParm]:
-        rates = []
-        for roll in rolls.value:
-            if abs(roll) >= 2 * np.pi:
-                rates.append(self.mps.continuous_roll_rate)
-            else:
-                rates.append(self.mps.partial_roll_rate)
-        return rates            
-
+    def plot(self):
+        itrans = self.info.initial_transform(170, 1)
+        man = self.create(itrans)
+        template = man.create_template(itrans)
+        from flightplotting import plotsec, plotdtw
+        fig = plotdtw(template, template.data.element.unique())
+        fig = plotsec(template, fig=fig, nmodels=20, scale=3)
+        return fig

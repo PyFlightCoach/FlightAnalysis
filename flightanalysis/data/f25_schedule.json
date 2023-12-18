@@ -40,11 +40,9 @@
         },
         "default": 55.0,
         "collectors": {
-          "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius",
           "e_4.radius": "e_4.radius",
-          "e_6.radius": "e_6.radius",
-          "e_8.radius": "e_8.radius"
+          "e_6.radius": "e_6.radius"
         }
       },
       "line_length": {
@@ -91,31 +89,63 @@
               -1.5707963267948966,
               1.5707963267948966,
               -0.7853981633974483,
-              -1.5707963267948966
+              1.5707963267948966
             ]
           ]
         },
         "default": 0,
         "collectors": {
-          "e_0.roll": "e_0.roll",
+          "e_0_rolls.roll": "e_0_rolls.roll",
           "e_2.angle": "e_2.angle",
           "e_4.angle": "e_4.angle",
           "e_6.angle": "e_6.angle",
-          "e_8.angle": "e_8.angle",
-          "e_8.roll": "e_8.roll"
+          "e_8_rolls.angle": "e_8_rolls.angle",
+          "e_8_rolls.roll": "e_8_rolls.roll"
+        }
+      },
+      "e_0_radius": {
+        "name": "e_0_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_0_rolls.radius": "e_0_rolls.radius"
+        }
+      },
+      "e_8_radius": {
+        "name": "e_8_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_8_rolls.radius": "e_8_rolls.radius"
         }
       }
     },
     "eds": {
-      "e_0": {
-        "name": "e_0",
+      "e_0_rolls": {
+        "name": "e_0_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_0_radius",
           "angle": "0.7853981633974483",
           "roll": "roll_option[0]",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -135,7 +165,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[1]",
           "roll": "3.141592653589793",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_3": {
@@ -155,7 +185,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[2]",
           "roll": "3.141592653589793",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_5": {
@@ -175,7 +205,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[3]",
           "roll": "3.141592653589793",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_7": {
@@ -187,15 +217,15 @@
           "roll": "0.0"
         }
       },
-      "e_8": {
-        "name": "e_8",
+      "e_8_rolls": {
+        "name": "e_8_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_8_radius",
           "angle": "roll_option[4]",
           "roll": "roll_option[5]",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       }
     }
@@ -339,7 +369,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -386,7 +416,7 @@
           "radius": "loop_radius",
           "angle": "-4.71238898038469",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -671,7 +701,7 @@
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
           "roll": "3.141592653589793",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -732,7 +762,7 @@
         },
         "default": 130.0,
         "collectors": {
-          "e_1": "(((((0+e_1_pad1.length)+e_1_break.length)+e_1_autorotation_0.length)+e_1_recovery.length)+e_1_pad2.length)",
+          "e_1": "(((((0+e_1_pad1.length)+e_1_0_break.length)+e_1_0_autorotation.length)+e_1_0_recovery.length)+e_1_pad2.length)",
           "e_3": "(((0+e_3_pad1.length)+e_3_0.length)+e_3_pad2.length)"
         }
       },
@@ -765,7 +795,31 @@
         },
         "default": 12.566370614359172,
         "collectors": {
-          "e_1_autorotation_0.rate": "e_1_autorotation_0.rate"
+          "e_1_0_autorotation.rate": "e_1_0_autorotation.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              9.42477796076938
+            ],
+            [
+              -9.42477796076938
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0_autorotation.roll": "e_1_0_autorotation.roll"
         }
       },
       "e_1_pad_length": {
@@ -836,7 +890,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -844,12 +898,12 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((0.8333333333333334+(282.7433388230814/snap_rate))+0.8333333333333334)))",
+          "length": "(0.5*(line_length-((0.8333333333333334+((30.0*abs(e_1_rolls[0]))/snap_rate))+0.8333333333333334)))",
           "roll": "0"
         }
       },
-      "e_1_break": {
-        "name": "e_1_break",
+      "e_1_0_break": {
+        "name": "e_1_0_break",
         "Kind": "PitchBreak",
         "props": {
           "speed": "30.0",
@@ -857,17 +911,17 @@
           "break_angle": "0.17453292519943295"
         }
       },
-      "e_1_autorotation_0": {
-        "name": "e_1_autorotation_0",
+      "e_1_0_autorotation": {
+        "name": "e_1_0_autorotation",
         "Kind": "Autorotation",
         "props": {
           "speed": "30.0",
-          "length": "(282.7433388230814/snap_rate)",
-          "roll": "1.5"
+          "length": "((30.0*abs(e_1_rolls[0]))/snap_rate)",
+          "roll": "e_1_rolls[0]"
         }
       },
-      "e_1_recovery": {
-        "name": "e_1_recovery",
+      "e_1_0_recovery": {
+        "name": "e_1_0_recovery",
         "Kind": "Recovery",
         "props": {
           "speed": "30.0",
@@ -879,7 +933,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((0.8333333333333334+(282.7433388230814/snap_rate))+0.8333333333333334)))",
+          "length": "(0.5*(line_length-((0.8333333333333334+((30.0*abs(e_1_rolls[0]))/snap_rate))+0.8333333333333334)))",
           "roll": "0"
         }
       },
@@ -891,7 +945,7 @@
           "radius": "loop_radius",
           "angle": "3.141592653589793",
           "roll": "3.141592653589793",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -929,7 +983,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -1060,7 +1114,7 @@
         "props": {
           "speed": "10",
           "length": "(188.49555921538757/spin_rate)",
-          "roll": "3"
+          "roll": "18.84955592153876"
         }
       },
       "e_0_recovery": {
@@ -1106,7 +1160,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -1139,24 +1193,6 @@
       ]
     },
     "mps": {
-      "loop_radius": {
-        "name": "loop_radius",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
-          },
-          "comparison": "ratio"
-        },
-        "default": 100,
-        "collectors": {
-          "e_0.radius": "e_0.radius",
-          "e_1.radius": "e_1.radius",
-          "e_2.radius": "e_2.radius"
-        }
-      },
       "roll_option": {
         "name": "roll_option",
         "criteria": {
@@ -1188,47 +1224,95 @@
         },
         "default": 1,
         "collectors": {
-          "e_0.angle": "e_0.angle",
-          "e_0.roll": "e_0.roll",
-          "e_1.angle": "e_1.angle",
-          "e_1.roll": "e_1.roll",
-          "e_2.angle": "e_2.angle",
-          "e_2.roll": "e_2.roll"
+          "e_0_rolls.angle": "e_0_rolls.angle",
+          "e_0_rolls.roll": "e_0_rolls.roll",
+          "e_1_rolls.angle": "e_1_rolls.angle",
+          "e_1_rolls.roll": "e_1_rolls.roll",
+          "e_2_rolls.angle": "e_2_rolls.angle",
+          "e_2_rolls.roll": "e_2_rolls.roll"
+        }
+      },
+      "e_0_radius": {
+        "name": "e_0_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 100,
+        "collectors": {
+          "e_0_rolls.radius": "e_0_rolls.radius"
+        }
+      },
+      "e_1_radius": {
+        "name": "e_1_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 100,
+        "collectors": {
+          "e_1_rolls.radius": "e_1_rolls.radius"
+        }
+      },
+      "e_2_radius": {
+        "name": "e_2_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 100,
+        "collectors": {
+          "e_2_rolls.radius": "e_2_rolls.radius"
         }
       }
     },
     "eds": {
-      "e_0": {
-        "name": "e_0",
+      "e_0_rolls": {
+        "name": "e_0_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_0_radius",
           "angle": "roll_option[0]",
           "roll": "roll_option[1]",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
-      "e_1": {
-        "name": "e_1",
+      "e_1_rolls": {
+        "name": "e_1_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_1_radius",
           "angle": "roll_option[2]",
           "roll": "roll_option[3]",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
-      "e_2": {
-        "name": "e_2",
+      "e_2_rolls": {
+        "name": "e_2_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_2_radius",
           "angle": "roll_option[4]",
           "roll": "roll_option[5]",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       }
     }
@@ -1316,8 +1400,8 @@
         },
         "default": 12.566370614359172,
         "collectors": {
-          "e_3_autorotation_0.rate": "e_3_autorotation_0.rate",
-          "e_3_autorotation_1.rate": "e_3_autorotation_1.rate"
+          "e_3_0_autorotation.rate": "e_3_0_autorotation.rate",
+          "e_3_1_autorotation.rate": "e_3_1_autorotation.rate"
         }
       },
       "e_1_rolls": {
@@ -1361,6 +1445,33 @@
           "e_1_pad2.length": "(e_1_pad2.length+40)"
         }
       },
+      "e_3_rolls": {
+        "name": "e_3_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              6.283185307179586,
+              -6.283185307179586
+            ],
+            [
+              -6.283185307179586,
+              6.283185307179586
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_3_0_autorotation.roll": "e_3_0_autorotation.roll",
+          "e_3_1_autorotation.roll": "e_3_1_autorotation.roll"
+        }
+      },
       "e_3_pad_length": {
         "name": "e_3_pad_length",
         "criteria": {
@@ -1388,7 +1499,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -1426,7 +1537,7 @@
           "radius": "loop_radius",
           "angle": "-2.356194490192345",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -1434,12 +1545,12 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(((line_length/0.7071067811865476)+(2.0*loop_radius))-(((0.8333333333333334+(188.49555921538757/snap_rate))+(188.49555921538757/snap_rate))+0.8333333333333334)))",
+          "length": "(0.5*(((line_length/0.7071067811865476)+(2.0*loop_radius))-(((((0.8333333333333334+((30.0*abs(e_3_rolls[0]))/snap_rate))+0.8333333333333334)+0.8333333333333334)+((30.0*abs(e_3_rolls[1]))/snap_rate))+0.8333333333333334)))",
           "roll": "0"
         }
       },
-      "e_3_break": {
-        "name": "e_3_break",
+      "e_3_0_break": {
+        "name": "e_3_0_break",
         "Kind": "PitchBreak",
         "props": {
           "speed": "30.0",
@@ -1447,26 +1558,43 @@
           "break_angle": "0.17453292519943295"
         }
       },
-      "e_3_autorotation_0": {
-        "name": "e_3_autorotation_0",
+      "e_3_0_autorotation": {
+        "name": "e_3_0_autorotation",
         "Kind": "Autorotation",
         "props": {
           "speed": "30.0",
-          "length": "(188.49555921538757/snap_rate)",
-          "roll": "1"
+          "length": "((30.0*abs(e_3_rolls[0]))/snap_rate)",
+          "roll": "e_3_rolls[0]"
         }
       },
-      "e_3_autorotation_1": {
-        "name": "e_3_autorotation_1",
+      "e_3_0_recovery": {
+        "name": "e_3_0_recovery",
+        "Kind": "Recovery",
+        "props": {
+          "speed": "30.0",
+          "length": "0.8333333333333334"
+        }
+      },
+      "e_3_1_break": {
+        "name": "e_3_1_break",
+        "Kind": "PitchBreak",
+        "props": {
+          "speed": "30.0",
+          "length": "0.8333333333333334",
+          "break_angle": "0.17453292519943295"
+        }
+      },
+      "e_3_1_autorotation": {
+        "name": "e_3_1_autorotation",
         "Kind": "Autorotation",
         "props": {
           "speed": "30.0",
-          "length": "(188.49555921538757/snap_rate)",
-          "roll": "-1"
+          "length": "((30.0*abs(e_3_rolls[1]))/snap_rate)",
+          "roll": "e_3_rolls[1]"
         }
       },
-      "e_3_recovery": {
-        "name": "e_3_recovery",
+      "e_3_1_recovery": {
+        "name": "e_3_1_recovery",
         "Kind": "Recovery",
         "props": {
           "speed": "30.0",
@@ -1478,7 +1606,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(((line_length/0.7071067811865476)+(2.0*loop_radius))-(((0.8333333333333334+(188.49555921538757/snap_rate))+(188.49555921538757/snap_rate))+0.8333333333333334)))",
+          "length": "(0.5*(((line_length/0.7071067811865476)+(2.0*loop_radius))-(((((0.8333333333333334+((30.0*abs(e_3_rolls[0]))/snap_rate))+0.8333333333333334)+0.8333333333333334)+((30.0*abs(e_3_rolls[1]))/snap_rate))+0.8333333333333334)))",
           "roll": "0"
         }
       },
@@ -1490,7 +1618,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -1892,7 +2020,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -1930,7 +2058,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -1968,7 +2096,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_5_pad1": {
@@ -2006,7 +2134,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[1]",
           "roll": "0.0",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_7_pad1": {
@@ -2044,7 +2172,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[2]",
           "roll": "0.0",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_9_pad1": {
@@ -2082,7 +2210,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_11_pad1": {
@@ -2120,7 +2248,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_13_pad1": {
@@ -2158,7 +2286,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2342,7 +2470,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2380,7 +2508,7 @@
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -2418,7 +2546,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2448,24 +2576,6 @@
       ]
     },
     "mps": {
-      "loop_radius": {
-        "name": "loop_radius",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
-          },
-          "comparison": "ratio"
-        },
-        "default": 55.0,
-        "collectors": {
-          "e_0.radius": "e_0.radius",
-          "e_2.radius": "e_2.radius",
-          "e_4.radius": "e_4.radius"
-        }
-      },
       "line_length": {
         "name": "line_length",
         "criteria": {
@@ -2527,10 +2637,50 @@
         },
         "default": 0,
         "collectors": {
-          "e_0.roll": "e_0.roll",
-          "e_2.angle": "e_2.angle",
-          "e_4.angle": "e_4.angle",
-          "e_4.roll": "e_4.roll"
+          "e_0_rolls.roll": "e_0_rolls.roll",
+          "e_2_rolls.angle": "e_2_rolls.angle",
+          "e_4_rolls.angle": "e_4_rolls.angle",
+          "e_4_rolls.roll": "e_4_rolls.roll"
+        }
+      },
+      "top_roll_option": {
+        "name": "top_roll_option",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              -3.141592653589793
+            ],
+            [
+              3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_2_rolls.roll": "e_2_rolls.roll"
+        }
+      },
+      "e_0_radius": {
+        "name": "e_0_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_0_rolls.radius": "e_0_rolls.radius"
         }
       },
       "e_1_rolls": {
@@ -2574,6 +2724,22 @@
           "e_1_pad2.length": "(e_1_pad2.length+40)"
         }
       },
+      "e_2_radius": {
+        "name": "e_2_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_2_rolls.radius": "e_2_rolls.radius"
+        }
+      },
       "e_3_rolls": {
         "name": "e_3_rolls",
         "criteria": {
@@ -2614,18 +2780,34 @@
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
         }
+      },
+      "e_4_radius": {
+        "name": "e_4_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_4_rolls.radius": "e_4_rolls.radius"
+        }
       }
     },
     "eds": {
-      "e_0": {
-        "name": "e_0",
+      "e_0_rolls": {
+        "name": "e_0_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_0_radius",
           "angle": "2.356194490192345",
           "roll": "roll_option[0]",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2655,15 +2837,15 @@
           "roll": "0"
         }
       },
-      "e_2": {
-        "name": "e_2",
+      "e_2_rolls": {
+        "name": "e_2_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_2_radius",
           "angle": "roll_option[1]",
-          "roll": "3.141592653589793",
-          "ke": "True"
+          "roll": "top_roll_option[0]",
+          "ke": "1.5707963267948966"
         }
       },
       "e_3_pad1": {
@@ -2693,15 +2875,15 @@
           "roll": "0"
         }
       },
-      "e_4": {
-        "name": "e_4",
+      "e_4_rolls": {
+        "name": "e_4_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_4_radius",
           "angle": "roll_option[2]",
           "roll": "roll_option[3]",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       }
     }
@@ -2857,7 +3039,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2895,7 +3077,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[1]",
           "roll": "0.0",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_3": {
@@ -2915,7 +3097,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[2]",
           "roll": "0.0",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_5_pad1": {
@@ -2953,7 +3135,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -3058,12 +3240,12 @@
           "comparison": "absolute",
           "desired": [
             [
-              7.0685834705770345,
-              -7.0685834705770345
+              7.853981633974483,
+              -7.853981633974483
             ],
             [
-              -7.0685834705770345,
-              7.0685834705770345
+              -7.853981633974483,
+              7.853981633974483
             ]
           ]
         },
@@ -3100,7 +3282,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -3147,7 +3329,7 @@
           "radius": "loop_radius",
           "angle": "-0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -3291,7 +3473,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -3338,7 +3520,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -3384,10 +3566,8 @@
         },
         "default": 100,
         "collectors": {
-          "e_0.radius": "e_0.radius",
           "e_1.radius": "e_1.radius",
-          "e_3.radius": "e_3.radius",
-          "e_4.radius": "e_4.radius"
+          "e_3.radius": "e_3.radius"
         }
       },
       "snap_rate": {
@@ -3403,7 +3583,7 @@
         },
         "default": 12.566370614359172,
         "collectors": {
-          "e_2_autorotation_0.rate": "e_2_autorotation_0.rate"
+          "e_2_0_autorotation.rate": "e_2_0_autorotation.rate"
         }
       },
       "roll_option": {
@@ -3435,24 +3615,80 @@
         },
         "default": 0,
         "collectors": {
-          "e_0.roll": "e_0.roll",
+          "e_0_rolls.roll": "e_0_rolls.roll",
           "e_1.angle": "e_1.angle",
           "e_3.angle": "e_3.angle",
-          "e_4.angle": "e_4.angle",
-          "e_4.roll": "e_4.roll"
+          "e_4_rolls.angle": "e_4_rolls.angle",
+          "e_4_rolls.roll": "e_4_rolls.roll"
+        }
+      },
+      "e_0_radius": {
+        "name": "e_0_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 100,
+        "collectors": {
+          "e_0_rolls.radius": "e_0_rolls.radius"
+        }
+      },
+      "e_2_rolls": {
+        "name": "e_2_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              6.283185307179586
+            ],
+            [
+              -6.283185307179586
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_2_0_autorotation.roll": "e_2_0_autorotation.roll"
+        }
+      },
+      "e_4_radius": {
+        "name": "e_4_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "ratio"
+        },
+        "default": 100,
+        "collectors": {
+          "e_4_rolls.radius": "e_4_rolls.radius"
         }
       }
     },
     "eds": {
-      "e_0": {
-        "name": "e_0",
+      "e_0_rolls": {
+        "name": "e_0_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_0_radius",
           "angle": "1.5707963267948966",
           "roll": "roll_option[0]",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -3463,11 +3699,11 @@
           "radius": "loop_radius",
           "angle": "roll_option[1]",
           "roll": "0.0",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
-      "e_2_break": {
-        "name": "e_2_break",
+      "e_2_0_break": {
+        "name": "e_2_0_break",
         "Kind": "PitchBreak",
         "props": {
           "speed": "30.0",
@@ -3475,17 +3711,17 @@
           "break_angle": "0.17453292519943295"
         }
       },
-      "e_2_autorotation_0": {
-        "name": "e_2_autorotation_0",
+      "e_2_0_autorotation": {
+        "name": "e_2_0_autorotation",
         "Kind": "Autorotation",
         "props": {
           "speed": "30.0",
-          "length": "(188.49555921538757/snap_rate)",
-          "roll": "1"
+          "length": "((30.0*abs(e_2_rolls[0]))/snap_rate)",
+          "roll": "e_2_rolls[0]"
         }
       },
-      "e_2_recovery": {
-        "name": "e_2_recovery",
+      "e_2_0_recovery": {
+        "name": "e_2_0_recovery",
         "Kind": "Recovery",
         "props": {
           "speed": "30.0",
@@ -3500,18 +3736,18 @@
           "radius": "loop_radius",
           "angle": "roll_option[2]",
           "roll": "0.0",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
-      "e_4": {
-        "name": "e_4",
+      "e_4_rolls": {
+        "name": "e_4_rolls",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
+          "radius": "e_4_radius",
           "angle": "roll_option[3]",
           "roll": "roll_option[4]",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       }
     }
@@ -3618,7 +3854,7 @@
           "radius": "loop_radius",
           "angle": "roll_option[1]",
           "roll": "0.0",
-          "ke": "True"
+          "ke": "1.5707963267948966"
         }
       },
       "e_2_roll": {
@@ -3685,7 +3921,7 @@
         "default": 150,
         "collectors": {
           "e_3": "(((((((0+e_3_pad1.length)+e_3_0.length)+e_3_1_pause.length)+e_3_1.length)+e_3_2_pause.length)+e_3_2.length)+e_3_pad2.length)",
-          "e_5": "(((((0+e_5_pad1.length)+e_5_break.length)+e_5_autorotation_0.length)+e_5_recovery.length)+e_5_pad2.length)"
+          "e_5": "(((((0+e_5_pad1.length)+e_5_0_break.length)+e_5_0_autorotation.length)+e_5_0_recovery.length)+e_5_pad2.length)"
         }
       },
       "point_length": {
@@ -3738,7 +3974,7 @@
         },
         "default": 12.566370614359172,
         "collectors": {
-          "e_5_autorotation_0.rate": "e_5_autorotation_0.rate"
+          "e_5_0_autorotation.rate": "e_5_0_autorotation.rate"
         }
       },
       "stallturn_rate": {
@@ -3845,6 +4081,30 @@
           "e_3_pad2.length": "(e_3_pad2.length+40)"
         }
       },
+      "e_5_rolls": {
+        "name": "e_5_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              4.71238898038469
+            ],
+            [
+              -4.71238898038469
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_5_0_autorotation.roll": "e_5_0_autorotation.roll"
+        }
+      },
       "e_5_pad_length": {
         "name": "e_5_pad_length",
         "criteria": {
@@ -3914,7 +4174,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -3993,12 +4253,12 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((0.8333333333333334+(141.3716694115407/snap_rate))+0.8333333333333334)))",
+          "length": "(0.5*(line_length-((0.8333333333333334+((30.0*abs(e_5_rolls[0]))/snap_rate))+0.8333333333333334)))",
           "roll": "0"
         }
       },
-      "e_5_break": {
-        "name": "e_5_break",
+      "e_5_0_break": {
+        "name": "e_5_0_break",
         "Kind": "PitchBreak",
         "props": {
           "speed": "30.0",
@@ -4006,17 +4266,17 @@
           "break_angle": "0.17453292519943295"
         }
       },
-      "e_5_autorotation_0": {
-        "name": "e_5_autorotation_0",
+      "e_5_0_autorotation": {
+        "name": "e_5_0_autorotation",
         "Kind": "Autorotation",
         "props": {
           "speed": "30.0",
-          "length": "(141.3716694115407/snap_rate)",
-          "roll": "0.75"
+          "length": "((30.0*abs(e_5_rolls[0]))/snap_rate)",
+          "roll": "e_5_rolls[0]"
         }
       },
-      "e_5_recovery": {
-        "name": "e_5_recovery",
+      "e_5_0_recovery": {
+        "name": "e_5_0_recovery",
         "Kind": "Recovery",
         "props": {
           "speed": "30.0",
@@ -4028,7 +4288,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((0.8333333333333334+(141.3716694115407/snap_rate))+0.8333333333333334)))",
+          "length": "(0.5*(line_length-((0.8333333333333334+((30.0*abs(e_5_rolls[0]))/snap_rate))+0.8333333333333334)))",
           "roll": "0"
         }
       },
@@ -4040,7 +4300,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_7": {

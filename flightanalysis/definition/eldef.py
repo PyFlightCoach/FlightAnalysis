@@ -4,7 +4,7 @@ import numpy as np
 from flightanalysis.elements import *
 from inspect import getfullargspec
 from functools import partial
-from . import ManParm, ManParms, _a, Opp, ItemOpp
+from . import ManParm, ManParms, Opp, ItemOpp
 from flightdata import Collection
 from numbers import Number
 from . import Collector, Collectors
@@ -53,18 +53,31 @@ class ElDef:
             props = {k: ManParm.parse(v, mps) for k, v in data["props"].items()}
         )
 
-    def __call__(self, mps: ManParms) -> Element:
-        kwargs = {}
+
+    def __call__(self, mps: ManParms, **kwargs) -> Element:
+        el_kwargs = {}
         args = getfullargspec(self.Kind.__init__).args
         for pname, prop in self.props.items():
-            # only use the parameter if it is actually needed to create the element
-            if pname in args: 
-                kwargs[pname] = _a(prop)(mps)
+            if pname in args:
+                
+                if isinstance(prop, ManParm):
+                    if prop.kind=='Combination':
 
-        return self.Kind(uid=self.name, **kwargs) 
+                        el_kwargs[pname] = mps.data[prop.name].value[id]
+
+                    else:
+                        el_kwargs[pname] = mps.data[prop.name].value 
+                elif isinstance(prop, Opp):
+                    el_kwargs[pname] = prop(mps)
+                elif isinstance(prop, Number):
+                    el_kwargs[pname] = prop
+                else:
+                    raise TypeError(f"Invalid prop type {prop.__class__.__name__}")
+            
+
+        return self.Kind(uid=self.name, **el_kwargs) 
     
     def build(Kind, name, *args, **kwargs):
-        #if *args are passed, tag them onto kwargs
         elargs = list(inspect.signature(Kind.__init__).parameters)[1:-1]
         for arg, argname in zip(args, elargs[:len(args)] ):
             kwargs[argname] = arg

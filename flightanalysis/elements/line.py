@@ -59,14 +59,6 @@ class Line(Element):
             self.roll
         )
 
-    def match_axis_rate(self, roll_rate: float) -> Line:
-        # roll rate in radians per second
-        if not self.roll == 0.0:
-            return self.set_parms(
-                length=abs(self.roll) * self.speed / roll_rate)
-        else:
-            return self.set_parms()
-
     def match_intention(self, itrans: Transformation, flown: State) -> Line:
         return self.set_parms(
             length=abs(self.length_vec(itrans, flown))[0],

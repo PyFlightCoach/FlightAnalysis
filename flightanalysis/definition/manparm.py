@@ -96,24 +96,10 @@ class ManParm(Opp):
         else:
             raise AttributeError("This type of ManParm has no value")
 
-    def valuefunc(self, id:int=0) -> Callable:
-        """Create a function to return the value of this manparm from a manparms collection.
-        
-        Args:
-            id (int, optional): The element id to return if reading the default from a Combination
-            criteria. Defaults to 0.
 
-        Raises:
-            Exception: If some unknown criteria is being used
-
-        Returns:
-            Callable: function to get the default value for this manparm from the mps collection
-        """
-        if isinstance(self.criteria, Combination):
-            return lambda mps: mps.data[self.name].value[id]
-        else:
-            return lambda mps: mps.data[self.name].value 
-    
+    @property
+    def kind(self):
+        return self.criteria.__class__.__name__    
 
     def copy(self):
         return ManParm(name=self.name, criteria=self.criteria, default=self.default, collectors=self.collectors.copy())

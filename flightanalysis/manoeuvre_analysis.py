@@ -29,7 +29,15 @@ class ElementAnalysis:
     def to_dict(self):
         return {k: v.to_dict() for k, v in self.__dict__.items()}
 
-
+    @staticmethod
+    def from_dict(data):
+        return ElementAnalysis(
+            ElDef.from_dict(data['edef']),
+            Element.from_dict(data['el']),
+            State.from_dict(data['fl']),
+            State.from_dict(data['tp']),
+            Transformation.from_dict(data['ref_frame'])
+        )
 @dataclass
 class ManoeuvreResults:
     inter: Results
@@ -150,9 +158,11 @@ class ManoeuvreAnalysis:
         return ManoeuvreAnalysis(mdef, aligned, intended, int_tp, corr, corr.create_template(int_tp[0], aligned))
 
     def plot_3d(self, **kwargs):
-        from flightplotting import plotsec
-        fig = plotsec(self.aligned, color="red", **kwargs)
-        return plotsec(self.intended_template, color="green", fig=fig, **kwargs)
+        from flightplotting import plotsec, plotdtw
+        fig = plotdtw(self.aligned, self.aligned.data.element.unique())
+        fig = plotsec(self.intended_template, color="red", nmodels=20, fig=fig, **kwargs)
+        return plotsec(self.aligned, color="blue", nmodels=20, fig=fig, **kwargs)
+        
 
 
     def side_box(self):

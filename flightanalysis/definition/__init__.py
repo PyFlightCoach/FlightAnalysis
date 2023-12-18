@@ -7,14 +7,7 @@ from .collectors import Collector, Collectors
 
 from .manparm import ManParm, ManParms, DummyMPs
 
-def _a(arg):
-    if isinstance(arg, ManParm):
-        return arg.valuefunc()
-    elif isinstance(arg, Number):
-        return lambda mps: arg
-    elif isinstance(arg, Opp):
-        return arg
-    
+   
 
 from .eldef import ElDef, ElDefs
 from .mandef import ManDef
