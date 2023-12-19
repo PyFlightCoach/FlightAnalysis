@@ -1,6 +1,6 @@
 from pytest import fixture
 import numpy as np
-from flightanalysis.definition import ElDef, ElDefs, _a
+from flightanalysis.definition import ElDef, ElDefs
 from flightanalysis.elements import Loop, Line
 from flightanalysis.definition import ManParm, ManParms
 
