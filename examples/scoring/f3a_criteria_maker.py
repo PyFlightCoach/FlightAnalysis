@@ -1,4 +1,4 @@
-from flightanalysis.schedule.scoring.criteria import *
+from flightanalysis.scoring.criteria import *
 from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.graph_objects as go
@@ -16,7 +16,7 @@ f3a=dict(
     intra=dict(
         track=Continuous(Exponential.fit_points(np.radians([30, 90]), [2, 6]), 'absolute'),
         roll=Continuous(Exponential.fit_points(np.radians([30, 90]), [1.5, 6]), 'absolute'),
-        radius=Continuous(Exponential.fit_points([1,5], [0.25, 2], 2), 'ratio'),
+        radius=Continuous(Exponential.fit_points([1,5], [0.5, 4], 2), 'ratio'),
         speed=Continuous(Exponential.fit_points([1,5], [0.15, 0.75], 1), 'ratio'),
         roll_rate=Continuous(Exponential.fit_points([1,5], [0.15, 0.75], 1), 'ratio'),
     ),
