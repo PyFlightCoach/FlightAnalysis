@@ -1,6 +1,8 @@
-from flightanalysis.schedule.definition import *
-from flightanalysis.schedule.elements import *
-from flightanalysis.schedule.scoring.criteria import *
+'''
+UKF3A Clubman template
+Author Vince Beesley
+'''
+from flightanalysis import *
 import numpy as np
 
 clubman_def = SchedDef([  
@@ -92,11 +94,9 @@ clubman_def = SchedDef([
             start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
             end=BoxLocation(Height.BTM)
         ),[
-           f3amb.line(length=10),           
-           f3amb.roll(np.pi),           
+           f3amb.roll(np.pi, padded=False),           
            f3amb.line(length = 100),          
-           f3amb.roll(np.pi),          
-           f3amb.line(length=10),                    
+           f3amb.roll(np.pi, padded=False),          
           ]),
 
     f3amb.create(ManInfo(
@@ -177,7 +177,7 @@ clubman_def = SchedDef([
         ),            
             [ 
             MBTags.CENTRE,
-            f3amb.spin(3),           
+            f3amb.spin(r(3)),
             f3amb.line(),
             f3amb.loop(np.pi/2),  
         ],
@@ -201,10 +201,10 @@ clubman_def = SchedDef([
 
 if __name__ == "__main__":
 
-    #clubman_def.plot().show()
-    clubman_def.create_fcj('clubman', 'clubman_template_fcj_170.json', 1)
-    clubman_def.create_fcj('clubman', 'clubman_template_fcj_170_b.json', -1)
-    clubman_def.create_fcj('clubman', 'clubman_template_fcj_150.json', 1, 150/170)
-    clubman_def.create_fcj('clubman', 'clubman_template_fcj_150_b.json', -1, 150/170)
+#    clubman_def.plot().show()
+#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_170.json', 1)
+#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_170_b.json', -1)
+#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_150.json', 1, 150/170)
+#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_150_b.json', -1, 150/170)
     #clubman_def.create_fcj('clubman', 'clubman_template_fcj.json')
-   # clubman_def.to_json("FlightAnalysis/flightanalysis/data/clubman_schedule.json")
+    clubman_def.to_json("flightanalysis/data/f3auk_clubman_schedule.json")

@@ -1,9 +1,11 @@
-from flightanalysis.schedule.definition import *
-from flightanalysis.schedule.elements import *
-from flightanalysis.schedule.scoring.criteria import *
+'''
+UKF3A Intermediate Template
+Author Vince Beesley
+'''
+from flightanalysis import *
 import numpy as np
 
-"""UKF3A Intermediate Template"""
+
 
 c45 = np.cos(np.radians(45))
 
@@ -26,16 +28,12 @@ intermediate_def = SchedDef([
             end=BoxLocation(Height.BTM)
         ),
         [            
-            f3amb.line(),
             f3amb.loop(np.pi*3/4),
             f3amb.line(c45),            
-            f3amb.loop(np.pi/2),
+            centred(f3amb.loop(np.pi/2)),
             f3amb.line(-c45), 
             f3amb.loop(np.pi*3/4),
-            f3amb.line(),           
         ],line_length=150),
-
-
     
     f3amb.create(ManInfo
         (
@@ -134,7 +132,6 @@ intermediate_def = SchedDef([
             MBTags.CENTRE,
             f3amb.loop(-np.pi),            
             MBTags.CENTRE,
-            f3amb.line(50),
         ], 
         ),
 
@@ -199,8 +196,8 @@ intermediate_def = SchedDef([
 if __name__ == "__main__":
 
     #intermediate_def.plot().show()
-    intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_170.json', 1)
-    intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_170_b.json', -1)
-    intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_150.json', 1, 150/170)
-    intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_150_b.json', -1, 150/170)
-   # intermediate_def.to_json("FlightAnalysis/flightanalysis/data/intermediate_schedule.json")
+    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_170.json', 1)
+    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_170_b.json', -1)
+    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_150.json', 1, 150/170)
+    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_150_b.json', -1, 150/170)
+    intermediate_def.to_json("flightanalysis/data/f3auk_inter_schedule.json")

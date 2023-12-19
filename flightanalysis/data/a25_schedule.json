@@ -130,7 +130,7 @@
           "radius": "loop_radius",
           "angle": "-0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -150,7 +150,7 @@
           "radius": "loop_radius",
           "angle": "-2.356194490192345",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -188,7 +188,7 @@
           "radius": "loop_radius",
           "angle": "-2.356194490192345",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_5": {
@@ -208,7 +208,7 @@
           "radius": "loop_radius",
           "angle": "-0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -333,7 +333,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -371,7 +371,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -552,7 +552,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -572,7 +572,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -610,7 +610,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_5_pad1": {
@@ -648,7 +648,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_7": {
@@ -668,7 +668,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -793,7 +793,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -831,7 +831,7 @@
           "radius": "loop_radius",
           "angle": "4.71238898038469",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -1062,7 +1062,7 @@
           },
           "comparison": "ratio"
         },
-        "default": 6.283185307179586,
+        "default": 3.141592653589793,
         "collectors": {
           "e_2.yaw_rate": "e_2.yaw_rate"
         }
@@ -1118,7 +1118,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -1173,7 +1173,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -1324,7 +1324,7 @@
           "radius": "loop_radius",
           "angle": "3.141592653589793",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_2_0": {
@@ -1353,7 +1353,7 @@
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_5_0": {
@@ -1489,7 +1489,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -1509,7 +1509,7 @@
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3_pad1": {
@@ -1547,7 +1547,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -1701,7 +1701,7 @@
           "radius": "loop_radius",
           "angle": "-6.283185307179586",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3": {
@@ -1789,7 +1789,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -1809,7 +1809,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3": {
@@ -1829,7 +1829,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -1908,7 +1908,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -1928,7 +1928,7 @@
           "radius": "loop_radius",
           "angle": "4.71238898038469",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3": {
@@ -1948,7 +1948,7 @@
           "radius": "loop_radius",
           "angle": "4.71238898038469",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_5": {
@@ -1968,7 +1968,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2037,7 +2037,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -2057,7 +2057,7 @@
           "radius": "loop_radius",
           "angle": "3.9269908169872414",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3": {
@@ -2077,7 +2077,7 @@
           "radius": "loop_radius",
           "angle": "-1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2153,7 +2153,7 @@
         "props": {
           "speed": "10",
           "length": "(125.66370614359172/spin_rate)",
-          "roll": "2"
+          "roll": "12.566370614359172"
         }
       },
       "e_0_recovery": {
@@ -2181,7 +2181,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2309,7 +2309,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2347,7 +2347,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3": {
@@ -2367,7 +2367,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_5": {
@@ -2387,7 +2387,7 @@
           "radius": "loop_radius",
           "angle": "1.5707963267948966",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2517,7 +2517,7 @@
           "radius": "loop_radius",
           "angle": "2.356194490192345",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1_pad1": {
@@ -2555,7 +2555,7 @@
           "radius": "loop_radius",
           "angle": "2.356194490192345",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2625,7 +2625,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -2645,7 +2645,7 @@
           "radius": "loop_radius",
           "angle": "-4.71238898038469",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_3": {
@@ -2665,7 +2665,7 @@
           "radius": "loop_radius",
           "angle": "0.7853981633974483",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       }
     }
@@ -2710,22 +2710,6 @@
           "e_0.radius": "e_0.radius",
           "e_1.radius": "e_1.radius"
         }
-      },
-      "line_length": {
-        "name": "line_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
-          },
-          "comparison": "ratio"
-        },
-        "default": 130.0,
-        "collectors": {
-          "e_2.length": "e_2.length"
-        }
       }
     },
     "eds": {
@@ -2737,7 +2721,7 @@
           "radius": "loop_radius",
           "angle": "3.141592653589793",
           "roll": "0.0",
-          "ke": "False"
+          "ke": "0"
         }
       },
       "e_1": {
@@ -2748,16 +2732,7 @@
           "radius": "loop_radius",
           "angle": "-3.141592653589793",
           "roll": "0.0",
-          "ke": "False"
-        }
-      },
-      "e_2": {
-        "name": "e_2",
-        "Kind": "Line",
-        "props": {
-          "speed": "30.0",
-          "length": "line_length",
-          "roll": "0.0"
+          "ke": "0"
         }
       }
     }

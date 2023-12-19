@@ -1,8 +1,6 @@
 '''Author Vince Beesley 18/11/2023'''
 
-from flightanalysis.schedule.definition import *
-from flightanalysis.schedule.elements import *
-from flightanalysis.schedule.scoring.criteria import *
+from flightanalysis import *
 import numpy as np
 
 c45 = np.cos(np.radians(45))
@@ -15,7 +13,7 @@ a25_def = SchedDef([
             end=BoxLocation(Height.TOP)
         ),[
             MBTags.CENTRE,
-            f3amb.loop(-np.pi/4),  
+            f3amb.loop(-np.pi/4),
             f3amb.line(),          
             f3amb.loop(-np.pi*3/4), 
             centred(f3amb.roll(2*np.pi, line_length=str(2 * c45 * f3amb.mps.line_length))),
@@ -176,7 +174,7 @@ a25_def = SchedDef([
             end=BoxLocation(Height.BTM),
         ),[       
             MBTags.CENTRE,
-            f3amb.spin(2),  
+            f3amb.spin(r(2)),  
             f3amb.line(length=165),
             f3amb.loop(np.pi/2),
             
@@ -230,7 +228,6 @@ a25_def = SchedDef([
             MBTags.CENTRE,
             f3amb.loop(-np.pi),            
             MBTags.CENTRE,
-            f3amb.line(50)
         ], )
 
     ]  #Close Sched_def array 
@@ -241,12 +238,12 @@ a25_def = SchedDef([
 
 if __name__ == "__main__":
     
-    a25_def.plot().show()
+#    a25_def.plot().show()
 
 #    for mdef in a25_def:
 #        mdef.plot(depth=170, wind=1).show()
 
 #    a25_def.create_fcj('a25', 'a25_template_fcj.json')
 
-   # a25_def.to_json("flightanalysis/data/a25_schedule.json")
+    a25_def.to_json("flightanalysis/data/a25_schedule.json")
 

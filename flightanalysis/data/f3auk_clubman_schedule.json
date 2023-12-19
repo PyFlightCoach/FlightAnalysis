@@ -1,0 +1,2063 @@
+{
+  "trnround": {
+    "info": {
+      "name": "Turn Round",
+      "short_name": "trnround",
+      "k": 0,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "DOWNWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          2,
+          0.5000000000000001
+        ]
+      ]
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 65,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_2.radius": "e_2.radius"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_1_pad1.length": "(e_1_pad1.length+40)",
+          "e_1_pad2.length": "(e_1_pad2.length+40)"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "0.7853981633974483",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(130-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(130-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.9269908169872414",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "inloop": {
+    "info": {
+      "name": "Inside Loop",
+      "short_name": "inloop",
+      "k": 2,
+      "position": "CENTRE",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [
+        0,
+        1
+      ],
+      "centred_els": []
+    },
+    "mps": {},
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "100",
+          "angle": "6.283185307179586",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "rcuban": {
+    "info": {
+      "name": "Half Rev Cuban 8",
+      "short_name": "rcuban",
+      "k": 2,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          2,
+          0.5000000000000001
+        ]
+      ]
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 65,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_2.radius": "e_2.radius"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_1_pad1.length": "(e_1_pad1.length+40)",
+          "e_1_pad2.length": "(e_1_pad2.length+40)"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "0.7853981633974483",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(130-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(130-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.9269908169872414",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "slowroll": {
+    "info": {
+      "name": "slow Roll",
+      "short_name": "slowroll",
+      "k": 3,
+      "position": "CENTRE",
+      "start": {
+        "h": "BTM",
+        "d": "DOWNWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "e_0_rolls": {
+        "name": "e_0_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              6.283185307179586
+            ],
+            [
+              -6.283185307179586
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_0_0.roll": "e_0_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "e_0_0": {
+        "name": "e_0_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_0_rolls[0])*30.0)/1.5707963267948966)",
+          "roll": "e_0_rolls[0]"
+        }
+      }
+    }
+  },
+  "hcuban": {
+    "info": {
+      "name": "Half Cuban 8",
+      "short_name": "hcuban",
+      "k": 2,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "DOWNWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          2,
+          0.5
+        ]
+      ]
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 45,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_2.radius": "e_2.radius"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_1_pad1.length": "(e_1_pad1.length+40)",
+          "e_1_pad2.length": "(e_1_pad2.length+40)"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "0.7853981633974483",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(90-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(90-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.9269908169872414",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "Immel": {
+    "info": {
+      "name": "Immelman combo",
+      "short_name": "Immel",
+      "k": 3,
+      "position": "CENTRE",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 100,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_4.radius": "e_4.radius"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate",
+          "e_3_0.rate": "e_3_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_3_rolls": {
+        "name": "e_3_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_3_0.roll": "e_3_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.141592653589793",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "30",
+          "roll": "0.0"
+        }
+      },
+      "e_3_0": {
+        "name": "e_3_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_3_rolls[0]"
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.141592653589793",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "innerhB": {
+    "info": {
+      "name": "Humpty",
+      "short_name": "innerhB",
+      "k": 2,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_2.radius": "e_2.radius",
+          "e_4.radius": "e_4.radius"
+        }
+      },
+      "line_length": {
+        "name": "line_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": 130.0,
+        "collectors": {
+          "e_1": "(((0+e_1_pad1.length)+e_1_0.length)+e_1_pad2.length)",
+          "e_3.length": "e_3.length"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_1_pad1.length": "(e_1_pad1.length+40)",
+          "e_1_pad2.length": "(e_1_pad2.length+40)"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.141592653589793",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_3": {
+        "name": "e_3",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "line_length",
+          "roll": "0.0"
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "inverted": {
+    "info": {
+      "name": "Inverted Flight",
+      "short_name": "inverted",
+      "k": 2,
+      "position": "CENTRE",
+      "start": {
+        "h": "BTM",
+        "d": "DOWNWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_0_0.rate": "e_0_0.rate",
+          "e_2_0.rate": "e_2_0.rate"
+        }
+      },
+      "e_0_rolls": {
+        "name": "e_0_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_0_0.roll": "e_0_0.roll"
+        }
+      },
+      "e_2_rolls": {
+        "name": "e_2_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_2_0.roll": "e_2_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "e_0_0": {
+        "name": "e_0_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_0_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_0_rolls[0]"
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "100",
+          "roll": "0.0"
+        }
+      },
+      "e_2_0": {
+        "name": "e_2_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_2_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_2_rolls[0]"
+        }
+      }
+    }
+  },
+  "stall": {
+    "info": {
+      "name": "Stall Turn",
+      "short_name": "stall",
+      "k": 3,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "DOWNWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_6.radius": "e_6.radius"
+        }
+      },
+      "stallturn_rate": {
+        "name": "stallturn_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 3.141592653589793,
+        "collectors": {
+          "e_4.yaw_rate": "e_4.yaw_rate"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "150",
+          "roll": "0.0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Line",
+        "props": {
+          "speed": "3",
+          "length": "10",
+          "roll": "0.0"
+        }
+      },
+      "e_3": {
+        "name": "e_3",
+        "Kind": "Line",
+        "props": {
+          "speed": "1",
+          "length": "5",
+          "roll": "0.0"
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "StallTurn",
+        "props": {
+          "speed": "0.0",
+          "yaw_rate": "stallturn_rate"
+        }
+      },
+      "e_5": {
+        "name": "e_5",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "165",
+          "roll": "0.0"
+        }
+      },
+      "e_6": {
+        "name": "e_6",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "outloop": {
+    "info": {
+      "name": "Outside Loop",
+      "short_name": "outloop",
+      "k": 3,
+      "position": "CENTRE",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [
+        2,
+        3
+      ],
+      "centred_els": []
+    },
+    "mps": {
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_0_0.rate": "e_0_0.rate",
+          "e_4_0.rate": "e_4_0.rate"
+        }
+      },
+      "ee_pause": {
+        "name": "ee_pause",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": 20.0,
+        "collectors": {
+          "e_1.length": "e_1.length",
+          "e_3.length": "e_3.length"
+        }
+      },
+      "e_0_rolls": {
+        "name": "e_0_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_0_0.roll": "e_0_0.roll"
+        }
+      },
+      "e_4_rolls": {
+        "name": "e_4_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_4_0.roll": "e_4_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "e_0_0": {
+        "name": "e_0_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_0_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_0_rolls[0]"
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "ee_pause",
+          "roll": "0.0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "100",
+          "angle": "-6.283185307179586",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_3": {
+        "name": "e_3",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "ee_pause",
+          "roll": "0.0"
+        }
+      },
+      "e_4_0": {
+        "name": "e_4_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_4_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_4_rolls[0]"
+        }
+      }
+    }
+  },
+  "outerhB": {
+    "info": {
+      "name": "Outer Humpty",
+      "short_name": "outerhB",
+      "k": 2,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_2.radius": "e_2.radius",
+          "e_4.radius": "e_4.radius"
+        }
+      },
+      "line_length": {
+        "name": "line_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": 130.0,
+        "collectors": {
+          "e_1.length": "e_1.length",
+          "e_3": "(((0+e_3_pad1.length)+e_3_0.length)+e_3_pad2.length)"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_3_0.rate": "e_3_0.rate"
+        }
+      },
+      "e_3_rolls": {
+        "name": "e_3_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_3_0.roll": "e_3_0.roll"
+        }
+      },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_3_pad1.length": "(e_3_pad1.length+40)",
+          "e_3_pad2.length": "(e_3_pad2.length+40)"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "line_length",
+          "roll": "0.0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.141592653589793",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_3_pad1": {
+        "name": "e_3_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_3_0": {
+        "name": "e_3_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_3_rolls[0]"
+        }
+      },
+      "e_3_pad2": {
+        "name": "e_3_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "fullcuban8": {
+    "info": {
+      "name": "Cuban 8",
+      "short_name": "fullcuban8",
+      "k": 2,
+      "position": "CENTRE",
+      "start": {
+        "h": "BTM",
+        "d": "DOWNWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          2,
+          0.5000000000000001
+        ],
+        [
+          6,
+          0.5000000000000001
+        ]
+      ]
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 100,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_2.radius": "e_2.radius",
+          "e_4.radius": "e_4.radius"
+        }
+      },
+      "line_length": {
+        "name": "line_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": 200,
+        "collectors": {
+          "e_1": "(((0+e_1_pad1.length)+e_1_0.length)+e_1_pad2.length)",
+          "e_3": "(((0+e_3_pad1.length)+e_3_0.length)+e_3_pad2.length)"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate",
+          "e_3_0.rate": "e_3_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_1_pad1.length": "(e_1_pad1.length+40)",
+          "e_1_pad2.length": "(e_1_pad2.length+40)"
+        }
+      },
+      "e_3_rolls": {
+        "name": "e_3_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_3_0.roll": "e_3_0.roll"
+        }
+      },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_3_pad1.length": "(e_3_pad1.length+40)",
+          "e_3_pad2.length": "(e_3_pad2.length+40)"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "3.9269908169872414",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "4.71238898038469",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_3_pad1": {
+        "name": "e_3_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_3_0": {
+        "name": "e_3_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_3_rolls[0]"
+        }
+      },
+      "e_3_pad2": {
+        "name": "e_3_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "0.7853981633974483",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "hsqrloop": {
+    "info": {
+      "name": "Half Sqr Loop",
+      "short_name": "hsqrloop",
+      "k": 2,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "DOWNWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          2,
+          0.5000000000000001
+        ]
+      ]
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_0.radius": "e_0.radius",
+          "e_2.radius": "e_2.radius"
+        }
+      },
+      "line_length": {
+        "name": "line_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": 130.0,
+        "collectors": {
+          "e_1": "(((0+e_1_pad1.length)+e_1_0.length)+e_1_pad2.length)"
+        }
+      },
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 1.5707963267948966,
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": 10
+          },
+          "comparison": "absolute",
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "default": 0,
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": null,
+        "collectors": {
+          "e_1_pad1.length": "(e_1_pad1.length+40)",
+          "e_1_pad2.length": "(e_1_pad2.length+40)"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "(0.5*(line_length-(0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
+          "roll": "0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "-1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "spin": {
+    "info": {
+      "name": "3 Turn Spin",
+      "short_name": "spin",
+      "k": 3,
+      "position": "CENTRE",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [
+        0
+      ],
+      "centred_els": []
+    },
+    "mps": {
+      "loop_radius": {
+        "name": "loop_radius",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.4306765580733931,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 55.0,
+        "collectors": {
+          "e_2.radius": "e_2.radius"
+        }
+      },
+      "line_length": {
+        "name": "line_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": 130.0,
+        "collectors": {
+          "e_1.length": "e_1.length"
+        }
+      },
+      "spin_rate": {
+        "name": "spin_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.1132827525593783,
+            "limit": 2
+          },
+          "comparison": "ratio"
+        },
+        "default": 5.340707511102648,
+        "collectors": {
+          "e_0_autorotation.rate": "e_0_autorotation.rate"
+        }
+      }
+    },
+    "eds": {
+      "e_0_break": {
+        "name": "e_0_break",
+        "Kind": "NoseDrop",
+        "props": {
+          "speed": "10",
+          "radius": "0.8726646259971647",
+          "break_angle": "0.5235987755982988"
+        }
+      },
+      "e_0_autorotation": {
+        "name": "e_0_autorotation",
+        "Kind": "Autorotation",
+        "props": {
+          "speed": "10",
+          "length": "(188.49555921538757/spin_rate)",
+          "roll": "18.84955592153876"
+        }
+      },
+      "e_0_recovery": {
+        "name": "e_0_recovery",
+        "Kind": "Recovery",
+        "props": {
+          "speed": "10",
+          "length": "0.8726646259971647"
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "line_length",
+          "roll": "0.0"
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "30.0",
+          "radius": "loop_radius",
+          "angle": "1.5707963267948966",
+          "roll": "0.0",
+          "ke": "0"
+        }
+      }
+    }
+  },
+  "land": {
+    "info": {
+      "name": "Landing",
+      "short_name": "land",
+      "k": 1,
+      "position": "END",
+      "start": {
+        "h": "BTM",
+        "d": "UPWIND",
+        "o": "UPRIGHT"
+      },
+      "end": {
+        "h": "BTM",
+        "d": "DRIVEN",
+        "o": "DRIVEN"
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "line_length": {
+        "name": "line_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 0.6826061944859854,
+            "limit": 3
+          },
+          "comparison": "ratio"
+        },
+        "default": 130.0,
+        "collectors": {
+          "e_0.length": "e_0.length"
+        }
+      }
+    },
+    "eds": {
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "30.0",
+          "length": "line_length",
+          "roll": "0.0"
+        }
+      }
+    }
+  }
+}

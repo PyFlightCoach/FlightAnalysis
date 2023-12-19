@@ -143,5 +143,5 @@ if __name__ == "__main__":
 
  
 #    sdef.plot().show()
-    sdef.create_fcj('Unl2024', 'imac_unlimited_2024.json')
-#    sdef.to_json("flightanalysis/data/f25_schedule.json")
+#    sdef.create_fcj('Unl2024', 'imac_unlimited_2024.json')
+    sdef.to_json("flightanalysis/data/IMAC_Unlimited2024_schedule.json")
