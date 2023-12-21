@@ -71,16 +71,16 @@ sdef = SchedDef([
             end=BoxLocation(Height.BTM)
         ),[
             imacmb.spin('directions[0]'),
-            imacmb.snap(r(1)),
+            imacmb.snap(r(-1), 'directions[1]'),
             imacmb.loop(np.pi),
             imacmb.snap(r(2)),
             imacmb.loop(np.pi),
-            imacmb.roll('directions[1]'),
+            imacmb.roll('directions[2]'),
             imacmb.loop(np.pi/2)
         ],
         directions=ManParm('directions', Combination(desired=[
-            [-r(1.75), r(1.75)],
-            [r(1.75), -r(1.75)]
+            [-r(1.75), r(1), r(1.75)],
+            [r(1.75), -r(1), -r(1.75)]
         ]), 1),
         full_roll_rate=2*np.pi
     ),
@@ -100,7 +100,7 @@ sdef = SchedDef([
             imacmb.loop(-r(1/8)),
             imacmb.roll('4x8', line_length=110 / c45 + 2*50),
             imacmb.loop(r(-3/8)),
-            imacmb.roll([r(1.25), r(-0.75)], rolltypes='rs', line_length=110),
+            imacmb.roll([r(1.25), r(-0.75)], rolltypes='rs', break_angle=-np.radians(15), line_length=110),
             imacmb.loop(r(1/4)),
         ], partial_roll_rate=np.pi/2, full_roll_rate=1.5*np.pi
     ),
@@ -143,5 +143,8 @@ if __name__ == "__main__":
 
  
 #    sdef.plot().show()
-#    sdef.create_fcj('Unl2024', 'imac_unlimited_2024.json')
-    sdef.to_json("flightanalysis/data/IMAC_Unlimited2024_schedule.json")
+    sdef.create_fcj('Unl2024', 'imac_unlimited_2024_200.json', 1, 200/170)
+    sdef.create_fcj('Unl2024', 'imac_unlimited_2024_200_b.json', -1, 200/170)
+    sdef.create_fcj('Unl2024', 'imac_unlimited_2024_170.json', 1 )
+    sdef.create_fcj('Unl2024', 'imac_unlimited_2024_170_b.json', -1 )
+    #sdef.to_json("flightanalysis/data/IMAC_Unlimited2024_schedule.json")

@@ -1,7 +1,7 @@
 from flightanalysis.schedule import *
 import numpy as np
 from flightanalysis import *
-
+from flightdata import State
 
 if False:
     mdef = f3amb.create(ManInfo(
@@ -18,10 +18,9 @@ if False:
         f3amb.loop(-np.pi/2)
     ])
 else:
-    from p25 import p25_def as sdef
-    mdef = sdef[-1]
+    from imac_unlimited_2024 import  sdef
+    mdef = sdef[7]
 
-mdef.mps.rke_opt.default = 1
 #mdef.mps.top_roll_option.default = 1
 
 it = mdef.info.initial_transform(170, 1)
@@ -34,8 +33,14 @@ tp = man.create_template(it)
 
 from flightdata import State
 from flightplotting import plotdtw, boxtrace, plotsec
+from flightplotting.traces import axis_rate_trace
+
+import plotly.graph_objects as go
+
 fig = plotdtw(tp, tp.data.element.unique())
-fig = plotsec(tp, fig=fig, nmodels=20, scale=3)
+fig = plotsec(tp, fig=fig, nmodels=10, scale=2)
 #fig.add_traces(boxtrace())
 fig.show()
 
+fig = go.Figure(data=axis_rate_trace(tp))
+fig.show()
