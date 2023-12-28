@@ -144,6 +144,10 @@ class ManoeuvreAnalysis:
         return man.match_intention(template[0], aligned)
 
     @staticmethod
+    def optimum_alignment():
+        pass
+
+    @staticmethod
     def correction(mdef: ManDef, intended: Manoeuvre, int_tp: State, aligned: State) -> Manoeuvre:
         mdef.mps.update_defaults(intended)       
         return mdef.create(int_tp[0].transform).add_lines()
@@ -163,8 +167,6 @@ class ManoeuvreAnalysis:
         fig = plotsec(self.intended_template, color="red", nmodels=20, fig=fig, **kwargs)
         return plotsec(self.aligned, color="blue", nmodels=20, fig=fig, **kwargs)
         
-
-
     def side_box(self):
         al = self.aligned#.get_element(slice(1,-1,None))
         side_box_angle = np.arctan2(al.pos.x, al.pos.y)

@@ -89,7 +89,9 @@ class Loop(Element):
     def weighted_average_radius(self, itrans: Transformation, flown: State) -> float:
         rads = self.measure_radius(itrans, flown)
         angles = np.arctan(abs(flown.vel) * flown.dt / rads)
-        return np.sum(rads * angles) / np.sum(angles)
+        keep = ~np.isnan(rads * angles)
+        
+        return np.sum((rads * angles)[keep]) / np.sum(angles[keep])
 
     def match_intention(self, itrans: Transformation, flown: State) -> Loop:
         rv = flown.rvel # .mean() if self.ke else flown.q.mean()

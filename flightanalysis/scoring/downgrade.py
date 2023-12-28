@@ -72,7 +72,7 @@ class DownGrade:
                     return Result(self.measure.__name__, measurement, [0], [0], [0], [0])
 
                 endcut = 4 #min(3, int((len(vals) - 5) / 2))
-                vals = np.abs(remove_outliers(measurement.value))
+                vals = np.abs(measurement.value)
                 tempvals = np.full(len(fl), np.mean(vals))
                 tempvals[endcut:-endcut] = vals[endcut:-endcut]
                 tempvals = convolve(pd.Series(tempvals).ffill().bfill().to_numpy(), 20)

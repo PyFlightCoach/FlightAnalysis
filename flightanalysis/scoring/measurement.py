@@ -150,7 +150,7 @@ class Measurement:
         #loop frame radius vector
         fl_rad_lc = Point.vector_rejection(fl_loop_centre_lc, loop_plane) - fl_lc.pos 
         
-        ab = abs(fl_rad_lc)
+        ab = np.nan_to_num(abs(fl_rad_lc), nan=1000)
         return Measurement(
             ab, np.mean(ab), 
             *Measurement._rad_vis(
