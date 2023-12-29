@@ -12,6 +12,7 @@ from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from geometry import Transformation, Quaternion, Q0, Coord
 from typing import Any, List, Tuple
 from dataclasses import dataclass
+from scipy.optimize import minimize, basinhopping
 
 
 @dataclass
@@ -144,9 +145,29 @@ class ManoeuvreAnalysis:
         return man.match_intention(template[0], aligned)
 
     @staticmethod
-    def optimum_alignment():
-        pass
-
+    def alignment_optimisation(manoeuvre: Manoeuvre, template: State, aligned: State):
+        
+        def callback(xk, cost):
+            print(cost, xk)
+        
+        def get_dg(shifts: list[float], man: Manoeuvre, tp: State, fl: State):
+            fl = fl.shift_labels_ratios(shifts, 2)
+            man, tp = manoeuvre.match_intention(tp[0], fl)
+            dg = man.analyse(fl, tp).total
+            callback(shifts, dg)
+            return dg
+        
+        res = minimize(
+            lambda x: get_dg(x, manoeuvre, template, aligned),
+            [0.0 for _ in manoeuvre.all_elements()[:-1]],
+            method='Powell',
+            bounds=[[-0.25,0.25] for _ in manoeuvre.all_elements()[:-1]],
+        )
+        
+        return aligned.shift_labels_ratios(res.x, 2)
+    
+    
+    
     @staticmethod
     def correction(mdef: ManDef, intended: Manoeuvre, int_tp: State, aligned: State) -> Manoeuvre:
         mdef.mps.update_defaults(intended)       
@@ -161,6 +182,16 @@ class ManoeuvreAnalysis:
         corr = ManoeuvreAnalysis.correction(mdef, intended, int_tp, aligned)
         return ManoeuvreAnalysis(mdef, aligned, intended, int_tp, corr, corr.create_template(int_tp[0], aligned))
 
+    def optimise_alignment(self):
+        aligned = self.alignment_optimisation(
+            self.intended, self.intended_template, self.aligned)
+        intended, int_tp = ManoeuvreAnalysis.intention(self.intended, aligned, self.intended_template)
+        corr = ManoeuvreAnalysis.correction(self.mdef, intended, int_tp, aligned)
+        return ManoeuvreAnalysis(
+            self.mdef, aligned, intended, int_tp, corr, 
+            corr.create_template(int_tp[0], aligned)
+        )
+    
     def plot_3d(self, **kwargs):
         from flightplotting import plotsec, plotdtw
         fig = plotdtw(self.aligned, self.aligned.data.element.unique())
