@@ -44,6 +44,7 @@ class ManDef:
             eds = self.eds.to_dict()
         )
 
+
     @staticmethod
     def from_dict(data: dict) -> ManDef:
         info = ManInfo.from_dict(data["info"])

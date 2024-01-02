@@ -16,8 +16,8 @@ class StallTurn(Element):
     @property
     def intra_scoring(self) -> DownGrades:
         return DownGrades([
-            DownGrade(Measurement.roll_angle, F3A.intra.roll),
-            #DownGrade(Measurement.track_y, F3A.single.track)  # track_y doesn't work as template velocity is zero
+            DownGrade(Measurement.roll_angle_z, F3A.intra.roll),
+            #DownGrade(Measurement.wingspans_y, F3A.intra.wingspans),
         ])
 
     def describe(self):

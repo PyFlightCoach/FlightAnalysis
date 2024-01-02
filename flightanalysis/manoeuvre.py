@@ -1,6 +1,6 @@
 from __future__ import annotations
 from geometry import Transformation, PX
-from typing import List, Union, Tuple
+from typing import List, Union, Tuple, Self
 import numpy as np
 from dataclasses import dataclass
 
@@ -94,7 +94,7 @@ class Manoeuvre:
     def get_data(self, st: State) -> State:
         return st.get_manoeuvre(self.uid)
 
-    def match_intention(self, istate: State, aligned: State) -> Tuple[Manoeuvre, State]:
+    def match_intention(self, istate: State, aligned: State) -> Tuple[Self, State]:
         """Create a new manoeuvre with all the elements scaled to match the corresponding 
         flown element"""
 
@@ -135,7 +135,7 @@ class Manoeuvre:
     def copy(self):
         return Manoeuvre.from_all_elements(self.uid, self.all_elements().copy(deep=True))
 
-    def copy_directions(self, other: Manoeuvre) -> Manoeuvre:
+    def copy_directions(self, other: Manoeuvre) -> Self:
         return Manoeuvre.from_all_elements(
             self.uid, 
             Elements(self.all_elements().copy_directions(other.all_elements()))
@@ -153,6 +153,21 @@ class Manoeuvre:
             ers.append(Results(el.uid, el.analyse(fl, tp)))
         return ElementsResults(ers)
 
+    def optimise_alignment(self, istate: State, aligned: State) -> Tuple(Self, State):
+        els = self.all_elements()
+        elns = list(els.data.keys())
+        
+        for eln1, eln2 in zip(elns[:-1], elns[1:]):
+            fl1, fl2 = aligned.get_element(eln1), aligned.get_element(eln2)
+            steps = Element.optimise_split(istate, els[eln1], els[eln2], fl1, fl2)
+            if not steps == 0:
+                aligned = aligned.shift_label(steps, 2, manoeuvre=self.uid, element=eln1)
+            istate = els[eln1].create_template(istate)[-1]
+            pass
+        
+        return aligned
+
+    
     def descriptions(self):
         return [e.describe() for e in self.elements]
     

@@ -82,7 +82,7 @@ class Measurement:
     
     @staticmethod
     def roll_angle(fl: State, tp: State, ref_frame: Transformation) -> Self:
-        """vector in the body X axis, length is equal to the roll angle difference from template"""
+        """direction is the body X axis, value is equal to the roll angle difference from template"""
         body_roll_error = Quaternion.body_axis_rates(tp.att, fl.att) * PX()
         world_roll_error = fl.att.transform_point(body_roll_error)
 
@@ -92,6 +92,42 @@ class Measurement:
             *Measurement._roll_vis(fl.pos, fl.att)
         )
 
+    @staticmethod
+    def roll_angle_proj(fl: State, tp: State, ref_frame: Transformation, proj: Point) -> Self:
+        """Direction is the body X axis, value is equal to the roll angle error.
+        roll angle error is the angle between the body proj vector axis and the 
+        reference frame proj vector projected onto the plane defined by the velocity 
+        vector. Proj vector should usually be defined by the ke angle of the loop. 
+        """
+        body_refframe_axis = fl.att.inverse().transform_point(ref_frame.q.transform_point(proj))
+        roll_vec = Point.vector_rejection(body_refframe_axis, fl.vel)
+        
+        roll_angle_error = np.arctan2(proj.z, proj.y) - np.arctan2(roll_vec.z, roll_vec.y)
+        return Measurement(
+            roll_angle_error, 
+            0, 
+            *Measurement._roll_vis(fl.pos, fl.att)
+        )
+
+    @staticmethod
+    def roll_angle_y(fl: State, tp: State, ref_frame: Transformation) -> Self:
+        return Measurement.roll_angle_proj(fl, tp, ref_frame, PY())
+
+    @staticmethod
+    def roll_angle_z(fl: State, tp: State, ref_frame: Transformation) -> Self:
+        return Measurement.roll_angle_proj(fl, tp, ref_frame, PZ())
+
+    @staticmethod
+    def wingspans_y(fl: State, tp: State, ref_frame: Transformation) -> Self:
+        v = Point.vector_projection(ref_frame.q.inverse().transform_point(fl.pos - ref_frame.pos), PY())
+        direc = ref_frame.q.transform_point(PY()),
+        return Measurement(
+            abs((v - ref_frame.pos) / 2), 
+            0, 
+            ref_frame.q.transform_point(PY()),
+            *Point._vector_vis(v - ref_frame.pos, fl.pos)
+        )
+    
     @staticmethod
     def roll_rate(fl: State, tp: State, ref_frame: Transformation) -> Measurement:
         """vector in the body X axis, length is equal to the roll rate"""

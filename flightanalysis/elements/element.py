@@ -7,7 +7,7 @@ from flightanalysis.scoring import Measurement, DownGrade, DownGrades, Result, R
 from geometry import Transformation, PX, PY, PZ, Point, angle_diff, Coord, Quaternion
 from json import load, dumps
 import inspect
-from typing import Self
+from typing import Self, Tuple
 
 
 class Element:   
@@ -130,6 +130,56 @@ class Element:
 
     def length_vec(self, itrans, fl):
         return fl.pos[-1] - fl.pos[0]
+
+    
+    def create_template(self, istate: State, time: Time=None) -> State:
+        raise Exception('Not available on base class')
+
+    def match_intention(self, itrans: Transformation, flown: State) -> Self:
+        raise Exception('Not available on base class')
+
+    def score(self, istate: State, fl: State) -> Tuple[Results, State]:
+        tp = self.create_template(istate, fl.time)
+        if self.uid=='entry_line':
+            res = self.analyse_exit(fl, tp)
+        else:
+            res = self.analyse(fl, tp)
+        return res, tp
+        
+    @staticmethod
+    def optimise_split(istate: State, el1: Element, el2: Element, fl1: State, fl2: State):
+        
+        def get_score(cel1: Element, cel2: Element, cfl1: State, cfl2: State):
+            res, tp = cel1.match_intention(istate.transform, cfl1).score(istate, cfl1)
+            res2, tp2 = cel2.match_intention(tp[0].transform, cfl2).score(tp[-1], cfl2)
+            return res.total + res2.total
+        
+        dgs = [get_score(el1, el2, fl1, fl2)]
+        
+        steps=int(len(fl2) > len(fl1)) * 2 - 1
+        
+        new_dg = get_score(el1, el2, *State.shift_multi(steps, fl1, fl2))
+        if new_dg > dgs[0]:
+            steps=-steps
+        else:
+            steps+=np.sign(steps)
+            dgs.append(new_dg)
+            
+        while True:
+            if (steps>0 and len(fl2)<=steps+2) or (steps<0 and len(fl1) <=-steps+2):
+                break
+            new_dg = get_score(el1, el2, *State.shift_multi(steps, fl1, fl2))
+            if new_dg < dgs[-1]:
+                steps+=np.sign(steps)
+                dgs.append(new_dg)
+            else:
+                break
+        print(f'{el1.uid} adjusted by {steps}')
+        return steps - np.sign(steps)
+                
+
+            
+            
 
 
 class Elements(Collection):

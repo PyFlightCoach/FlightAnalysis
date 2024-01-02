@@ -13,6 +13,7 @@ import numpy as np
 from flightplotting import plotdtw, axis_rate_traces
 import plotly.graph_objects as go
 import plotly.express as px
+from time import time
 
 mdef = f3amb.create(ManInfo(
     "Half Loop", "hloop", k=2, position=Position.END, 
@@ -33,20 +34,14 @@ fl = man2.create_template(itrans).remove_labels()
 
 al = fl.label(manoeuvre='hloop', element=tp.element[len(tp)-len(fl):])  # simulate a poor alignment
 
-from scipy.optimize import minimize
+
+els = man.all_elements()
+
+t0=time()
+al2 = man.optimise_alignment(al[0], al)
+print(time() - t0)
 
 
-def dg(shift, manoeuvre, template):
-    al2 = al.shift_label_ratio(shift[0], manoeuvre='hloop', element='entry_line')
-    manoeuvre, template = manoeuvre.match_intention(template[0], al2)
-    intra = manoeuvre.analyse(al2, template)
-    return intra.total
-
-cost = lambda x: dg(x, man, tp)
-
-res = minimize(cost, [0.25], bounds=[[-1.0,1.0]], method='Nelder-Mead')
-
-al2 = al.shift_label_ratio(res.x, manoeuvre='hloop', element='entry_line')
 #px.line(intra.e_0.radius.sample).show()
 plotdtw(al, tp.data.element.unique()).show()
 plotdtw(al2, tp.data.element.unique()).show()

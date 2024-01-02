@@ -6,12 +6,12 @@ from flightdata import State
 from flightanalysis.scoring import *
 from . import Collector, Collectors, Opp
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Self
 import numpy as np
 import pandas as pd
 from geometry import Point
 from numbers import Number
-
+from copy import deepcopy
 
 @dataclass
 class ManParm(Opp):
@@ -128,24 +128,26 @@ class ManParms(Collection):
         for mp, col in colls.items():
             self.data[mp].append(col)
 
-    def update_defaults(self, intended: Manoeuvre):
+    def update_defaults(self, intended: Manoeuvre) -> Self:
         """Pull the parameters from a manoeuvre object and update the defaults of self based on the result of 
         the collectors.
 
         Args:
             intended (Manoeuvre): Usually a Manoeuvre that has been resized based on an alinged state
         """
-
+        mps = []
         for mp in self:
             flown_parm = list(mp.collect(intended.all_elements()).values())
-            if len(flown_parm) > 0:
-                if mp.default is not None:
-                    if isinstance(mp.criteria, Combination):
-                        default = mp.criteria.check_option(flown_parm)
-                    else:
-                        default = np.mean(np.abs(flown_parm)) * np.sign(mp.default)
-                    mp.default = default
-
+            if len(flown_parm) > 0 and mp.default is not None:
+                if isinstance(mp.criteria, Combination):
+                    default = mp.criteria.check_option(flown_parm)
+                else:
+                    default = np.mean(np.abs(flown_parm)) * np.sign(mp.default)
+                mps.append(ManParm(mp.name, mp.criteria, default, mp.collectors))
+            else: 
+                mps.append(mp)
+        return ManParms(mps)
+    
     def remove_unused(self):
         return ManParms([mp for mp in self if len(mp.collectors) > 0])
 

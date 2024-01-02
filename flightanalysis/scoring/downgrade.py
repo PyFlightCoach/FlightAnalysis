@@ -12,9 +12,6 @@ import pandas as pd
 from scipy.signal import butter, filtfilt
 
 
-def butter_filter(data, cutoff):
-    return filtfilt(*butter(2, cutoff / 15, btype='low', analog=False), data)
-
 def convolve(data, width):
     kernel = np.ones(width) / width
     l = len(data)
@@ -23,16 +20,6 @@ def convolve(data, width):
     ld = (len(data) - len(conv))/2
     outd[int(np.ceil(ld)):-int(np.floor(ld))] = conv
     return pd.Series(outd).ffill().bfill().to_numpy()
-
-
-def remove_outliers(data, nstds = 1):
-    std = np.nanstd(data)
-    mean = np.nanmean(data)
-    data = data.copy()
-
-    data[abs(data - mean) > nstds * std] = np.nan
-
-    return pd.Series(data).ffill().bfill().to_numpy()
 
 
 
@@ -59,7 +46,7 @@ class DownGrade:
         # TODO this needs to check the element before and after. If there is a step change (for example loop radius) then the 
         #ends should be cut off. If not (for example track or roll angle) the ends should not be cut off
         if isinstance(self.criteria, Single):
-            measurement = self.measure(fl[-1], tp[-1], coord)
+            measurement = self.measure(fl[-1], tp[-1], tp[-1].transform)
             vals = self.criteria.prepare(measurement.value, measurement.expected)    
 
             id, error, dg = self.criteria([0], vals)
@@ -68,10 +55,10 @@ class DownGrade:
             measurement = self.measure(fl, tp, coord)
 
             if self.criteria.comparison == 'ratio':
-                if len(measurement) < 30:
+                if len(measurement) < 22:
                     return Result(self.measure.__name__, measurement, [0], [0], [0], [0])
 
-                endcut = 4 #min(3, int((len(vals) - 5) / 2))
+                endcut = 1 #min(3, int((len(vals) - 5) / 2))
                 vals = np.abs(measurement.value)
                 tempvals = np.full(len(fl), np.mean(vals))
                 tempvals[endcut:-endcut] = vals[endcut:-endcut]
