@@ -144,5 +144,5 @@ if __name__ == "__main__":
  
 #    sdef.plot().show()
     import os
-    sdef.create_fcjs('imac_unlimited_2024', f'{os.environ['HOME']}/Desktop/templates/', 'IMAC')
+    sdef.create_fcjs('imac_unlimited_2024', f'{os.environ['HOME']}/Desktop/templates', 'IMAC')
     #sdef.to_json("flightanalysis/data/IMAC_Unlimited2024_schedule.json")

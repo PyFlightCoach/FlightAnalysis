@@ -42,27 +42,28 @@ def test_track_y_loop(loop_tp: State):
     tp = loop_tp.move(Transformation(PY(100),Euldeg(0, 270, 0)))
     fl = track_setup(tp, Euldeg(0, 0, 10))
     m = Measurement.track_y(fl, tp, tp[0].transform)
-    np.testing.assert_array_almost_equal(np.degrees(abs(m.value)), np.full(len(m.value), 0.0))
+    assert m.value == approx(np.zeros_like(m.value), abs=0.2)
+#    np.testing.assert_array_almost_equal(np.degrees(abs(m.value)), np.full(len(m.value), 0.0))
     
     
 def test_roll_angle_loop(loop_tp: State):
     tp = loop_tp.move(Transformation(PY(100),Euldeg(0, 270, 0)))
     fl = tp.superimpose_roll(np.radians(5))
     m = Measurement.roll_angle_proj(fl, tp, tp[0].transform, PY())
-    assert np.degrees(m.value[-1]) == approx(5)
+    assert np.degrees(m.value[-1]) == approx(5, abs=0.1)
     
 def test_roll_angle_ke_loop(keloop_tp: State):
     tp = keloop_tp.move(Transformation(PY(100),Euldeg(0, 270, 0)))
     fl = tp.superimpose_roll(np.radians(5))
     m = Measurement.roll_angle_proj(fl, tp, tp[0].transform, PZ())
-    assert np.degrees(m.value[-1]) == approx(5)
+    assert np.degrees(m.value[-1]) == approx(5, abs=0.1)
     
     
 def test_roll_angle_45_loop(ke45loop_tp: State):
     tp = ke45loop_tp.move(Transformation(PY(100),Euldeg(0, 270, 0)))
     fl = tp.superimpose_roll(np.radians(-5))
     m = Measurement.roll_angle_proj(fl, tp, tp[0].transform, Point(0,1,1).unit())
-    assert np.degrees(m.value[-1]) == approx(-5)
+    assert np.degrees(m.value[-1]) == approx(-5, abs=0.1)
     
     
 

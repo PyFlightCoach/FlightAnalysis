@@ -81,6 +81,14 @@ class Measurement:
         return Measurement(spd, np.mean(spd),*Measurement._vector_vis(wvel.unit(), fl.pos))
     
     @staticmethod
+    def desired_speed(fl: State, tp: State, ref_frame: Transformation) -> Self:
+        wvel = fl.att.transform_point(fl.vel) 
+        set_speed = np.mean(abs(tp.vel))
+        spd = np.mean(abs(wvel)) - set_speed
+        return Measurement([spd], set_speed,*Measurement._vector_vis(wvel.unit().mean(), fl.pos.mean()))
+    
+    
+    @staticmethod
     def roll_angle(fl: State, tp: State, ref_frame: Transformation) -> Self:
         """direction is the body X axis, value is equal to the roll angle difference from template"""
         body_roll_error = Quaternion.body_axis_rates(tp.att, fl.att) * PX()
@@ -98,13 +106,13 @@ class Measurement:
         roll angle error is the angle between the body proj vector axis and the 
         reference frame proj vector. Proj vector should usually be defined by the ke angle of the loop. 
         """
-        world_refframe_plane = ref_frame.q.transform_point(proj)
-        world_body_plane = fl.att.transform_point(proj)
         
-        angles = Point.vector_rejection(world_body_plane, world_refframe_plane).arctan
+        body_rf_proj = fl.att.inverse().transform_point(ref_frame.q.transform_point(proj))        
         
+        cos_angles = Point.cross(body_rf_proj, proj)
+                
         return Measurement(
-            abs(angles),
+            np.arcsin(cos_angles.x),
             0, 
             *Measurement._roll_vis(fl.pos, fl.att)
         )
@@ -127,7 +135,7 @@ class Measurement:
         vo = np.zeros_like(av) 
         sign = -np.ones_like(av)
         sign[Point.is_parallel(v, direction)] = 1
-        vo[av>free] = (sign * (av - free))[av>free]
+        vo[av>free] = (av - free)[av>free]  * sign
         return Measurement(
             vo, 0,
             *Measurement._vector_vis(ref_frame.q.transform_point(distance), fl.pos)

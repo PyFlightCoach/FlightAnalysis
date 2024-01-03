@@ -147,14 +147,16 @@ class SchedDef(Collection):
             dump(fcj, f)
 
     def create_fcjs(self, sname, folder, kind='F3A'):
-        winds = [1, 1, -1, -1]
+        winds = [-1, -1, 1, 1]
         distances = [170, 150, 170, 150]
         
         for wind, distance in zip(winds, distances):
             w = 'A' if wind == 1 else 'B'
+            fname = f'{folder}/{sname}_template_{distance}_{w}.json'
+            print(fname)
             self.create_fcj(
                 sname, 
-                f'{folder}/{sname}_template_{distance}_{w}.json', 
+                fname, 
                 wind, distance/170,
                 kind
             )

@@ -22,9 +22,13 @@ class StallTurn(Element):
         def width_over_2m(fl, tp, rf):
             return Measurement.length_above(fl, tp, rf, PY(), 2)
 
+        def height_over_2m(fl, tp, rf):
+            return Measurement.length_above(fl, tp, rf, None, 2)
+
         return DownGrades([
             DownGrade(Measurement.roll_angle_z, F3A.intra.roll),
             DownGrade(width_over_2m, F3A.intra.distance),
+            DownGrade(height_over_2m, F3A.intra.distance),
         ])
 
     def describe(self):

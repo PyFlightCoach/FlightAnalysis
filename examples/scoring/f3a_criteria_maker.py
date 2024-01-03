@@ -11,6 +11,7 @@ f3a=dict(
         track=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100), 'absolute'),
         roll=Single(Exponential.fit_points(np.radians([30, 90]), [1, 6], 100), 'absolute'),
         angle=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100), 'absolute'),
+        zero_speed=Single(Exponential.fit_points([2, 5], [0.2,1]), 'absolute'),
         distance = Single(Exponential.fit_points([10, 20], [0.25, 1]), 'absolute')
     ),
     intra=dict(
