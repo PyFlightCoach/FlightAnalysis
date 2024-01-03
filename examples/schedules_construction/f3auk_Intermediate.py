@@ -196,8 +196,5 @@ intermediate_def = SchedDef([
 if __name__ == "__main__":
 
     #intermediate_def.plot().show()
-    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_170.json', 1)
-    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_170_b.json', -1)
-    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_150.json', 1, 150/170)
-    #intermediate_def.create_fcj('intermediate', 'intermediate_template_fcj_150_b.json', -1, 150/170)
-    intermediate_def.to_json("flightanalysis/data/f3auk_inter_schedule.json")
+    import os
+    intermediate_def.create_fcjs('f3auk_intermediate', f'{os.environ['HOME']}/Desktop/templates/')

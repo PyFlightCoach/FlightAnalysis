@@ -4,12 +4,12 @@ from typing import Dict, Tuple, Union, Self
 from geometry import Transformation
 from flightanalysis.schedule import Schedule
 from flightanalysis.elements import Line
-from flightdata import Collection
+from flightdata import Collection, State
 from json import dump, load
 from flightdata.base.numpy_encoder import NumpyEncoder
 from dataclasses import dataclass
 from flightanalysis.data import list_resources, get_json_resource
-
+from json import dump
 
 @dataclass
 class ScheduleInfo:
@@ -103,16 +103,58 @@ class SchedDef(Collection):
         from flightplotting import plotsec, plotdtw
         return plotdtw(template, template.data.manoeuvre.unique())
 
+    def label_exit_lines(self, sti: State):
+        mans = list(self.data.keys()) + ['landing']
+        
+        meids = [sti.data.columns.get_loc(l) for l in ['manoeuvre', 'element']]
+        
+        sts = [sti.get_manoeuvre(0)]
+        
+        for mo, m in zip(mans[:-1], mans[1:]):
+            st = sti.get_manoeuvre(m)
+            #if not 'exit_line' in sts[-1].element:
+            entry_len = st.get_label_len(element='entry_line')
+            
+            st.data.iloc[:int(entry_len/2), meids] = [mo, 'exit_line']
+            sts.append(st)
+        
+        sts[0].data.iloc[
+            :int(sts[0].get_label_len(element='entry_line')/2), 
+            meids
+        ] = ['tkoff', 'exit_line']
+        
+        return State.stack(sts, 0)
 
-    def create_fcj(self, sname: str, path: str, wind=1, scale=1):
-        from flightdata import State
-        sched, template = self.create_template(170, wind)
+    def create_fcj(self, sname: str, path: str, wind=1, scale=1, kind='F3A'):
+        sched, template = self.create_template(170, 1)
         template = State.stack([
             template, 
-            Line(30, 100, uid='exit_line').create_template(template[-1]).label(manoeuvre=self[-1].info.short_name)
+            Line(30, 100, uid='entry_line').create_template(template[-1]).label(manoeuvre='landing')
         ])
+        
+        if not scale == 1:
+            template = template.scale(scale)
+        if wind == -1:
+            template=template.mirror_zy()
 
-        from json import dump
-        fcj = template.scale(scale).create_fc_json(self, sname)
+        fcj = self.label_exit_lines(template).create_fc_json(
+            [0] + [man.info.k for man in self] + [0],
+            sname,
+            kind
+        )
+            
         with open(path, 'w') as f:
             dump(fcj, f)
+
+    def create_fcjs(self, sname, folder, kind='F3A'):
+        winds = [1, 1, -1, -1]
+        distances = [170, 150, 170, 150]
+        
+        for wind, distance in zip(winds, distances):
+            w = 'A' if wind == 1 else 'B'
+            self.create_fcj(
+                sname, 
+                f'{folder}/{sname}_template_{distance}_{w}.json', 
+                wind, distance/170,
+                kind
+            )

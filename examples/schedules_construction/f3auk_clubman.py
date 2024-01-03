@@ -193,18 +193,15 @@ clubman_def = SchedDef([
              f3amb.line(),
              ],
         ),
-   
-]#Close Sched_def array 
-)    # close of Sched_def
+    ]
+)
 
 
 
 if __name__ == "__main__":
 
 #    clubman_def.plot().show()
-#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_170.json', 1)
-#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_170_b.json', -1)
-#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_150.json', 1, 150/170)
-#    clubman_def.create_fcj('clubman', 'clubman_template_fcj_150_b.json', -1, 150/170)
-    #clubman_def.create_fcj('clubman', 'clubman_template_fcj.json')
-    clubman_def.to_json("flightanalysis/data/f3auk_clubman_schedule.json")
+#    #clubman_def.to_json("flightanalysis/data/f3auk_clubman_schedule.json")
+
+    import os
+    clubman_def.create_fcjs('f3auk_clubman', f'{os.environ['HOME']}/Desktop/templates/')

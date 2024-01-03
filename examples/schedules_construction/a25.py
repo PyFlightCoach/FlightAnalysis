@@ -230,11 +230,9 @@ a25_def = SchedDef([
             MBTags.CENTRE,
         ], )
 
-    ]  #Close Sched_def array 
-)   # close of Sched_def
-       
-
-
+    ]  
+)
+ 
 
 if __name__ == "__main__":
     
@@ -242,8 +240,8 @@ if __name__ == "__main__":
 
 #    for mdef in a25_def:
 #        mdef.plot(depth=170, wind=1).show()
+    import os
+    a25_def.create_fcjs('a25', f'{os.environ['HOME']}/Desktop/templates/')
 
-#    a25_def.create_fcj('a25', 'a25_template_fcj.json')
-
-    a25_def.to_json("flightanalysis/data/a25_schedule.json")
+    #a25_def.to_json("flightanalysis/data/a25_schedule.json")
 

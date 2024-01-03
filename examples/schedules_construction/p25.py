@@ -217,4 +217,6 @@ if __name__ == "__main__":
 
     #p25_def.plot().show()
     #p25_def.create_fcj('P25', 'p25_template_fcj.json')
-    p25_def.to_json("flightanalysis/data/p25_schedule.json")
+    #p25_def.to_json("flightanalysis/data/p25_schedule.json")
+    import os
+    p25_def.create_fcjs('p25', f'{os.environ['HOME']}/Desktop/templates/')
