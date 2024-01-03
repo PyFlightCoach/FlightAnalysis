@@ -16,9 +16,14 @@ class Recovery(Element):
 
     @property
     def intra_scoring(self) -> DownGrades:
+        '''TODO perhaps limit the roll amount'''
+        def length_over_3m(fl, tp, rf):
+            return Measurement.length_above(fl, tp, rf, PX(), 3)
         return DownGrades([
             DownGrade(Measurement.track_z, F3A.single.track),
-            DownGrade(Measurement.track_y, F3A.single.track)
+            DownGrade(Measurement.track_y, F3A.single.track),
+            DownGrade(length_over_3m, F3A.intra.distance),
+            DownGrade(Measurement.roll_angle, F3A.single.roll)
         ])
 
     def create_template(self, istate: State, time: Time=None) -> State:
@@ -42,10 +47,6 @@ class Recovery(Element):
     
     def copy_direction(self, other: Recovery) -> Recovery:
         return self.set_parms()
-
-    @property
-    def intra_scoring(self) -> DownGrades:
-        return DownGrades()
 
     @property
     def exit_scoring(self) -> DownGrades:

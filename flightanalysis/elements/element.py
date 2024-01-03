@@ -151,7 +151,8 @@ class Element:
         
         def get_score(cel1: Element, cel2: Element, cfl1: State, cfl2: State):
             res, tp = cel1.match_intention(istate.transform, cfl1).score(istate, cfl1)
-            res2, tp2 = cel2.match_intention(tp[0].transform, cfl2).score(tp[-1], cfl2)
+            ist2=State.from_transform(Transformation(tp.att[-1], cfl2.pos[0]), vel=tp.vel[-1])
+            res2, tp2 = cel2.match_intention(ist2.transform, cfl2).score(ist2, cfl2)
             return res.total + res2.total
         
         dgs = [get_score(el1, el2, fl1, fl2)]

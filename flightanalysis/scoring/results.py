@@ -37,7 +37,7 @@ class Result:
         )
     
     def __repr__(self):
-        return f'Result({self.name}, {self.errors}, {self.dgs})'
+        return f'Result({self.name}, {self.total})'
     
     @staticmethod
     def from_dict(data) -> Result:

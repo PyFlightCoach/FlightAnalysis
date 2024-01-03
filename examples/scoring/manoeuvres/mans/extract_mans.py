@@ -1,5 +1,6 @@
 from json import load, dump, JSONEncoder
-from flightanalysis import State, Box, SchedDef, ManDef
+from flightdata import State, Origin
+from flightanalysis import SchedDef, ManDef
 from flightdata import Flight
 from geometry import Transformation, Quaternion
 import numpy as np
@@ -22,7 +23,7 @@ with open("examples/data/manual_F3A_P23_22_05_31_00000350.json", "r") as f:
 
 
 flight = Flight.from_fc_json(data)
-box = Box.from_fcjson_parmameters(data["parameters"])
+box = Origin.from_fcjson_parmameters(data["parameters"])
 state = State.from_flight(flight, box).splitter_labels(data["mans"])
 sdef = SchedDef.load(data["parameters"]["schedule"][1])
 

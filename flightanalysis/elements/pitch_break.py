@@ -15,6 +15,21 @@ class PitchBreak(Element):
         self.length=length
         self.break_angle = break_angle
 
+    @property
+    def intra_scoring(self) -> DownGrades:
+        '''TODO check the pitch departure is in the right direction
+        TODO perhaps limit the roll amount'''
+        def length_over_2m(fl, tp, rf):
+            return Measurement.length_above(fl, tp, rf, PX(), 2)
+        return DownGrades([
+            DownGrade(length_over_2m, F3A.intra.distance)
+        ])
+
+    @property
+    def exit_scoring(self) -> DownGrades:
+        return DownGrades()
+
+
     def create_template(self, istate: State, time: Time=None) -> State:
         return Line(self.speed, self.length).create_template(
             istate, 
@@ -47,10 +62,3 @@ class PitchBreak(Element):
         return self.set_parms(break_angle=abs(self.break_angle) * np.sign(other.break_angle))
 
 
-    @property
-    def intra_scoring(self) -> DownGrades:
-        return DownGrades()
-
-    @property
-    def exit_scoring(self) -> DownGrades:
-        return DownGrades()

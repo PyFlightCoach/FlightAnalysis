@@ -20,7 +20,7 @@ sdef = SchedDef.load(data["parameters"]["schedule"][1])
 analysis = ScheduleAnalysis()
 dgs = []
 
-for mdef in sdef:
+for mdef in sdef[12:]:
     t0 = time()
     print(f'Analyzing {mdef.info.name}')
     ma = ManoeuvreAnalysis.build(mdef, state.get_manoeuvre(mdef.info.short_name))

@@ -18,6 +18,15 @@ class NoseDrop(Element):
         self.radius=radius
         self.break_angle = break_angle
 
+    @property
+    def intra_scoring(self) -> DownGrades:
+        '''TODO check alpha is increasing'''
+        def length_over_10m(fl, tp, rf):
+            return Measurement.length_above(fl, tp, rf, PX(), 10)
+        return DownGrades([
+            DownGrade(length_over_10m, F3A.intra.distance)
+        ])
+
     def create_template(self, istate: State, time: Time=None) -> State:
         _inverted = 1 if istate.transform.rotation.is_inverted()[0] else -1
         
@@ -52,9 +61,6 @@ class NoseDrop(Element):
     def copy_direction(self, other: NoseDrop) -> NoseDrop:
         return self.set_parms(break_angle=abs(self.break_angle) * np.sign(other.break_angle))
 
-    @property
-    def intra_scoring(self) -> DownGrades:
-        return DownGrades()
 
     @property
     def exit_scoring(self) -> DownGrades:

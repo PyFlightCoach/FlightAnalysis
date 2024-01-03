@@ -65,6 +65,21 @@ def test_roll_angle_45_loop(ke45loop_tp: State):
     assert np.degrees(m.value[-1]) == approx(-5)
     
     
+
+
+def make_stallturn(duration: float=3, distance: Point=None, pos: Point=None, att: Quaternion=None):
+    vel = distance / duration
+    return State.from_transform(
+        Transformation(pos, att),
+        vel=vel
+    ).extrapolate(duration).superimpose_rotation(PZ(), np.pi)
+
+
+def test_length_above():
+    tp = make_stallturn(1, P0(), Point(0, 150, 200), Euldeg(0, -90, 90))
+    fl = make_stallturn(1, PY(20), Point(0, 150, 200), Euldeg(0, -90, 90))
     
-def test_wingspans():
-    pass
+    meas = Measurement.length_above(fl, tp, tp[0].transform,
+        PY(), 2)
+    assert meas.value[-1]==approx(18)
+    assert meas.direction[-1].data == approx(-PX(20).data)

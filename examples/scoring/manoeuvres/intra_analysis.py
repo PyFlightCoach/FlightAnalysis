@@ -3,16 +3,16 @@ from flightanalysis.manoeuvre_analysis import ElementAnalysis as EA
 from json import load, dumps
 import numpy as np
 
-with open('examples/scoring/manoeuvres/mans/tHat.json', 'r') as f:
+with open('examples/scoring/manoeuvres/mans/M.json', 'r') as f:
     ma = MA.from_dict(load(f))
 
 from flightplotting import plotsec
 from flightplotting.traces import vectors
-from flightanalysis.schedule.scoring import Result, DownGrade
+from flightanalysis.scoring import Result, DownGrade
 
-ea = ma.e_0
+ea = ma.e_2
 
-dg: DownGrade = ea.el.intra_scoring.roll_angle
+dg: DownGrade = ea.el.intra_scoring.roll_angle_z
 res: Result = dg(ea.fl, ea.tp, ea.ref_frame)
 
 res.plot().show()

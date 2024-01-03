@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, PX, PY, PZ, P0
+from geometry import Transformation, PX, PY, PZ, P0, Point
 from flightdata import State, Time
 from .element import Element
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
@@ -15,9 +15,16 @@ class StallTurn(Element):
 
     @property
     def intra_scoring(self) -> DownGrades:
+        '''
+        TODO downgrade speeds over 3m/s or so
+        TODO roll angle not working
+        '''
+        def width_over_2m(fl, tp, rf):
+            return Measurement.length_above(fl, tp, rf, PY(), 2)
+
         return DownGrades([
             DownGrade(Measurement.roll_angle_z, F3A.intra.roll),
-            #DownGrade(Measurement.wingspans_y, F3A.intra.wingspans),
+            DownGrade(width_over_2m, F3A.intra.distance),
         ])
 
     def describe(self):

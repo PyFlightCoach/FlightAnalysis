@@ -19,7 +19,10 @@ class Autorotation(Element):
         
     @property
     def intra_scoring(self):
-        return DownGrades([DownGrade(Measurement.roll_angle, F3A.single.roll)])
+        '''TODO check the motion looks like a snap
+        check the right number of turns was performed'''
+        return DownGrades()
+        
     
     @property
     def angle(self):

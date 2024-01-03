@@ -158,7 +158,6 @@ class ManoeuvreAnalysis:
         itrans = ManoeuvreAnalysis.initial_transform(mdef, flown)
         man, tp = ManoeuvreAnalysis.template(mdef, itrans)
         aligned = ManoeuvreAnalysis.alignment(tp, man, flown)[1]
-        #aligned = ManoeuvreAnalysis.alignment_optimisation(man, tp, flown)
         intended, int_tp = ManoeuvreAnalysis.intention(man, aligned, tp)
         mdef, corr = ManoeuvreAnalysis.correction(mdef, intended, int_tp)
         return ManoeuvreAnalysis(mdef, aligned, intended, int_tp, corr, corr.create_template(int_tp[0], aligned))
