@@ -61,12 +61,12 @@ class Element:
     def analyse(self, flown:State, template:State) -> Results:
 #        fl =  self.setup_analysis_state(flown, template)
 #        tp =  self.setup_analysis_state(template, template)
-        return self.intra_scoring.apply(self, flown, template, self.ref_frame(template))
+        return self.intra_scoring.apply(self, flown, template)
 
     def analyse_exit(self, fl, tp) -> Results:
         #fl =  self.setup_analysis_state(flown, template)
         #tp =  self.setup_analysis_state(template, template)
-        return self.exit_scoring.apply(self, fl, tp, self.ref_frame(tp))
+        return self.exit_scoring.apply(self, fl, tp)
 
     def ref_frame(self, template: State) -> Transformation:
         return template[0].transform

@@ -49,4 +49,4 @@ class Combination(Criteria):
         if inplace:
             self.desired = des
             return self
-        return Combination(self.lookup, self.comparison, des)
+        return Combination(self.lookup, des)

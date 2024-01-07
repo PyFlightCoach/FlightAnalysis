@@ -33,8 +33,8 @@ class Loop(Element):
             DownGrade(Measurement.track_y, F3A.intra.track),
             DownGrade(Measurement.track_z, F3A.single.track),
         ])
-        def roll_angle(fl, tp, rf):
-            return Measurement.roll_angle_proj(fl, tp, rf, Point(0, np.cos(self.ke), np.sin(self.ke)))
+        def roll_angle(fl, tp):
+            return Measurement.roll_angle_proj(fl, tp, Point(0, np.cos(self.ke), np.sin(self.ke)))
         
         if not self.roll == 0:
             _intra_scoring.add(DownGrade(Measurement.roll_rate, F3A.intra.roll_rate))

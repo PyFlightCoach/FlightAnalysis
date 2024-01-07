@@ -163,7 +163,6 @@ class Manoeuvre:
             if not steps == 0:
                 aligned = aligned.shift_label(steps, 2, manoeuvre=self.uid, element=eln1)
             istate = els[eln1].create_template(istate)[-1]
-            pass
         
         return aligned
 

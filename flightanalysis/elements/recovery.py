@@ -17,12 +17,12 @@ class Recovery(Element):
     @property
     def intra_scoring(self) -> DownGrades:
         '''TODO perhaps limit the roll amount'''
-        def length_over_3m(fl, tp, rf):
-            return Measurement.length_above(fl, tp, rf, PX(), 3)
+        def length(fl, tp):
+            return Measurement.length(fl, tp, PX())
         return DownGrades([
             DownGrade(Measurement.track_z, F3A.single.track),
             DownGrade(Measurement.track_y, F3A.single.track),
-            DownGrade(length_over_3m, F3A.intra.distance),
+            DownGrade(length, F3A.intra.recovery_length),
             DownGrade(Measurement.roll_angle, F3A.single.roll)
         ])
 

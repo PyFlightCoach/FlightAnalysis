@@ -21,10 +21,10 @@ class NoseDrop(Element):
     @property
     def intra_scoring(self) -> DownGrades:
         '''TODO check alpha is increasing'''
-        def length_over_10m(fl, tp, rf):
-            return Measurement.length_above(fl, tp, rf, PX(), 10)
+        def length(fl, tp):
+            return Measurement.length(fl, tp, PX())
         return DownGrades([
-            DownGrade(length_over_10m, F3A.intra.distance)
+            DownGrade(length, F3A.intra.spin_entry_length)
         ])
 
     def create_template(self, istate: State, time: Time=None) -> State:

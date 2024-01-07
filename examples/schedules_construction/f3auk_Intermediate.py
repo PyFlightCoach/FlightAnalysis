@@ -156,7 +156,7 @@ intermediate_def = SchedDef([
         [  
             f3amb.roll(np.pi/2, padded=False),
             centred(f3amb.line(length=100)),
-            f3amb.roll(np.pi/2),
+            f3amb.roll(np.pi/2, padded=False),
         ],         
         ),
         

@@ -74,22 +74,30 @@ class Measurement:
         #radial error more visible if axis is parallel to the view vector
         return axial_dir, (0.2+0.8*np.abs(Point.cos_angle_between(loc, axial_dir))) * Measurement._pos_vis(loc)
 
-    @staticmethod
-    def speed(fl: State, tp: State, ref_frame: Transformation) -> Self:
-        wvel = fl.att.transform_point(fl.vel) 
-        spd = abs(wvel)
-        return Measurement(spd, np.mean(spd),*Measurement._vector_vis(wvel.unit(), fl.pos))
     
     @staticmethod
-    def desired_speed(fl: State, tp: State, ref_frame: Transformation) -> Self:
-        wvel = fl.att.transform_point(fl.vel) 
-        set_speed = np.mean(abs(tp.vel))
-        spd = np.mean(abs(wvel)) - set_speed
-        return Measurement([spd], set_speed,*Measurement._vector_vis(wvel.unit().mean(), fl.pos.mean()))
-    
-    
+    def speed(fl: State, tp: State, direction: Point=None, axis='body') -> Self:
+        direction=Point(1,1,1) if direction is None else direction
+        def get_body_direction(st: State):
+            if axis == 'body':
+                return direction
+            else:
+                world_direction = tp[0].transform.rotate(direction) if axis == 'ref_frame' else direction
+                return st.att.inverse().transform_point(world_direction)
+        body_direction = get_body_direction(fl)
+        value = Point.scalar_projection(fl.vel, body_direction)
+        
+        return Measurement(
+            value, 
+            np.mean(Point.scalar_projection(tp.vel, get_body_direction(tp))),
+            *Measurement._vector_vis(
+                fl.att.transform_point(direction).unit(), 
+                fl.pos
+            )
+        )
+
     @staticmethod
-    def roll_angle(fl: State, tp: State, ref_frame: Transformation) -> Self:
+    def roll_angle(fl: State, tp: State) -> Self:
         """direction is the body X axis, value is equal to the roll angle difference from template"""
         body_roll_error = Quaternion.body_axis_rates(tp.att, fl.att) * PX()
         world_roll_error = fl.att.transform_point(body_roll_error)
@@ -101,13 +109,13 @@ class Measurement:
         )
 
     @staticmethod
-    def roll_angle_proj(fl: State, tp: State, ref_frame: Transformation, proj: Point) -> Self:
+    def roll_angle_proj(fl: State, tp: State, proj: Point) -> Self:
         """Direction is the body X axis, value is equal to the roll angle error.
         roll angle error is the angle between the body proj vector axis and the 
         reference frame proj vector. Proj vector should usually be defined by the ke angle of the loop. 
         """
         
-        body_rf_proj = fl.att.inverse().transform_point(ref_frame.q.transform_point(proj))        
+        body_rf_proj = fl.att.inverse().transform_point(tp[0].transform.q.transform_point(proj))        
         
         cos_angles = Point.cross(body_rf_proj, proj)
                 
@@ -118,38 +126,39 @@ class Measurement:
         )
 
     @staticmethod
-    def roll_angle_y(fl: State, tp: State, ref_frame: Transformation) -> Self:
-        return Measurement.roll_angle_proj(fl, tp, ref_frame, PY())
+    def roll_angle_y(fl: State, tp: State) -> Self:
+        return Measurement.roll_angle_proj(fl, tp, PY())
 
     @staticmethod
-    def roll_angle_z(fl: State, tp: State, ref_frame: Transformation) -> Self:
-        return Measurement.roll_angle_proj(fl, tp, ref_frame, PZ())
+    def roll_angle_z(fl: State, tp: State) -> Self:
+        return Measurement.roll_angle_proj(fl, tp, PZ())
 
     @staticmethod
-    def length_above(fl: State, tp: State, ref_frame: Transformation, direction: Point=None, free:float=0) -> Self:
-        '''Distance from the ref frame origin in the prescribed direction above a free amount'''
-        distance = ref_frame.q.inverse().transform_point(fl.pos - ref_frame.pos)
+    def length(fl: State, tp: State, direction: Point=None) -> Self:
+        '''Distance from the ref frame origin in the prescribed direction'''
+        ref_frame = tp[0].transform
+        distance = ref_frame.q.inverse().transform_point(fl.pos - ref_frame.pos) # distance in the ref_frame
         
         v = distance if direction is None else Point.vector_projection(distance, direction)
         av = abs(v)
         vo = np.zeros_like(av) 
         sign = -np.ones_like(av)
         sign[Point.is_parallel(v, direction)] = 1
-        vo[av>free] = (av - free)[av>free]  * sign
         return Measurement(
             vo, 0,
             *Measurement._vector_vis(ref_frame.q.transform_point(distance), fl.pos)
         )
             
     @staticmethod
-    def roll_rate(fl: State, tp: State, ref_frame: Transformation) -> Measurement:
+    def roll_rate(fl: State, tp: State) -> Measurement:
         """vector in the body X axis, length is equal to the roll rate"""
         wrvel = fl.att.transform_point(fl.p * PX())
-        return Measurement(abs(wrvel) * np.sign(fl.p), np.mean(fl.p), *Measurement._roll_vis(fl.pos, fl.att))
+        return Measurement(abs(wrvel) * np.sign(fl.p), np.mean(tp.p), *Measurement._roll_vis(fl.pos, fl.att))
     
     @staticmethod
-    def track_y(fl: State, tp:State, ref_frame: Transformation) -> Measurement:
+    def track_y(fl: State, tp:State) -> Measurement:
         """angle error in the velocity vector about the coord y axis"""
+        ref_frame = tp[0].transform
         tr = ref_frame.q.inverse()
         
         fcvel = tr.transform_point(fl.att.transform_point(fl.vel)) #flown ref frame vel
@@ -165,7 +174,8 @@ class Measurement:
         return Measurement(np.unwrap(abs(wz_angle_err) * np.sign(angle_err)), 0, *Measurement._vector_vis(wverr.unit(), fl.pos))
 
     @staticmethod
-    def track_z(fl: State, tp: State, ref_frame: Transformation) -> Measurement:
+    def track_z(fl: State, tp: State) -> Measurement:
+        ref_frame = tp[0].transform
         tr = ref_frame.q.inverse()
         
         fcvel = tr.transform_point(fl.att.transform_point(fl.vel)) #flown ref frame vel
@@ -181,8 +191,9 @@ class Measurement:
         return Measurement(np.unwrap(abs(wz_angle_err) * np.sign(angle_err)), 0, *Measurement._vector_vis(wverr.unit(), fl.pos))
 
     @staticmethod
-    def radius(fl:State, tp:State, ref_frame: Transformation) -> Measurement:
+    def radius(fl:State, tp:State) -> Measurement:
         """error in radius as a vector in the radial direction"""
+        ref_frame = tp[0].transform
         flrad = fl.arc_centre() 
 
         fl_loop_centre = fl.body_to_world(flrad)  # centre of loop in world frame

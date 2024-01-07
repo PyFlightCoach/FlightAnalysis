@@ -1,33 +1,32 @@
 from flightanalysis.scoring.criteria import *
-from plotly.subplots import make_subplots
-import plotly.express as px
-import plotly.graph_objects as go
 import numpy as np
-from json import dump
 
 
 f3a=dict(
     single=dict(
-        track=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100), 'absolute'),
-        roll=Single(Exponential.fit_points(np.radians([30, 90]), [1, 6], 100), 'absolute'),
-        angle=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100), 'absolute'),
-        zero_speed=Single(Exponential.fit_points([2, 5], [0.2,1]), 'absolute'),
-        distance = Single(Exponential.fit_points([10, 20], [0.25, 1]), 'absolute')
+        track=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100)),
+        roll=Single(Exponential.fit_points(np.radians([30, 90]), [1, 6], 100)),
+        angle=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100)),
+        distance = Single(Exponential.fit_points([20, 40], [0.5, 1]))
     ),
     intra=dict(
-        track=Continuous(Exponential.fit_points(np.radians([30, 90]), [2, 6]), 'absolute'),
-        roll=Continuous(Exponential.fit_points(np.radians([30, 90]), [1.5, 6]), 'absolute'),
-        distance=Continuous(Exponential.fit_points([5, 10], [0.25,1]), 'absolute'),
-        radius=Continuous(Exponential.fit_points([1,5], [0.5, 4], 2), 'ratio'),
-        speed=Continuous(Exponential.fit_points([1,5], [0.15, 0.75], 1), 'ratio'),
-        roll_rate=Continuous(Exponential.fit_points([1,5], [0.15, 0.75], 1), 'ratio'),
+        track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [2, 6])),
+        roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.5, 6])),
+        radius=ContRat(Exponential.fit_points([1,5], [0.5, 4], 2)),
+        speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1)),
+        roll_rate=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1)),
+        stallturn_speed=InsideBound(Exponential.fit_points([2, 5], [0.1,0.5]), [-2,2]),
+        stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.1,0.5]), [-2,2]),
+        spin_entry_length=MaxBound(Exponential.fit_points([2, 5], [0.1,0.5]), 5),
+        pitch_break_length=MaxBound(Exponential.fit_points([2, 5], [0.1,0.5]), 2),
+        recovery_length=MaxBound(Exponential.fit_points([2, 5], [0.1,0.5]), 3),
     ),
     inter=dict(
-        radius=Comparison(Exponential.fit_points([1,5], [1, 2], 2), 'ratio'),
-        speed=Comparison(Exponential.fit_points([1,5], [0.25, 1.0]), 'ratio'),
-        roll_rate=Comparison(Exponential.fit_points([1,5], [0.25, 1.5],2), 'ratio'),
-        length=Comparison(Exponential.fit_points([1,5], [1, 3], 3), 'ratio'),
-        free=Comparison(free, 'ratio'),
+        radius=Comparison(Exponential.fit_points([1,5], [1, 2], 2)),
+        speed=Comparison(Exponential.fit_points([1,5], [0.25, 1.0])),
+        roll_rate=Comparison(Exponential.fit_points([1,5], [0.25, 1.5],2)),
+        length=Comparison(Exponential.fit_points([1,5], [1, 3], 3)),
+        free=Comparison(free),
     )
 )
 

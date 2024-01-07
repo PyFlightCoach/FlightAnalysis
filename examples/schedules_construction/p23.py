@@ -226,6 +226,6 @@ if __name__ == "__main__":
     
  #   p23_def.plot().show()
 #    p23_def.create_fcj('P23', 'p23_template_fcj.json')
-    #p23_def.to_json("flightanalysis/data/p23_schedule.json")
-    import os
-    p23_def.create_fcjs('p23', f'{os.environ['HOME']}/Desktop/templates/')
+    p23_def.to_json("flightanalysis/data/p23_schedule.json")
+   # import os
+   # p23_def.create_fcjs('p23', f'{os.environ['HOME']}/Desktop/templates/')

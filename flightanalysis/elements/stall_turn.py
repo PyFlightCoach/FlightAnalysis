@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, PX, PY, PZ, P0, Point
+import geometry as g
 from flightdata import State, Time
 from .element import Element
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
@@ -15,20 +15,14 @@ class StallTurn(Element):
 
     @property
     def intra_scoring(self) -> DownGrades:
-        '''
-        TODO downgrade speeds over 3m/s or so
-        TODO roll angle not working
-        '''
-        def width_over_2m(fl, tp, rf):
-            return Measurement.length_above(fl, tp, rf, PY(), 2)
-
-        def height_over_2m(fl, tp, rf):
-            return Measurement.length_above(fl, tp, rf, None, 2)
-
+        def width(fl, tp):
+            return Measurement.length(fl, tp, g.PY())
+        def speed(fl, tp):
+            return Measurement.speed(fl, tp, g.PZ(), 'world')
         return DownGrades([
             DownGrade(Measurement.roll_angle_z, F3A.intra.roll),
-            DownGrade(width_over_2m, F3A.intra.distance),
-            DownGrade(height_over_2m, F3A.intra.distance),
+            DownGrade(width, F3A.intra.stallturn_width),
+            DownGrade(speed, F3A.intra.stallturn_speed),
         ])
 
     def describe(self):
@@ -36,10 +30,10 @@ class StallTurn(Element):
 
     def create_template(self, istate: State, time: Time=None) -> State:
         return self._add_rolls(
-            istate.copy(rvel=P0() ,vel=P0()).fill( 
+            istate.copy(rvel=g.P0() ,vel=g.P0()).fill( 
                 Element.create_time(np.pi / abs(self.yaw_rate), time)
             ).superimpose_rotation(
-                PZ(), 
+                g.PZ(), 
                 np.sign(self.yaw_rate) * np.pi
             ), 
             0.0
@@ -48,7 +42,7 @@ class StallTurn(Element):
     def match_axis_rate(self, yaw_rate: float) -> StallTurn:
         return self.set_parms(yaw_rate=yaw_rate)
 
-    def match_intention(self, transform: Transformation, flown: State) -> StallTurn:
+    def match_intention(self, transform: g.Transformation, flown: State) -> StallTurn:
         return self.set_parms(
             yaw_rate=flown.data.r[flown.data.r.abs().idxmax()]
         )
@@ -60,6 +54,6 @@ class StallTurn(Element):
     
     def yaw_rate_visibility(self, st: State):
         return Measurement._vector_vis(
-            st.att.transform_point(PZ(1)).mean(), 
+            st.att.transform_point(g.PZ(1)).mean(), 
             st.pos.mean()
         )

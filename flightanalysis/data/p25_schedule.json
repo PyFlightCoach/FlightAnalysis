@@ -35,8 +35,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -54,8 +53,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 150,
         "collectors": {
@@ -71,8 +69,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 20.0,
         "collectors": {
@@ -88,8 +85,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -107,8 +103,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 2.356194490192345,
         "collectors": {
@@ -124,7 +119,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               1.5707963267948966,
@@ -150,8 +144,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -168,7 +161,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               6.283185307179586
@@ -191,8 +183,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -209,7 +200,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               1.5707963267948966,
@@ -235,8 +225,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -437,8 +426,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -454,8 +442,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 130.0,
         "collectors": {
@@ -470,8 +457,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 2.356194490192345,
         "collectors": {
@@ -487,7 +473,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               6.283185307179586
@@ -510,8 +495,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -608,8 +592,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -628,8 +611,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 80,
         "collectors": {
@@ -647,8 +629,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -667,7 +648,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -690,8 +670,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -708,7 +687,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -731,8 +709,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -749,7 +726,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -772,8 +748,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -790,7 +765,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -813,8 +787,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -1017,8 +990,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -1034,8 +1006,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 130.0,
         "collectors": {
@@ -1050,8 +1021,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -1067,7 +1037,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -1090,8 +1059,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -1182,8 +1150,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 20.0,
         "collectors": {
@@ -1201,8 +1168,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -1223,7 +1189,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               1.5707963267948966,
@@ -1375,8 +1340,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -1392,8 +1356,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -1408,8 +1371,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 3.141592653589793,
         "collectors": {
@@ -1425,7 +1387,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -1448,8 +1409,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -1560,8 +1520,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 100,
         "collectors": {
@@ -1577,8 +1536,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -1595,8 +1553,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 2.356194490192345,
         "collectors": {
@@ -1612,7 +1569,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               -1.5707963267948966,
@@ -1639,7 +1595,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               6.283185307179586
@@ -1663,7 +1618,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -1777,8 +1731,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -1795,8 +1748,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 130.0,
         "collectors": {
@@ -1812,8 +1764,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -1831,7 +1782,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793,
@@ -1857,8 +1807,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -1875,7 +1824,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -1898,8 +1846,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2035,8 +1982,7 @@
             "factor": 0,
             "exponent": 1,
             "limit": 10
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 100,
         "collectors": {
@@ -2122,8 +2068,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -2140,8 +2085,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 91.92388155425118,
         "collectors": {
@@ -2157,8 +2101,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -2175,7 +2118,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -2198,8 +2140,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2216,7 +2157,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -2239,8 +2179,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2375,8 +2314,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -2394,8 +2332,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 130.0,
         "collectors": {
@@ -2411,8 +2348,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -2430,7 +2366,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -2453,8 +2388,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2471,7 +2405,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -2494,8 +2427,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2512,7 +2444,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -2535,8 +2466,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2701,8 +2631,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -2719,8 +2648,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 130.0,
         "collectors": {
@@ -2735,8 +2663,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 20.0,
         "collectors": {
@@ -2751,8 +2678,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -2770,7 +2696,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -2793,8 +2718,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2811,7 +2735,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               1.5707963267948966,
@@ -2837,8 +2760,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -2985,8 +2907,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -3001,8 +2922,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -3017,8 +2937,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 5.340707511102648,
         "collectors": {
@@ -3034,7 +2953,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               3.141592653589793
@@ -3057,8 +2975,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -3162,8 +3079,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -3181,8 +3097,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 130.0,
         "collectors": {
@@ -3198,8 +3113,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 20.0,
         "collectors": {
@@ -3214,8 +3128,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -3232,7 +3145,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               1.5707963267948966,
@@ -3258,8 +3170,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -3411,8 +3322,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 50,
         "collectors": {
@@ -3428,8 +3338,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 60,
         "collectors": {
@@ -3444,8 +3353,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 12.566370614359172,
         "collectors": {
@@ -3461,7 +3369,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               6.283185307179586
@@ -3484,8 +3391,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -3591,8 +3497,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 50,
         "collectors": {
@@ -3609,8 +3514,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 180.0,
         "collectors": {
@@ -3626,8 +3530,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 20.0,
         "collectors": {
@@ -3642,8 +3545,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 1.5707963267948966,
         "collectors": {
@@ -3659,8 +3561,7 @@
             "factor": 0.25,
             "exponent": 1.1132827525593783,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 2.356194490192345,
         "collectors": {
@@ -3676,7 +3577,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               1.5707963267948966,
@@ -3702,8 +3602,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -3720,7 +3619,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               6.283185307179586
@@ -3743,8 +3641,7 @@
             "factor": 1.0,
             "exponent": 0.6826061944859854,
             "limit": 3
-          },
-          "comparison": "ratio"
+          }
         },
         "default": null,
         "collectors": {
@@ -3893,8 +3790,7 @@
             "factor": 1.0,
             "exponent": 0.4306765580733931,
             "limit": 2
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -3911,7 +3807,6 @@
             "exponent": 1,
             "limit": 10
           },
-          "comparison": "absolute",
           "desired": [
             [
               1.5707963267948966,
@@ -3943,8 +3838,7 @@
             "factor": 0,
             "exponent": 1,
             "limit": 10
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {
@@ -3959,8 +3853,7 @@
             "factor": 0,
             "exponent": 1,
             "limit": 10
-          },
-          "comparison": "ratio"
+          }
         },
         "default": 55.0,
         "collectors": {

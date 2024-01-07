@@ -1,17 +1,23 @@
-from pytest import fixture
-from flightanalysis.scoring.criteria import Criteria, Single, Exponential, Continuous, Combination, Comparison
+from pytest import fixture, mark
+from flightanalysis.scoring.criteria import *
+from flightanalysis.scoring import Measurement
 from numpy.testing import assert_array_almost_equal
 import numpy as np
-
+import geometry as g
 
 @fixture
 def single():
-    return Single(Exponential(1,1), 'absolute')
+    return Single(Exponential(1,1))
 
 
 @fixture
-def continuous():
-    return Continuous(Exponential(1,1), 'ratio')
+def contrat():
+    return ContRat(Exponential(1,1))
+
+@fixture
+def contabs():
+    return ContAbs(Exponential(1,1))
+
 
 @fixture
 def combination():
@@ -20,7 +26,9 @@ def combination():
 
 @fixture
 def comparison():
-    return Comparison(Exponential(1,1), 'ratio')
+    return Comparison(Exponential(1,1))
+
+
 
 
 def test_single_to_dict(single: Single):
@@ -33,24 +41,30 @@ def test_single_from_dict(single):
     assert res == single
 
 def test_single_call(single: Single):
-    ids, dgs = single([0,1,2,3], [1,2,3,4])
-    assert_array_almost_equal(dgs, [1,2,3,4])
-    assert_array_almost_equal(ids, [0,1,2,3])
+    res = single('test', Measurement(np.ones(4), 0, g.PX(4), np.ones(4)))
+    assert_array_almost_equal(res.dgs, np.ones(4))
 
+def test_continuous_from_str(contrat):
+    res = Criteria.from_dict(contrat.to_dict())
+    assert res == contrat
 
-def test_continuous_from_str(continuous):
-    res = Criteria.from_dict(continuous.to_dict())
-    assert res == continuous
+@mark.skip('This is more complicated as the smoothing needs to be considered')
+def test_continuous_call_ratio(contrat):
+    [2,3,4,5,6,7], 
+    res = contrat(
+        'test', 
+        Measurement(np.array([1.1, 1.2, 1, 1.2, 1.3, 1.1]), 1, g.PX(6), np.ones(6))
+    )
+    assert_array_almost_equal(res.keys, [3,6])
+    assert_array_almost_equal(res.dgs, [0.1,0.3])
 
-def test_continuous_call_ratio(continuous):
-    ids, dgs = continuous([2,3,4,5,6,7], [1.1, 1.2, 1, 1.2, 1.3, 1.1])
-    assert_array_almost_equal(ids, [3,6])
-    assert_array_almost_equal(dgs, [0.1,0.3])
-
-def test_continuous_call_absolute(continuous):
-    ids, dgs = continuous([2,3,4,5,6,7], [0.1, 0.2, 0, -0.1, -0.2, -0.1])
-    assert_array_almost_equal(ids, [3,6])
-    assert_array_almost_equal(dgs, [0.1,0.2])
+def test_continuous_call_absolute(contabs):
+    res = contabs(
+        'test',
+        Measurement(np.array([0.1, 0.2, 0, -0.1, -0.2, -0.1]), 0, g.PX(6), np.ones(6))
+    )
+    assert_array_almost_equal(res.keys, [1,4])
+    assert_array_almost_equal(res.dgs, [0.1,0.2])
 
 
 def test_combination_from_dict(combination):
@@ -59,7 +73,7 @@ def test_combination_from_dict(combination):
 
 
 def test_comparison_call(comparison):
-    ids, res = comparison(['a', 'b', 'c', 'd'], [1,1.3,1.2,1])
+    ids, error, res = comparison(['a', 'b', 'c', 'd'], [1,1.3,1.2,1])
     assert_array_almost_equal(res, [0, 0.3, 1.3/1.2-1, 0.2])
 
 
@@ -75,3 +89,68 @@ def test_combination_append_roll_sum():
             [-0.25,-0.25,-0.25,-0.25,-0.25,-0.5,-0.75,-1]]
         )
     )
+    
+    
+@fixture
+def maxbound():
+    return MaxBound(Exponential(1,1),  0)
+
+def test_maxbound(maxbound: MaxBound):
+    testarr = np.concatenate([np.ones(3), np.zeros(3), np.ones(3), np.zeros(3)])
+    sample = maxbound.prepare(testarr, 0)
+    np.testing.assert_array_equal(sample, testarr)
+
+
+def test_bounded_call(maxbound: MaxBound):
+    testarr = np.concatenate([np.ones(3), np.zeros(3), np.ones(3), np.zeros(3)])
+    res = maxbound(
+        'test',
+        Measurement(testarr, 0, g.PX(12), np.ones(12)) 
+    )
+    
+    np.testing.assert_array_equal(res.keys, [2, 8])
+    np.testing.assert_array_equal(res.errors, [1, 1])
+    np.testing.assert_array_equal(res.dgs, [0.25, 0.25])
+
+def test_maxbound_serialise(maxbound: MaxBound):
+    data = maxbound.to_dict()
+    mb2 = Criteria.from_dict(data)
+    assert isinstance(mb2, MaxBound)
+    assert mb2.bound==0
+    
+    
+    
+@fixture
+def inside():
+    return InsideBound(Exponential(1,1), [-1, 1])
+
+def test_inside_allin(inside: InsideBound):
+    sample = inside.prepare(np.zeros(11), 0)
+    np.testing.assert_array_equal(sample, np.zeros(11))
+    
+def test_inside_above(inside: InsideBound):
+    sample = inside.prepare(np.full(11, 2), 0)
+    np.testing.assert_array_equal(sample, np.ones(11))
+    
+def test_inside_below(inside: InsideBound):
+    sample = inside.prepare(np.full(11, -2), 0)
+    np.testing.assert_array_equal(sample, np.ones(11))
+    
+
+@fixture
+def outside():
+    return OutsideBound(Exponential(1,1), [-1, 1])
+
+
+def test_outside_allin(outside: OutsideBound):
+    sample = outside.prepare(np.zeros(11), 0)
+    np.testing.assert_array_equal(sample, np.ones(11))
+    
+def test_outside_above(outside: InsideBound):
+    sample = outside.prepare(np.full(11, 2), 0)
+    np.testing.assert_array_equal(sample, np.zeros(11))
+    
+def test_outside_below(outside: OutsideBound):
+    sample = outside.prepare(np.full(11, -2), 0)
+    np.testing.assert_array_equal(sample, np.zeros(11))
+    

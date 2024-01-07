@@ -19,10 +19,10 @@ class PitchBreak(Element):
     def intra_scoring(self) -> DownGrades:
         '''TODO check the pitch departure is in the right direction
         TODO perhaps limit the roll amount'''
-        def length_over_2m(fl, tp, rf):
-            return Measurement.length_above(fl, tp, rf, PX(), 2)
+        def length(fl, tp):
+            return Measurement.length(fl, tp, PX())
         return DownGrades([
-            DownGrade(length_over_2m, F3A.intra.distance)
+            DownGrade(length, F3A.intra.pitch_break_length),
         ])
 
     @property

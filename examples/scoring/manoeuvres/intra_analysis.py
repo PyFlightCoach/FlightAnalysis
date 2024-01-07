@@ -12,8 +12,8 @@ from flightanalysis.scoring import Result, DownGrade
 
 ea = ma.e_2
 
-dg: DownGrade = ea.el.intra_scoring.roll_angle_z
-res: Result = dg(ea.fl, ea.tp, ea.ref_frame)
+dg: DownGrade = ea.el.intra_scoring.width
+res: Result = dg(ea.fl, ea.tp)
 
 res.plot().show()
 

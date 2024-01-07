@@ -4,7 +4,8 @@ import numpy.typing as npt
 import pandas as pd
 from .. import Criteria
 from dataclasses import dataclass
-from geometry import Point
+from flightanalysis.scoring import Measurement, Result
+
 
 @dataclass
 class Continuous(Criteria):
@@ -21,38 +22,67 @@ class Continuous(Criteria):
         first_val = increasing[0] if rev else False
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
-    @staticmethod
-    def smooth_sample(values, window_width=10):
-        window_width = min(window_width, int(len(values)/2))
-        cumsum_vec = np.cumsum(np.insert(values, 0, 0)) 
-        ma_vec = (cumsum_vec[window_width:] - cumsum_vec[:-window_width]) / window_width
-        return ma_vec
-
-    def prepare(self, value: npt.NDArray, expected: float):
-        if self.comparison == 'absolute':
-            return  value - expected
-        elif self.comparison == 'ratio':
-            return abs(value)
-        else:
-            raise ValueError('self.comparison must be "absolute" or "ratio"')
-
-    def __call__(self, ids: npt.ArrayLike, values: npt.ArrayLike):
-        data = np.array(values)
-        peak_locs = Continuous.get_peak_locs(data)
-        trough_locs = Continuous.get_peak_locs(data, True)
-
-        if self.comparison == 'absolute':
-            #if absolute, we only care about increases in error, corrections are free
-            mistakes = np.abs(data[peak_locs] - data[trough_locs])
-            dgids = list(np.array(ids)[peak_locs])
-        elif self.comparison == 'ratio':
-            #if ratio then all changes are downgraded
-            values = np.concatenate([[data[0]], data[peak_locs + trough_locs]])
-            mistakes = np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:]) - 1
-            dgids = list(np.array(ids)[peak_locs + trough_locs])# + [ids[-1]]
-        else:
-            raise ValueError(f'{self.comparison} not in [absolute, ratio]')
+    def __call__(self, name: str, m: Measurement) -> Result:
+        sample = self.prepare(m.value, m.expected)
+        peak_locs = Continuous.get_peak_locs(sample)
+        trough_locs = Continuous.get_peak_locs(sample, True)
+        mistakes = self.__class__.mistakes(sample, peak_locs, trough_locs)
+        dgids = self.__class__.dgids(
+            np.linspace(0, len(sample)-1, len(sample)).astype(int), 
+            peak_locs, trough_locs
+        )
         
-        downgrades = self.lookup(mistakes)
+        return Result(name, m, sample, mistakes, self.lookup(mistakes) * self.visibility(m, dgids), dgids)
+        
+    
+    def visibility(self, measurement, ids):
+        rids = np.concatenate([[0], ids])
+        return np.array([np.mean(measurement.visibility[a:b]) for a, b in zip(rids[:-1], rids[1:])])
+        
 
-        return dgids, mistakes, downgrades
+class ContAbs(Continuous):
+    def prepare(self, value: npt.NDArray, expected: float):
+        return  value - expected
+
+    @staticmethod
+    def mistakes(data, peaks, troughs):
+        '''All increases away from zero are downgraded (only peaks)'''
+        return np.abs(data[peaks] - data[troughs])
+
+    @staticmethod
+    def dgids(ids, peaks, troughs):
+        return ids[peaks]
+
+
+class ContRat(Continuous):
+
+    @staticmethod
+    def convolve(data, width):
+        kernel = np.ones(width) / width
+        l = len(data)
+        outd = np.full(l, np.nan)
+        conv = np.convolve(data, kernel, mode='valid')
+        ld = (len(data) - len(conv))/2
+        outd[int(np.ceil(ld)):-int(np.floor(ld))] = conv
+        return pd.Series(outd).ffill().bfill().to_numpy()
+    
+    def prepare(self, values: npt.NDArray, expected: float):
+        endcut = 1
+        sample = np.full(len(values), expected)
+        sample[endcut:-endcut] = values[endcut:-endcut]
+        if len(sample) <= 22:
+            return np.full(len(sample), abs(np.mean(sample)))
+        else:
+            return np.abs(ContRat.convolve(sample, 20))
+        
+    @staticmethod
+    def mistakes(data, peaks, troughs):
+        '''All changes are downgraded (peaks and troughs)'''
+        values = np.concatenate([[data[0]], data[peaks + troughs]])
+        return np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:]) - 1
+    
+    @staticmethod
+    def dgids(ids, peaks, troughs):
+        return ids[peaks + troughs]
+    
+         

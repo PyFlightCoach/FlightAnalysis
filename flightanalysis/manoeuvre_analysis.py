@@ -136,9 +136,9 @@ class ManoeuvreAnalysis:
         dist, aligned = State.align(flown, template, radius=10)
         int_tp = man.match_intention(template[0], aligned)[1]
         try:
-            return State.align(aligned, int_tp, radius=radius, mirror=False)
+            return True, *State.align(aligned, int_tp, radius=radius, mirror=False)
         except Exception as e:
-            return dist, aligned
+            return False, dist, aligned
 
     @staticmethod
     def intention(man: Manoeuvre, aligned: State, template: State) -> Tuple[Manoeuvre, State]:
@@ -157,9 +157,14 @@ class ManoeuvreAnalysis:
     def build(mdef: ManDef, flown: State):
         itrans = ManoeuvreAnalysis.initial_transform(mdef, flown)
         man, tp = ManoeuvreAnalysis.template(mdef, itrans)
-        aligned = ManoeuvreAnalysis.alignment(tp, man, flown)[1]
+        success, dist, aligned = ManoeuvreAnalysis.alignment(tp, man, flown)
+        if not success:
+            raise Exception('Alignment failed')
         intended, int_tp = ManoeuvreAnalysis.intention(man, aligned, tp)
         mdef, corr = ManoeuvreAnalysis.correction(mdef, intended, int_tp)
+        intended = intended.copy_directions(corr)
+        int_tp = intended.el_matched_tp(int_tp[0], aligned)
+
         return ManoeuvreAnalysis(mdef, aligned, intended, int_tp, corr, corr.create_template(int_tp[0], aligned))
 
     def optimise_alignment(self):
