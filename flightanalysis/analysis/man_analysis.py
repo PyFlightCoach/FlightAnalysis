@@ -1,72 +1,21 @@
-from __future__ import annotations
-import numpy as np
-import pandas as pd
-from json import load
-
-from flightdata import Flight, State, Origin, Collection
-
-from flightanalysis import Element, SchedDef,  ManDef, ElDef, Manoeuvre
-from flightanalysis.scoring import *
-from flightanalysis.definition.maninfo import Position
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from geometry import Transformation, Quaternion, Q0, Coord
-from typing import Tuple, Union
 from dataclasses import dataclass
 
+from .el_analysis import ElementAnalysis
+from flightdata import State, Flight, Origin
+from flightanalysis.definition import ManDef, SchedDef
+from flightanalysis.manoeuvre import Manoeuvre
+from flightanalysis.scoring import Results, Result, ManoeuvreResults
+from flightanalysis.scoring.criteria.f3a_criteria import F3A
+from flightanalysis.definition.maninfo import Position
+import geometry as g
+import numpy as np
+from json import load
 
 
 @dataclass
-class ElementAnalysis:
-    edef:ElDef
-    el: Element
+class PartialAnalysis:
+    mdef: ManDef
     fl: State
-    tp: State
-    ref_frame: Transformation
-
-    def plot_3d(self, origin=False, **kwargs):
-        from flightplotting import plotsec
-        return plotsec([self.fl, self.tp], 2, 5, origin=origin, **kwargs)
-
-    def to_dict(self):
-        return {k: v.to_dict() for k, v in self.__dict__.items()}
-
-    @staticmethod
-    def from_dict(data):
-        return ElementAnalysis(
-            ElDef.from_dict(data['edef']),
-            Element.from_dict(data['el']),
-            State.from_dict(data['fl']),
-            State.from_dict(data['tp']),
-            Transformation.from_dict(data['ref_frame'])
-        )
-@dataclass
-class ManoeuvreResults:
-    inter: Results
-    intra: ElementsResults
-    positioning: Results
-
-    def summary(self):
-        return {k: v.total for k, v in self.__dict__.items() if not v is None} 
-
-    def score(self):
-        return max(0, 10 - sum([v for v in self.summary().values()]))
-    
-    def to_dict(self):
-        return dict(
-            inter=self.inter.to_dict(),
-            intra=self.intra.to_dict(),
-            positioning=self.positioning.to_dict(),
-            summary=self.summary(),
-            score=self.score()
-        )
-
-    @staticmethod
-    def from_dict(data):
-        return Manoeuvre(
-            Results.from_dict(data['inter']),
-            ElementsResults.from_dict(data['intra']),
-            Result.from_dict(data['positioning']),
-        )
 
 
 @dataclass
@@ -104,14 +53,20 @@ class ManoeuvreAnalysis:
 
     @staticmethod
     def from_fcs_dict(data: dict):
-        return ManoeuvreAnalysis(
-            ManDef.from_dict(data["mdef"]),
-            State.from_dict(data["aligned"]['data']),
-            Manoeuvre.from_dict(data["manoeuvre"]),
-            State.from_dict(data["template"]['data']),
-            Manoeuvre.from_dict(data["corrected"]),
-            State.from_dict(data["corrected_template"]['data']),
-        )
+        try:
+            return ManoeuvreAnalysis(
+                ManDef.from_dict(data["mdef"]),
+                State.from_dict(data["aligned"]['data']),
+                Manoeuvre.from_dict(data["manoeuvre"]),
+                State.from_dict(data["template"]['data']),
+                Manoeuvre.from_dict(data["corrected"]),
+                State.from_dict(data["corrected_template"]['data']),
+            )
+        except Exception as ex:
+            return PartialAnalysis(
+                ManDef.from_dict(data["mdef"]),
+                State.from_dict(data["fl"]['data']),
+            )
     
     @staticmethod
     def from_dict(data:dict):
@@ -127,23 +82,23 @@ class ManoeuvreAnalysis:
     @property
     def uid(self):
         return self.mdef.uid
-        
+
     @staticmethod
-    def initial_transform(mdef: ManDef, flown: State) -> Transformation:
+    def initial_transform(mdef: ManDef, flown: State) -> g.Transformation:
         initial = flown[0]
-        return Transformation(
+        return g.Transformation(
             initial.pos,
             mdef.info.start.initial_rotation(
                 mdef.info.start.d.get_wind(initial.direction()[0])
         ))
     
     @staticmethod
-    def template(mdef: ManDef, itrans: Transformation) -> Tuple[Manoeuvre, State]:
+    def template(mdef: ManDef, itrans: g.Transformation) -> tuple[Manoeuvre, State]:
         man = mdef.create(itrans).add_lines()
         return man, man.create_template(itrans)
 
     @staticmethod
-    def alignment(template: State, man: Manoeuvre, flown: State, radius=10) -> Tuple(float, State):
+    def alignment(template: State, man: Manoeuvre, flown: State, radius=10) -> tuple[float, State]:
         dist, aligned = State.align(flown, template, radius=10)
         int_tp = man.match_intention(template[0], aligned)[1]
         try:
@@ -152,7 +107,7 @@ class ManoeuvreAnalysis:
             return False, dist, aligned
 
     @staticmethod
-    def intention(man: Manoeuvre, aligned: State, template: State) -> Tuple[Manoeuvre, State]:
+    def intention(man: Manoeuvre, aligned: State, template: State) -> tuple[Manoeuvre, State]:
         return man.match_intention(template[0], aligned)
             
     @staticmethod
@@ -160,10 +115,14 @@ class ManoeuvreAnalysis:
         return manoeuvre.optimise_alignment(template[0], aligned)
     
     @staticmethod
-    def correction(mdef: ManDef, intended: Manoeuvre, int_tp: State) -> Tuple[ManDef, Manoeuvre]:
+    def correction(mdef: ManDef, intended: Manoeuvre, int_tp: State) -> tuple[ManDef, Manoeuvre]:
         mdef = ManDef(mdef.info, mdef.mps.update_defaults(intended), mdef.eds)
         return mdef, mdef.create(int_tp[0].transform).add_lines()
 
+    @staticmethod
+    def from_pa(pa: PartialAnalysis):
+        return ManoeuvreAnalysis.build(pa.mdef, pa.fl)
+    
     @staticmethod
     def build(mdef: ManDef, flown: State):
         itrans = ManoeuvreAnalysis.initial_transform(mdef, flown)
@@ -300,72 +259,3 @@ class ManoeuvreAnalysis:
             state.get_manoeuvre(mdef.info.short_name)
         )
 
-
-class ScheduleAnalysis(Collection):
-    VType=ManoeuvreAnalysis
-
-    @staticmethod
-    def from_fcj(file: str):
-        with open(file, 'r') as f:
-            data = load(f)
-
-        flight = Flight.from_fc_json(data)
-        box = Origin.from_fcjson_parmameters(data["parameters"])
-
-        sdef = SchedDef.load(data["parameters"]["schedule"][1])
-
-        state = State.from_flight(flight, box).splitter_labels(
-            data["mans"],
-            [m.info.short_name for m in sdef]
-        )
-        mas=[]
-        for mdef in sdef:
-            mas.append(ManoeuvreAnalysis.build(
-                mdef, 
-                state.get_manoeuvre(mdef.info.short_name)
-            ))
-        
-        return ScheduleAnalysis(mas)
-
-
-
-if __name__ == "__main__":
-    from flightdata import Flight
-    from flightplotting import plotsec
-    from flightanalysis import SchedDef
-    with open("examples/data/manual_F3A_P23_22_05_31_00000350.json", "r") as f:
-        data = load(f)
-
-
-    flight = Flight.from_fc_json(data)
-    box = Origin.from_fcjson_parmameters(data["parameters"])
-    state = State.from_flight(flight, box).splitter_labels(data["mans"])
-    sdef = SchedDef.load(data["parameters"]["schedule"][1])
-
-    analyses = ScheduleAnalysis()
-
-    for mid in range(17):
-        analyses.add(ManoeuvreAnalysis.build(sdef[mid], state.get_meid(mid+1)))
-
-    scores = []
-
-    for ma in analyses:
-        scores.append(dict(
-            name=ma.mdef.info.name,
-            k=ma.mdef.info.k,
-            pos_dg=np.sum(abs(ma.aligned.pos - ma.corrected_template.pos) * ma.aligned.dt / 500),
-            roll_dg = np.sum(np.abs(Quaternion.body_axis_rates(ma.aligned.att, ma.corrected_template.att).x) * ma.aligned.dt / 40)
-        ))
-
-    scores = pd.DataFrame(scores)
-    scores["score"] = 10 - scores.pos_dg - scores.roll_dg
-    if "scores" in data:
-        scores["manual_scores"] = data["scores"][1:-1]
-        
-    print(scores)
-    print(f"total = {sum(scores.score * scores.k)}")
-    
-
-    
-
-    

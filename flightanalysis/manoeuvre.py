@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 
 from flightdata.state import State
-from flightanalysis.elements import *
+from flightanalysis.elements import Elements, Element, Line, Autorotation
 from flightanalysis.scoring import *
 
 
@@ -47,7 +47,7 @@ class Manoeuvre:
         )
 
     def all_elements(self, create_entry: bool = False, create_exit: bool = False) -> Elements:
-        els = Elements([])
+        els = Elements()
 
         if self.entry_line:
             els.add(self.entry_line)

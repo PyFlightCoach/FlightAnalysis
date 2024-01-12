@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 from flightdata import State, Collection, Time
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Measurement, DownGrade, DownGrades, Result, Results
-from geometry import Transformation, PX, PY, PZ, Point, angle_diff, Coord, Quaternion
+from flightanalysis.scoring import Measurement, DownGrade, DownGrades, Results
+import geometry as g
 from json import load, dumps
 import inspect
 from typing import Self, Tuple
@@ -24,7 +24,7 @@ class Element:
 
     def _add_rolls(self, el: State, roll: float) -> State:
         if not roll == 0:
-            el = el.superimpose_rotation(PX(), roll)
+            el = el.superimpose_rotation(g.PX(), roll)
         return el.label(element=self.uid)
 
     def __eq__(self, other):
@@ -68,7 +68,7 @@ class Element:
         #tp =  self.setup_analysis_state(template, template)
         return self.exit_scoring.apply(self, fl, tp)
 
-    def ref_frame(self, template: State) -> Transformation:
+    def ref_frame(self, template: State) -> g.Transformation:
         return template[0].transform
 
     @staticmethod
@@ -135,7 +135,7 @@ class Element:
     def create_template(self, istate: State, time: Time=None) -> State:
         raise Exception('Not available on base class')
 
-    def match_intention(self, itrans: Transformation, flown: State) -> Self:
+    def match_intention(self, itrans: g.Transformation, flown: State) -> Self:
         raise Exception('Not available on base class')
 
     def score(self, istate: State, fl: State) -> Tuple[Results, State]:
@@ -151,7 +151,7 @@ class Element:
         
         def get_score(cel1: Element, cel2: Element, cfl1: State, cfl2: State):
             res, tp = cel1.match_intention(istate.transform, cfl1).score(istate, cfl1)
-            ist2=State.from_transform(Transformation(tp.att[-1], cfl2.pos[0]), vel=tp.vel[-1])
+            ist2=State.from_transform(g.Transformation(tp.att[-1], cfl2.pos[0]), vel=tp.vel[-1])
             res2, tp2 = cel2.match_intention(ist2.transform, cfl2).score(ist2, cfl2)
             return res.total + res2.total
         
@@ -189,7 +189,7 @@ class Elements(Collection):
         return getattr(self.data[element_name], parameter_name)  
     
     @staticmethod
-    def from_dicts(data):
+    def from_dicts(data) -> Self:
         return Elements([Element.from_dict(d) for d in data])
             
     def copy_directions(self, other: Self) -> Self:

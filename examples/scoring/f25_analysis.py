@@ -6,8 +6,11 @@ with open('examples/scoring/manual_F3A_F25_24_01_05_00000177_analysis.json') as 
     f25 = load(f)
     
 
-ma = ManoeuvreAnalysis.from_fcs_dict(f25['data']['sFin'])
 
+
+ma = ManoeuvreAnalysis.from_fcs_dict(f25['data']['sFin'])
+ma = ManoeuvreAnalysis.from_pa(ma)
+ma = ma.optimise_alignment()
 
 ea = ma.e_0_rolls
 dg = ea.el.intra_scoring.roll_angle

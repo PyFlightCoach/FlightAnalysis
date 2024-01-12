@@ -1,10 +1,8 @@
 from __future__ import annotations
-from typing import Any, Dict, List, Union
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from flightdata import Collection, Table
-
+from flightdata import Collection
 from flightanalysis.scoring.measurement import Measurement
 from dataclasses import dataclass
 
@@ -120,7 +118,7 @@ class Results(Collection):
         
         return df
 
-    def to_dict(self) -> Dict[str, dict]:
+    def to_dict(self) -> dict[str, dict]:
         return dict(
             name = self.name,
             data = {k: v.to_dict() for k, v in self.data.items()},
@@ -158,7 +156,7 @@ class ElementsResults(Collection):
         
         return df.set_index("Element")
     
-    def to_dict(self) -> Dict[str, dict]:
+    def to_dict(self) -> dict[str, dict]:
         return dict(
             data = {k: v.to_dict() for k, v in self.data.items()},
             summary = self.downgrade_list,
@@ -169,4 +167,34 @@ class ElementsResults(Collection):
     def from_dict(data) -> Results:
         return Results(
             [Result.from_dict(v) for v in data['data'].values()]
+        )
+
+
+@dataclass
+class ManoeuvreResults:
+    inter: Results
+    intra: ElementsResults
+    positioning: Results
+
+    def summary(self):
+        return {k: v.total for k, v in self.__dict__.items() if not v is None} 
+
+    def score(self):
+        return max(0, 10 - sum([v for v in self.summary().values()]))
+    
+    def to_dict(self):
+        return dict(
+            inter=self.inter.to_dict(),
+            intra=self.intra.to_dict(),
+            positioning=self.positioning.to_dict(),
+            summary=self.summary(),
+            score=self.score()
+        )
+
+    @staticmethod
+    def from_dict(data):
+        return ManoeuvreResults(
+            Results.from_dict(data['inter']),
+            ElementsResults.from_dict(data['intra']),
+            Result.from_dict(data['positioning']),
         )

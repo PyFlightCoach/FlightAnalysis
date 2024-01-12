@@ -1,9 +1,6 @@
-import numpy as np
-import pandas as pd
 
-from flightanalysis import Manoeuvre, Schedule, SchedDef, Line, Loop
+from flightanalysis import Manoeuvre, SchedDef
 from flightdata import State
-from geometry import Point, Quaternion, Transformation, Coord
 
 from pytest import fixture
 
