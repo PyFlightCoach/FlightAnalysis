@@ -114,13 +114,22 @@ class Measurement:
         roll angle error is the angle between the body proj vector axis and the 
         reference frame proj vector. Proj vector should usually be defined by the ke angle of the loop. 
         """
+        trfl = fl.to_track() # flown in the track axis
         
-        body_rf_proj = fl.att.inverse().transform_point(tp[0].transform.q.transform_point(proj))        
+        rfproj=tp[0].att.transform_point(proj) # proj vector in the ref_frame
         
-        cos_angles = Point.cross(body_rf_proj, proj)
-                
+        tr_rf_proj = trfl.att.inverse().transform_point(rfproj) # proj vector in track axis
+        
+        tp_rf_proj = tp.att.inverse().transform_point(rfproj) # proj vector in template body axis (body == track for template)
+        
+        with np.errstate(invalid='ignore'):
+            fl_roll_angle = np.arcsin(Point.cross(tr_rf_proj, proj).x)
+            tp_roll_angle = np.arcsin(Point.cross(tp_rf_proj, proj).x)
+        
+
+
         return Measurement(
-            np.arcsin(cos_angles.x),
+            fl_roll_angle - tp_roll_angle,
             0, 
             *Measurement._roll_vis(fl.pos, fl.att)
         )
@@ -216,7 +225,7 @@ class Measurement:
         with np.errstate(invalid='ignore'):
             r = trfl.u**2 / abs(Point.vector_rejection(normal_acc, trproj))
             
-        r = np.minimum(r, 400)
+#        r = np.minimum(r, 400)
         return Measurement(
             r, np.mean(r), 
             *Measurement._rad_vis(

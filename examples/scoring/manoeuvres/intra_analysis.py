@@ -17,8 +17,6 @@ dg: DownGrade = ea.el.intra_scoring.radius
 res: Result = dg(ea.fl, ea.tp)
 
 
-#res.plot().show()
-
 fig = ea.plot_3d()
 
 fig.add_traces(vectors(5, ea.tp, 5*res.measurement.direction, name='vel_err', line=dict(color='red', width=3)))

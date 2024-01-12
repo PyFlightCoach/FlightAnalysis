@@ -103,6 +103,17 @@ class ManoeuvreAnalysis:
         )
 
     @staticmethod
+    def from_fcs_dict(data: dict):
+        return ManoeuvreAnalysis(
+            ManDef.from_dict(data["mdef"]),
+            State.from_dict(data["aligned"]['data']),
+            Manoeuvre.from_dict(data["manoeuvre"]),
+            State.from_dict(data["template"]['data']),
+            Manoeuvre.from_dict(data["corrected"]),
+            State.from_dict(data["corrected_template"]['data']),
+        )
+    
+    @staticmethod
     def from_dict(data:dict):
         return ManoeuvreAnalysis(
             ManDef.from_dict(data["mdef"]),
