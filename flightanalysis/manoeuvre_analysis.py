@@ -23,9 +23,9 @@ class ElementAnalysis:
     tp: State
     ref_frame: Transformation
 
-    def plot_3d(self, **kwargs):
+    def plot_3d(self, origin=False, **kwargs):
         from flightplotting import plotsec
-        return plotsec([self.fl, self.tp], 2, 5, origin=True)
+        return plotsec([self.fl, self.tp], 2, 5, origin=origin, **kwargs)
 
     def to_dict(self):
         return {k: v.to_dict() for k, v in self.__dict__.items()}

@@ -156,65 +156,71 @@ class Measurement:
         return Measurement(abs(wrvel) * np.sign(fl.p), np.mean(tp.p), *Measurement._roll_vis(fl.pos, fl.att))
     
     @staticmethod
-    def track_y(fl: State, tp:State) -> Measurement:
-        """angle error in the velocity vector about the coord y axis"""
+    def track_proj(fl: State, tp: State, proj: Point, fix='ang'):
+        """
+        Direction is the world frame scalar rejection of the velocity difference onto the template velocity 
+        vector.
+        proj defines the axis in the ref_frame (tp[0].transform) to work on.
+        if fix=='vel' we are only interested in velocity errors in the proj vector. (loop axial track)
+        if fix=='ang' we are only interested in angle errors about the proj vector. (loop exit track)
+        """
         ref_frame = tp[0].transform
         tr = ref_frame.q.inverse()
+
+        fwvel = fl.att.transform_point(fl.vel)
+        twvel = tp.att.transform_point(tp.vel)
+
+        direction, vis = Measurement._vector_vis(Point.vector_rejection(fwvel, twvel).unit(), fl.pos)
         
-        fcvel = tr.transform_point(fl.att.transform_point(fl.vel)) #flown ref frame vel
-        tcvel = tr.transform_point(tp.att.transform_point(tp.vel)) # template ref frame vel
+        fcvel = tr.transform_point(fwvel)
+        tcvel = tr.transform_point(twvel)
+        
+        if fix == 'vel':
+            verr = Point.vector_projection(fcvel, proj)
+            sign = -np.ones_like(verr.x)
+            sign[Point.is_parallel(verr, proj)] = 1
+            
+            angles = sign * np.arctan(abs(verr) / abs(fl.vel))
+            
+            vis = np.linspace(vis[0], vis[1], len(vis))
+        elif fix == 'ang':
+            cos_angles = Point.scalar_projection(Point.cross(fcvel, tcvel) / (abs(fcvel) * abs(tcvel)), proj)
+            angles = np.arcsin(cos_angles)
+        else:
+            raise AttributeError(f'fix must be "vel" or "ang", not {fix}')
+        return Measurement(angles, 0, direction, vis)
 
-        cverr = Point.vector_rejection(fcvel, tcvel)
-        wverr = ref_frame.q.transform_point(cverr)
-
-        angle_err = np.arcsin(cverr.y / abs(fl.vel) )
-
-        wz_angle_err = fl.att.transform_point(PZ() * angle_err)
-
-        return Measurement(np.unwrap(abs(wz_angle_err) * np.sign(angle_err)), 0, *Measurement._vector_vis(wverr.unit(), fl.pos))
+    @staticmethod
+    def track_y(fl: State, tp:State) -> Measurement:
+        """angle error in the velocity vector about the template Z axis"""
+        return Measurement.track_proj(fl, tp, PZ())
 
     @staticmethod
     def track_z(fl: State, tp: State) -> Measurement:
-        ref_frame = tp[0].transform
-        tr = ref_frame.q.inverse()
-        
-        fcvel = tr.transform_point(fl.att.transform_point(fl.vel)) #flown ref frame vel
-        tcvel = tr.transform_point(tp.att.transform_point(tp.vel)) # template ref frame vel
-
-        cverr = Point.vector_rejection(fcvel, tcvel)
-        wverr = ref_frame.q.transform_point(cverr)
-
-        angle_err = np.arcsin(cverr.z / abs(fl.vel) )
-
-        wz_angle_err = fl.att.transform_point(PY() * angle_err)
-
-        return Measurement(np.unwrap(abs(wz_angle_err) * np.sign(angle_err)), 0, *Measurement._vector_vis(wverr.unit(), fl.pos))
+        return Measurement.track_proj(fl, tp, PY())
 
     @staticmethod
-    def radius(fl:State, tp:State) -> Measurement:
-        """error in radius as a vector in the radial direction"""
-        ref_frame = tp[0].transform
-        flrad = fl.arc_centre() 
-
-        fl_loop_centre = fl.body_to_world(flrad)  # centre of loop in world frame
-        tr = ref_frame.att.inverse()
-        fl_loop_centre_lc = tr.transform_point(fl_loop_centre - ref_frame.pos)
-
-        #figure out whether its a KE loop
-        loop_plane = PY()
-        tp_lc = tp.move_back(ref_frame)
-        fl_lc = fl.move_back(ref_frame)
-        if (tp_lc.y.max() - tp_lc.y.min()) > (tp_lc.z.max() - tp_lc.z.min()):
-            loop_plane = PZ()
+    def radius(fl:State, tp:State, proj: Point) -> Measurement:
+        """
+        Error in radius as a vector in the radial direction
+        proj is the ref_frame(tp[0]) axial direction
+        """
+        wproj = tp[0].att.transform_point(proj)
         
-        #loop frame radius vector
-        fl_rad_lc = Point.vector_rejection(fl_loop_centre_lc, loop_plane) - fl_lc.pos 
+        trfl = fl.to_track()
         
-        ab = np.nan_to_num(abs(fl_rad_lc), nan=1000)
+        trproj = trfl.att.inverse().transform_point(wproj)
+        
+        normal_acc = trfl.zero_g_acc() * Point(0,1,1)
+        
+        with np.errstate(invalid='ignore'):
+            r = trfl.u**2 / abs(Point.vector_rejection(normal_acc, trproj))
+            
+        r = np.minimum(r, 400)
         return Measurement(
-            ab, np.mean(ab), 
+            r, np.mean(r), 
             *Measurement._rad_vis(
                 fl.pos, 
-                ref_frame.att.transform_point(loop_plane)
+                tp[0].att.transform_point(wproj)
             )  
         )
