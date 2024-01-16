@@ -27,7 +27,6 @@ def roll(name, speed, rate, rolls):
 def stallturn(name, speed, yaw_rate):
     return ElDef.build(StallTurn, name, speed, yaw_rate), ManParms()
 
-
 def snap(name, rolls, break_angle, rate, speed, break_rate):
     '''This will create a snap'''
     eds = ElDefs()
@@ -68,7 +67,6 @@ def spin(name, turns, break_angle, rate, speed, break_rate, reversible):
     return ElDefs([nose_drop, autorotation, recovery]), ManParms()
 
 
-
 def roll_length(speed, angle, rate):
     return speed * roll_length(angle, rate)
 
@@ -80,6 +78,15 @@ def snap_length(speed, roll, break_angle, break_rate, snap_rate):
 
 def snap_duration(roll, break_angle, break_rate, snap_rate):
     return (2 * abs(break_angle) / break_rate + abs(roll) / snap_rate)
+
+
+def short_line(name, speed, length, roll, extra_length):
+    if length.__class__.__name__ == 'ManParm':
+        el = ElDef.build(Line, name, speed, length.default, roll)
+        length.append(el.get_collector('length') + extra_length), ManParms()
+        return el
+    else:
+        return line(name, speed, length, roll)
 
 
 def parse_rolltypes(rolltypes, n):
@@ -126,11 +133,11 @@ def roll_combo(
             snap_rate.collectors.add(eds[-2].get_collector("rate"))
 
         if i < rolls.n - 1 and (mode=='imac' or np.sign(r) == np.sign(rolls.value[i+1])):
-            eds.add(line(
+            eds.add(short_line(
                 f"{name}_{i+1}_pause",
-                speed, pause_length, 0
+                speed, pause_length, 0, 30
             ))
-                
+                            
     return eds, ManParms()
 
 
@@ -194,8 +201,6 @@ def rollmaker(name, rolls, rolltypes, speed, partial_rate,
     return eds, mps
 
 
-
-
 def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, reversible, pause_length,
     break_angle, snap_rate, break_rate, mode ):
     '''This will create a set of ElDefs to represent a series of loops and the pads at the ends if padded==True.'''
@@ -205,11 +210,9 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
     if rollangle is None:
         rollangle = angle
 
-    if isinstance(rolls, Number) and rollangle == angle:
+    if (isinstance(rolls, Number) or isinstance(rolls, ItemOpp) ) and rollangle == angle:
         return loop(name, speed, radius, angle, rolls, ke)
     
-
-
     mps = ManParms()
     eds = ElDefs()
 
@@ -217,6 +220,7 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
         rad = radius
     else:
         rad = radius.value
+    
     internal_rad = ManParm(f'{name}_radius', F3A.inter.free, rad )
 
 

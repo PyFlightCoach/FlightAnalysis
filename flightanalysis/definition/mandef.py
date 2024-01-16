@@ -18,7 +18,7 @@ from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo
 from flightdata import State
 from geometry import Transformation, Euler, Point
-from . import ManParm, ManParms, ElDef, ElDefs, Position
+from . import ManParm, ManParms, ElDef, ElDefs, Position, Direction
 
 
 class ManDef:
@@ -53,7 +53,7 @@ class ManDef:
         return ManDef(info, mps, eds)
 
 
-    def create_entry_line(self, itrans: Transformation=None) -> ElDef:
+    def create_entry_line(self, itrans: Transformation=None, target_depth=170) -> ElDef:
         """Create a line definition connecting Transformation to the start of this manoeuvre.
 
         The length of the line is set so that the manoeuvre is centred or extended to box
@@ -77,26 +77,29 @@ class ManDef:
                 Euler(self.info.start.o.roll_angle(), 0, 0)
         )))
           
-        if self.info.position == Position.CENTRE:
-            if len(self.info.centre_points) > 0:
-                man_start_x = -man.elements[self.info.centre_points[0]].get_data(template).pos.x[0]
-            elif len(self.info.centred_els) > 0:
-                ce, fac = self.info.centred_els[0]
-                _x = man.elements[ce].get_data(template).pos.x
-                man_start_x = -_x[int(len(_x) * fac)]
-            else:
-                man_start_x = -(max(template.pos.x) + min(template.pos.x))/2
-                
-        elif self.info.position ==  Position.END:
-                box_edge = np.tan(np.radians(60)) * (np.abs(template.pos.y) + itrans.pos.y[0]) #x location of box edge at every point
-                #TODO this should be rotated not absoluted 
-                man_start_x = min(box_edge - template.pos.x) 
-        
+        if self.info.start.d == Direction.CROSS:
+            man_l = template.x[-1] - template.x[0]
+            length = man_l - target_depth
+        else:
+            if self.info.position == Position.CENTRE:
+                if len(self.info.centre_points) > 0:
+                    man_start_x = -man.elements[self.info.centre_points[0]].get_data(template).pos.x[0]
+                elif len(self.info.centred_els) > 0:
+                    ce, fac = self.info.centred_els[0]
+                    _x = man.elements[ce].get_data(template).pos.x
+                    man_start_x = -_x[int(len(_x) * fac)]
+                else:
+                    man_start_x = -(max(template.pos.x) + min(template.pos.x))/2
+                    
+            elif self.info.position ==  Position.END:
+                    box_edge = np.tan(np.radians(60)) * (np.abs(template.pos.y) + itrans.pos.y[0])
+                    man_start_x = min(box_edge - template.pos.x) 
+            length = max(man_start_x - itrans.translation.x[0] * heading, 30)
         return ElDef.build(
             Line,
             f"entry_line", 
             30.0, 
-            max(man_start_x - itrans.translation.x[0] * heading, 30), 
+            length, 
             0)
 
     def create(self, itrans=None, depth=None, wind=None) -> Manoeuvre:

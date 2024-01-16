@@ -30,6 +30,8 @@ class Criteria:
         for Crit in all_subclasses(Criteria):
             if Crit.__name__ == name:
                 lookup = data.pop('lookup')
+                if 'comparison' in data: 
+                    data.pop('comparison')
                 return Crit(lookup=Exponential(**lookup), **data)
         raise ValueError(f'cannot parse Criteria from {data}')
     

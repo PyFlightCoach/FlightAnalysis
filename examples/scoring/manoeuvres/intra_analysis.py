@@ -1,5 +1,4 @@
-from flightanalysis import ManoeuvreAnalysis as MA
-from flightanalysis.manoeuvre_analysis import ElementAnalysis as EA
+from flightanalysis import ManoeuvreAnalysis as MA, ElementAnalysis as EA
 from json import load, dumps
 import numpy as np
 

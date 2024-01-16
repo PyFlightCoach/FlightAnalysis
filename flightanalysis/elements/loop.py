@@ -28,17 +28,17 @@ class Loop(Element):
     @property
     def intra_scoring(self) -> DownGrades:
         proj = Point(0, np.cos(self.ke), np.sin(self.ke))
-        def axial_track(fl, tp):
+        def track_y(fl, tp):
             return Measurement.track_proj(fl, tp, proj, fix='vel')
-        def loop_amount(fl, tp):
+        def track_z(fl, tp):
             return Measurement.track_proj(fl, tp, proj, fix='ang')
         def radius(fl, tp):
             return Measurement.radius(fl, tp, proj)
         _intra_scoring = DownGrades([
             DownGrade(Measurement.speed, F3A.intra.speed),
             DownGrade(radius, F3A.intra.radius),
-            DownGrade(axial_track, F3A.intra.track),
-            DownGrade(loop_amount, F3A.single.track),
+            DownGrade(track_y, F3A.intra.track),
+            DownGrade(track_z, F3A.single.track),
         ])
         def roll_angle(fl, tp):
             return Measurement.roll_angle_proj(fl, tp, Point(0, np.cos(self.ke), np.sin(self.ke)))

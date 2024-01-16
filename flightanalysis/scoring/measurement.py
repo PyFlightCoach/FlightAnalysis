@@ -149,12 +149,9 @@ class Measurement:
         distance = ref_frame.q.inverse().transform_point(fl.pos - ref_frame.pos) # distance in the ref_frame
         
         v = distance if direction is None else Point.vector_projection(distance, direction)
-        av = abs(v)
-        vo = np.zeros_like(av) 
-        sign = -np.ones_like(av)
-        sign[Point.is_parallel(v, direction)] = 1
+
         return Measurement(
-            vo, 0,
+            Point.scalar_projection(v, direction), 0,
             *Measurement._vector_vis(ref_frame.q.transform_point(distance), fl.pos)
         )
             

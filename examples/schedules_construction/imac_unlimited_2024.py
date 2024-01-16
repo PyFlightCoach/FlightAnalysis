@@ -121,15 +121,6 @@ sdef = SchedDef([
             end=BoxLocation(Height.BTM)
         ),[
             imacmb.snap(r(1.5), padded=False),
-            imacmb.loop(-r(5/8)),
-            imacmb.roll([r(1/4), r(1/4), -r(1)], line_length=130 / c45),
-        ]),
-    imacmb.create(ManInfo(
-            "Half Cuban", "hcu", k=41, position=Position.END, 
-            start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT), 
-            end=BoxLocation(Height.BTM)
-        ),[
-            imacmb.snap(r(1.5), padded=False),
             imacmb.loop(-r(5/8), radius=75),
             imacmb.roll([r(1/4), r(1/4), -r(1)], line_length=150),
             imacmb.loop(-r(1/8), radius=75)
@@ -142,7 +133,7 @@ sdef = SchedDef([
 if __name__ == "__main__":
 
  
-#    sdef.plot().show()
-    import os
-    sdef.create_fcjs('imac_unlimited_2024', f'{os.environ['HOME']}/Desktop/templates', 'IMAC')
-    #sdef.to_json("flightanalysis/data/IMAC_Unlimited2024_schedule.json")
+    sdef.plot().show()
+#    import os
+#    sdef.create_fcjs('imac_unlimited_2024', f'{os.environ['HOME']}/Desktop/templates', 'IMAC')
+#    sdef.to_json("flightanalysis/data/IMAC_Unlimited2024_schedule.json")

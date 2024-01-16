@@ -201,7 +201,7 @@ clubman_def = SchedDef([
 if __name__ == "__main__":
 
 #    clubman_def.plot().show()
-#    #clubman_def.to_json("flightanalysis/data/f3auk_clubman_schedule.json")
+    clubman_def.to_json("flightanalysis/data/f3auk_clubman_schedule.json")
 
-    import os
-    clubman_def.create_fcjs('f3auk_clubman', f'{os.environ['HOME']}/Desktop/templates/')
+#    import os
+#    clubman_def.create_fcjs('f3auk_clubman', f'{os.environ['HOME']}/Desktop/templates/')

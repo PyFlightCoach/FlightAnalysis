@@ -3,20 +3,30 @@ import numpy as np
 from flightanalysis import *
 from flightdata import State
 
-if False:
+if True:
     mdef = f3amb.create(ManInfo(
-        "Top Hat", "tHat", k=4, position=Position.CENTRE, 
-        start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
-        end=BoxLocation(Height.BTM)
-    ),[
-        f3amb.loop(np.pi/2),
-        f3amb.roll("2x4"),
-        f3amb.loop(np.pi/2), 
-        centred(f3amb.roll("1/2",line_length=100)),
-        f3amb.loop(-np.pi/2),
-        f3amb.roll("2x4"),
-        f3amb.loop(-np.pi/2)
-    ])
+            "Square on Corner", "sLoop", k=4, position=Position.CENTRE, 
+            start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
+            end=BoxLocation(Height.BTM)
+        ),[
+            MBTags.CENTRE,
+            f3amb.loop(np.pi/4, rolls="roll_option[0]"),
+            f3amb.line(),
+            f3amb.loop("roll_option[1]", rolls=r(1/2), ke=True),
+            f3amb.line(),
+            centred(f3amb.loop("roll_option[2]", rolls=r(1/2), ke=True)),
+            f3amb.line(),
+            f3amb.loop("roll_option[3]", rolls=r(1/2), ke=True),
+            f3amb.line(),
+            f3amb.loop("roll_option[4]", rolls="roll_option[5]", ke=True),
+            MBTags.CENTRE
+        ], 
+        roll_option=ManParm("roll_option", Combination(desired=[
+            [r(1/4), -r(1/4), r(1/4), -r(1/4), r(1/8), -r(1/4)], 
+            [-r(1/4), r(1/4), -r(1/4), r(1/4), -r(1/8), r(1/4)]
+        ]), 0),
+        line_length=70
+        )
 else:
     from imac_unlimited_2024 import  sdef
     mdef = sdef[7]

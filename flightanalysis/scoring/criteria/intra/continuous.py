@@ -70,6 +70,7 @@ class ContRat(Continuous):
         endcut = 1
         sample = np.full(len(values), expected)
         sample[endcut:-endcut] = values[endcut:-endcut]
+        sample = values
         if len(sample) <= 22:
             return np.full(len(sample), abs(np.mean(sample)))
         else:

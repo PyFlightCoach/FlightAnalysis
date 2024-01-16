@@ -1,7 +1,7 @@
 from typing import Self
 from json import load
 from flightdata import Flight, State, Origin, Collection
-from flightanalysis.definition import SchedDef
+from flightanalysis.definition import SchedDef, ScheduleInfo
 from .man_analysis import ManoeuvreAnalysis
 
 
@@ -31,8 +31,18 @@ class ScheduleAnalysis(Collection):
         
         return ScheduleAnalysis(mas)
 
+    @staticmethod
+    def from_fcscore(file: str) -> Self:
+        with open(file, 'r') as f:
+            data = load(f)
+        
+        sdef = SchedDef.load(ScheduleInfo(**data['sinfo']))
 
+        mas = []
+        for mdef in sdef:
+            mas.append(ManoeuvreAnalysis.from_fcs_dict(
+                data['data'][mdef.info.short_name],
+                mdef
+            ))
 
-    
-
-    
+        return ScheduleAnalysis(mas)

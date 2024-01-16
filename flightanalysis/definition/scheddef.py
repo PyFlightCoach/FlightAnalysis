@@ -27,8 +27,7 @@ class ScheduleInfo:
             return ScheduleInfo(info[0].lower(), info[1].lower())
 
     def __str__(self):
-        name = self.name if self.category == "f3a" else f"{self.category}_{self.name}"
-        return name.lower()
+        return f"{self.category}_{self.name}".lower()
 
     def definition(self):
         return SchedDef.load(self)
@@ -93,9 +92,9 @@ class SchedDef(Collection):
         
     @staticmethod
     def load(name: Union[str,ScheduleInfo]) -> Self:
-        if isinstance(name, ScheduleInfo):
-            name = str(name)
-        return SchedDef.from_dict(get_json_resource(f"{name.lower()}_schedule"))
+        sinfo = ScheduleInfo.from_str(name) if isinstance(name, str) else name 
+            
+        return SchedDef.from_dict(get_json_resource(f"{str(sinfo).lower()}_schedule"))
     
 
     def plot(self):

@@ -22,8 +22,8 @@ class PartialAnalysis:
 class ManoeuvreAnalysis:
     mdef: ManDef
     aligned: State
-    intended: Manoeuvre
-    intended_template: State
+    manoeuvre: Manoeuvre
+    template: State
     corrected: Manoeuvre
     corrected_template: State
     
@@ -36,33 +36,45 @@ class ManoeuvreAnalysis:
         raise AttributeError()
 
     def get_ea(self, edef):
-        el = getattr(self.intended.elements, edef.name)
+        el = getattr(self.manoeuvre.elements, edef.name)
         st = el.get_data(self.aligned)
-        tp = el.get_data(self.intended_template).relocate(st.pos[0])
+        tp = el.get_data(self.template).relocate(st.pos[0])
         return ElementAnalysis(edef,el,st,tp, el.ref_frame(tp))
 
     def to_dict(self):
         return dict(
             mdef = self.mdef.to_dict(),
             aligned = self.aligned.to_dict(),
-            intended = self.intended.to_dict(),
-            intended_template = self.intended_template.to_dict(),
+            manoeuvre = self.manoeuvre.to_dict(),
+            template = self.template.to_dict(),
             corrected = self.corrected.to_dict(),
             corrected_template = self.corrected_template.to_dict()
         )
 
     @staticmethod
-    def from_fcs_dict(data: dict):
+    def from_fcs_dict(data: dict, newmdef: ManDef=None):
+        mdef = ManDef.from_dict(data["mdef"]) if newmdef is None else newmdef
+
+        historic_options = dict(
+            mdef = ['mdef'],
+            aligned = ['aligned', 'al'],
+            manoeuvre = ['manoeuvre', 'intended'],
+            template = ['intended_template', 'template'],
+            corrected = ['corrected'],
+            corrected_template = ['corrected_template'],
+        )
+        
         try:
             return ManoeuvreAnalysis(
-                ManDef.from_dict(data["mdef"]),
+                mdef,
                 State.from_dict(data["aligned"]['data']),
                 Manoeuvre.from_dict(data["manoeuvre"]),
                 State.from_dict(data["template"]['data']),
                 Manoeuvre.from_dict(data["corrected"]),
                 State.from_dict(data["corrected_template"]['data']),
             )
-        except Exception as ex:
+        except KeyError as ex:
+            print(ex)
             return PartialAnalysis(
                 ManDef.from_dict(data["mdef"]),
                 State.from_dict(data["fl"]['data']),
@@ -73,8 +85,8 @@ class ManoeuvreAnalysis:
         return ManoeuvreAnalysis(
             ManDef.from_dict(data["mdef"]),
             State.from_dict(data["aligned"]),
-            Manoeuvre.from_dict(data["intended"]),
-            State.from_dict(data["intended_template"]),
+            Manoeuvre.from_dict(data["manoeuvre"]),
+            State.from_dict(data["template"]),
             Manoeuvre.from_dict(data["corrected"]),
             State.from_dict(data["corrected_template"]),
         )
@@ -93,30 +105,32 @@ class ManoeuvreAnalysis:
         ))
     
     @staticmethod
-    def template(mdef: ManDef, itrans: g.Transformation) -> tuple[Manoeuvre, State]:
+    def basic_manoeuvre(mdef: ManDef, itrans: g.Transformation) -> tuple[Manoeuvre, State]:
         man = mdef.create(itrans).add_lines()
         return man, man.create_template(itrans)
 
     @staticmethod
-    def alignment(template: State, man: Manoeuvre, flown: State, radius=10) -> tuple[float, State]:
-        dist, aligned = State.align(flown, template, radius=10)
-        int_tp = man.match_intention(template[0], aligned)[1]
+    def alignment(manoeuvre: State, man: Manoeuvre, flown: State, radius=10, replace=False) -> tuple[float, State]:
+        if 'element' in flown.label_cols:
+            return True, -1, flown
+        dist, aligned = State.align(flown, manoeuvre, radius=10)
+        int_tp = man.match_intention(manoeuvre[0], aligned)[1]
         try:
             return True, *State.align(aligned, int_tp, radius=radius, mirror=False)
         except Exception as e:
             return False, dist, aligned
 
     @staticmethod
-    def intention(man: Manoeuvre, aligned: State, template: State) -> tuple[Manoeuvre, State]:
-        return man.match_intention(template[0], aligned)
+    def intention(man: Manoeuvre, aligned: State, manoeuvre: State) -> tuple[Manoeuvre, State]:
+        return man.match_intention(manoeuvre[0], aligned)
             
     @staticmethod
     def alignment_optimisation(manoeuvre: Manoeuvre, template: State, aligned: State):
         return manoeuvre.optimise_alignment(template[0], aligned)
     
     @staticmethod
-    def correction(mdef: ManDef, intended: Manoeuvre, int_tp: State) -> tuple[ManDef, Manoeuvre]:
-        mdef = ManDef(mdef.info, mdef.mps.update_defaults(intended), mdef.eds)
+    def correction(mdef: ManDef, manoeuvre: Manoeuvre, int_tp: State) -> tuple[ManDef, Manoeuvre]:
+        mdef = ManDef(mdef.info, mdef.mps.update_defaults(manoeuvre), mdef.eds)
         return mdef, mdef.create(int_tp[0].transform).add_lines()
 
     @staticmethod
@@ -126,28 +140,28 @@ class ManoeuvreAnalysis:
     @staticmethod
     def build(mdef: ManDef, flown: State):
         itrans = ManoeuvreAnalysis.initial_transform(mdef, flown)
-        man, tp = ManoeuvreAnalysis.template(mdef, itrans)
+        man, tp = ManoeuvreAnalysis.basic_manoeuvre(mdef, itrans)
         success, dist, aligned = ManoeuvreAnalysis.alignment(tp, man, flown)
         if not success:
             raise Exception('Alignment failed')
-        intended, int_tp = ManoeuvreAnalysis.intention(man, aligned, tp)
-        mdef, corr = ManoeuvreAnalysis.correction(mdef, intended, int_tp)
-        intended = intended.copy_directions(corr)
-        int_tp = intended.el_matched_tp(int_tp[0], aligned)
+        manoeuvre, int_tp = ManoeuvreAnalysis.intention(man, aligned, tp)
+        mdef, corr = ManoeuvreAnalysis.correction(mdef, manoeuvre, int_tp)
+        manoeuvre = manoeuvre.copy_directions(corr)
+        int_tp = manoeuvre.el_matched_tp(int_tp[0], aligned)
 
-        return ManoeuvreAnalysis(mdef, aligned, intended, int_tp, corr, corr.create_template(int_tp[0], aligned))
+        return ManoeuvreAnalysis(mdef, aligned, manoeuvre, int_tp, corr, corr.create_template(int_tp[0], aligned))
 
     def optimise_alignment(self):
-        aligned = self.alignment_optimisation(self.intended, self.intended_template, self.aligned)
-        intended, int_tp = ManoeuvreAnalysis.intention(self.intended, aligned, self.intended_template)
-        mdef, corr = ManoeuvreAnalysis.correction(self.mdef, intended, int_tp)
-        return ManoeuvreAnalysis(mdef, aligned, intended, int_tp, corr, 
+        aligned = self.alignment_optimisation(self.manoeuvre, self.template, self.aligned)
+        manoeuvre, int_tp = ManoeuvreAnalysis.intention(self.manoeuvre, aligned, self.template)
+        mdef, corr = ManoeuvreAnalysis.correction(self.mdef, manoeuvre, int_tp)
+        return ManoeuvreAnalysis(mdef, aligned, manoeuvre, int_tp, corr, 
                                  corr.create_template(int_tp[0], aligned))
     
     def plot_3d(self, **kwargs):
         from flightplotting import plotsec, plotdtw
         fig = plotdtw(self.aligned, self.aligned.data.element.unique())
-        #fig = plotsec(self.intended_template, color="red", nmodels=20, fig=fig, **kwargs)
+        #fig = plotsec(self.template, color="red", nmodels=20, fig=fig, **kwargs)
         return plotsec(self.aligned, color="blue", nmodels=20, fig=fig, **kwargs)
         
     def side_box(self):
@@ -180,14 +194,14 @@ class ManoeuvreAnalysis:
         centre_names = []
         for cpid in self.mdef.info.centre_points:
             if cpid == 0:
-                centre_pos = self.intended.elements[cpid].get_data(self.aligned).pos[0]
+                centre_pos = self.manoeuvre.elements[cpid].get_data(self.aligned).pos[0]
             else:
-                centre_pos = self.intended.elements[cpid-1].get_data(self.aligned).pos[-1]
+                centre_pos = self.manoeuvre.elements[cpid-1].get_data(self.aligned).pos[-1]
             centres.append(np.arctan2(centre_pos.x, centre_pos.y)[0])
             centre_names.append(f'centre point {cpid}')
 
         for ceid, fac in self.mdef.info.centred_els:
-            ce = self.intended.elements[ceid].get_data(self.aligned)
+            ce = self.manoeuvre.elements[ceid].get_data(self.aligned)
             centre_pos = ce.pos[int(len(ce) * fac)]
             centres.append(np.arctan2(centre_pos.x, centre_pos.y)[0])
             centre_names.append(f'centred el {ceid}')
@@ -217,10 +231,10 @@ class ManoeuvreAnalysis:
         return Result("distance", [], [],[dist],[dist_dg],dist_key)
 
     def intra(self):
-        return self.intended.analyse(self.aligned, self.intended_template)
+        return self.manoeuvre.analyse(self.aligned, self.template)
 
     def inter(self):
-        return self.mdef.mps.collect(self.intended, self.intended_template)
+        return self.mdef.mps.collect(self.manoeuvre, self.template)
 
     def positioning(self):
         pres = Results('positioning')

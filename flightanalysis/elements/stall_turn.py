@@ -19,8 +19,10 @@ class StallTurn(Element):
             return Measurement.length(fl, tp, g.PY())
         def speed(fl, tp):
             return Measurement.speed(fl, tp, g.PZ(), 'world')
+        def roll_angle(fl, tp):
+            return Measurement.roll_angle_z(fl, tp)
         return DownGrades([
-            DownGrade(Measurement.roll_angle_z, F3A.intra.roll),
+            DownGrade(roll_angle, F3A.intra.roll),
             DownGrade(width, F3A.intra.stallturn_width),
             DownGrade(speed, F3A.intra.stallturn_speed),
         ])

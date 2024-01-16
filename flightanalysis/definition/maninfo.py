@@ -5,7 +5,7 @@ WIP, very vague ideas at the moment.
 
 """
 import numpy as np
-from geometry import Point, Transformation, Euler
+from geometry import Point, Transformation, Euler, P0, PY
 from enum import Enum
 from dataclasses import dataclass, field
 from typing import Tuple
@@ -27,6 +27,7 @@ class Direction(Enum):
     DRIVEN=0
     UPWIND=1
     DOWNWIND=2
+    CROSS=3
 
     def get_wind(self, direction: int=1) -> int:
         return {
@@ -40,7 +41,11 @@ class Direction(Enum):
             Direction.UPWIND: -wind,
             Direction.DOWNWIND: wind
         }[self]
-        
+
+class CrossDirection(Enum):
+    IN=0
+    OUT=1
+    
 
 class Height(Enum):
     BTM=1
@@ -73,12 +78,19 @@ class BoxLocation():
         self.d = d
         self.o = o
     
-    def initial_rotation(self, wind):
-        return Euler(
-            self.o.roll_angle(),
-            0.0,
-            np.pi*(-self.d.get_direction(wind) + 1) / 2 
-        )
+    def initial_rotation(self, wind: int | CrossDirection):
+        if self.d == Direction.CROSS:
+            return Euler(
+                self.o.roll_angle(),
+                0.0,
+                np.pi/2 if wind == CrossDirection.OUT else 3*np.pi/2
+            )
+        else:
+            return Euler(
+                self.o.roll_angle(),
+                0.0,
+                np.pi*(-self.d.get_direction(wind) + 1) / 2 
+            )
 
     def to_dict(self):
         return dict(
@@ -120,7 +132,7 @@ class ManInfo:
             self.start.h.calculate(depth)
         )
 
-    def initial_transform(self, depth: float, wind: int) -> Transformation:
+    def initial_transform(self, depth: float, wind: int, cross: CrossDirection=CrossDirection.OUT) -> Transformation:
         """The default initial position. For a centre manoeuvre this is the box edge, for an end manoeuvre it is the centre
 
         Args:
@@ -130,7 +142,13 @@ class ManInfo:
         Returns:
             Transformation: _description_
         """
-        return Transformation(self.initial_position(depth, wind), self.start.initial_rotation(wind))
+        if self.start.d == Direction.CROSS:
+            return Transformation(
+                P0() if cross==CrossDirection.OUT else PY(depth*2), 
+                self.start.initial_rotation(cross)
+            ) 
+        else:
+            return Transformation(self.initial_position(depth, wind), self.start.initial_rotation(wind))
 
 
     def to_dict(self):
