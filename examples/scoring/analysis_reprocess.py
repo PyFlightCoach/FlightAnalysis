@@ -1,11 +1,11 @@
 from flightanalysis import ScheduleAnalysis, DownGrade, Result
 
-sa = ScheduleAnalysis.from_fcscore("examples/scoring/manual_F3A_F25_24_01_05_00000177_analysis.json")
+sa = ScheduleAnalysis.from_fcscore("examples/scoring/example_analysis_p23.json")
 
-ma=sa[-1]
-ea=ma.e_5_0_break
+ma=sa.M
+ea=ma.e_2
 
-dg: DownGrade = ea.el.intra_scoring.length
+dg: DownGrade = ea.el.intra_scoring.roll_angle
 res: Result = dg(ea.fl, ea.tp)
 
 

@@ -112,9 +112,11 @@ class Measurement:
     def roll_angle_proj(fl: State, tp: State, proj: Point) -> Self:
         """Direction is the body X axis, value is equal to the roll angle error.
         roll angle error is the angle between the body proj vector axis and the 
-        reference frame proj vector. Proj vector should usually be defined by the ke angle of the loop. 
+        reference frame proj vector. 
+        proj normal of the plane to measure roll angles against.
+
         """
-        trfl = fl.to_track() # flown in the track axis
+        trfl = fl#.to_track() # flown in the track axis
         
         rfproj=tp[0].att.transform_point(proj) # proj vector in the ref_frame
         
