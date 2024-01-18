@@ -155,7 +155,7 @@ class Element:
             res2, tp2 = cel2.match_intention(ist2.transform, cfl2).score(ist2, cfl2)
             return res.total + res2.total
         
-        dgs = [get_score(el1, el2, fl1, fl2)]
+        dgs = {0: get_score(el1, el2, fl1, fl2)}
         
         steps=int(len(fl2) > len(fl1)) * 2 - 1
         
@@ -164,23 +164,21 @@ class Element:
             steps=-steps
         else:
             steps+=np.sign(steps)
-            dgs.append(new_dg)
+            dgs[steps] = new_dg
             
         while True:
-            if (steps>0 and len(fl2)<=steps+2) or (steps<0 and len(fl1) <=-steps+2):
+            if (steps>0 and len(fl2)<=steps+3) or (steps<0 and len(fl1) <=-steps+3):
                 break
             new_dg = get_score(el1, el2, *State.shift_multi(steps, fl1, fl2))
-            if new_dg < dgs[-1]:
+            if new_dg < list(dgs.values())[-1]:
                 steps+=np.sign(steps)
-                dgs.append(new_dg)
+                dgs[steps] = new_dg
             else:
                 break
-        print(f'{el1.uid} adjusted by {steps}')
-        return steps - np.sign(steps)
-                
-
-            
-            
+        min_dg_step = np.argmin(np.array(list(dgs.values())))
+        out_steps = list(dgs.keys())[min_dg_step]
+        print(f'{el1.uid} adjusted by {out_steps}')
+        return out_steps
 
 
 class Elements(Collection):
