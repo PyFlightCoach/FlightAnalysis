@@ -31,6 +31,12 @@ class ScheduleAnalysis(Collection):
         
         return ScheduleAnalysis(mas)
 
+    def optimize_alignment(self) -> Self:
+        sa = ScheduleAnalysis()
+        for ma in self:
+            sa.append(ma.optimize_alignment())
+        return sa
+    
     @staticmethod
     def from_fcscore(file: str) -> Self:
         with open(file, 'r') as f:

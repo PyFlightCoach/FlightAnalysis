@@ -2,7 +2,7 @@ from .f3a_p23 import p23_def
 from .f3a_a25 import a25_def
 from .f3a_p25 import p25_def
 from .f3a_f25 import f25_def
-from .imac_unlimited_2024 import sdef as imac_unl2024_def
+from .imac_unlim2024 import sdef as imac_unl2024_def
 from .f3auk_clubman import clubman_def as f3auk_club_def
 from .f3auk_Intermediate import intermediate_def as f3auk_int_def
 

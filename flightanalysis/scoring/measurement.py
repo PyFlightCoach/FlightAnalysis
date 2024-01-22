@@ -232,3 +232,30 @@ class Measurement:
                 tp[0].att.transform_point(wproj)
             )  
         )
+        
+    @staticmethod
+    def curvature(fl:State, tp:State, proj: Point) -> Measurement:
+        """
+        Error in curvature, direction is a vector in the axial direction
+        proj is the ref_frame(tp[0]) axial direction
+        """
+        wproj = tp[0].att.transform_point(proj)
+        
+        trfl = fl.to_track()
+        
+        trproj = trfl.att.inverse().transform_point(wproj)
+        
+        normal_acc = trfl.zero_g_acc() * Point(0,1,1)
+        
+        with np.errstate(invalid='ignore'):
+            c = abs(Point.vector_rejection(normal_acc, trproj)) / trfl.u**2
+            
+#        r = np.minimum(r, 400)
+        return Measurement(
+            c, np.mean(c), 
+            *Measurement._rad_vis(
+                fl.pos, 
+                tp[0].att.transform_point(wproj)
+            )  
+        )
+        

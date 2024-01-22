@@ -67,11 +67,12 @@ class ContRat(Continuous):
         return pd.Series(outd).ffill().bfill().to_numpy()
     
     def prepare(self, values: npt.NDArray, expected: float):
-        endcut = 1
+        endcut = 0
+        window = 20
         sample = np.full(len(values), expected)
-        sample[endcut:-endcut] = values[endcut:-endcut]
+        sample[endcut:-endcut-1] = values[endcut:-endcut-1]
         sample = values
-        if len(sample) <= 22:
+        if len(sample) <= window + endcut * 2:
             return np.full(len(sample), abs(np.mean(sample)))
         else:
             return np.abs(ContRat.convolve(sample, 20))
