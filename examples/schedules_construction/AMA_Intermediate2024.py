@@ -1,4 +1,6 @@
-"""This file defines a Intermediate24 sequence using the ManDef Classes and helper functions."""
+"""This file defines a AMA Intermediate 2024 sequence using PyFligthCoach ManDef Classes and helper functions.
+   Author Angel Espinosa with help from Thomas David
+"""
 
 from flightanalysis.definition import *
 from flightanalysis.elements import *
@@ -173,7 +175,7 @@ Intm24FC_def = SchedDef([
             f3amb.loop(np.pi*2*3/8),
             f3amb.line(c45), 
             f3amb.loop(-np.pi*2*3/8),
-        ], loop_radius = 40, line_length=60),
+        ], loop_radius = 25, line_length=120),
 
    f3amb.create(ManInfo("Split S", "splits", 2, Position.END,
             BoxLocation(Height.TOP, Direction.DOWNWIND, Orientation.UPRIGHT),
@@ -181,7 +183,7 @@ Intm24FC_def = SchedDef([
         ),[
             f3amb.roll("1/2", padded=False), 
             f3amb.loop(np.pi*2/2),
-        ], loop_radius = 90),
+        ], loop_radius = 75),
 
    f3amb.create(ManInfo("Upline 45", "upl45", 2, Position.CENTRE,
             BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
@@ -197,5 +199,5 @@ Intm24FC_def = SchedDef([
 if __name__ == "__main__":
     import os
     #Intm24FC_def.plot().show()
-    
+
     Intm24FC_def.create_fcjs('AMA_Intermediate2024', f'{os.environ['HOME']}/Desktop/templates/')
