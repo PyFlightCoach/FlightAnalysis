@@ -41,50 +41,6 @@ class ManoeuvreAnalysis:
         tp = el.get_data(self.template).relocate(st.pos[0])
         return ElementAnalysis(edef,el,st,tp, el.ref_frame(tp))
 
-    def to_dict(self, scores: bool = False):
-        res = dict(
-            mdef = self.mdef.to_dict(),
-            aligned = self.aligned.to_dict(),
-            manoeuvre = self.manoeuvre.to_dict(),
-            template = self.template.to_dict(),
-            corrected = self.corrected.to_dict(),
-            corrected_template = self.corrected_template.to_dict()
-        )
-        if scores:
-            res['score'] = self.scores().to_dict()
-        return res
-
-    @staticmethod
-    def from_fcs_dict(data: dict, newmdef: ManDef=None):
-        mdef = ManDef.from_dict(data["mdef"]) if newmdef is None else newmdef
-        
-        try:
-            return ManoeuvreAnalysis(
-                mdef,
-                State.from_dict(data["aligned"]['data']),
-                Manoeuvre.from_dict(data["manoeuvre"]),
-                State.from_dict(data["template"]['data']),
-                Manoeuvre.from_dict(data["corrected"]),
-                State.from_dict(data["corrected_template"]['data']),
-            )
-        except KeyError as ex:
-            print(ex)
-            return PartialAnalysis(
-                ManDef.from_dict(data["mdef"]),
-                State.from_dict(data["fl"]['data']),
-            )
-    
-    @staticmethod
-    def from_dict(data:dict):
-        return ManoeuvreAnalysis(
-            ManDef.from_dict(data["mdef"]),
-            State.from_dict(data["aligned"]),
-            Manoeuvre.from_dict(data["manoeuvre"]),
-            State.from_dict(data["template"]),
-            Manoeuvre.from_dict(data["corrected"]),
-            State.from_dict(data["corrected_template"]),
-        )
-
     @property
     def uid(self):
         return self.mdef.uid
@@ -137,14 +93,13 @@ class ManoeuvreAnalysis:
         man, tp = ManoeuvreAnalysis.basic_manoeuvre(mdef, itrans)
         success, dist, aligned = ManoeuvreAnalysis.alignment(tp, man, flown)
         if not success:
-            raise Exception('Alignment failed')
+            return PartialAnalysis(mdef, aligned)
         manoeuvre, int_tp = ManoeuvreAnalysis.intention(man, aligned, tp)
         mdef, corr = ManoeuvreAnalysis.correction(mdef, manoeuvre, int_tp)
         manoeuvre = manoeuvre.copy_directions(corr)
         int_tp = manoeuvre.el_matched_tp(int_tp[0], aligned)
-
-        return ManoeuvreAnalysis(mdef, aligned, manoeuvre, int_tp, corr, corr.create_template(int_tp[0], aligned))
-
+        return ManoeuvreAnalysis(mdef, aligned, manoeuvre, int_tp, corr, corr.create_template(int_tp[0], aligned))  
+    
     def optimise_alignment(self):
         aligned = self.alignment_optimisation(self.manoeuvre, self.template, self.aligned)
         manoeuvre, int_tp = ManoeuvreAnalysis.intention(self.manoeuvre, aligned, self.template)
@@ -267,3 +222,46 @@ class ManoeuvreAnalysis:
             state.get_manoeuvre(mdef.info.short_name)
         )
 
+    def to_dict(self, scores: bool = False):
+        res = dict(
+            mdef = self.mdef.to_dict(),
+            aligned = self.aligned.to_dict(),
+            manoeuvre = self.manoeuvre.to_dict(),
+            template = self.template.to_dict(),
+            corrected = self.corrected.to_dict(),
+            corrected_template = self.corrected_template.to_dict()
+        )
+        if scores:
+            res['score'] = self.scores().to_dict()
+        return res
+
+    @staticmethod
+    def from_fcs_dict(data: dict, newmdef: ManDef=None):
+        mdef = ManDef.from_dict(data["mdef"]) if newmdef is None else newmdef
+        
+        try:
+            return ManoeuvreAnalysis(
+                mdef,
+                State.from_dict(data["aligned"]),
+                Manoeuvre.from_dict(data["manoeuvre"]),
+                State.from_dict(data["template"]),
+                Manoeuvre.from_dict(data["corrected"]),
+                State.from_dict(data["corrected_template"]),
+            )
+        except KeyError as ex:
+            print(ex)
+            return PartialAnalysis(
+                ManDef.from_dict(data["mdef"]),
+                State.from_dict(data["fl"]),
+            )
+    
+    @staticmethod
+    def from_dict(data:dict):
+        return ManoeuvreAnalysis(
+            ManDef.from_dict(data["mdef"]),
+            State.from_dict(data["aligned"]),
+            Manoeuvre.from_dict(data["manoeuvre"]),
+            State.from_dict(data["template"]),
+            Manoeuvre.from_dict(data["corrected"]),
+            State.from_dict(data["corrected_template"]),
+        )
