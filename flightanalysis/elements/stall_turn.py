@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy as np
 import geometry as g
-from flightdata import State, Time
+from flightdata import State
 from .element import Element
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring import Measurement, DownGrade, DownGrades
@@ -30,7 +30,7 @@ class StallTurn(Element):
     def describe(self):
         return f"stallturn, yaw rate = {self.yaw_rate}"
 
-    def create_template(self, istate: State, time: Time=None) -> State:
+    def create_template(self, istate: State, time: g.Time=None) -> State:
         return self._add_rolls(
             istate.copy(rvel=g.P0() ,vel=g.P0()).fill( 
                 Element.create_time(np.pi / abs(self.yaw_rate), time)

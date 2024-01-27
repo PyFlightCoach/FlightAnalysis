@@ -2,8 +2,8 @@
 
 from flightanalysis import Loop, Element
 from pytest import approx, fixture, mark
-from flightdata import State, Time
-from geometry import Transformation, Point, Quaternion, PZ, PX, Euler, P0
+from flightdata import State
+from geometry import Transformation, Point, Quaternion, PZ, PX, Euler, P0, Time
 import numpy as np
 from geometry.testing import assert_almost_equal, assert_equal
 import json 

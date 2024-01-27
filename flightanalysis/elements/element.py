@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy as np
 import pandas as pd
-from flightdata import State, Collection, Time
+from flightdata import State, Collection
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring import Measurement, DownGrade, DownGrades, Results
 import geometry as g
@@ -76,7 +76,7 @@ class Element:
         if time is None:
             n = max(int(np.ceil(duration * State._construct_freq)), 3)
 
-            return Time.from_t(
+            return g.Time.from_t(
                 np.linspace(0, duration, n)
             )
         else:
@@ -132,7 +132,7 @@ class Element:
         return fl.pos[-1] - fl.pos[0]
 
     
-    def create_template(self, istate: State, time: Time=None) -> State:
+    def create_template(self, istate: State, time: g.Time=None) -> State:
         raise Exception('Not available on base class')
 
     def match_intention(self, itrans: g.Transformation, flown: State) -> Self:

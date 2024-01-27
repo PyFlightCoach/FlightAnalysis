@@ -1,8 +1,8 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, Coord, Point, PX, PY, PZ
+from geometry import Transformation, Coord, Point, PX, PY, PZ, Time
 from typing import Union
-from flightdata import State, Time
+from flightdata import State
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring import Measurement, DownGrade, DownGrades
 from . import Element

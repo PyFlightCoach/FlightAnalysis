@@ -41,8 +41,8 @@ class ManoeuvreAnalysis:
         tp = el.get_data(self.template).relocate(st.pos[0])
         return ElementAnalysis(edef,el,st,tp, el.ref_frame(tp))
 
-    def to_dict(self):
-        return dict(
+    def to_dict(self, scores: bool = False):
+        res = dict(
             mdef = self.mdef.to_dict(),
             aligned = self.aligned.to_dict(),
             manoeuvre = self.manoeuvre.to_dict(),
@@ -50,19 +50,13 @@ class ManoeuvreAnalysis:
             corrected = self.corrected.to_dict(),
             corrected_template = self.corrected_template.to_dict()
         )
+        if scores:
+            res['score'] = self.scores().to_dict()
+        return res
 
     @staticmethod
     def from_fcs_dict(data: dict, newmdef: ManDef=None):
         mdef = ManDef.from_dict(data["mdef"]) if newmdef is None else newmdef
-
-        historic_options = dict(
-            mdef = ['mdef'],
-            aligned = ['aligned', 'al'],
-            manoeuvre = ['manoeuvre', 'intended'],
-            template = ['intended_template', 'template'],
-            corrected = ['corrected'],
-            corrected_template = ['corrected_template'],
-        )
         
         try:
             return ManoeuvreAnalysis(
