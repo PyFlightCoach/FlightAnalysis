@@ -11,14 +11,13 @@ elements collection.
 
 """
 from __future__ import annotations
-from typing import List
 import numpy as np
 from flightanalysis.elements import Line, Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo
 from flightdata import State
 from geometry import Transformation, Euler, Point
-from . import ManParm, ManParms, ElDef, ElDefs, Position, Direction
+from . import ManParms, ElDef, ElDefs, Position, Direction
 
 
 class ManDef:
@@ -44,14 +43,12 @@ class ManDef:
             eds = self.eds.to_dict()
         )
 
-
     @staticmethod
     def from_dict(data: dict) -> ManDef:
         info = ManInfo.from_dict(data["info"])
         mps = ManParms.from_dict(data["mps"])
         eds = ElDefs.from_dict(data["eds"], mps)
         return ManDef(info, mps, eds)
-
 
     def create_entry_line(self, itrans: Transformation=None, target_depth=170) -> ElDef:
         """Create a line definition connecting Transformation to the start of this manoeuvre.
@@ -69,7 +66,7 @@ class ManDef:
                 
         heading = np.sign(itrans.rotation.transform_point(Point(1, 0, 0)).x[0]) # 1 for +ve x heading, -1 for negative x
 
-        #Create a template, at zero
+        #Create a template at zero to work out how much space the manoueuvre needs
         man = self._create()
         template = man.create_template(
             State.from_transform(Transformation(
@@ -78,8 +75,9 @@ class ManDef:
         )))
           
         if self.info.start.d == Direction.CROSS:
+            st = State.from_transform(itrans)
             man_l = template.x[-1] - template.x[0]
-            length = man_l - target_depth
+            length = max(target_depth - man_l * st.cross_direction() - st.pos.y[0], 30)
         else:
             if self.info.position == Position.CENTRE:
                 if len(self.info.centre_points) > 0:
@@ -95,29 +93,26 @@ class ManDef:
                     box_edge = np.tan(np.radians(60)) * (np.abs(template.pos.y) + itrans.pos.y[0])
                     man_start_x = min(box_edge - template.pos.x) 
             length = max(man_start_x - itrans.translation.x[0] * heading, 30)
-        return ElDef.build(
-            Line,
-            f"entry_line", 
-            30.0, 
-            length, 
-            0)
 
-    def create(self, itrans=None, depth=None, wind=None) -> Manoeuvre:
+        return ElDef.build(Line, "entry_line", 30.0, length, 0)
+
+    def create(self, itrans=None, depth=None, wind=None, cross=None) -> Manoeuvre:
         """Create the manoeuvre based on the default values in self.mps.
 
         Returns:
             Manoeuvre: The manoeuvre
         """
-        
-        return Manoeuvre(
-            self.create_entry_line(
-                self.info.initial_transform(depth, wind) if itrans is None else itrans
-            )(self.mps),
-            Elements([ed(self.mps) for ed in self.eds]), 
-            None,
-            uid=self.info.short_name
-        )
-
+        try:
+            return Manoeuvre(
+                self.create_entry_line(
+                    self.info.initial_transform(depth, wind, cross) if itrans is None else itrans
+                )(self.mps),
+                Elements([ed(self.mps) for ed in self.eds]), 
+                None,
+                uid=self.info.short_name
+            )
+        except Exception as e:
+            raise Exception(f"Error creating manoeuvre {self.info.short_name} due to: {e}") from e
     def _create(self) -> Manoeuvre:
         return Manoeuvre(
             None,

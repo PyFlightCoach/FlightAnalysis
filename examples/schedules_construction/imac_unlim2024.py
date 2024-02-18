@@ -1,6 +1,4 @@
-from flightanalysis.definition import *
-from flightanalysis.elements import *
-from flightanalysis.scoring.criteria import *
+from flightanalysis import SchedDef, ManInfo, BoxLocation, Position, Orientation, Height, Direction, imacmb, r, ManParm, Combination
 import numpy as np
 
 

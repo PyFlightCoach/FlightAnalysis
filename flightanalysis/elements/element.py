@@ -10,6 +10,10 @@ import inspect
 from typing import Self, Tuple
 
 
+class ElementError(Exception):
+    pass
+
+
 class Element:   
     parameters = ["speed"]
 

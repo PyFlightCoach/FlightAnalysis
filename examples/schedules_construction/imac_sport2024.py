@@ -1,8 +1,5 @@
-from flightanalysis.definition import *
-from flightanalysis.elements import *
-from flightanalysis.scoring.criteria import *
+from flightanalysis import SchedDef, ManInfo, BoxLocation, Position, Orientation, Height, Direction, imacmb, r
 import numpy as np
-from collections import namedtuple
 
 
 c45 = np.cos(np.radians(45))
@@ -80,9 +77,11 @@ sdef = SchedDef([
             start=BoxLocation(Height.BTM, Direction.CROSS, Orientation.UPRIGHT),
             end=BoxLocation(Height.BTM, Direction.DOWNWIND)
         ),[
-            imacmb.spin(r(-1.75)),
-            imacmb.line(length = 125),
-            imacmb.loop(r(1/4)),
+            imacmb.loop(r(0.25)),
+            imacmb.line(),
+            imacmb.loop(r(1/2)),
+            imacmb.roll('2x8'),
+            imacmb.loop(r(1/4))
         ]
     ),
     imacmb.create(ManInfo(
@@ -91,9 +90,10 @@ sdef = SchedDef([
             end=BoxLocation(Height.BTM)
         ),[
             imacmb.loop(r(1/8)),
-            imacmb.roll(r(1)),
+            imacmb.roll(r(1), line_length=100/c45),
             imacmb.loop(r(5/8)),
-            imacmb.roll(r(1/2)),
+            imacmb.roll(r(1/2), line_length=100),
+            imacmb.loop(r(1/4))
         ]
     ),
     imacmb.create(ManInfo(
@@ -102,7 +102,7 @@ sdef = SchedDef([
             end=BoxLocation(Height.BTM)
         ),[
             imacmb.loop(r(1/4)),
-            imacmb.roll('rx4'),
+            imacmb.roll('2x4'),
             imacmb.stallturn(),
             imacmb.roll(r(1/2)),
             imacmb.loop(r(1/4)),
@@ -115,14 +115,13 @@ sdef = SchedDef([
         ),[
             imacmb.loop(r(1/4)),
             imacmb.line(),
-            imacmb.loop(r(3/4), roll=1, rollangle=r(1/4)),
-            imacmb.roll('2x4'),
+            imacmb.loop(r(3/4), rolls=1, rollangle=r(1/4)),
+            imacmb.roll('2x4', padded=False),
         ]
     ),
 ])
 
 
-110
 if __name__ == "__main__":
 
  

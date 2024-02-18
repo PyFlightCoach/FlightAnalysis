@@ -63,7 +63,7 @@ class SchedDef(Collection):
 
             itrans=Transformation(
                 ipos if len(templates) == 0 else templates[-1][-1].pos,
-                md.info.start.initial_rotation(wind)
+                md.info.start.initial_rotation(wind) if len(templates) == 0 else templates[-1][-1].att
             )
             man = md.create(itrans)
             templates.append(man.create_template(itrans))

@@ -74,8 +74,10 @@ class ElDef:
                 else:
                     raise TypeError(f"Invalid prop type {prop.__class__.__name__}")
             
-
-        return self.Kind(uid=self.name, **el_kwargs) 
+        try:
+            return self.Kind(uid=self.name, **el_kwargs) 
+        except Exception as e:
+            raise Exception(f"Error creating {self.name}, a {self.Kind.__name__} with {el_kwargs}") from e
     
     def build(Kind, name, *args, **kwargs):
         elargs = list(inspect.signature(Kind.__init__).parameters)[1:-1]
