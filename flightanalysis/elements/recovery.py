@@ -23,7 +23,7 @@ class Recovery(Element):
             DownGrade(Measurement.track_z, F3A.single.track),
             DownGrade(Measurement.track_y, F3A.single.track),
             DownGrade(length, F3A.intra.recovery_length),
-            DownGrade(Measurement.roll_angle, F3A.single.roll)
+            DownGrade(Measurement.roll_angle, F3A.intra.roll)
         ])
 
     def create_template(self, istate: State, time: Time=None) -> State:

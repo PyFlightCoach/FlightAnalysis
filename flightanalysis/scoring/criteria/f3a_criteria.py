@@ -1,6 +1,5 @@
 from flightanalysis.scoring.criteria import *
 
-
 class F3ASingle:
     track=Single(Exponential(3.8197186342054885,0.9999999999999999, 100 ))
     roll=Single(Exponential(2.872721387028467,1.6309297535714575, 100 ))
@@ -12,11 +11,11 @@ class F3AIntra:
     radius=ContRat(Exponential(0.5,1.2920296742201793, 2 ))
     speed=ContRat(Exponential(0.15,1.0, 1 ))
     roll_rate=ContRat(Exponential(0.15,1.0, 1 ))
-    stallturn_speed=InsideBound(Exponential(0.029597130233470013,1.7564707973660307, 10 ), [-2, 2])
-    stallturn_width=InsideBound(Exponential(0.029597130233470013,1.7564707973660307, 10 ), [-2, 2])
-    spin_entry_length=MaxBound(Exponential(0.029597130233470013,1.7564707973660307, 10 ), 5)
-    pitch_break_length=MaxBound(Exponential(0.029597130233470013,1.7564707973660307, 10 ), 2)
-    recovery_length=MaxBound(Exponential(0.029597130233470013,1.7564707973660307, 10 ), 3)
+    stallturn_speed=InsideBound(Exponential(0.08879139070041006,1.75647079736603, 10 ), [-2, 2])
+    stallturn_width=InsideBound(Exponential(0.14798565116735013,1.75647079736603, 10 ), [-2, 2])
+    spin_entry_length=InsideBound(Exponential(0.08879139070041006,1.75647079736603, 10 ), [-5, 5])
+    pitch_break_length=InsideBound(Exponential(0.5,2.3219280948873626, 10 ), [-2, 2])
+    recovery_length=MaxBound(Exponential(0.5,2.3219280948873626, 10 ), 2)
 class F3AInter:
     radius=Comparison(Exponential(1.0,0.4306765580733931, 2 ))
     speed=Comparison(Exponential(0.25,0.8613531161467862, 10 ))

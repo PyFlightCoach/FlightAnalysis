@@ -258,4 +258,9 @@ class Measurement:
                 tp[0].att.transform_point(wproj)
             )  
         )
+    
+    @staticmethod
+    def turns(fl: State, tp: State) -> Measurement:
+        fl_turns = fl.rvel.cumsum() * fl.dt
+        tp_turns = tp.rvel.cumsum() * fl.dt
         

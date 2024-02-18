@@ -3,7 +3,7 @@ import numpy as np
 from flightanalysis import *
 from flightdata import State
 
-if True:
+if False:
     mdef = f3amb.create(ManInfo(
             "Square on Corner", "sLoop", k=4, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
@@ -28,8 +28,8 @@ if True:
         line_length=70
         )
 else:
-    from imac_unlimited_2024 import  sdef
-    mdef = sdef[7]
+    from f3a_p25 import p25_def as sdef
+    mdef = sdef.iSpin
 
 #mdef.mps.top_roll_option.default = 1
 

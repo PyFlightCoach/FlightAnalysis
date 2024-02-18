@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, PX, PY, PZ, Time
+from geometry import Transformation, PX, PY, PZ, Time, Point
 from flightdata import State
 from .element import Element
 from .loop import Loop
@@ -23,8 +23,12 @@ class NoseDrop(Element):
         '''TODO check alpha is increasing'''
         def length(fl, tp):
             return Measurement.length(fl, tp, PX())
+        def roll_angle(fl, tp):
+            return Measurement.roll_angle_proj(fl, tp, PY())
+        
         return DownGrades([
-            DownGrade(length, F3A.intra.spin_entry_length)
+            DownGrade(length, F3A.intra.spin_entry_length),
+            DownGrade(roll_angle, F3A.intra.roll)
         ])
 
     def create_template(self, istate: State, time: Time=None) -> State:
@@ -53,7 +57,7 @@ class NoseDrop(Element):
         return self.set_parms(
             speed = _speed,
             radius = loop.radius,
-            break_angle = abs(np.arctan2(flown.vel.z, flown.vel.x)[-1])
+            break_angle = self.break_angle,#abs(np.arctan2(flown.vel.z, flown.vel.x)[-1])
         )
 
     
