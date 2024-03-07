@@ -11,6 +11,14 @@ from dataclasses import dataclass
 from flightanalysis.data import list_resources, get_json_resource
 from json import dump
 
+
+fcj_schedule_names = {
+    'f3a': ['F3A', 'F3A FAI'],
+    'nsrca': ['F3A US'],
+    'f3auk': ['F3A UK'],
+    'imac': ['IMAC']
+}
+
 @dataclass
 class ScheduleInfo:
     category: str
@@ -34,7 +42,13 @@ class ScheduleInfo:
 
     @staticmethod
     def from_fcj_sch(fcj):
-        return ScheduleInfo(fcj[0].lower(), fcj[1].lower())
+        for k, v in fcj_schedule_names.items():
+            if fcj[0] in v:
+                return ScheduleInfo(k, fcj[1])
+        raise ValueError(f"Unknown schedule {fcj}")    
+
+    def to_fcj_sch(self):
+        return [fcj_schedule_names[self.category][-1], self.name]
 
     @staticmethod
     def build(category, name):
@@ -124,7 +138,7 @@ class SchedDef(Collection):
         
         return State.stack(sts, 0)
 
-    def create_fcj(self, sname: str, path: str, wind=1, scale=1, kind='F3A'):
+    def create_fcj(self, sname: str, path: str, wind=1, scale=1, kind='f3a'):
         sched, template = self.create_template(170, 1)
         template = State.stack([
             template, 
@@ -139,7 +153,7 @@ class SchedDef(Collection):
         fcj = self.label_exit_lines(template).create_fc_json(
             [0] + [man.info.k for man in self] + [0],
             sname,
-            kind
+            fcj_schedule_names[kind.lower()][-1]
         )
             
         with open(path, 'w') as f:
