@@ -1,11 +1,12 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, P0, PX, PY, PZ, Point, Time
+from geometry import Transformation, P0, PX, Time
 from flightdata import State
 
-from .element import Element
+from .element import Element, ElementError
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring import Measurement, DownGrade, DownGrades
+
 
 
 class Line(Element):
@@ -15,6 +16,8 @@ class Line(Element):
         super().__init__(uid, speed)
         self.length = length
         self.roll = roll
+        if length <= 0:
+            raise ElementError(f"Error creating {self.__repr__()}, length must be positive")
     
     @property
     def intra_scoring(self) -> DownGrades:

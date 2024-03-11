@@ -4,8 +4,7 @@ from numpy._typing import NDArray
 import numpy.typing as npt
 from dataclasses import dataclass
 from .. import Criteria
-from geometry import Point
-from flightanalysis.scoring import Result, Results, Measurement
+from flightanalysis.scoring import Result, Measurement
 from typing import Union
 
 

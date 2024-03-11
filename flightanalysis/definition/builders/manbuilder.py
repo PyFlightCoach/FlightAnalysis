@@ -1,11 +1,7 @@
-from .. import ManDef, ManParm, ManParms, ElDef, ElDefs, DummyMPs
-from flightanalysis.elements import *
-
-from typing import Dict, Any, Callable
-from numbers import Number
+from flightanalysis.definition import ManDef, ManParm, ManParms, ElDef, ElDefs, DummyMPs, Opp
+from typing import Dict, Callable
 from functools import partial
-from .elbuilders import *
-from numbers import Number
+from .elbuilders import line, loopmaker, rollmaker, stallturn, spin
 import numpy as np
 
 class MBTags:
@@ -19,10 +15,11 @@ def centred(elb):
 c45 = np.cos(np.radians(45))
 
 def r(turns):
-    
     return 2 * np.pi * np.array(turns)
 
 dp = DummyMPs()
+
+
 
 class ManBuilder():
     def __init__(self, mps: ManParms, mpmaps:Dict[str, dict]):
@@ -53,7 +50,7 @@ class ManBuilder():
                 if isinstance(a, str):
                     try:
                         a = ManParm.parse(a, md.mps)
-                    except Exception as e:
+                    except Exception:
                         pass
                 full_kwargs[k] = a
             
@@ -76,18 +73,25 @@ class ManBuilder():
                 else:
                     mps.add(ManParm.parse(v, mps, k))
         md = ManDef(maninfo, mps)
-        for em in elmakers:
+        for i, em in enumerate(elmakers):
             if isinstance(em, int):
                 if em == MBTags.CENTRE:
                     md.info.centre_points.append(len(md.eds.data))
             else:
                 c1 = len(md.eds.data)
-                new_eds = em(md)
+                try:
+                    new_eds = em(md)    
+                except Exception as ex:
+                    raise Exception(f"Error running elmaker {i} of {md.info.name}") from ex
+
+
                 c2 = len(md.eds.data)
 
                 if hasattr(em, 'centred'):
                     if c2 - c1 == 1:
+                        
                         md.info.centred_els.append((c1, 0.5))
+                            
                     else:
                         ceid, fac = ElDefs(new_eds).get_centre(mps) 
                         if abs(int(fac) - fac) < 0.05:
