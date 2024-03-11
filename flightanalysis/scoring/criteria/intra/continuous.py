@@ -18,8 +18,11 @@ class Continuous(Criteria):
         increasing = np.sign(np.diff(np.abs(arr)))>0
         last_downgrade = np.column_stack([increasing[:-1], increasing[1:]])
         peaks = np.sum(last_downgrade.astype(int) * [10,1], axis=1) == (1 if rev else 10)
-        last_val = False if rev else increasing[-1]
-        first_val = increasing[0] if rev else False
+        last_val = increasing[-1]
+        first_val = not increasing[0]
+        if rev:
+            last_val = not last_val
+            first_val = not first_val
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
     def __call__(self, name: str, m: Measurement) -> Result:
@@ -32,29 +35,16 @@ class Continuous(Criteria):
             peak_locs, trough_locs
         )
         
-        return Result(name, m, sample, mistakes, self.lookup(mistakes) * self.visibility(m, dgids), dgids)
+        return Result(
+            name, m, sample, mistakes, 
+            self.lookup(mistakes) * self.visibility(m, dgids), 
+            dgids
+        )
         
     
     def visibility(self, measurement, ids):
         rids = np.concatenate([[0], ids])
         return np.array([np.mean(measurement.visibility[a:b]) for a, b in zip(rids[:-1], rids[1:])])
-        
-
-class ContAbs(Continuous):
-    def prepare(self, value: npt.NDArray, expected: float):
-        return  value - expected
-
-    @staticmethod
-    def mistakes(data, peaks, troughs):
-        '''All increases away from zero are downgraded (only peaks)'''
-        return np.abs(data[peaks] - data[troughs])
-
-    @staticmethod
-    def dgids(ids, peaks, troughs):
-        return ids[peaks]
-
-
-class ContRat(Continuous):
 
     @staticmethod
     def convolve(data, width):
@@ -65,6 +55,27 @@ class ContRat(Continuous):
         ld = (len(data) - len(conv))/2
         outd[int(np.ceil(ld)):-int(np.floor(ld))] = conv
         return pd.Series(outd).ffill().bfill().to_numpy()
+
+
+class ContAbs(Continuous):
+    def prepare(self, value: npt.NDArray, expected: float):
+        
+        return  value - expected
+
+    @staticmethod
+    def mistakes(data, peaks, troughs):
+        '''All increases away from zero are downgraded (only peaks)'''
+        last_trough = -1 if troughs[-1] else None
+        first_peak = 1 if peaks[0] else 0
+        return np.abs(data[first_peak:][peaks[first_peak:]] - data[:last_trough][troughs[:last_trough]])
+
+    @staticmethod
+    def dgids(ids, peaks, troughs):
+        first_peak = 1 if peaks[0] else 0
+        return ids[first_peak:][peaks[first_peak:]]
+
+
+class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
         endcut = 0
@@ -75,16 +86,16 @@ class ContRat(Continuous):
         if len(sample) <= window + endcut * 2:
             return np.full(len(sample), abs(np.mean(sample)))
         else:
-            return np.abs(ContRat.convolve(sample, 20))
+            return np.abs(Continuous.convolve(sample, 20))
         
     @staticmethod
     def mistakes(data, peaks, troughs):
         '''All changes are downgraded (peaks and troughs)'''
-        values = np.concatenate([[data[0]], data[peaks + troughs]])
+        values = data[peaks + troughs]
         return np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:]) - 1
     
     @staticmethod
     def dgids(ids, peaks, troughs):
-        return ids[peaks + troughs]
+        return ids[peaks + troughs][1:]
     
          

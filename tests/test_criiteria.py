@@ -1,5 +1,5 @@
 from pytest import fixture, mark
-from flightanalysis.scoring.criteria import Single, Exponential, Criteria, Combination, ContRat, ContAbs, Comparison, MaxBound, InsideBound, OutsideBound
+from flightanalysis.scoring.criteria import Single, Exponential, Criteria, Combination, ContRat, ContAbs, Comparison, MaxBound, InsideBound, OutsideBound, Continuous
 from flightanalysis.scoring import Measurement
 from numpy.testing import assert_array_almost_equal
 import numpy as np
@@ -155,3 +155,46 @@ def test_outside_below(outside: OutsideBound):
     sample = outside.prepare(np.full(11, -2), 0)
     np.testing.assert_array_equal(sample, np.zeros(11))
     
+
+def test_get_peak_locs():
+    res = Continuous.get_peak_locs(np.array([0,1,2,1,0,1,2,1,0,1,2]))
+    np.testing.assert_array_equal(np.linspace(0,10,11).astype(int)[res], [2,6,10])
+
+    res = Continuous.get_peak_locs(np.array([0,1,2,1,0,1,2,1,0,1,2]), True)
+    np.testing.assert_array_equal(np.linspace(0,10,11).astype(int)[res], [0,4,8])
+
+    res = Continuous.get_peak_locs(np.array([2,1,0,1,2,1,0,1,2,1,0]))
+    np.testing.assert_array_equal(np.linspace(0,10,11).astype(int)[res], [0,4,8])
+
+    res = Continuous.get_peak_locs(np.array([2,1,0,1,2,1,0,1,2,1,0]), True)
+    np.testing.assert_array_equal(np.linspace(0,10,11).astype(int)[res], [2,6,10])
+
+
+def mistakes_inputs(data):
+    return data, Continuous.get_peak_locs(data), Continuous.get_peak_locs(data, True)
+
+def test_contabs_mistakes():
+    data = np.array([0,1,2,1,0,1,2,1,0,1,2,1,0])
+    np.testing.assert_array_equal(
+        ContAbs.mistakes(*mistakes_inputs(data)), 
+        [2,2,2]
+    )
+
+    data = np.array([2,1,0,1,2,1,0,1,2,1,0,1,2])
+    np.testing.assert_array_equal(
+        ContAbs.mistakes(*mistakes_inputs(data)), 
+        [2,2,2]
+    )
+
+def test_contrat_mistakes():
+    data = np.array([0,1,2,1,0,1,2,1,0,1,2,1,0]) + 2
+    np.testing.assert_array_equal(
+        ContRat.mistakes(*mistakes_inputs(data)), 
+        [1,1,1,1,1,1]
+    )
+
+    data = 4 - np.array([0,1,2,1,0,1,2,1,0,1,2,1,0])
+    np.testing.assert_array_equal(
+        ContRat.mistakes(*mistakes_inputs(data)), 
+        [1,1,1,1,1,1]
+    )

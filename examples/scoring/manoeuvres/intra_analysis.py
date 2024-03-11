@@ -1,18 +1,15 @@
 from flightanalysis import ManoeuvreAnalysis as MA, ElementAnalysis as EA
-from json import load, dumps
-import numpy as np
+from json import load
 
 with open('examples/scoring/manoeuvres/mans/tHat_opt.json', 'r') as f:
     ma = MA.from_dict(load(f))
 
-from flightplotting import plotsec
 from flightplotting.traces import vectors
 from flightanalysis.scoring import Result, DownGrade
 
 ea = ma[0]
 
-
-dg: DownGrade = ea.el.intra_scoring.radius
+dg: DownGrade = ea.el.intra_scoring.track_y
 res: Result = dg(ea.fl, ea.tp)
 
 
