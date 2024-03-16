@@ -1,8 +1,8 @@
 
 from flightdata import State
 from typing import Self
-from flightanalysis.definition import ElDef
-from flightanalysis.elements import Element
+from flightanalysis import ElDef, Element, ManParms
+
 from dataclasses import dataclass
 import geometry as g
 
@@ -10,6 +10,7 @@ import geometry as g
 @dataclass
 class ElementAnalysis:
     edef:ElDef
+    mps: ManParms
     el: Element
     fl: State
     tp: State
@@ -24,8 +25,10 @@ class ElementAnalysis:
 
     @staticmethod
     def from_dict(data) -> Self:
+        mps = ManParms.from_dict(data['mps'])
         return ElementAnalysis(
-            ElDef.from_dict(data['edef']),
+            ElDef.from_dict(data['edef'], mps),
+            mps,
             Element.from_dict(data['el']),
             State.from_dict(data['fl']),
             State.from_dict(data['tp']),

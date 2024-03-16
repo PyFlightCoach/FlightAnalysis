@@ -1,5 +1,5 @@
 from flightanalysis import ManoeuvreAnalysis as MA, ElementAnalysis as EA
-from json import load
+from json import load, dump
 
 with open('examples/scoring/manoeuvres/mans/tHat_opt.json', 'r') as f:
     ma = MA.from_dict(load(f))
@@ -9,7 +9,9 @@ from flightanalysis.scoring import Result, DownGrade
 
 ea = ma[0]
 
-dg: DownGrade = ea.el.intra_scoring.track_y
+#dump(ea.to_dict(), open('tests/test_schedule/test_element/loop_analysis.json', 'w'))
+
+dg: DownGrade = ea.el.intra_scoring.roll_angle
 res: Result = dg(ea.fl, ea.tp)
 
 

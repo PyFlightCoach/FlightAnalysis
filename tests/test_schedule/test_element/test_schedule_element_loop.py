@@ -1,13 +1,13 @@
 
 
-from flightanalysis import Loop, Element
+from flightanalysis import Loop, Element, ElementAnalysis
 from pytest import approx, fixture, mark
 from flightdata import State
-from geometry import Transformation, Point, Quaternion, PZ, PX, Euler, P0, Time
+from geometry import Transformation, Point, PX, Euler, P0, Time
 import numpy as np
-from geometry.testing import assert_almost_equal, assert_equal
+from geometry.testing import assert_almost_equal
 import json 
-from flightplotting import plotsec
+
 
 @fixture
 def half_loop():
@@ -16,7 +16,6 @@ def half_loop():
 @fixture
 def hl_template(half_loop):
     return half_loop.create_template(State.from_transform(Transformation(), vel=PX(30)))
-
 
 def test_create_template_no_t(half_loop, hl_template):
     assert_almost_equal(
@@ -29,6 +28,8 @@ def test_create_template_no_t(half_loop, hl_template):
         Point(1, 0, -half_loop.diameter),
         2
     )
+
+
 
 
 def test_create_template_ke_angles():
@@ -139,3 +140,22 @@ def test_create_template_new_time(half_loop: Loop):
     plotsec(tp, nmodels=10).show()
     assert sum((tp.q * tp.dt)[:-1]) == approx(np.pi, abs=1e-3)
     
+
+@fixture
+def loop_analysis():
+    return ElementAnalysis.from_dict(
+        json.load(open("tests/test_schedule/test_element/loop_analysis.json"))
+    )
+
+
+def test_loop_template_gen(loop_analysis):
+    
+    ea = loop_analysis
+    tp = ea.el.create_template(ea.tp[0], ea.fl.time)
+
+    np.testing.assert_array_almost_equal(
+        tp.rvel.data,
+        tp.att.body_diff(tp.dt).data,
+        1e-5
+    )
+    pass

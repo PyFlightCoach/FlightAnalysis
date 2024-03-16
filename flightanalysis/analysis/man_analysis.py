@@ -39,7 +39,7 @@ class ManoeuvreAnalysis:
         el = getattr(self.manoeuvre.elements, edef.name)
         st = el.get_data(self.aligned)
         tp = el.get_data(self.template).relocate(st.pos[0])
-        return ElementAnalysis(edef,el,st,tp, el.ref_frame(tp))
+        return ElementAnalysis(edef, self.mdef.mps, el, st, tp, el.ref_frame(tp))
 
     @property
     def uid(self):

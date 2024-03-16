@@ -7,7 +7,7 @@ from flightanalysis import ScheduleAnalysis, ManoeuvreAnalysis
 with open("examples/data/manual_F3A_P23_22_05_31_00000350.json", "r") as f:
     data = load(f)
 
-flight = Flight.from_fc_json(data).remove_time_flutter().butter_filter(4,5)
+flight = Flight.from_fc_json(data).butter_filter(4,5)
 box = Origin.from_fcjson_parmameters(data["parameters"])
 state = State.from_flight(flight, box).splitter_labels(data["mans"])
 sdef = SchedDef.load(data["parameters"]["schedule"][1])

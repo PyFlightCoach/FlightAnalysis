@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, Coord, Point, PX, PY, PZ, Time
+from geometry import Transformation, Point, PX, Time
 from typing import Union
 from flightdata import State
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
@@ -51,7 +51,7 @@ class Loop(Element):
         return _intra_scoring
 
     def describe(self):
-        d1 = "loop" if self.roll==0 else f"rolling loop"
+        d1 = "loop" if self.roll==0 else "rolling loop"
         return f"{d1}, radius = {self.radius} m, rolls = {self.roll}"
 
     @property

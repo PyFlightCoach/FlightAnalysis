@@ -5,7 +5,7 @@ from flightdata import State, Collection
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring import Measurement, DownGrade, DownGrades, Results
 import geometry as g
-from json import load, dumps
+from json import load
 import inspect
 from typing import Self, Tuple
 
@@ -63,28 +63,22 @@ class Element:
         return lambda data: pd.Series(data, index=index)
 
     def analyse(self, flown:State, template:State) -> Results:
-#        fl =  self.setup_analysis_state(flown, template)
-#        tp =  self.setup_analysis_state(template, template)
         return self.intra_scoring.apply(self, flown, template)
 
     def analyse_exit(self, fl, tp) -> Results:
-        #fl =  self.setup_analysis_state(flown, template)
-        #tp =  self.setup_analysis_state(template, template)
         return self.exit_scoring.apply(self, fl, tp)
 
     def ref_frame(self, template: State) -> g.Transformation:
         return template[0].transform
 
     @staticmethod
-    def create_time(duration: float, time: Time=None):
+    def create_time(duration: float, time: g.Time=None):
         if time is None:
             n = max(int(np.ceil(duration * State._construct_freq)), 3)
-
             return g.Time.from_t(
                 np.linspace(0, duration, n)
             )
         else:
-            #probably want to extend by one timestep
             return time.reset_zero().scale(duration)
 
     @property
@@ -181,7 +175,7 @@ class Element:
                 break
         min_dg_step = np.argmin(np.array(list(dgs.values())))
         out_steps = list(dgs.keys())[min_dg_step]
-        print(f'{el1.uid} adjusted by {out_steps}')
+        
         return out_steps
 
 

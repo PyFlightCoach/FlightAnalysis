@@ -5,14 +5,9 @@
     a local minimizer is then run to find the minimum intra element downgrade, 
     which corresponds to the split moving back to the correct location.
 '''
-
-from flightdata import *
-from flightanalysis import *
-import geometry as g
 import numpy as np
-from flightplotting import plotdtw, axis_rate_traces
-import plotly.graph_objects as go
-import plotly.express as px
+from flightanalysis import ManInfo, f3amb, BoxLocation, Height, Direction, Orientation, Position, loop
+from flightplotting import plotdtw
 from time import time
 
 mdef = f3amb.create(ManInfo(
@@ -20,7 +15,7 @@ mdef = f3amb.create(ManInfo(
     start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
     end=BoxLocation(Height.TOP)
 ),[
-    f3amb.loop(np.pi),
+    loop(np.pi),
 ])
 
 itrans = mdef.info.initial_transform(170, 1)
