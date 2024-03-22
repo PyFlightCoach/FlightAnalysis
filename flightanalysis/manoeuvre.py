@@ -3,11 +3,10 @@ from geometry import Transformation, PX
 from typing import List, Union, Tuple, Self
 import numpy as np
 from dataclasses import dataclass
-
-
 from flightdata.state import State
 from flightanalysis.elements import Elements, Element, Line, Autorotation
-from flightanalysis.scoring import *
+from flightanalysis.scoring import Results, ElementsResults
+from loguru import logger
 
 
 @dataclass
@@ -81,9 +80,9 @@ class Manoeuvre:
         templates = []
         els = self.all_elements()
         for i, element in enumerate(els):
-            time = element.get_data(aligned).time if not aligned is None else None
+            time = element.get_data(aligned).time if aligned is not None else None
 
-            if i < len(els)-1 and not time is None:
+            if i < len(els)-1 and time is not None:
                 time = time.extend()
             templates.append(element.create_template(istate, time))
             istate = templates[-1][-1]
@@ -146,11 +145,14 @@ class Manoeuvre:
         tp=self.entry_line.get_data(template).relocate(fl.pos[0])
         
         ers = [Results(self.entry_line.uid, self.entry_line.analyse_exit(fl, tp))]
+        logger.debug(f'Intra analysis of entry line complete, total dg = {ers[-1].total}')
 
         for el in self.elements:
             fl = el.get_data(flown)
             tp = el.get_data(template).relocate(fl.pos[0])
             ers.append(Results(el.uid, el.analyse(fl, tp)))
+            logger.debug(f'Intra analysis of {el.uid} complete, total dg = {ers[-1].total}')
+
         return ElementsResults(ers)
 
     def optimise_alignment(self, istate: State, aligned: State) -> Tuple(Self, State):
@@ -160,12 +162,11 @@ class Manoeuvre:
         for eln1, eln2 in zip(elns[:-1], elns[1:]):
             fl1, fl2 = aligned.get_element(eln1), aligned.get_element(eln2)
             steps = Element.optimise_split(istate, els[eln1], els[eln2], fl1, fl2)
+            logger.debug(f'Adjusting split between {eln1} and {eln2} by {steps} steps')
             if not steps == 0:
                 aligned = aligned.shift_label(steps, 2, manoeuvre=self.uid, element=eln1)
             istate = els[eln1].create_template(istate)[-1]
-        
         return aligned
-
     
     def descriptions(self):
         return [e.describe() for e in self.elements]

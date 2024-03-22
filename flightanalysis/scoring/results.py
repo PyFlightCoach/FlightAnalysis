@@ -177,7 +177,7 @@ class ManoeuvreResults:
     positioning: Results
 
     def summary(self):
-        return {k: v.total for k, v in self.__dict__.items() if not v is None} 
+        return {k: v.total for k, v in self.__dict__.items() if v is not None} 
 
     def score(self):
         return max(0, 10 - sum([v for v in self.summary().values()]))

@@ -1,16 +1,21 @@
+from __future__ import annotations
 from typing import Self, Union
 from json import load, dump
 from flightdata import Flight, State, Origin, Collection
 from flightanalysis.definition import SchedDef, ScheduleInfo
-from .man_analysis import ManoeuvreAnalysis
+from . import manoeuvre_analysis as analysis
 from flightdata.base import NumpyEncoder
+from loguru import logger
+from joblib import Parallel, delayed
+import os
 
 
 class ScheduleAnalysis(Collection):
-    VType=ManoeuvreAnalysis
-
+    VType=analysis.Analysis
+    uid='name'
+    
     @staticmethod
-    def from_fcj(file: Union[str, dict]) -> Self:
+    def from_fcj(file: Union[str, dict]) -> ScheduleAnalysis:
         if isinstance(file, str):
             with open(file, 'r') as f:
                 data = load(f)
@@ -25,26 +30,45 @@ class ScheduleAnalysis(Collection):
             data["mans"],
             [m.info.short_name for m in sdef]
         )
-        mas=[]
-        for mdef in sdef:
-            mas.append(ManoeuvreAnalysis.build(
+
+        direction = state.get_manoeuvre(0)[0].direction()[0]
+
+        return ScheduleAnalysis(
+            [analysis.Basic(
                 mdef, 
-                state.get_manoeuvre(mdef.info.short_name)
-            ))
+                state.get_manoeuvre(mdef.info.short_name), 
+                direction,
+                analysis.AlinmentStage.SETUP
+            ) for mdef in sdef]
+        )
+    
+    def run_all(self) -> Self:
+
+        def parse_analyse_serialise(pad):
+            return analysis.Basic.from_dict(pad).run_all().to_dict()
         
-        sa =  ScheduleAnalysis(mas)
-        
-        return sa
+        logger.info(f'Starting {os.cpu_count()} analysis processes')
+        padicts = [ma.to_dict() for ma in self]
+        madicts = Parallel(n_jobs=os.cpu_count())(
+            delayed(parse_analyse_serialise)(pad) for pad in padicts
+        )
+        return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts])
         
     def optimize_alignment(self) -> Self:
-        mas = []
-        for ma in self:
-            mas.append(ma.optimise_alignment())
-        return ScheduleAnalysis(mas)
+
+        def parse_analyse_serialise(mad):
+            an = analysis.Complete.from_dict(mad)
+            an.stage = analysis.AlinmentStage.SECONDARY
+            return an.run_all().to_dict()
+
+        logger.info(f'Starting {os.cpu_count()} alinment optimisation processes')
+        inmadicts = [mdef.to_dict() for mdef in self]
+        madicts = Parallel(n_jobs=os.cpu_count())(delayed(parse_analyse_serialise)(mad) for mad in inmadicts)
+        return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts])
     
     @staticmethod
     def from_fcscore(file: Union[str, dict]) -> Self:
-        if isinstance(file, str):
+        if isinstance(file, str) or isinstance(file, os.PathLike):
             with open(file, 'r') as f:
                 data = load(f)
         else:
@@ -54,21 +78,22 @@ class ScheduleAnalysis(Collection):
 
         mas = []
         for mdef in sdef:
-            mas.append(ManoeuvreAnalysis.from_fcs_dict(
+            mas.append(analysis.Scored.from_dict(
                 data['data'][mdef.info.short_name],
                 mdef
             ))
 
         return ScheduleAnalysis(mas)
     
-    
-    def to_fcscore(self, name: str, sinfo: ScheduleInfo) -> dict:        
+    def scores(self):
         scores = {}
         total = 0
-        for ma in self:
-            scores[ma.mdef.info.short_name] = ma.scores().score()
-            total += scores[ma.mdef.info.short_name] * ma.mdef.info.k
+        scores = {ma.mdef.info.short_name: ma.scores().score() for ma in self}
+        total = sum([ma.mdef.info.k * v for ma, v in zip(self, scores.values())])
+        return total, scores
 
+    def to_fcscore(self, name: str, sinfo: ScheduleInfo) -> dict:        
+        total, scores = self.scores()
        
         odata = dict(
             name = name,
