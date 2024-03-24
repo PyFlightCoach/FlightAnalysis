@@ -4,12 +4,7 @@ from .manoeuvre import Manoeuvre
 from .schedule import Schedule
 from .definition import *
 from .scoring import *
-from .analysis import *
-import sys
+from .analysis import ScheduleAnalysis, ElementAnalysis
+from .analysis import manoeuvre_analysis as ma
 
-logger.remove()
-logger.add(sys.stderr, level="INFO")
-
-def set_log_level(level: str):
-    logger.remove()
-    logger.add(sys.stderr, level=level)
+logger.disable('flightanalysis')

@@ -18,16 +18,20 @@ class Complete(Alignment):
     corrected_template: State
 
     @staticmethod
-    def from_dict(data:dict):
-        pa = Alignment.from_dict(data)
+    def from_dict(data:dict, fallback=True):
+        pa = Alignment.from_dict(data, fallback)
         try:
-            return Complete(
+            pa = Complete(
                 **pa.__dict__,
                 corrected=Manoeuvre.from_dict(data["corrected"]),
                 corrected_template=State.from_dict(data["corrected_template"]),
             )
-        except KeyError:
-            return pa
+        except Exception as e:
+            if fallback:
+                logger.exception(f"Failed to parse Complete: {repr(e)}")
+            else:
+                raise e
+        return pa
 
     def run(self) -> Scored:
         if self.stage < AlinmentStage.OPTIMISED:
@@ -158,12 +162,16 @@ class Scored(Complete):
     scores: ManoeuvreResults
 
     @staticmethod
-    def from_dict(data:dict):
-        ca = Complete.from_dict(data)
+    def from_dict(data:dict, fallback=True):
+        ca = Complete.from_dict(data, fallback)
         try:
-            return Scored(
+            ca = Scored(
                 **ca.__dict__,
                 scores=ManoeuvreResults.from_dict(data["scores"])
             )
-        except KeyError:
-            return ca
+        except Exception as e:
+            if fallback:
+                logger.exception(f"Failed to read scores, {repr(e)}")
+            else:
+                raise e
+        return ca

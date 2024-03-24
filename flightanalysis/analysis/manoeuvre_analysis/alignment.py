@@ -13,16 +13,20 @@ class Alignment(Basic):
     template: State
 
     @staticmethod
-    def from_dict(data: dict):
+    def from_dict(data: dict, fallback=True):
         ia = Basic.from_dict(data)
         try:    
-            return Alignment(
+            ia = Alignment(
                 manoeuvre=Manoeuvre.from_dict(data['manoeuvre']),
                 template=State.from_dict(data['template']),
                 **ia.__dict__
             )
-        except KeyError:
-            return ia
+        except Exception as e:
+            if fallback:
+                logger.exception(f'Failed to parse Alignment {repr(e)}')
+            else:
+                raise e
+        return ia
 
     def alignment(self, radius=10):
         assert self.stage < AlinmentStage.SECONDARY

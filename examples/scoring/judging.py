@@ -1,11 +1,14 @@
-from flightanalysis import ScheduleAnalysis, set_log_level, Scored
+from flightanalysis import ScheduleAnalysis
+from loguru import logger
+import sys
 
+logger.enable('flightanalysis')
+logger.remove()
+logger.add(sys.stdout, level="INFO")
 
-set_log_level("DEBUG")
+analysis = ScheduleAnalysis.from_fcj("examples/data/manual_F3A_P23_22_05_31_00000350.json").run_all()
 
-analysis = ScheduleAnalysis.from_fcj("examples/data/manual_F3A_P23_22_05_31_00000350.json")
+logger.info(f'Manoeuvre Downgrades:\n{analysis.summarydf()}')
 
-sa: Scored = analysis[0].run_all()
-
-print(sa.scores.summary())
-pass
+total = sum([ma.scores.score() * ma.mdef.info.k for ma in analysis])
+logger.info(f'Total score: {total}')

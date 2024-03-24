@@ -8,6 +8,7 @@ from flightdata.base import NumpyEncoder
 from loguru import logger
 from joblib import Parallel, delayed
 import os
+import pandas as pd
 
 
 class ScheduleAnalysis(Collection):
@@ -15,7 +16,7 @@ class ScheduleAnalysis(Collection):
     uid='name'
     
     @staticmethod
-    def from_fcj(file: Union[str, dict]) -> ScheduleAnalysis:
+    def from_fcj(file: Union[str, dict], info: ScheduleInfo=None) -> ScheduleAnalysis:
         if isinstance(file, str):
             with open(file, 'r') as f:
                 data = load(f)
@@ -23,7 +24,8 @@ class ScheduleAnalysis(Collection):
             data = file
         flight = Flight.from_fc_json(data)
         box = Origin.from_fcjson_parmameters(data["parameters"])
-        info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
+        if info is None:
+            info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
         sdef = SchedDef.load(info)
 
         state = State.from_flight(flight, box).splitter_labels(
@@ -31,7 +33,7 @@ class ScheduleAnalysis(Collection):
             [m.info.short_name for m in sdef]
         )
 
-        direction = state.get_manoeuvre(0)[0].direction()[0]
+        direction = -state.get_manoeuvre(0)[0].direction()[0]
 
         return ScheduleAnalysis(
             [analysis.Basic(
@@ -45,15 +47,19 @@ class ScheduleAnalysis(Collection):
     def run_all(self) -> Self:
 
         def parse_analyse_serialise(pad):
-            return analysis.Basic.from_dict(pad).run_all().to_dict()
+            res = analysis.Basic.from_dict(pad).run_all()
+            logger.info(f'Completed {res.name}')
+            return res.to_dict()
         
         logger.info(f'Starting {os.cpu_count()} analysis processes')
-        padicts = [ma.to_dict() for ma in self]
         madicts = Parallel(n_jobs=os.cpu_count())(
-            delayed(parse_analyse_serialise)(pad) for pad in padicts
+            delayed(parse_analyse_serialise)(ma.to_dict()) for ma in self
         )
+
         return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts])
-        
+    
+
+
     def optimize_alignment(self) -> Self:
 
         def parse_analyse_serialise(mad):
@@ -88,16 +94,19 @@ class ScheduleAnalysis(Collection):
     def scores(self):
         scores = {}
         total = 0
-        scores = {ma.mdef.info.short_name: ma.scores().score() for ma in self}
+        scores = {ma.mdef.info.short_name: ma.scores.score() for ma in self}
         total = sum([ma.mdef.info.k * v for ma, v in zip(self, scores.values())])
         return total, scores
+
+    def summarydf(self):
+        return pd.DataFrame([ma.scores.summary() if hasattr(ma, 'scores') else {} for ma in self])
 
     def to_fcscore(self, name: str, sinfo: ScheduleInfo) -> dict:        
         total, scores = self.scores()
        
         odata = dict(
             name = name,
-            client_version = 'None',
+            client_version = 'Py',
             server_version = '',
             sinfo = sinfo.__dict__,
             score = total,

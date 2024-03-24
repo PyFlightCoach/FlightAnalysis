@@ -165,8 +165,8 @@ class ElementsResults(Collection):
 
     @staticmethod
     def from_dict(data) -> Results:
-        return Results(
-            [Result.from_dict(v) for v in data['data'].values()]
+        return ElementsResults(
+            {k: Results.from_dict(v) for k, v in data['data'].items()}
         )
 
 
@@ -196,5 +196,5 @@ class ManoeuvreResults:
         return ManoeuvreResults(
             Results.from_dict(data['inter']),
             ElementsResults.from_dict(data['intra']),
-            Result.from_dict(data['positioning']),
+            Results.from_dict(data['positioning']),
         )
