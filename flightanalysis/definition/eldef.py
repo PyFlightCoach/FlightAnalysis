@@ -1,9 +1,7 @@
-import enum
 from typing import List, Callable, Union, Dict, Tuple
 import numpy as np
-from flightanalysis.elements import *
+from flightanalysis.elements import Element
 from inspect import getfullargspec
-from functools import partial
 from . import ManParm, ManParms, Opp, ItemOpp
 from flightdata import Collection
 from numbers import Number

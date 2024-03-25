@@ -46,7 +46,7 @@ class Complete(Alignment):
     def __getattr__(self, name):
         if name in self.mdef.eds.data.keys():
             return self.get_ea(self.mdef.eds[name])
-        raise AttributeError()
+        raise AttributeError(f'Attribute {name} not found in {self.__class__.__name__}')
 
     def get_ea(self, edef):
         el = getattr(self.manoeuvre.elements, edef.name)

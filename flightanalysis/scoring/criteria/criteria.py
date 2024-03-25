@@ -1,4 +1,3 @@
-import numpy as np
 from .exponential import Exponential, free
 from dataclasses import dataclass, field
 

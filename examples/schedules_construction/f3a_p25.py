@@ -1,6 +1,9 @@
-from flightanalysis.definition import *
-from flightanalysis.elements import *
-from flightanalysis.scoring.criteria import *
+from flightanalysis.definition import (
+    SchedDef, ManInfo, BoxLocation, Position, Orientation, 
+    Height, Direction, MBTags, f3amb, centred, r, ManParm
+)
+from flightanalysis.scoring import Combination
+
 import numpy as np
 
 c45 = np.cos(np.radians(45))

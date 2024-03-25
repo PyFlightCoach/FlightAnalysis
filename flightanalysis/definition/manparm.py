@@ -3,15 +3,14 @@ import numpy as np
 from flightdata import Collection
 from flightanalysis.manoeuvre import Manoeuvre
 from flightdata import State
-from flightanalysis.scoring import *
+from flightanalysis.scoring import Criteria, Combination, Measurement, Result, Comparison, Results, Single
 from . import Collector, Collectors, Opp
 from dataclasses import dataclass, field
 from typing import Any, Self
-import numpy as np
 import pandas as pd
 from geometry import Point
 from numbers import Number
-from copy import deepcopy
+
 
 @dataclass
 class ManParm(Opp):
@@ -19,14 +18,14 @@ class ManParm(Opp):
     For example, the loop diameters, line lengths, roll direction. 
         name (str): a short name, must work as an attribute so no spaces or funny characters
         criteria (Comparison): The comparison criteria function to be used when judging this parameter
-        default (float): A default value (or default option if specified in criteria)
+        defaul (float): A defaul value (or defaul option if specified in criteria)
         collectors (Collectors): a list of functions that will pull values for this parameter from an Elements 
             collection. If the manoeuvre was flown correctly these should all be the same. The resulting list 
             can be passed through the criteria (Comparison callable) to calculate a downgrade.
 
     """
     criteria: Criteria
-    default:Any=None
+    defaul:Any=None
     collectors:Collectors=field(default_factory=lambda : Collectors())
 
 
@@ -38,7 +37,7 @@ class ManParm(Opp):
         return dict(
             name = self.name,
             criteria = self.criteria.to_dict(),
-            default = self.default,
+            defaul = self.defaul,# because default is reserverd in javascript
             collectors = self.collectors.to_dict()
         )
     
@@ -47,7 +46,7 @@ class ManParm(Opp):
         return ManParm(
             name = data["name"],
             criteria = Criteria.from_dict(data["criteria"]),
-            default = data["default"] if 'default' in data else data['defaul'], # because default is reserverd in javascript
+            defaul = data['defaul'], 
             collectors = Collectors.from_dict(data["collectors"])
         )
 
@@ -79,7 +78,7 @@ class ManParm(Opp):
 
         meas = Measurement(
             values,
-            self.default,
+            self.defaul,
             direction,
             vis
         )
@@ -90,9 +89,9 @@ class ManParm(Opp):
     @property
     def value(self):
         if isinstance(self.criteria, Comparison):
-            return self.default
+            return self.defaul
         elif isinstance(self.criteria, Combination):
-            return self.criteria[self.default]
+            return self.criteria[self.defaul]
         else:
             raise AttributeError("This type of ManParm has no value")
 
@@ -102,13 +101,13 @@ class ManParm(Opp):
         return self.criteria.__class__.__name__    
 
     def copy(self):
-        return ManParm(name=self.name, criteria=self.criteria, default=self.default, collectors=self.collectors.copy())
+        return ManParm(name=self.name, criteria=self.criteria, defaul=self.defaul, collectors=self.collectors.copy())
 
     def list_parms(self):
         return [self]
 
     def __repr__(self):
-        return f'ManParm({self.name}, {self.criteria.__class__.__name__}, {self.default})'
+        return f'ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul})'
 
 
 
@@ -138,12 +137,12 @@ class ManParms(Collection):
         mps = []
         for mp in self:
             flown_parm = list(mp.collect(intended.all_elements()).values())
-            if len(flown_parm) > 0 and mp.default is not None:
+            if len(flown_parm) > 0 and mp.defaul is not None:
                 if isinstance(mp.criteria, Combination):
-                    default = mp.criteria.check_option(flown_parm)
+                    defaul = mp.criteria.check_option(flown_parm)
                 else:
-                    default = np.mean(np.abs(flown_parm)) * np.sign(mp.default)
-                mps.append(ManParm(mp.name, mp.criteria, default, mp.collectors))
+                    defaul = np.mean(np.abs(flown_parm)) * np.sign(mp.defaul)
+                mps.append(ManParm(mp.name, mp.criteria, defaul, mp.collectors))
             else: 
                 mps.append(mp)
         return ManParms(mps)

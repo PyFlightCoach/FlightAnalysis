@@ -1,9 +1,8 @@
 from flightdata import State
-from flightanalysis.scoring import Measurement
-from geometry import Point, Quaternion, Transformation, PX, PY, PZ, Euldeg, P0, Q0
+from geometry import Point, Quaternion, Transformation, PX, PY, PZ, Euldeg, P0
 from pytest import fixture, approx
 import numpy as np
-from flightanalysis import Loop
+from flightanalysis import Loop, Line, Measurement, r
 
 @fixture
 def line_tp():
@@ -66,8 +65,6 @@ def test_roll_angle_45_loop(ke45loop_tp: State):
     assert np.degrees(m.value[-1]) == approx(-5, abs=0.1)
     
     
-
-
 def make_stallturn(duration: float=3, distance: Point=None, pos: Point=None, att: Quaternion=None):
     vel = distance / duration
     return State.from_transform(
@@ -84,3 +81,10 @@ def test_length_above():
         PY(), 2)
     assert meas.value[-1]==approx(18)
     assert meas.direction[-1].data == approx(-PX(20).data)
+
+
+def test_roll_angle_proj():
+    fl = Loop(30, 50, np.pi/2, r(0.5)).create_template(State.from_transform())
+    tp = Loop(30, 50, np.pi/2, r(1.6)).create_template(State.from_transform(), fl.time)
+    meas = Measurement.roll_angle_proj(fl, tp, PY())
+    assert np.abs(np.round(meas.value[-1] / (2*np.pi)))==approx(1)

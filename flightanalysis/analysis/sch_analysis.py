@@ -73,7 +73,7 @@ class ScheduleAnalysis(Collection):
         return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts])
     
     @staticmethod
-    def from_fcscore(file: Union[str, dict]) -> Self:
+    def from_fcscore(file: Union[str, dict], fallback=True) -> Self:
         if isinstance(file, str) or isinstance(file, os.PathLike):
             with open(file, 'r') as f:
                 data = load(f)
@@ -86,7 +86,7 @@ class ScheduleAnalysis(Collection):
         for mdef in sdef:
             mas.append(analysis.Scored.from_dict(
                 data['data'][mdef.info.short_name],
-                mdef
+                fallback
             ))
 
         return ScheduleAnalysis(mas)

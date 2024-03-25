@@ -21,6 +21,8 @@ class PitchBreak(Element):
         TODO perhaps limit the roll amount'''
         def length(fl, tp):
             return Measurement.length(fl, tp, PX())
+        def roll_angle(fl, tp):
+            return Measurement.roll_angle_proj(fl, tp, PY())
         return DownGrades([
             DownGrade(length, F3A.intra.pitch_break_length),
         ])
@@ -28,7 +30,6 @@ class PitchBreak(Element):
     @property
     def exit_scoring(self) -> DownGrades:
         return DownGrades()
-
 
     def create_template(self, istate: State, time: Time=None) -> State:
         return Line(self.speed, self.length).create_template(

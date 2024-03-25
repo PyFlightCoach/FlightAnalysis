@@ -3,6 +3,8 @@ from typing import Dict, Callable
 from functools import partial
 from .elbuilders import line, loopmaker, rollmaker, stallturn, spin
 import numpy as np
+from flightanalysis.scoring.criteria.f3a_criteria import F3A
+
 
 class MBTags:
     CENTRE=0
@@ -18,7 +20,6 @@ def r(turns):
     return 2 * np.pi * np.array(turns)
 
 dp = DummyMPs()
-
 
 
 class ManBuilder():
@@ -69,7 +70,7 @@ class ManBuilder():
                 mps.add(v)
             elif isinstance(k, str):
                 if k in mps.data:
-                    mps[k].default=v
+                    mps[k].defaul=v
                 else:
                     mps.add(ManParm.parse(v, mps, k))
         md = ManDef(maninfo, mps)
@@ -102,7 +103,6 @@ class ManBuilder():
         md.mps = md.mps.remove_unused()
         return md
         
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
 
 f3amb = ManBuilder(
     ManParms([

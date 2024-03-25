@@ -155,7 +155,7 @@ class Manoeuvre:
 
         return ElementsResults(ers)
 
-    def optimise_alignment(self, istate: State, aligned: State) -> Tuple(Self, State):
+    def optimise_alignment(self, istate: State, aligned: State) -> State:
         els = self.all_elements()
         elns = list(els.data.keys())
         

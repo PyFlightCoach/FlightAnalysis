@@ -1,10 +1,8 @@
 from ..eldef import ElDef, ElDefs, ManParm, ManParms
-from flightanalysis.elements import *
-from flightdata import Collection
+from flightanalysis.elements import Line, Loop, StallTurn, PitchBreak, Autorotation, Recovery, NoseDrop
 from flightanalysis.definition.collectors import Collectors
-from flightanalysis.definition import Opp, ItemOpp
+from flightanalysis.definition import ItemOpp
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Combination
 from numbers import Number
 import numpy as np
 
@@ -82,7 +80,7 @@ def snap_duration(roll, break_angle, break_rate, snap_rate):
 
 def short_line(name, speed, length, roll, extra_length):
     if length.__class__.__name__ == 'ManParm':
-        el = ElDef.build(Line, name, speed, length.default, roll)
+        el = ElDef.build(Line, name, speed, length.defaul, roll)
         length.append(el.get_collector('length') + extra_length), ManParms()
         return el
     else:
@@ -228,7 +226,7 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
 
     try:
         rvs = rolls.value
-    except Exception as e:
+    except Exception:
         rvs = None
     
     if rvs is None:

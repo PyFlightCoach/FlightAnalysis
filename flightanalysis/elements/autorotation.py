@@ -1,11 +1,10 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, Point, Quaternion, PX, PY, PZ, P0, Time
+from geometry import Transformation, P0, PY, Time
 from flightdata import State
-from .element import Element, Elements
+from .element import Element
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring import Measurement, DownGrade, DownGrades
-from typing import Union
 
 
 class Autorotation(Element):
@@ -27,7 +26,6 @@ class Autorotation(Element):
             DownGrade(roll_angle, F3A.single.roll)
         ])
         
-    
     @property
     def angle(self):
         return self.roll
@@ -37,7 +35,6 @@ class Autorotation(Element):
         return self.angle * self.speed / self.length
     
     def create_template(self, istate: State, time: Time=None):
-        
         return istate.copy(
             vel=istate.vel.scale(self.speed),
             rvel=P0()

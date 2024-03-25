@@ -2,7 +2,7 @@ from pytest import fixture
 import numpy as np
 from flightanalysis.definition import ElDef, ElDefs
 from flightanalysis.elements import Loop, Line
-from flightanalysis.definition import ManParm, ManParms
+from flightanalysis.definition import ManParms
 
 @fixture
 def mps():
@@ -25,7 +25,7 @@ def loopdef(mps):
 def test_call(loopdef, mps):
     loop = loopdef(mps)
 
-    assert loop.radius == mps.loop_radius.default
+    assert loop.radius == mps.loop_radius.defaul
 
 
 @fixture
@@ -41,6 +41,6 @@ def test_builder_list(eds, mps):
     bl = eds.builder_list("length")
     assert len(bl) == 2
     assert _a(bl[0])(mps) == 130 - 55
-    assert _a(bl[1])(mps) == mps.speed.default
+    assert _a(bl[1])(mps) == mps.speed.defaul
 
 

@@ -29,7 +29,7 @@
             "limit": 3
           }
         },
-        "default": 20.0,
+        "defaul": 20.0,
         "collectors": {
           "e_0_1_pause.length": "(e_0_1_pause.length+30)",
           "e_0_2_pause.length": "(e_0_2_pause.length+30)",
@@ -46,7 +46,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_0_0.rate": "e_0_0.rate",
           "e_0_1.rate": "e_0_1.rate",
@@ -64,7 +64,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_0_0.rate": "e_0_0.rate",
           "e_0_1.rate": "e_0_1.rate",
@@ -82,7 +82,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_0_2_autorotation.rate": "e_0_2_autorotation.rate"
         }
@@ -109,7 +109,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_0_0.roll": "e_0_0.roll",
           "e_0_1.roll": "e_0_1.roll",
@@ -136,7 +136,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_2_0.roll": "e_2_0.roll",
           "e_2_1.roll": "e_2_1.roll"
@@ -152,7 +152,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_2_pad1.length": "(e_2_pad1.length+40)",
           "e_2_pad2.length": "(e_2_pad2.length+40)"
@@ -321,7 +321,7 @@
             "limit": 3
           }
         },
-        "default": 20.0,
+        "defaul": 20.0,
         "collectors": {
           "e_1_1_pause.length": "(e_1_1_pause.length+30)",
           "e_3_1_pause.length": "(e_3_1_pause.length+30)"
@@ -337,7 +337,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_3_0.rate": "e_3_0.rate",
@@ -354,7 +354,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_3_0.rate": "e_3_0.rate",
@@ -371,7 +371,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_1_1_autorotation.rate": "e_1_1_autorotation.rate"
         }
@@ -386,7 +386,7 @@
             "limit": 2
           }
         },
-        "default": 6.283185307179586,
+        "defaul": 6.283185307179586,
         "collectors": {
           "e_2.yaw_rate": "e_2.yaw_rate"
         }
@@ -411,7 +411,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_1_0.roll": "e_1_0.roll",
           "e_1_1_autorotation.roll": "e_1_1_autorotation.roll"
@@ -427,7 +427,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
@@ -453,7 +453,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_3_0.roll": "e_3_0.roll",
           "e_3_1.roll": "e_3_1.roll"
@@ -469,7 +469,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
@@ -646,9 +646,11 @@
             "limit": 2
           }
         },
-        "default": 100,
+        "defaul": 100,
         "collectors": {
-          "e_1.radius": "e_1.radius"
+          "e_0.radius": "e_0.radius",
+          "e_1.radius": "e_1.radius",
+          "e_2.radius": "e_2.radius"
         }
       },
       "directions": {
@@ -677,53 +679,23 @@
             ]
           ]
         },
-        "default": 1,
+        "defaul": 1,
         "collectors": {
-          "e_0_rolls.angle": "e_0_rolls.angle",
-          "e_0_rolls.roll": "e_0_rolls.roll",
+          "e_0.angle": "e_0.angle",
+          "e_0.roll": "e_0.roll",
           "e_1.angle": "e_1.angle",
-          "e_2_rolls.angle": "e_2_rolls.angle",
-          "e_2_rolls.roll": "e_2_rolls.roll"
-        }
-      },
-      "e_0_radius": {
-        "name": "e_0_radius",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          }
-        },
-        "default": 100,
-        "collectors": {
-          "e_0_rolls.radius": "e_0_rolls.radius"
-        }
-      },
-      "e_2_radius": {
-        "name": "e_2_radius",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": 10
-          }
-        },
-        "default": 100,
-        "collectors": {
-          "e_2_rolls.radius": "e_2_rolls.radius"
+          "e_2.angle": "e_2.angle",
+          "e_2.roll": "e_2.roll"
         }
       }
     },
     "eds": {
-      "e_0_rolls": {
-        "name": "e_0_rolls",
+      "e_0": {
+        "name": "e_0",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "e_0_radius",
+          "radius": "loop_radius",
           "angle": "directions[0]",
           "roll": "directions[1]",
           "ke": "1.5707963267948966"
@@ -740,12 +712,12 @@
           "ke": "1.5707963267948966"
         }
       },
-      "e_2_rolls": {
-        "name": "e_2_rolls",
+      "e_2": {
+        "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "e_2_radius",
+          "radius": "loop_radius",
           "angle": "directions[3]",
           "roll": "directions[4]",
           "ke": "1.5707963267948966"
@@ -783,7 +755,7 @@
             "limit": 3
           }
         },
-        "default": 20.0,
+        "defaul": 20.0,
         "collectors": {
           "e_0_1_pause.length": "(e_0_1_pause.length+30)",
           "e_0_2_pause.length": "(e_0_2_pause.length+30)",
@@ -800,7 +772,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_0_0.rate": "e_0_0.rate",
           "e_0_1.rate": "e_0_1.rate",
@@ -818,7 +790,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_0_0.rate": "e_0_0.rate",
           "e_0_1.rate": "e_0_1.rate",
@@ -836,7 +808,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_2_0_autorotation.rate": "e_2_0_autorotation.rate"
         }
@@ -865,7 +837,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_0_0.roll": "e_0_0.roll",
           "e_0_1.roll": "e_0_1.roll",
@@ -891,7 +863,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_2_0_autorotation.roll": "e_2_0_autorotation.roll"
         }
@@ -1030,7 +1002,7 @@
             "limit": 3
           }
         },
-        "default": 20.0,
+        "defaul": 20.0,
         "collectors": {
           "e_1_1_pause.length": "(e_1_1_pause.length+30)",
           "e_3_1_pause.length": "(e_3_1_pause.length+30)",
@@ -1048,7 +1020,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_1_1.rate": "e_1_1.rate",
           "e_3_0.rate": "e_3_0.rate",
@@ -1067,7 +1039,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_1_1.rate": "e_1_1.rate",
           "e_3_0.rate": "e_3_0.rate",
@@ -1086,7 +1058,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_1_0_autorotation.rate": "e_1_0_autorotation.rate"
         }
@@ -1111,7 +1083,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_1_0_autorotation.roll": "e_1_0_autorotation.roll",
           "e_1_1.roll": "e_1_1.roll"
@@ -1127,7 +1099,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
@@ -1157,7 +1129,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_3_0.roll": "e_3_0.roll",
           "e_3_1.roll": "e_3_1.roll",
@@ -1175,7 +1147,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
@@ -1391,7 +1363,7 @@
             "limit": 3
           }
         },
-        "default": 130.0,
+        "defaul": 130.0,
         "collectors": {
           "e_1": "(((((0+e_1_pad1.length)+e_1_0_break.length)+e_1_0_autorotation.length)+e_1_0_recovery.length)+e_1_pad2.length)",
           "e_3": "(((((0+e_3_pad1.length)+e_3_0_break.length)+e_3_0_autorotation.length)+e_3_0_recovery.length)+e_3_pad2.length)"
@@ -1407,7 +1379,7 @@
             "limit": 2
           }
         },
-        "default": 6.283185307179586,
+        "defaul": 6.283185307179586,
         "collectors": {
           "e_5_roll.rate": "e_5_roll.rate"
         }
@@ -1422,7 +1394,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_1_0_autorotation.rate": "e_1_0_autorotation.rate",
           "e_3_0_autorotation.rate": "e_3_0_autorotation.rate"
@@ -1438,7 +1410,7 @@
             "limit": 2
           }
         },
-        "default": 5.340707511102648,
+        "defaul": 5.340707511102648,
         "collectors": {
           "e_0_autorotation.rate": "e_0_autorotation.rate"
         }
@@ -1465,7 +1437,7 @@
             ]
           ]
         },
-        "default": 1,
+        "defaul": 1,
         "collectors": {
           "e_0_autorotation.roll": "e_0_autorotation.roll",
           "e_5_roll.roll": "e_5_roll.roll"
@@ -1489,7 +1461,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_1_0_autorotation.roll": "e_1_0_autorotation.roll"
         }
@@ -1504,7 +1476,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
@@ -1528,7 +1500,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_3_0_autorotation.roll": "e_3_0_autorotation.roll"
         }
@@ -1543,7 +1515,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
@@ -1559,7 +1531,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_5_pad1.length": "(e_5_pad1.length+40)",
           "e_5_pad2.length": "(e_5_pad2.length+40)"
@@ -1773,7 +1745,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_0_2_autorotation.rate": "e_0_2_autorotation.rate"
         }
@@ -1788,7 +1760,7 @@
             "limit": 10
           }
         },
-        "default": 100,
+        "defaul": 100,
         "collectors": {
           "e_0_pad1.radius": "e_0_pad1.radius",
           "e_0_0.radius": "e_0_0.radius",
@@ -1924,7 +1896,7 @@
             "limit": 3
           }
         },
-        "default": 20.0,
+        "defaul": 20.0,
         "collectors": {
           "e_1_1_pause.length": "(e_1_1_pause.length+30)",
           "e_1_2_pause.length": "(e_1_2_pause.length+30)",
@@ -1942,7 +1914,7 @@
             "limit": 2
           }
         },
-        "default": 1.5707963267948966,
+        "defaul": 1.5707963267948966,
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_1_1.rate": "e_1_1.rate",
@@ -1960,7 +1932,7 @@
             "limit": 2
           }
         },
-        "default": 4.71238898038469,
+        "defaul": 4.71238898038469,
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_1_1.rate": "e_1_1.rate",
@@ -1979,7 +1951,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_3_1_autorotation.rate": "e_3_1_autorotation.rate"
         }
@@ -2008,7 +1980,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_1_0.roll": "e_1_0.roll",
           "e_1_1.roll": "e_1_1.roll",
@@ -2026,7 +1998,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
@@ -2052,7 +2024,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_3_0.roll": "e_3_0.roll",
           "e_3_1_autorotation.roll": "e_3_1_autorotation.roll"
@@ -2068,7 +2040,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
@@ -2284,7 +2256,7 @@
             "limit": 3
           }
         },
-        "default": 20.0,
+        "defaul": 20.0,
         "collectors": {
           "e_1_1_pause.length": "(e_1_1_pause.length+30)",
           "e_1_2_pause.length": "(e_1_2_pause.length+30)",
@@ -2302,7 +2274,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_1_1.rate": "e_1_1.rate",
@@ -2321,7 +2293,7 @@
             "limit": 2
           }
         },
-        "default": 3.141592653589793,
+        "defaul": 3.141592653589793,
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_1_1.rate": "e_1_1.rate",
@@ -2340,7 +2312,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_3_2_autorotation.rate": "e_3_2_autorotation.rate"
         }
@@ -2367,7 +2339,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_1_0.roll": "e_1_0.roll",
           "e_1_1.roll": "e_1_1.roll",
@@ -2384,7 +2356,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_1_pad1.length": "(e_1_pad1.length+40)",
           "e_1_pad2.length": "(e_1_pad2.length+40)"
@@ -2412,7 +2384,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_3_0.roll": "e_3_0.roll",
           "e_3_1.roll": "e_3_1.roll",
@@ -2429,7 +2401,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_3_pad1.length": "(e_3_pad1.length+40)",
           "e_3_pad2.length": "(e_3_pad2.length+40)"
@@ -2645,7 +2617,7 @@
             "limit": 3
           }
         },
-        "default": 10,
+        "defaul": 10,
         "collectors": {
           "e_2_1_pause.length": "(e_2_1_pause.length+30)",
           "e_2_2_pause.length": "(e_2_2_pause.length+30)"
@@ -2661,7 +2633,7 @@
             "limit": 2
           }
         },
-        "default": 3.9269908169872414,
+        "defaul": 3.9269908169872414,
         "collectors": {
           "e_2_0.rate": "e_2_0.rate",
           "e_2_1.rate": "e_2_1.rate"
@@ -2677,7 +2649,7 @@
             "limit": 2
           }
         },
-        "default": 3.9269908169872414,
+        "defaul": 3.9269908169872414,
         "collectors": {
           "e_2_0.rate": "e_2_0.rate",
           "e_2_1.rate": "e_2_1.rate",
@@ -2694,7 +2666,7 @@
             "limit": 2
           }
         },
-        "default": 12.566370614359172,
+        "defaul": 12.566370614359172,
         "collectors": {
           "e_0_0_autorotation.rate": "e_0_0_autorotation.rate"
         }
@@ -2717,7 +2689,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_0_0_autorotation.roll": "e_0_0_autorotation.roll"
         }
@@ -2744,7 +2716,7 @@
             ]
           ]
         },
-        "default": 0,
+        "defaul": 0,
         "collectors": {
           "e_2_0.roll": "e_2_0.roll",
           "e_2_1.roll": "e_2_1.roll",
@@ -2761,7 +2733,7 @@
             "limit": 3
           }
         },
-        "default": null,
+        "defaul": null,
         "collectors": {
           "e_2_pad1.length": "(e_2_pad1.length+40)",
           "e_2_pad2.length": "(e_2_pad2.length+40)"

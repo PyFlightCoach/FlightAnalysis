@@ -30,7 +30,7 @@ class Measurement:
         return dict(
             value = list(self.value),
             expected = self.expected,
-            direction = self.direction.to_dict(),
+            direction = self.direction.to_dicts(),
             visibility = list(self.visibility)
         )
     
@@ -49,7 +49,7 @@ class Measurement:
         return Measurement(
             np.array(data['value']),
             data['expected'],
-            Point.from_dict(data['direction']),
+            Point.from_dicts(data['direction']),
             np.array(data['visibility'])
         )
 
@@ -117,21 +117,20 @@ class Measurement:
 
         """
         trfl = fl#.to_track() # flown in the track axis
-        
         rfproj=tp[0].att.transform_point(proj) # proj vector in the ref_frame
-        
         tr_rf_proj = trfl.att.inverse().transform_point(rfproj) # proj vector in track axis
-        
         tp_rf_proj = tp.att.inverse().transform_point(rfproj) # proj vector in template body axis (body == track for template)
-        
         with np.errstate(invalid='ignore'):
             fl_roll_angle = np.arcsin(Point.cross(tr_rf_proj, proj).x)
             tp_roll_angle = np.arcsin(Point.cross(tp_rf_proj, proj).x)
-        
 
+        count = np.round(
+            np.floor(np.sum(fl.p * fl.dt) - np.sum(tp.p * fl.dt)) \
+                    / (2 * np.pi)
+        )
 
         return Measurement(
-            fl_roll_angle - tp_roll_angle,
+            2*np.pi*count + fl_roll_angle - tp_roll_angle,
             0, 
             *Measurement._roll_vis(fl.pos, fl.att)
         )
