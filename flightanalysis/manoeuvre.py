@@ -155,17 +155,26 @@ class Manoeuvre:
 
         return ElementsResults(ers)
 
-    def optimise_alignment(self, istate: State, aligned: State) -> State:
+    def optimise_alignment(self, template: State, aligned: State) -> State:
         els = self.all_elements()
         elns = list(els.data.keys())
-        
-        for eln1, eln2 in zip(elns[:-1], elns[1:]):
-            fl1, fl2 = aligned.get_element(eln1), aligned.get_element(eln2)
-            steps = Element.optimise_split(istate, els[eln1], els[eln2], fl1, fl2)
-            logger.debug(f'Adjusting split between {eln1} and {eln2} by {steps} steps')
-            if not steps == 0:
-                aligned = aligned.shift_label(steps, 2, manoeuvre=self.uid, element=eln1)
-            istate = els[eln1].create_template(istate)[-1]
+
+        padjusted = set(elns)
+        count=0
+        while len(padjusted) > 0 and count < 2:
+            adjusted = set()
+            for eln1, eln2 in zip(elns[:-1], elns[1:]):
+                if (eln1 in padjusted) or (eln2 in padjusted):
+                    fl1, fl2 = aligned.get_element(eln1), aligned.get_element(eln2)
+                    tp0 = template.get_element(eln1)
+                    steps = Element.optimise_split(tp0[0].relocate(fl1[0].pos), els[eln1], els[eln2], fl1, fl2)
+                    logger.debug(f'Adjusting split between {eln1} and {eln2} by {steps} steps')
+                    if not steps == 0:
+                        aligned = aligned.shift_label(steps, 2, manoeuvre=self.uid, element=eln1)
+                        adjusted.update([eln1, eln2])
+            padjusted = adjusted
+            count+=1
+            logger.debug(f'pass {count}, {len(padjusted)} elements adjusted:\n{padjusted}')
         return aligned
     
     def descriptions(self):

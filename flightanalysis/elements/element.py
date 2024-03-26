@@ -7,8 +7,8 @@ from flightanalysis.scoring import Measurement, DownGrade, DownGrades, Results
 import geometry as g
 from json import load
 import inspect
-from typing import Self, Tuple
-
+from typing import Self, Tuple, Union
+from loguru import logger
 
 class ElementError(Exception):
     pass
@@ -136,7 +136,8 @@ class Element:
     def match_intention(self, itrans: g.Transformation, flown: State) -> Self:
         raise Exception('Not available on base class')
 
-    def score(self, istate: State, fl: State) -> Tuple[Results, State]:
+    def score(self, istate: Union[State, g.Transformation], fl: State) -> Tuple[Results, State]:
+        istate = istate if isinstance(istate, State) else State.from_transform(istate)
         tp = self.create_template(istate, fl.time)
         if self.uid=='entry_line':
             res = self.analyse_exit(fl, tp)
@@ -145,18 +146,18 @@ class Element:
         return res, tp
         
     @staticmethod
-    def optimise_split(istate: State, el1: Element, el2: Element, fl1: State, fl2: State):
+    def optimise_split(itrans: g.Transformation, el1: Element, el2: Element, fl1: State, fl2: State):
         
         def get_score(cel1: Element, cel2: Element, cfl1: State, cfl2: State):
-            res, tp = cel1.match_intention(istate.transform, cfl1).score(istate, cfl1)
+            res, tp = cel1.match_intention(itrans, cfl1).score(itrans, cfl1)
             ist2=State.from_transform(g.Transformation(tp.att[-1], cfl2.pos[0]), vel=tp.vel[-1])
+            ist2= ist2.relocate(cfl2.pos[0])
             res2, tp2 = cel2.match_intention(ist2.transform, cfl2).score(ist2, cfl2)
             return res.total + res2.total
         
         dgs = {0: get_score(el1, el2, fl1, fl2)}
         
         steps=int(len(fl2) > len(fl1)) * 2 - 1
-        
         new_dg = get_score(el1, el2, *State.shift_multi(steps, fl1, fl2))
         if new_dg > dgs[0]:
             steps=-steps
@@ -175,7 +176,6 @@ class Element:
                 break
         min_dg_step = np.argmin(np.array(list(dgs.values())))
         out_steps = list(dgs.keys())[min_dg_step]
-        
         return out_steps
 
 

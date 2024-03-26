@@ -4,6 +4,7 @@ from ..el_analysis import ElementAnalysis
 from flightdata import State
 from flightanalysis.definition import ManDef
 from flightanalysis.manoeuvre import Manoeuvre
+from flightanalysis.elements import Element
 from flightanalysis.scoring import Results, Result, ManoeuvreResults
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.definition.maninfo import Position
@@ -40,8 +41,16 @@ class Complete(Alignment):
             scores=ManoeuvreResults(self.inter(), self.intra(), self.positioning())
         )
 
+    @property
+    def elnames(self):
+        return list(self.mdef.eds.data.keys())
+
+    def __iter__(self):
+        for elname in self.manoeuvre.all_elements().data.keys():
+            yield self.get_ea(self.mdef.eds[elname])
+
     def __getitem__(self, i):
-        return self.get_ea(self.mdef.eds[i])
+        return self.get_ea(['entry_line'] + self.mdef.eds[i] + ['exit_line'])
 
     def __getattr__(self, name):
         if name in self.mdef.eds.data.keys():
@@ -49,16 +58,14 @@ class Complete(Alignment):
         raise AttributeError(f'Attribute {name} not found in {self.__class__.__name__}')
 
     def get_ea(self, edef):
-        el = getattr(self.manoeuvre.elements, edef.name)
+        el = getattr(self.manoeuvre.all_elements(), edef.name)
         st = el.get_data(self.flown)
         tp = el.get_data(self.template).relocate(st.pos[0])
         return ElementAnalysis(edef, self.mdef.mps, el, st, tp, el.ref_frame(tp))
 
-
     def optimise_alignment(self):
-        aligned = self.manoeuvre.optimise_alignment(self.template[0], self.flown)
+        aligned = self.manoeuvre.optimise_alignment(self.template, self.flown)
         manoeuvre, template = self.manoeuvre.match_intention(self.template[0], aligned)
-        
         mdef = ManDef(self.mdef.info, self.mdef.mps.update_defaults(self.manoeuvre), self.mdef.eds)
         correction = mdef.create(self.template[0].transform).add_lines()
 
