@@ -1,15 +1,14 @@
-from . import ManDef, ManInfo, ManParms
+from . import ManDef, ManInfo
 from flightdata import State
-from typing import Dict, Tuple, Union, Self
+from typing import Tuple, Union, Self
 from geometry import Transformation
 from flightanalysis.schedule import Schedule
 from flightanalysis.elements import Line
-from flightdata import Collection, State
+from flightdata import Collection
 from json import dump, load
 from flightdata.base.numpy_encoder import NumpyEncoder
 from dataclasses import dataclass
 from flightanalysis.data import list_resources, get_json_resource
-from json import dump
 
 
 fcj_schedule_names = {
@@ -60,6 +59,7 @@ schedule_library = [ScheduleInfo.from_str(fname) for fname in list_resources('sc
 
 class SchedDef(Collection):
     VType=ManDef
+
     def add_new_manoeuvre(self, info: ManInfo, defaults=None):
         return self.add(ManDef(info,defaults))
 
@@ -113,7 +113,7 @@ class SchedDef(Collection):
 
     def plot(self):
         sched, template = self.create_template(170, 1)
-        from flightplotting import plotsec, plotdtw
+        from flightplotting import plotdtw
         return plotdtw(template, template.data.manoeuvre.unique())
 
     def label_exit_lines(self, sti: State):

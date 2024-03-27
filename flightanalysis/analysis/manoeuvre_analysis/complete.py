@@ -4,7 +4,6 @@ from ..el_analysis import ElementAnalysis
 from flightdata import State
 from flightanalysis.definition import ManDef
 from flightanalysis.manoeuvre import Manoeuvre
-from flightanalysis.elements import Element
 from flightanalysis.scoring import Results, Result, ManoeuvreResults
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.definition.maninfo import Position
@@ -135,9 +134,7 @@ class Complete(Alignment):
         #TODO doesnt quite cover it, stalled manoeuvres could drift to > 170 for no downgrade
         dist_key = np.argmax(self.flown.pos.y)
         dist = self.flown.pos.y[dist_key]
-        
         dist_dg = F3A.single.distance.lookup(max(dist, 170) - 170)
-        
         return Result("distance", [], [],[dist],[dist_dg],dist_key)
 
     def intra(self):
@@ -162,23 +159,4 @@ class Complete(Alignment):
         fig = plotdtw(self.flown, self.flown.data.element.unique())
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
 
-
-
-@dataclass
-class Scored(Complete):
-    scores: ManoeuvreResults
-
-    @staticmethod
-    def from_dict(data:dict, fallback=True):
-        ca = Complete.from_dict(data, fallback)
-        try:
-            ca = Scored(
-                **ca.__dict__,
-                scores=ManoeuvreResults.from_dict(data["scores"])
-            )
-        except Exception as e:
-            if fallback:
-                logger.exception(f"Failed to read scores, {repr(e)}")
-            else:
-                raise e
-        return ca
+from .scored import Scored  # noqa: E402

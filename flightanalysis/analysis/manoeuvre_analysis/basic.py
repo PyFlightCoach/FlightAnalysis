@@ -6,6 +6,7 @@ import geometry as g
 from json import load
 from .analysis import AlinmentStage, Analysis
 
+
 @dataclass
 class Basic(Analysis):
     mdef: ManDef
@@ -57,4 +58,4 @@ class Basic(Analysis):
         )
 
 
-from .alignment import Alignment
+from .alignment import Alignment  # noqa: E402

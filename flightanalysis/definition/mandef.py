@@ -20,6 +20,7 @@ from geometry import Transformation, Euler, Point
 from . import ManParms, ElDef, ElDefs, Position, Direction
 
 
+
 class ManDef:
     """This is a class to define a manoeuvre for template generation and judging.
 

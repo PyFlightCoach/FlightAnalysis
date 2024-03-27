@@ -1,8 +1,7 @@
 """The collectors are serializable functions that return parameters from elements"""
-from flightdata import Collection, State
+from flightdata import Collection
 from . import Opp
 from uuid import uuid1
-from typing import Self
 
 
 class Collector(Opp):

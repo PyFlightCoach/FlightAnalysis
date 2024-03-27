@@ -1,25 +1,27 @@
 from __future__ import annotations
 from typing import Self, Union
-from json import load, dump
+from json import load
 from flightdata import Flight, State, Origin, Collection
 from flightanalysis.definition import SchedDef, ScheduleInfo
 from . import manoeuvre_analysis as analysis
-from flightdata.base import NumpyEncoder
 from loguru import logger
 from joblib import Parallel, delayed
 import os
 import pandas as pd
-
+from importlib.metadata import version
 
 class ScheduleAnalysis(Collection):
     VType=analysis.Analysis
     uid='name'
     
+    def __init__(self, data: list[analysis.Analysis], sinfo: ScheduleInfo):
+        super().__init__(data)
+        self.sinfo = sinfo
+
     @staticmethod
     def from_fcj(file: Union[str, dict], info: ScheduleInfo=None) -> ScheduleAnalysis:
         if isinstance(file, str):
-            with open(file, 'r') as f:
-                data = load(f)
+            data = load(open(file, 'r'))
         else:
             data = file
         flight = Flight.from_fc_json(data)
@@ -41,7 +43,8 @@ class ScheduleAnalysis(Collection):
                 state.get_manoeuvre(mdef.info.short_name), 
                 direction,
                 analysis.AlinmentStage.SETUP
-            ) for mdef in sdef]
+            ) for mdef in sdef],
+            info
         )
     
     def run_all(self) -> Self:
@@ -56,9 +59,7 @@ class ScheduleAnalysis(Collection):
             delayed(parse_analyse_serialise)(ma.to_dict()) for ma in self
         )
 
-        return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts])
-    
-
+        return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts], self.sinfo)  
 
     def optimize_alignment(self) -> Self:
 
@@ -70,17 +71,16 @@ class ScheduleAnalysis(Collection):
         logger.info(f'Starting {os.cpu_count()} alinment optimisation processes')
         inmadicts = [mdef.to_dict() for mdef in self]
         madicts = Parallel(n_jobs=os.cpu_count())(delayed(parse_analyse_serialise)(mad) for mad in inmadicts)
-        return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts])
+        return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts], self.sinfo)
     
     @staticmethod
-    def from_fcscore(file: Union[str, dict], fallback=True) -> Self:
+    def from_fcscore(file: Union[str, dict], fallback=True) -> ScheduleAnalysis:
         if isinstance(file, str) or isinstance(file, os.PathLike):
-            with open(file, 'r') as f:
-                data = load(f)
+            data = load(open(file, 'r'))
         else:
             data = file
-                    
-        sdef = SchedDef.load(ScheduleInfo(**data['sinfo']))
+        sinfo = ScheduleInfo(**data['sinfo'])
+        sdef = SchedDef.load(sinfo)
 
         mas = []
         for mdef in sdef:
@@ -89,32 +89,28 @@ class ScheduleAnalysis(Collection):
                 fallback
             ))
 
-        return ScheduleAnalysis(mas)
+        return ScheduleAnalysis(mas, sinfo)
     
     def scores(self):
         scores = {}
         total = 0
-        scores = {ma.mdef.info.short_name: ma.scores.score() for ma in self}
+        scores = {ma.name: (ma.scores.score() if hasattr(ma, 'scores') else 0) for ma in self}
         total = sum([ma.mdef.info.k * v for ma, v in zip(self, scores.values())])
         return total, scores
 
     def summarydf(self):
         return pd.DataFrame([ma.scores.summary() if hasattr(ma, 'scores') else {} for ma in self])
 
-    def to_fcscore(self, name: str, sinfo: ScheduleInfo) -> dict:        
+    def to_fcscore(self, name: str) -> dict:        
         total, scores = self.scores()
        
         odata = dict(
             name = name,
             client_version = 'Py',
-            server_version = '',
-            sinfo = sinfo.__dict__,
+            server_version = version('flightanalysis'),
+            sinfo = self.sinfo.__dict__,
             score = total,
             manscores = scores,
-            data = self.to_dict(True)
+            data = self.to_dict()
         )
         return odata
-
-    def dump_fcscore(self, name: str, sinfo: ScheduleInfo, file: str):
-        with open(file, 'w') as f:
-            dump(self.to_fcscore(name, sinfo), f, cls=NumpyEncoder)

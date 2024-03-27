@@ -11,5 +11,6 @@ from .manparm import ManParm, ManParms, DummyMPs
 
 from .eldef import ElDef, ElDefs
 from .mandef import ManDef
+from .manoption import ManOption
 from .scheddef import SchedDef, ScheduleInfo
 from .builders.manbuilder import ManBuilder, f3amb, MBTags, centred, imacmb, r, c45, dp

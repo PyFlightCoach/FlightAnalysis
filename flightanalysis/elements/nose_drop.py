@@ -47,7 +47,7 @@ class NoseDrop(Element):
         return "nose drop"
 
     def match_intention(self, transform: Transformation, flown: State) -> NoseDrop:
-        _inverted = 1 if transform.rotation.is_inverted()[0] else -1
+        _inverted = 1 if transform.att.is_inverted()[0] else -1
         _speed = abs(flown.vel).mean()
 
         loop = Loop(_speed, self.radius, 0.5*np.pi*_inverted).match_intention(

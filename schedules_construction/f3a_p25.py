@@ -1,12 +1,11 @@
-from flightanalysis.definition import (
+from flightanalysis import (
     SchedDef, ManInfo, BoxLocation, Position, Orientation, 
-    Height, Direction, MBTags, f3amb, centred, r, ManParm
+    Height, Direction, MBTags, f3amb, centred, r, ManParm,
+    ManOption, Combination, c45
 )
-from flightanalysis.scoring import Combination
 
 import numpy as np
 
-c45 = np.cos(np.radians(45))
 
 
 
@@ -95,17 +94,30 @@ p25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(
             desired=r([[-0.25, 0.25], [0.25, -0.25]])
         ), 0)),
-    f3amb.create(ManInfo(
-            "Humpty", "hB", k=3, position=Position.END, 
-            start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
-            end=BoxLocation(Height.BTM)
-        ),[
-            f3amb.loop(np.pi/2),
-            f3amb.roll(r([0.5, -0.5])),
-            f3amb.loop(-np.pi),
-            f3amb.roll(r(0.5)),
-            f3amb.loop(np.pi/2),
+    ManOption([
+        f3amb.create(ManInfo(
+                "Humpty", "hB", k=3, position=Position.END, 
+                start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
+                end=BoxLocation(Height.BTM)
+            ),[
+                f3amb.loop(np.pi/2),
+                f3amb.roll(r([0.5, -0.5])),
+                f3amb.loop(-np.pi),
+                f3amb.roll(r(0.5)),
+                f3amb.loop(np.pi/2),
         ]),
+        f3amb.create(ManInfo(
+                "Humpty Option", "hB", k=3, position=Position.END, 
+                start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
+                end=BoxLocation(Height.BTM)
+            ),[
+                f3amb.loop(np.pi/2),
+                f3amb.roll(r([0.5, -0.5])),
+                f3amb.loop(-np.pi),
+                f3amb.roll(r(0.5)),
+                f3amb.loop(np.pi/2),
+        ])
+    ]),
     f3amb.create(ManInfo(
             "Loop", "loop", k=5, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
