@@ -94,29 +94,16 @@ p25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(
             desired=r([[-0.25, 0.25], [0.25, -0.25]])
         ), 0)),
-    ManOption([
-        f3amb.create(ManInfo(
-                "Humpty", "hB", k=3, position=Position.END, 
-                start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
-                end=BoxLocation(Height.BTM)
-            ),[
-                f3amb.loop(np.pi/2),
-                f3amb.roll(r([0.5, -0.5])),
-                f3amb.loop(-np.pi),
-                f3amb.roll(r(0.5)),
-                f3amb.loop(np.pi/2),
-        ]),
-        f3amb.create(ManInfo(
-                "Humpty Option", "hB", k=3, position=Position.END, 
-                start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
-                end=BoxLocation(Height.BTM)
-            ),[
-                f3amb.loop(np.pi/2),
-                f3amb.roll(r([0.5, -0.5])),
-                f3amb.loop(-np.pi),
-                f3amb.roll(r(0.5)),
-                f3amb.loop(np.pi/2),
-        ])
+    f3amb.create(ManInfo(
+            "Humpty", "hB", k=3, position=Position.END, 
+            start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
+            end=BoxLocation(Height.BTM)
+        ),[
+            f3amb.loop(np.pi/2),
+            f3amb.roll(r([0.5, -0.5])),
+            f3amb.loop(-np.pi),
+            f3amb.roll(r(0.5)),
+            f3amb.loop(np.pi/2),
     ]),
     f3amb.create(ManInfo(
             "Loop", "loop", k=5, position=Position.CENTRE, 
@@ -174,19 +161,38 @@ p25_def = SchedDef([
             f3amb.roll(r(0.5), line_length=165),
             f3amb.loop(np.pi/2),
         ]),
-    f3amb.create(ManInfo(
-            "Top Hat", "tHat", k=3, position=Position.END, 
-            start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
-            end=BoxLocation(Height.BTM)
-        ),[
-            f3amb.loop(np.pi/2),
-            f3amb.roll("2x4"),
-            f3amb.loop(np.pi/2),
-            f3amb.line(length=50),
-            f3amb.loop(np.pi/2),
-            f3amb.line(),
-            f3amb.loop(np.pi/2)
+    ManOption([
+        f3amb.create(ManInfo(
+                "Top Hat", "tHat", k=3, position=Position.END, 
+                start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
+                end=BoxLocation(Height.BTM)
+            ),[
+                f3amb.loop(np.pi/2),
+                f3amb.roll("2x4"),
+                f3amb.loop(np.pi/2),
+                f3amb.line(length=50),
+                f3amb.loop(np.pi/2),
+                f3amb.line(),
+                f3amb.loop(np.pi/2)
         ]),
+        f3amb.create(ManInfo(
+                "Top Hat Option", "tHat", k=3, position=Position.END, 
+                start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
+                end=BoxLocation(Height.BTM)
+            ),[
+                f3amb.loop(np.pi/2),
+                f3amb.roll("opt[0]"),
+                f3amb.loop(np.pi/2),
+                f3amb.line(length=50),
+                f3amb.loop(np.pi/2),
+                f3amb.roll("opt[1]"),
+                f3amb.loop(np.pi/2)
+            ], opt=ManParm("opt", 
+                Combination(desired=r([
+                    [1/4, -1/4], 
+                    [1/4, 1/4]
+        ])), 0)),
+    ]),
     f3amb.create(ManInfo(
             "Figure Z", "Z", k=4, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),

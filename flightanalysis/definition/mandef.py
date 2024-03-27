@@ -23,9 +23,10 @@ from . import ManParms, ElDef, ElDefs, Position, Direction
 
 class ManDef:
     """This is a class to define a manoeuvre for template generation and judging.
-
-    It also contains lots of helper functions for creating elements and common combinations
-    of elements.
+    It contains information on the location of the manoeuvre (ManInfo), a set
+    of parameters that are used to define the scale of the manoevre (ManParms)
+    and a list of element definitions that are used to create the elements that
+    form the manoeuvre (ElDefs).
     """
 
     def __init__(self, info: ManInfo, mps: ManParms = None, eds: ElDefs = None):
@@ -45,11 +46,14 @@ class ManDef:
         )
 
     @staticmethod
-    def from_dict(data: dict) -> ManDef:
-        info = ManInfo.from_dict(data["info"])
-        mps = ManParms.from_dict(data["mps"])
-        eds = ElDefs.from_dict(data["eds"], mps)
-        return ManDef(info, mps, eds)
+    def from_dict(data: dict | list) -> ManDef | ManOption:
+        if isinstance(data, list):
+            return ManOption.from_dict(data)
+        else:
+            info = ManInfo.from_dict(data["info"])
+            mps = ManParms.from_dict(data["mps"])
+            eds = ElDefs.from_dict(data["eds"], mps)
+            return ManDef(info, mps, eds)
 
     def create_entry_line(self, itrans: Transformation=None, target_depth=170) -> ElDef:
         """Create a line definition connecting Transformation to the start of this manoeuvre.
@@ -130,3 +134,6 @@ class ManDef:
         fig = plotdtw(template, template.data.element.unique())
         fig = plotsec(template, fig=fig, nmodels=20, scale=3)
         return fig
+
+
+from .manoption import ManOption  # noqa: E402

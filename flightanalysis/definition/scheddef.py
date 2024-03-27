@@ -1,4 +1,4 @@
-from . import ManDef, ManInfo
+from . import ManDef, ManInfo, ManOption, ScheduleInfo, fcj_schedule_names
 from flightdata import State
 from typing import Tuple, Union, Self
 from geometry import Transformation
@@ -6,67 +6,18 @@ from flightanalysis.schedule import Schedule
 from flightanalysis.elements import Line
 from flightdata import Collection
 from json import dump, load
-from flightdata.base.numpy_encoder import NumpyEncoder
-from dataclasses import dataclass
-from flightanalysis.data import list_resources, get_json_resource
-
-
-fcj_schedule_names = {
-    'f3a': ['F3A', 'F3A FAI'],
-    'nsrca': ['F3A US'],
-    'f3auk': ['F3A UK'],
-    'imac': ['IMAC']
-}
-
-@dataclass
-class ScheduleInfo:
-    category: str
-    name: str
-
-    @staticmethod
-    def from_str(fname):
-        if fname.endswith("_schedule.json"):
-            fname = fname[:-14]
-        info = fname.split("_")
-        if len(info) == 1:
-            return ScheduleInfo("f3a", info[0].lower())
-        else:
-            return ScheduleInfo(info[0].lower(), info[1].lower())
-
-    def __str__(self):
-        return f"{self.category}_{self.name}".lower()
-
-    def definition(self):
-        return SchedDef.load(self)
-
-    @staticmethod
-    def from_fcj_sch(fcj):
-        for k, v in fcj_schedule_names.items():
-            if fcj[0] in v:
-                return ScheduleInfo(k, fcj[1])
-        raise ValueError(f"Unknown schedule {fcj}")    
-
-    def to_fcj_sch(self):
-        return [fcj_schedule_names[self.category][-1], self.name]
-
-    @staticmethod
-    def build(category, name):
-        return ScheduleInfo(category.lower(), name.lower())
-
-
-schedule_library = [ScheduleInfo.from_str(fname) for fname in list_resources('schedule')]
+from flightdata import NumpyEncoder
+from flightanalysis.data import get_json_resource
 
 
 class SchedDef(Collection):
     VType=ManDef
+    def __init__(self, data: dict[str, VType] | list[VType] = None):
+        super().__init__(data, check_types=False)
+        assert all([v.__class__.__name__ in ['ManOption', 'ManDef'] for v in self])
 
     def add_new_manoeuvre(self, info: ManInfo, defaults=None):
         return self.add(ManDef(info,defaults))
-
-    def create_schedule(self, depth: float, wind: float) -> Schedule:
-        return Schedule(
-            {m.uid: m.create(m.info.initial_transform(depth, wind)) for m in self}
-        )      
 
     def create_template(self,depth:float=170, wind:int=-1) -> Tuple[Schedule, State]:
         templates = []
@@ -74,7 +25,8 @@ class SchedDef(Collection):
         
         mans = []
         for md in self:
-
+            md = md[md.active] if isinstance(md, ManOption) else md
+                
             itrans=Transformation(
                 ipos if len(templates) == 0 else templates[-1][-1].pos,
                 md.info.start.initial_rotation(wind) if len(templates) == 0 else templates[-1][-1].att
@@ -83,16 +35,6 @@ class SchedDef(Collection):
             templates.append(man.create_template(itrans))
             mans.append(man)
         return Schedule(mans), State.stack(templates)
-
-    def create_el_matched_template(self, intended: Schedule):
-        for md, man in zip(self, intended):
-            if isinstance(man, Line):
-                pass
-
-    def update_defaults(self, sched: Schedule):
-        # TODO need to consider the entry line
-        for md, man in zip(self, sched):
-            md.mps.update_defaults(man)
 
     def to_json(self, file: str) -> str:
         with open(file, "w") as f:

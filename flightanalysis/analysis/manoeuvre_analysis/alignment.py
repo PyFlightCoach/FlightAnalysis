@@ -12,6 +12,14 @@ class Alignment(Basic):
     manoeuvre: Manoeuvre
     template: State
 
+    def run_all(self):
+        while self.__class__.__name__ != 'Scored':
+            new = self.run()
+            if new.__class__.__name__ == self.__class__.__name__:
+                break
+            self = new
+        return new
+    
     @staticmethod
     def from_dict(data: dict, fallback=True):
         ia = Basic.from_dict(data)

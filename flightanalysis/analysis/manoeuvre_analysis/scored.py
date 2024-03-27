@@ -22,3 +22,6 @@ class Scored(Complete):
             else:
                 raise e
         return ca
+    
+    def run(self):
+        return self

@@ -32,7 +32,7 @@ class ScheduleAnalysis(Collection):
 
         state = State.from_flight(flight, box).splitter_labels(
             data["mans"],
-            [m.info.short_name for m in sdef]
+            sdef.uids
         )
 
         direction = -state.get_manoeuvre(0)[0].direction()[0]
@@ -40,7 +40,7 @@ class ScheduleAnalysis(Collection):
         return ScheduleAnalysis(
             [analysis.Basic(
                 mdef, 
-                state.get_manoeuvre(mdef.info.short_name), 
+                state.get_manoeuvre(mdef.uid), 
                 direction,
                 analysis.AlinmentStage.SETUP
             ) for mdef in sdef],

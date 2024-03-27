@@ -1,4 +1,3 @@
-from pathlib import Path
 from pkg_resources import resource_stream, resource_listdir
 from json import loads
 

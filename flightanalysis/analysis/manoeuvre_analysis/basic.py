@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from flightdata import State, Flight, Origin
-from flightanalysis.definition import ManDef, SchedDef
+from flightanalysis.definition import ManDef, SchedDef, ManOption
 import geometry as g
 from json import load
 from .analysis import AlinmentStage, Analysis
@@ -9,7 +9,7 @@ from .analysis import AlinmentStage, Analysis
 
 @dataclass
 class Basic(Analysis):
-    mdef: ManDef
+    mdef: ManDef | ManOption
     flown: State
     direction: int
     stage: AlinmentStage
@@ -17,6 +17,22 @@ class Basic(Analysis):
     @property
     def name(self):
         return self.mdef.uid
+
+    def run_all(self):
+        res = [s for s in [s.run_all() for s in self.run()] if isinstance(s, Scored)]
+        
+        if len(res) == 0:
+            return self
+                
+        min_dg = None
+        for n in res:
+            if hasattr(n, 'scores'):
+                if min_dg is None or n.scores.intra.total < min_dg:
+                    min_dg = n.scores.intra.total
+                    self = n 
+                   
+        return self
+        
 
     @classmethod
     def from_dict(Cls, data:dict) -> Basic:
@@ -47,15 +63,21 @@ class Basic(Analysis):
             [m.info.short_name for m in sdef]
         )
         mdef= sdef[mid]
-        return Basic(mdef, state.get_manoeuvre(mdef.info.short_name), AlinmentStage.SETUP)
+        return Basic(mdef, state.get_manoeuvre(mdef.uid), AlinmentStage.SETUP)
 
-    def run(self):
+    def run(self) -> list[Alignment]:
         itrans = self.create_itrans()
-        man = self.mdef.create(itrans).add_lines()
-        return Alignment(
-            self.mdef, self.flown, self.direction, AlinmentStage.SETUP, 
-            man, man.create_template(itrans)
-        )
+        mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
+
+        als = []        
+        for mdef in mopt:
+            man = mdef.create(itrans).add_lines()
+            als.append(Alignment(
+                mdef, self.flown, self.direction, AlinmentStage.SETUP, 
+                man, man.create_template(itrans)
+            ))
+        return als
 
 
 from .alignment import Alignment  # noqa: E402
+from .scored import Scored  # noqa: E402

@@ -14,11 +14,3 @@ class Analysis:
         return {k: (v.to_dict() if hasattr(v, 'to_dict') else v) for k, v in self.__dict__.items()}
 
 
-    def run_all(self):
-        while self.__class__.__name__ != 'Scored':
-            new = self.run()
-            if new.__class__.__name__ == self.__class__.__name__:
-                break
-            self = new
-        return self
-
