@@ -1,6 +1,10 @@
-from pytest import fixture, mark
+from pytest import fixture, mark, approx
 from flightanalysis.scoring.criteria import Single, Exponential, Criteria, Combination, ContRat, ContAbs, Comparison, MaxBound, InsideBound, OutsideBound, Continuous
 from flightanalysis.scoring import Measurement
+from flightanalysis import NoseDrop
+from flightdata import State
+from geometry import Transformation, Euldeg, P0, PX, PY
+
 from numpy.testing import assert_array_almost_equal
 import numpy as np
 import geometry as g
@@ -27,8 +31,6 @@ def combination():
 @fixture
 def comparison():
     return Comparison(Exponential(1,1))
-
-
 
 
 def test_single_to_dict(single: Single):
@@ -142,7 +144,6 @@ def test_inside_below(inside: InsideBound):
 def outside():
     return OutsideBound(Exponential(1,1), [-1, 1])
 
-
 def test_outside_allin(outside: OutsideBound):
     sample = outside.prepare(np.zeros(11), 0)
     np.testing.assert_array_equal(sample, np.ones(11))
@@ -198,3 +199,24 @@ def test_contrat_mistakes():
         ContRat.mistakes(*mistakes_inputs(data)), 
         [1,1,1,1,1,1]
     )
+
+
+@fixture
+def ndbound():
+    return OutsideBound(Exponential(20,1), [-np.radians(15), np.radians(15)])
+
+def make_nd(angle, inverted=False):
+    return NoseDrop(3, 5, np.radians(90-angle)).create_template(
+        State.from_transform(
+            Transformation(Euldeg(0 if inverted else 180, 0, 0), PY(100)),
+            vel=PX(3)
+        )
+    )
+
+def test_nose_drop_bound(ndbound: OutsideBound):
+    '''Check there is a big downgrade for nosedrop of less than 15 degrees'''
+    fl = make_nd(5)
+    res = ndbound('test', Measurement.nose_drop(fl, fl))
+    assert res.dgs[0] > 3
+
+    

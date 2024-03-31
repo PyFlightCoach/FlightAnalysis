@@ -28,7 +28,7 @@ class Complete(Alignment):
             )
         except Exception as e:
             if fallback:
-                logger.exception(f"Failed to parse Complete: {repr(e)}")
+                logger.debug(f"Failed to parse Complete: {repr(e)}")
             else:
                 raise e
         return pa

@@ -1,6 +1,6 @@
 from __future__ import annotations
 from flightdata import State
-from geometry import Point, Quaternion, PX, PY, PZ, P0, Transformation
+from geometry import Point, Quaternion, PX, PY, PZ
 import numpy as np
 import numpy.typing as npt
 from dataclasses import dataclass
@@ -54,7 +54,8 @@ class Measurement:
         )
 
     def _pos_vis(loc: Point):
-        return abs(Point.vector_rejection(loc, PY())) / abs(loc)
+        res = abs(Point.vector_projection(loc, PY())) / abs(loc)
+        return np.nan_to_num(res, nan=1)
 
     @staticmethod
     def _vector_vis(direction: Point, loc: Point) -> Union[Point, npt.NDArray]:
@@ -74,7 +75,6 @@ class Measurement:
         #radial error more visible if axis is parallel to the view vector
         return axial_dir, (0.2+0.8*np.abs(Point.cos_angle_between(loc, axial_dir))) * Measurement._pos_vis(loc)
 
-    
     @staticmethod
     def speed(fl: State, tp: State, direction: Point=None, axis='body') -> Self:
         direction=Point(1,1,1) if direction is None else direction
@@ -125,10 +125,10 @@ class Measurement:
             tp_roll_angle = np.arcsin(Point.cross(tp_rf_proj, proj).x)
 
         count = np.round(
-            np.floor(np.sum(fl.p * fl.dt) - np.sum(tp.p * fl.dt)) \
+            np.floor(np.sum(np.abs(fl.p + fl.r) * fl.dt) - np.sum(np.abs(tp.p+tp.r) * tp.dt)) \
                     / (2 * np.pi)
         )
-
+        # TODO need to consider off axis rotations here for example spins
         return Measurement(
             2*np.pi*count + fl_roll_angle - tp_roll_angle,
             0, 
@@ -161,6 +161,13 @@ class Measurement:
         """vector in the body X axis, length is equal to the roll rate"""
         wrvel = fl.att.transform_point(fl.p * PX())
         return Measurement(abs(wrvel) * np.sign(fl.p), np.mean(tp.p), *Measurement._roll_vis(fl.pos, fl.att))
+    
+    @staticmethod
+    def nose_drop(fl: State, tp: State) -> Measurement:
+        """Check the change in body pitch angle between the start and end of the element"""
+        flpit = Quaternion.body_axis_rates(fl.att[0], fl.att[-1]).y
+                
+        return Measurement(flpit, np.array([0]), *Measurement._roll_vis(fl.pos[-1], fl.att[-1]))
     
     @staticmethod
     def track_proj(fl: State, tp: State, proj: Point, fix='ang'):
@@ -258,8 +265,4 @@ class Measurement:
             )  
         )
     
-    @staticmethod
-    def turns(fl: State, tp: State) -> Measurement:
-        fl_turns = fl.rvel.cumsum() * fl.dt
-        tp_turns = tp.rvel.cumsum() * fl.dt
         

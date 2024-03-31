@@ -18,7 +18,7 @@ class Scored(Complete):
             )
         except Exception as e:
             if fallback:
-                logger.exception(f"Failed to read scores, {repr(e)}")
+                logger.debug(f"Failed to read scores, {repr(e)}")
             else:
                 raise e
         return ca

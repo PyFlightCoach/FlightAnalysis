@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, PX, PY, PZ, Time, Point
+from geometry import Transformation, PX, PY, Time
 from flightdata import State
 from .element import Element
 from .loop import Loop
@@ -28,7 +28,8 @@ class NoseDrop(Element):
         
         return DownGrades([
             DownGrade(length, F3A.intra.spin_entry_length),
-            DownGrade(roll_angle, F3A.intra.roll)
+            DownGrade(roll_angle, F3A.intra.roll),
+            DownGrade(Measurement.nose_drop, F3A.intra.nose_drop_amount)
         ])
 
     def create_template(self, istate: State, time: Time=None) -> State:

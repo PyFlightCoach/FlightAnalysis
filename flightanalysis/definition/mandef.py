@@ -49,6 +49,9 @@ class ManDef:
     def from_dict(data: dict | list) -> ManDef | ManOption:
         if isinstance(data, list):
             return ManOption.from_dict(data)
+        elif 'options' in data and data['options'] is not None and len(data['options']) > 0:
+            opts = data.pop('options')
+            return ManOption.from_dict([data] + opts)
         else:
             info = ManInfo.from_dict(data["info"])
             mps = ManParms.from_dict(data["mps"])

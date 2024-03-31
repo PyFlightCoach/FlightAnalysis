@@ -1,4 +1,4 @@
-from flightanalysis.scoring.criteria import *
+from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, free, OutsideBound
 import numpy as np
 
 
@@ -19,6 +19,7 @@ f3a=dict(
         stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.5,2.5]), [-2,2]),
         spin_entry_length=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-5,5]),
         pitch_break_length=InsideBound(Exponential.fit_points([1, 2], [0.7,3.5]), [-2,2]),
+        nose_drop_amount=OutsideBound(Exponential(20,1), [-np.radians(15), np.radians(15)]),
         recovery_length=MaxBound(Exponential.fit_points([1, 2], [0.7,3.5]), 2),
     ),
     inter=dict(

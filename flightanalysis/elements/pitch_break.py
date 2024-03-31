@@ -24,7 +24,7 @@ class PitchBreak(Element):
         def roll_angle(fl, tp):
             return Measurement.roll_angle_proj(fl, tp, PY())
         return DownGrades([
-            DownGrade(length, F3A.intra.pitch_break_length),
+            DownGrade(length, F3A.intra.pitch_break_length)
         ])
 
     @property
