@@ -124,10 +124,10 @@ class Measurement:
             fl_roll_angle = np.arcsin(Point.cross(tr_rf_proj, proj).x)
             tp_roll_angle = np.arcsin(Point.cross(tp_rf_proj, proj).x)
 
-        count = np.round(
-            np.floor(np.sum(np.abs(fl.p + fl.r) * fl.dt) - np.sum(np.abs(tp.p+tp.r) * tp.dt)) \
-                    / (2 * np.pi)
-        )
+        flturns = np.sum(Point.scalar_projection(fl.att.diff(fl.dt), fl.att.transform_point(fl.vel)) * fl.dt) / (2*np.pi)
+        tpturns = np.sum(Point.scalar_projection(tp.att.diff(tp.dt), tp.att.transform_point(tp.vel))* tp.dt) / (2*np.pi)
+
+        count = np.floor(abs(flturns)) * np.sign(flturns) - np.floor(abs(tpturns)) * np.sign(tpturns)
         # TODO need to consider off axis rotations here for example spins
         return Measurement(
             2*np.pi*count + fl_roll_angle - tp_roll_angle,
