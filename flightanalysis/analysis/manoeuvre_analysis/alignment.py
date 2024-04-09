@@ -31,7 +31,7 @@ class Alignment(Basic):
             )
         except Exception as e:
             if fallback:
-                logger.exception(f'Failed to parse Alignment {repr(e)}')
+                logger.debug(f'Failed to parse Alignment {repr(e)}')
             else:
                 raise e
         return ia

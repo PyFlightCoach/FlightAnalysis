@@ -2,7 +2,7 @@ from flightdata import State
 from geometry import Point, Quaternion, Transformation, PX, PY, PZ, Euldeg, P0
 from pytest import fixture, approx
 import numpy as np
-from flightanalysis import Loop, Line, Measurement, r, Autorotation, NoseDrop
+from flightanalysis import Loop, Measurement, r, Autorotation, NoseDrop
 
 @fixture
 def line_tp():
@@ -115,3 +115,9 @@ def test_pos_vis():
     assert Measurement._pos_vis(PY(1)) == approx(1)
     assert Measurement._pos_vis(Point(1, 1, 0)) == 1 / np.sqrt(2)
     assert Measurement._pos_vis(P0()) == 1
+
+
+
+def test_depth_vis():
+    assert Measurement.depth_vis(PY(170))[1] == 0.4
+    assert Measurement.depth_vis(Point(170 * np.tan(np.radians(60)), 170, 0))[1] == 1.0

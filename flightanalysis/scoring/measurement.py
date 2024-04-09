@@ -2,9 +2,10 @@ from __future__ import annotations
 from flightdata import State
 from geometry import Point, Quaternion, PX, PY, PZ
 import numpy as np
+import pandas as pd
 import numpy.typing as npt
 from dataclasses import dataclass
-from typing import Union, Any, Self
+from typing import Union, Self
 
 
 
@@ -34,6 +35,12 @@ class Measurement:
             visibility = list(self.visibility)
         )
     
+    def __repr__(self):
+        if len(self.value) == 1:
+            return f'Measurement({self.value}, {self.expected}, {self.direction}, {self.visibility})'
+        else:
+            return f'Measurement(\nvalue:\n={pd.DataFrame(self.value).describe()}\nexpected:{self.expected}\nvisibility:\n{pd.DataFrame(self.visibility).describe()}\n)'
+
     def exit_only(self):
         fac = np.zeros(len(self.value))
         fac[-1] = 1
@@ -54,6 +61,9 @@ class Measurement:
         )
 
     def _pos_vis(loc: Point):
+        '''Accounts for how hard it is to see an error due to the distance from the pilot.
+        Assumes distance is a function only of x and z position, not the y position.
+        '''
         res = abs(Point.vector_projection(loc, PY())) / abs(loc)
         return np.nan_to_num(res, nan=1)
 
@@ -264,5 +274,56 @@ class Measurement:
                 tp[0].att.transform_point(wproj)
             )  
         )
+
+    @staticmethod
+    def depth_vis(loc: Point):
+        '''Accounts for how hard it is to tell whether the aircraft is at a downgradable
+         distance (Y position). Assuming that planes look closer in the centre of the box than the end,
+         even if they are at the same Y position.
+        '''
+        rot = np.abs(np.arctan(loc.x / loc.y))
+        return loc, 0.4 + 0.6 * rot / np.radians(60)
+
+    @staticmethod
+    def depth(fl: State) -> Measurement:
+        return Measurement(
+            fl.pos.y,
+            0,
+            *Measurement.depth_vis(fl.pos)
+        )
     
-        
+    @staticmethod
+    def lateral_pos_vis(loc: Point):
+        '''How hard is it for the judge tell the lateral position. Based on the following principals: 
+        - its easier when the plane is lower as its closer to the box markers. (1 for low, 0.5 for high)
+        '''
+        r60 = np.radians(60)
+        return loc, (0.5 + 0.5 * (r60 - np.abs(np.arctan(loc.z / loc.y))) / r60)
+    
+    @staticmethod
+    def side_box(fl: State):
+        vis = Measurement.lateral_pos_vis(fl.pos)
+        return Measurement(
+            np.arctan(fl.pos.x / fl.pos.y),
+            0.0,
+            vis[0],
+            vis[1] * 0.6 
+            # additional factor because the judge isn't aligned with the end marker so can't really tell
+        )
+    
+    @staticmethod
+    def top_box(fl: State):
+        return Measurement(
+            np.arctan(fl.pos.z / fl.pos.y),
+            0.0,
+            fl.pos,
+            np.full(len(fl), 0.5) # top box is always hard to tell
+        )
+
+    @staticmethod
+    def centre_box(fl: State):        
+        return Measurement(
+            np.arctan(fl.pos.x / fl.pos.y),
+            0.0,
+            *Measurement.lateral_pos_vis(fl.pos)
+        )

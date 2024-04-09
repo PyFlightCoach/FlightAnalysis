@@ -1,6 +1,3 @@
-from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, OutsideBound
-
-
 class F3ASingle:
     track=Single(Exponential(3.8197186342054885,0.9999999999999999, 100 ))
     roll=Single(Exponential(2.872721387028467,1.6309297535714575, 100 ))
@@ -25,16 +22,3 @@ class F3AInter:
     roll_rate=Comparison(Exponential(0.25,1.1132827525593783, 2 ))
     length=Comparison(Exponential(1.0,0.6826061944859854, 3 ))
     free=Comparison(Exponential(0,1, None ))
-
-
-
-class F3A:
-    inter = F3AInter
-    intra = F3AIntra
-    single = F3ASingle
-
-
-if __name__=='__main__':
-    print(F3A.inter.radius)
-    print(F3A.intra.radius)
-    print(F3A.intra.roll)

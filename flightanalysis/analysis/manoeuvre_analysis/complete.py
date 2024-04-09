@@ -4,7 +4,7 @@ from ..el_analysis import ElementAnalysis
 from flightdata import State
 from flightanalysis.definition import ManDef
 from flightanalysis.manoeuvre import Manoeuvre
-from flightanalysis.scoring import Results, Result, ManoeuvreResults
+from flightanalysis.scoring import Results, Result, ManoeuvreResults, Measurement
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.definition.maninfo import Position
 import numpy as np
@@ -74,68 +74,58 @@ class Complete(Alignment):
         )
     
     def side_box(self):
-        al = self.flown
-        side_box_angle = np.arctan2(al.pos.x, al.pos.y)
-
-        max_sb = max(abs(side_box_angle))
-        min_sb = min(abs(side_box_angle))
-
-        outside = 1 - (1.0471975511965976 - min_sb) / (max_sb - min_sb)
-        box_dg = max(outside, 0.0) * 5.0
-        return Result(
-            "side box",
-            [max_sb, min_sb],
-            [],
-            [outside],
-            [box_dg],
-            []
+        return F3A.intra.box(
+            'side box', 
+            Measurement.side_box(self.flown)
         )
 
     def top_box(self):
-        top_box_angle = np.arctan(self.flown.pos.z / self.flown.pos.y)
-        tb = max(top_box_angle)
-        outside_tb = (tb - 1.0471975511965976) / 1.0471975511965976
-        top_box_dg = max(outside_tb, 0) * 6
-        return Result("top box", [tb], [], [outside_tb], [top_box_dg], [])
+        return F3A.intra.box(
+            'top box', 
+            Measurement.top_box(self.flown)
+        )
 
     def centre(self):
-        centres = []
-        centre_names = []
+        results = Results('centres')
         for cpid in self.mdef.info.centre_points:
-            if cpid == 0:
-                centre_pos = self.manoeuvre.elements[cpid].get_data(self.flown).pos[0]
-            else:
-                centre_pos = self.manoeuvre.elements[cpid-1].get_data(self.flown).pos[-1]
-            centres.append(np.arctan2(centre_pos.x, centre_pos.y)[0])
-            centre_names.append(f'centre point {cpid}')
+            results.add(F3A.single.angle(
+                f'centre point {cpid}',
+                Measurement.centre_box(self.flown.get_element(cpid+1)[0])
+            ))
 
         for ceid, fac in self.mdef.info.centred_els:
-            ce = self.manoeuvre.elements[ceid].get_data(self.flown)
-            centre_pos = ce.pos[int(len(ce) * fac)]
-            centres.append(np.arctan2(centre_pos.x, centre_pos.y)[0])
-            centre_names.append(f'centred el {ceid}')
-
-        if len(centres) == 0:
-            al = self.flown.get_element(slice(1,-1,None))
-            side_box_angle = np.arctan2(al.pos.x, al.pos.y)
-            centres.append(max(side_box_angle) + min(side_box_angle))
-            centre_names.append('global centre')
-
-        results = Results('centres')
-        for centre, cn in zip(centres, centre_names):
-            results.add(Result(
-                cn,[],[],[centre],
-                [F3A.single.angle.lookup(abs(centre))],
-                [0]
+            ce = self.flown.get_element(ceid+1)
+            path_length = (abs(ce.vel) * ce.dt).cumsum()
+            id = np.abs(path_length - path_length[-1] * fac).argmin()
+            results.add(F3A.single.angle(
+                f'centred element {ceid}',
+                Measurement.centre_box(State(ce.data.iloc[[id], :]))
             ))
+
+        if len(results) == 0 and self.mdef.info.position == Position.CENTRE:
+            al = self.flown.get_element(slice(1,-1,None))
+            midy = (self.flown.get_element(1).y[0] + self.flown.get_element(-1).y[-1]) / 2
+            midid = np.abs(al.pos.y - midy).argmin()
+            results.add(F3A.single.angle(
+                'centred manoeuvre',
+                Measurement.centre_box(al[midid])
+            ))
+
         return results
 
     def distance(self):
         #TODO doesnt quite cover it, stalled manoeuvres could drift to > 170 for no downgrade
-        dist_key = np.argmax(self.flown.pos.y)
-        dist = self.flown.pos.y[dist_key]
-        dist_dg = F3A.single.distance.lookup(max(dist, 170) - 170)
-        return Result("distance", [], [],[dist],[dist_dg],dist_key)
+        return F3A.intra.depth(
+            'distance',
+            Measurement.depth(self.flown)
+        )
+        
+#        val = self.flown.pos.y.mean()
+#        id = np.abs(self.flown.pos.y - val).argmin()
+#        m = Measurement.depth(self.flown[id])
+#        error = np.maximum(m.value, 170) - 170
+#        dist_dg = F3A.single.distance.lookup(error) * m.visibility
+#        return Result("distance", m, m.value, error, dist_dg, [id])
 
     def intra(self):
         return self.manoeuvre.analyse(self.flown, self.template)
@@ -150,8 +140,12 @@ class Complete(Alignment):
         tp_width = max(self.corrected_template.y) - min(self.corrected_template.y)
         if tp_width < 10:
             pres.add(self.distance())
-        pres.add(self.top_box())
-        pres.add(self.side_box())
+        tb = self.top_box()
+        if tb.total > 0:
+            pres.add(self.top_box())
+        sb = self.side_box()
+        if sb.total > 0:
+            pres.add(self.side_box())
         return pres
 
     def plot_3d(self, **kwargs):

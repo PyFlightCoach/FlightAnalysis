@@ -148,14 +148,14 @@ class ElementsResults(Collection):
     
     @property
     def downgrade_list(self):
-        return [er.total for er in self]
+        return list(self.downgrade_df().iloc[-1, :])
     
     def downgrade_df(self):
         df = pd.concat([idg.downgrade_df().sum() for idg in self], axis=1).T
-        df["Total"] = df.T.sum()
-        df["Element"] = self.data.keys()
+        df = pd.concat([df, pd.DataFrame(np.floor(df.sum())).T])
+        df.index = list(self.data.keys()) + ['Total']
         
-        return df.set_index("Element")
+        return df
     
     def to_dict(self) -> dict[str, dict]:
         return dict(
