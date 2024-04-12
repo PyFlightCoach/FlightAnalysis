@@ -9,6 +9,8 @@ from joblib import Parallel, delayed
 import os
 import pandas as pd
 from importlib.metadata import version
+import geometry as g
+
 
 class ScheduleAnalysis(Collection):
     VType=analysis.Analysis
@@ -30,10 +32,12 @@ class ScheduleAnalysis(Collection):
             info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
         sdef = SchedDef.load(info)
 
+        
+
         state = State.from_flight(flight, box).splitter_labels(
             data["mans"],
             sdef.uids
-        )
+        ).move(g.Transformation(g.Point(data['parameters']['moveEast'], data['parameters']['moveNorth'], 0)))
 
         direction = -state.get_manoeuvre(0)[0].direction()[0]
 

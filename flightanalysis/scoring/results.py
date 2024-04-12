@@ -152,7 +152,7 @@ class ElementsResults(Collection):
     
     def downgrade_df(self):
         df = pd.concat([idg.downgrade_df().sum() for idg in self], axis=1).T
-        df = pd.concat([df, pd.DataFrame(np.floor(df.sum())).T])
+        df = pd.concat([df, pd.DataFrame(df.sum()).T])#(np.floor(df.sum())).T])
         df.index = list(self.data.keys()) + ['Total']
         
         return df
