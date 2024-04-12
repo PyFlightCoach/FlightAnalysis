@@ -1,0 +1,40 @@
+from pathlib import Path
+from loguru import logger
+import sys
+import argparse
+import pandas as pd 
+from flightanalysis import ScheduleAnalysis
+from datetime import datetime
+
+logger.remove()
+logger.add(sys.stderr, level="INFO")
+
+default_name = f'pfc_{datetime.now().strftime("%Y_%m_%d")}'
+
+parser = argparse.ArgumentParser(description='Collect scores for all analysis jsons in a directory')
+parser.add_argument('-f', '--folder', default=default_name, help=f'Source directory, defaults to {default_name}')
+args = parser.parse_args()
+
+outdir = Path(args.folder)
+
+all_logs = [f for f in sorted(list(outdir.rglob('*analysis.json')))]
+
+odata = {}
+
+for log in all_logs:
+    if log.stat().st_size == 0:
+        logger.info(f'Empty file {log}')
+        continue
+    logger.info(f'Processing file {log}')
+    sa = ScheduleAnalysis.from_fcscore(log)
+    total, scores = sa.scores()
+    if sa.sinfo.name not in odata:
+        odata[sa.sinfo.name] = {}
+    odata[sa.sinfo.name][log.stem] = dict(total=total, **scores)
+
+pd.options.display.float_format = '{:,.2f}'.format
+
+dfs = {sch: pd.DataFrame.from_dict(v, orient='index') for sch, v in odata.items()}
+for sch, res in dfs.items():
+    logger.info(f'{sch}scores:\n{res}')
+
