@@ -219,4 +219,9 @@ def test_nose_drop_bound(ndbound: OutsideBound):
     res = ndbound('test', Measurement.nose_drop(fl, fl))
     assert res.dgs[0] > 3
 
-    
+def test_continuous_convolce():
+    data = np.linspace(0, 100, 100)
+    res = Continuous.convolve(data, 20)
+    assert len(res) == len(data)
+    assert data[0] == res[0]
+    assert data[-1] == res[-1]

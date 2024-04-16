@@ -9,7 +9,9 @@ from dataclasses import dataclass, field
 class Combination(Criteria):
     desired: np.ndarray = field(default_factory=lambda : None)
     """Handles a series of criteria assessments.
-    for example a number of rolls in an element. 
+    for example a number of rolls in an element.
+    Warning - if not all of the desired values have collectors then the ones with collectors must
+    come first.
     """
     
     def __getitem__(self, value: int):
@@ -17,7 +19,7 @@ class Combination(Criteria):
 
     def get_errors(self, values: npt.ArrayLike):
         """get the error between values and desired for all the options"""
-        return self.desired - np.array(values)
+        return np.array(self.desired)[:,:len(values)] - np.array(values)
 
     def get_option_error(self, option: int, values: npt.ArrayLike) -> npt.NDArray:
         """The difference between the values and a given option"""

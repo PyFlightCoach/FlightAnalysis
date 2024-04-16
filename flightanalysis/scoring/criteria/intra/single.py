@@ -10,23 +10,21 @@ from typing import Union
 
 @dataclass
 class Single(Criteria):
-    id: Union[int, None] = -1
+    id: int | None = -1
     def prepare(self, value: npt.NDArray, expected: float) -> npt.NDArray:
         return abs(value - expected)
-        
-    def select(self, arr: npt.NDArray) -> npt.NDArray:
-        return arr if self.id is None else np.array([arr[self.id]])
-     
+             
     def __call__(self, name: str, m: Measurement) -> Result:
         
-        sample = self.select(self.prepare(m.value, m.expected))
-        ids = self.select(np.linspace(0, len(sample)-1, len(sample)))
-        vis = self.select(m.visibility)
+        sample = self.prepare(m.value, m.expected)
+        all_ids = np.array(range(len(m)))
+        ids = all_ids if self.id is None else [all_ids[self.id]]
+        
         
         return Result(
-            name, m, sample, sample[sample!=0], 
-            self.lookup(sample[sample!=0]) * vis[sample!=0],
-            ids[sample!=0]
+            name, m, sample, sample[ids], 
+            self.lookup(sample[ids]) * m.visibility[ids],
+            ids
         )
         
 

@@ -7,5 +7,3 @@ to facilitate automated judging for precision aerobatic competitions.
 ### TODO next release
 
 consider continuous absolute criteria smoothing.
-
-consider just checking inital alignment dist when selecting manoeuvre options.

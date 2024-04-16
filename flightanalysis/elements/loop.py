@@ -104,14 +104,15 @@ class Loop(Element):
         return np.sum((rads * angles)[keep]) / np.sum(angles[keep])
 
     def match_intention(self, itrans: Transformation, flown: State) -> Loop:
-        rv = flown.rvel # .mean() if self.ke else flown.q.mean()
-        wrv = flown.att.transform_point(rv)
+        
+        wrv = flown.att.transform_point(Point.vector_rejection(flown.rvel, PX()))
         itrv = itrans.att.inverse().transform_point(wrv)
-        #TODO need to fix angle direction for new ke definitino.
+        itr = itrv.z * np.sin(self.ke) + itrv.y * np.cos(self.ke)
+        
         return self.set_parms(
-            radius = self.weighted_average_radius(itrans, flown), #self.measure_radius(itrans, flown).mean(), # 
+            radius = self.weighted_average_radius(itrans, flown), 
             roll=abs(self.roll) * np.sign(np.mean(flown.p)),
-            angle=abs(self.angle) * np.sign(itrv.z.mean() if self.ke else itrv.y.mean()),
+            angle=abs(self.angle) * np.sign(itr.mean()),
             speed=abs(flown.vel).mean()
         )
     

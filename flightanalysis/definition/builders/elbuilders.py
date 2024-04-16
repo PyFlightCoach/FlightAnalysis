@@ -240,12 +240,8 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
 
     angle = ManParm.parse(angle, mps)
 
-
-
     if not rollangle == angle:
         eds.add(loop(f"{name}_pad1", speed, internal_rad, (angle - rollangle) / 2, 0, ke)[0])
-
-
 
     if multi_rolls:
         
@@ -274,7 +270,7 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
         only_rolls = np.array(only_rolls)
         
         rolls.criteria.append_roll_sum(inplace=True)
-        rvs = rolls.value
+        #rvs = rolls.value
 
         loop_proportions = (np.abs(only_rolls) / np.sum(np.abs(only_rolls)))
 
@@ -283,22 +279,21 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
         n = len(loop_angles)
 
         for i, r in enumerate(loop_angles):    
-            roll_done = rvs[i+n-1] if i > 0 else 0
+            roll_done = rolls[i+n-1] if i > 0 else 0
             if rolltypes[i] == 'r':
                 
-                eds.add(loop(f"{name}_{i}", speed, internal_rad, r, rvs[i], ke=ke-roll_done)[0])
+                eds.add(loop(f"{name}_{i}", speed, internal_rad, r, rolls[i], ke=ke - roll_done)[0]) 
             else:
                 ed, mps = snap(
-                    f"{name}_{i}", rvs[i], break_angle, snap_rate, speed, break_rate
+                    f"{name}_{i}", rolls[i], break_angle, snap_rate, speed, break_rate
                 )
                 eds.add(ed)
                 snap_rate.collectors.add(eds[-2].get_collector("rate"))
             
             if has_pause[i]:
-                eds.add(loop(f"{name}_{i}_pause", speed, internal_rad, pause_angle, 0, ke=ke-rvs[i+n])[0])
+                eds.add(loop(f"{name}_{i}_pause", speed, internal_rad, pause_angle, 0, ke=ke - rolls[i+n])[0]) 
 
-
-        ke=ke-rvs[i+n]
+        ke=ke-rolls[i+n]
         
     else:
         eds.add(loop(f"{name}_rolls", speed, internal_rad, rollangle, rolls, ke=ke)[0])

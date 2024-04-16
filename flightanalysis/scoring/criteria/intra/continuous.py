@@ -49,18 +49,27 @@ class Continuous(Criteria):
     @staticmethod
     def convolve(data, width):
         kernel = np.ones(width) / width
-        l = len(data)
-        outd = np.full(l, np.nan)
+        outd = np.full(len(data), np.nan)
         conv = np.convolve(data, kernel, mode='valid')
         ld = (len(data) - len(conv))/2
         outd[int(np.ceil(ld)):-int(np.floor(ld))] = conv
-        return pd.Series(outd).ffill().bfill().to_numpy()
+        outd[:width//2] = np.linspace(np.mean(data[0:width//4]), outd[width//2],width//2)
+        outd[-width//2:] = np.linspace(outd[-width//2], np.mean(data[-1-width//4:-1]),width//2)
+        return outd
 
 
 class ContAbs(Continuous):
-    def prepare(self, value: npt.NDArray, expected: float):
-        
-        return  value - expected
+#    def prepare(self, value: npt.NDArray, expected: float):
+#        
+#        return  value - expected
+
+    def prepare(self, values: npt.NDArray, expected: float):
+        window = 30
+        sample = values - expected
+        if len(sample) <= window:
+            return np.linspace(values[0],values[-1], len(sample))
+        else:
+            return Continuous.convolve(sample, window)
 
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -78,16 +87,16 @@ class ContAbs(Continuous):
 class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
-        endcut = 0
-        window = 20
-        sample = np.full(len(values), expected)
-        sample[endcut:-endcut-1] = values[endcut:-endcut-1]
-        sample = values
-        if len(sample) <= window + endcut * 2:
-            return np.full(len(sample), abs(np.mean(sample)))
+        window = 40
+        if len(values) <= window:
+            return np.abs(np.linspace(
+                np.mean(values[:1+len(values)//3]), 
+                np.mean(values[-1-len(values)//3:]), 
+                len(values)
+            ))
         else:
-            return np.abs(Continuous.convolve(sample, 20))
-        
+            return np.abs(Continuous.convolve(values, window))
+            
     @staticmethod
     def mistakes(data, peaks, troughs):
         '''All changes are downgraded (peaks and troughs)'''

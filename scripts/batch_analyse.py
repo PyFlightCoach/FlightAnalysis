@@ -18,13 +18,13 @@ parser = argparse.ArgumentParser(description='Analyse all fc jsons in the curren
 parser.add_argument('-o', '--outdir', default=default_name, help=f'Output directory, defaults to {default_name}')
 parser.add_argument('-f', '--folder', default='', help='input directory, defaults to current directory')
 parser.add_argument('-r', '--recursive', default=False, action=argparse.BooleanOptionalAction, help='include subdirectories in search, default is False')
-parser.add_argument('-s', '--search', default='*F3A*.json', help='json Search string, defaults to *F3A*.json')
+parser.add_argument('-s', '--search', default='*.json', help='json Search string, defaults to *F3A*.json')
 args = parser.parse_args()
 
 outdir = Path(args.outdir)
 outdir.mkdir(exist_ok=True)
 
-indir = Path(args.source)
+indir = Path(args.folder)
 
 search_result = indir.rglob(args.search) if args.recursive else indir.glob(args.search)
 
