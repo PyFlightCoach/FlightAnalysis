@@ -4,6 +4,4 @@ This package contains tools for analysing recorded flight log data.The main obje
 to facilitate automated judging for precision aerobatic competitions. 
 
 
-### TODO next release
-
-consider continuous absolute criteria smoothing.
+Documentation will follow here: https://pfcdocumentation.readthedocs.io/pyflightcoach/flightanalysis.html
