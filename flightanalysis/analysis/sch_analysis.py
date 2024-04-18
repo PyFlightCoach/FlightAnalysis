@@ -37,7 +37,7 @@ class ScheduleAnalysis(Collection):
         state = State.from_flight(flight, box).splitter_labels(
             data["mans"],
             sdef.uids
-        ).move(g.Transformation(g.Point(-data['parameters']['moveEast'], -data['parameters']['moveNorth'], 0)))
+        )#.move(g.Transformation(g.Point(-data['parameters']['moveEast'], -data['parameters']['moveNorth'], 0)))
 
         direction = -state.get_manoeuvre(0)[0].direction()[0]
 
