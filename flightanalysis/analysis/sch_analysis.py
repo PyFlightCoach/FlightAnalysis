@@ -39,7 +39,7 @@ class ScheduleAnalysis(Collection):
             sdef.uids
         )#.move(g.Transformation(g.Point(-data['parameters']['moveEast'], -data['parameters']['moveNorth'], 0)))
 
-        direction = -state.get_manoeuvre(0)[0].direction()[0]
+        direction = -state.get_manoeuvre(1)[0].direction()[0]
 
         return ScheduleAnalysis(
             [analysis.Basic(
