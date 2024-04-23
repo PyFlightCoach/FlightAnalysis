@@ -33,9 +33,10 @@ class Complete(Alignment):
                 raise e
         return pa
 
-    def run(self) -> Scored:
-        if self.stage < AlinmentStage.OPTIMISED:
+    def run(self, optimise_aligment=True) -> Scored:
+        if self.stage < AlinmentStage.OPTIMISED and optimise_aligment:
             self = self.optimise_alignment()
+        self = self.update_templates()
         return Scored(**self.__dict__, 
             scores=ManoeuvreResults(self.inter(), self.intra(), self.positioning())
         )
@@ -62,16 +63,22 @@ class Complete(Alignment):
         tp = el.get_data(self.template).relocate(st.pos[0])
         return ElementAnalysis(edef, self.mdef.mps, el, st, tp, el.ref_frame(tp))
 
-    def optimise_alignment(self):
-        aligned = self.manoeuvre.optimise_alignment(self.template, self.flown)
-        manoeuvre, template = self.manoeuvre.match_intention(self.template[0], aligned)
-        mdef = ManDef(self.mdef.info, self.mdef.mps.update_defaults(self.manoeuvre), self.mdef.eds)
-        correction = mdef.create(self.template[0].transform).add_lines()
+    def update_templates(self):
+        if not np.all(self.flown.element == self.template.element):    
+            manoeuvre, template = self.manoeuvre.match_intention(self.template[0], self.flown)
+            mdef = ManDef(self.mdef.info, self.mdef.mps.update_defaults(self.manoeuvre), self.mdef.eds)
+            correction = mdef.create(self.template[0].transform).add_lines()
 
-        return Complete(
-            mdef, aligned, self.direction, AlinmentStage.OPTIMISED, 
-            manoeuvre, template, correction, correction.create_template(template[0])
-        )
+            return Complete(
+                mdef, self.flown, self.direction, AlinmentStage.OPTIMISED, 
+                manoeuvre, template, correction, correction.create_template(template[0])
+            )
+        else:
+            return self
+    
+    def optimise_alignment(self):
+        self.flown = self.manoeuvre.optimise_alignment(self.template, self.flown)
+        return self.update_templates()
     
     def side_box(self):
         return F3A.intra.box(

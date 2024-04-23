@@ -18,8 +18,8 @@ class Basic(Analysis):
     def name(self):
         return self.mdef.uid
 
-    def run_all(self):
-        res = [s for s in [s.run_all() for s in self.run()] if isinstance(s, Scored)]
+    def run_all(self, optimise_aligment=True):
+        res = [s for s in [s.run_all(optimise_aligment) for s in self.run(optimise_aligment)] if isinstance(s, Scored)]
         
         if len(res) == 0:
             return self
@@ -65,7 +65,7 @@ class Basic(Analysis):
         mdef= sdef[mid]
         return Basic(mdef, state.get_manoeuvre(mdef.uid), AlinmentStage.SETUP)
 
-    def run(self) -> list[Alignment]:
+    def run(self, optimise_aligment=True) -> list[Alignment]:
         itrans = self.create_itrans()
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 

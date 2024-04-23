@@ -12,9 +12,9 @@ class Alignment(Basic):
     manoeuvre: Manoeuvre
     template: State
 
-    def run_all(self):
+    def run_all(self, optimise_aligment=True):
         while self.__class__.__name__ != 'Scored':
-            new = self.run()
+            new = self.run(optimise_aligment)
             if new.__class__.__name__ == self.__class__.__name__:
                 break
             self = new
@@ -44,7 +44,7 @@ class Alignment(Basic):
             self.mdef, aligned, self.direction, self.stage + 1,
             *self.manoeuvre.match_intention(self.template[0], aligned)
         )
-
+    
     def run_alignment(self, radius=10):
         while self.stage < AlinmentStage.SECONDARY:
             try:
@@ -54,8 +54,9 @@ class Alignment(Basic):
                 break
         return self
 
-    def run(self) -> Complete:
+    def run(self, optimise_aligment=True) -> Complete:
         self = self.run_alignment()
+
         if self.stage < AlinmentStage.SECONDARY:
             return self
         else:
