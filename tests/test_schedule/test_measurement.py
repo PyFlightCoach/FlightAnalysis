@@ -121,3 +121,21 @@ def test_pos_vis():
 def test_depth_vis():
     assert Measurement.depth_vis(PY(170))[1] == 0.4
     assert Measurement.depth_vis(Point(170 * np.tan(np.radians(60)), 170, 0))[1] == 1.0
+
+
+
+def test_roll_vis():
+
+    def t_rvis(fla, tpa, yaw=0):
+        tp = State.from_transform(Transformation(Point(0, 100, 0), Euldeg(fla, 0, yaw)), vel=PX(30))
+        fl1 = State.from_transform(Transformation(Point(0, 100, 0), Euldeg(tpa, 0, yaw)), vel=PX(30))
+        return Measurement._roll_vis(fl1, tp)[1][0]
+    assert t_rvis(190, 170) == approx(1)
+    assert t_rvis(170, 190) == approx(1)
+    assert t_rvis(90, 90) == approx(0.2)
+    assert t_rvis(90, 80) > 0.2
+
+    assert t_rvis(190, 170, 90) == approx(1)
+    assert t_rvis(170, 190, 90) == approx(1)
+    assert t_rvis(90, 90, 90) == approx(1)
+    assert t_rvis(90, 80, 90) == approx(1)

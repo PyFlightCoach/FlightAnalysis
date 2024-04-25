@@ -13,6 +13,7 @@ class Alignment(Basic):
     template: State
 
     def run_all(self, optimise_aligment=True):
+        new = self
         while self.__class__.__name__ != 'Scored':
             new = self.run(optimise_aligment)
             if new.__class__.__name__ == self.__class__.__name__:

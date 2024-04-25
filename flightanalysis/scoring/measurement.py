@@ -74,11 +74,23 @@ class Measurement:
         return direction,  (1 - 0.8* np.abs(Point.cos_angle_between(loc, direction))) * Measurement._pos_vis(loc)
 
     @staticmethod
-    def _roll_vis(loc: Point, att: Quaternion) -> Union[Point, npt.NDArray]:
-        #a roll error is more visible if the movement of the wing tips is perpendicular to the view vector
-        #the wing tips move in the local body Z axis
-        world_tip_movement_direction = att.transform_point(PZ()) 
-        return world_tip_movement_direction, (1-0.8*np.abs(Point.cos_angle_between(loc, world_tip_movement_direction))) * Measurement._pos_vis(loc)
+    def _roll_vis(fl: State, tp: State) -> Union[Point, npt.NDArray]:
+        
+        
+        afl = Point.cos_angle_between(fl.pos, fl.att.transform_point(PZ()))
+        atp = Point.cos_angle_between(tp.pos, tp.att.transform_point(PZ()))
+
+        azfl = np.cos(fl.att.inverse().transform_point(-fl.pos).planar_angles().x)
+        aztp = np.cos(tp.att.inverse().transform_point(-tp.pos).planar_angles().x)
+
+        ao = afl.copy()
+
+        ao[np.abs(afl) > np.abs(atp)] = atp[np.abs(afl) > np.abs(atp)]
+        ao[np.sign(azfl) != np.sign(aztp)] = 0 # wings have passed through the view vector
+
+        rvis = (1-0.8*np.abs(ao))
+        
+        return fl.att.transform_point(PZ()), rvis * Measurement._pos_vis(fl.pos)
 
     @staticmethod
     def _rad_vis(loc:Point, axial_dir: Point) -> Union[Point, npt.NDArray]:
@@ -115,7 +127,7 @@ class Measurement:
         return Measurement(
             np.unwrap(abs(world_roll_error) * np.sign(body_roll_error.x)), 
             0, 
-            *Measurement._roll_vis(fl.pos, fl.att)
+            *Measurement._roll_vis(fl, tp)
         )
 
     @staticmethod
@@ -140,7 +152,7 @@ class Measurement:
         return Measurement(
             int(flturns - tpturns) * 2 * np.pi + fl_roll_angle - tp_roll_angle,
             0, 
-            *Measurement._roll_vis(fl.pos, fl.att)
+            *Measurement._roll_vis(fl, tp)
         )
 
     @staticmethod
@@ -168,14 +180,21 @@ class Measurement:
     def roll_rate(fl: State, tp: State) -> Measurement:
         """vector in the body X axis, length is equal to the roll rate"""
         wrvel = fl.att.transform_point(fl.p * PX())
-        return Measurement(abs(wrvel) * np.sign(fl.p), np.mean(tp.p), *Measurement._roll_vis(fl.pos, fl.att))
+        return Measurement(
+            abs(wrvel) * np.sign(fl.p), 
+            np.mean(tp.p), 
+            *Measurement._roll_vis(fl, tp)
+        )
     
     @staticmethod
     def nose_drop(fl: State, tp: State) -> Measurement:
         """Check the change in body pitch angle between the start and end of the element"""
         flpit = Quaternion.body_axis_rates(fl.att[0], fl.att[-1]).y
-                
-        return Measurement(flpit, np.array([0]), *Measurement._roll_vis(fl.pos[-1], fl.att[-1]))
+        return Measurement(
+            flpit, 
+            np.array([0]), 
+            *Measurement._roll_vis(fl[-1], tp[-1])
+        )
     
     @staticmethod
     def track_proj(fl: State, tp: State, proj: Point, fix='ang'):
@@ -192,7 +211,10 @@ class Measurement:
         fwvel = fl.att.transform_point(fl.vel)
         twvel = tp.att.transform_point(tp.vel)
 
-        direction, vis = Measurement._vector_vis(Point.vector_rejection(fwvel, twvel).unit(), fl.pos)
+        direction, vis = Measurement._vector_vis(
+            Point.vector_rejection(fwvel, twvel).unit(), 
+            fl.pos
+        )
         
         fcvel = tr.transform_point(fwvel)
         tcvel = tr.transform_point(twvel)

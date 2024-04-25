@@ -52,24 +52,22 @@ class Continuous(Criteria):
         outd = np.full(len(data), np.nan)
         conv = np.convolve(data, kernel, mode='valid')
         ld = (len(data) - len(conv))/2
-        outd[int(np.ceil(ld)):-int(np.floor(ld))] = conv
-        outd[:width//2] = np.linspace(np.mean(data[0:width//4]), outd[width//2],width//2)
-        outd[-width//2:] = np.linspace(outd[-width//2], np.mean(data[-1-width//4:-1]),width//2)
+        ldc = int(np.ceil(ld))
+        ldf = int(np.floor(ld))
+        outd[ldf:-ldc] = conv
+        outd[:ldf] = np.linspace(np.mean(data[:ldf]), conv[0],ldf+1)[:-1]
+        outd[-ldc:] = np.linspace(conv[-1], np.mean(data[-ldc:]), ldc+1)[1:]
         return outd
 
 
 class ContAbs(Continuous):
-#    def prepare(self, value: npt.NDArray, expected: float):
-#        
-#        return  value - expected
-
     def prepare(self, values: npt.NDArray, expected: float):
-        window = 30
+#        window = 30
         sample = values - expected
-        if len(sample) <= window:
+        if len(sample) <= 8:
             return np.linspace(values[0],values[-1], len(sample))
         else:
-            return Continuous.convolve(sample, window)
+            return Continuous.convolve(sample, min(len(values)//3, 40))
 
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -87,15 +85,15 @@ class ContAbs(Continuous):
 class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
-        window = 40
-        if len(values) <= window:
+        #window = 40
+        if len(values) <= 8:
             return np.abs(np.linspace(
                 np.mean(values[:1+len(values)//3]), 
                 np.mean(values[-1-len(values)//3:]), 
                 len(values)
             ))
         else:
-            return np.abs(Continuous.convolve(values, window))
+            return np.abs(Continuous.convolve(values, min(len(values)//3, 40)))
             
     @staticmethod
     def mistakes(data, peaks, troughs):
