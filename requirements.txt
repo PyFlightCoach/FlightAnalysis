@@ -1,7 +1,7 @@
 numpy
 pandas
 scipy
-pfc-geometry>=0.2.4
+pfc-geometry>=0.2.5
 flightdata>=0.2.6
 fastdtw
 simplejson
