@@ -70,7 +70,7 @@ class Complete(Alignment):
             correction = mdef.create(self.template[0].transform).add_lines()
 
             return Complete(
-                mdef, self.flown, self.direction, AlinmentStage.OPTIMISED, 
+                mdef, self.flown, self.direction, AlinmentStage.OPTIMISED, self.dist,
                 manoeuvre, template, correction, correction.create_template(template[0])
             )
         else:

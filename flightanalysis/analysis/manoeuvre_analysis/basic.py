@@ -5,6 +5,7 @@ from flightanalysis.definition import ManDef, SchedDef, ManOption
 import geometry as g
 from json import load
 from .analysis import AlinmentStage, Analysis
+import numpy as np
 
 
 @dataclass
@@ -19,21 +20,21 @@ class Basic(Analysis):
         return self.mdef.uid
 
     def run_all(self, optimise_aligment=True):
-        res = [s for s in [s.run_all(optimise_aligment) for s in self.run(optimise_aligment)] if isinstance(s, Scored)]
-        
-        if len(res) == 0:
-            return self
-                
-        min_dg = None
-        for n in res:
-            if hasattr(n, 'scores'):
-                if min_dg is None or n.scores.intra.total < min_dg:
-                    min_dg = n.scores.intra.total
-                    self = n 
+        res = [s.run_all(False) for s in self.run(False)]
+        self = res[0]
+        if len(res) > 1:
+            for r in res[1:]:
+                if r.stage < self.stage:
+                    continue
+                if r.dist < self.dist:
+                    self = r
+
+        if isinstance(self, Scored) and optimise_aligment:
+            self.stage = AlinmentStage.SECONDARY
+            self = self.run(True)
                    
         return self
         
-
     @classmethod
     def from_dict(Cls, data:dict) -> Basic:
         return Basic(
@@ -74,7 +75,7 @@ class Basic(Analysis):
             man = mdef.create(itrans).add_lines()
             als.append(Alignment(
                 mdef, self.flown, self.direction, AlinmentStage.SETUP, 
-                man, man.create_template(itrans)
+                1e9, man, man.create_template(itrans)
             ))
         return als
 

@@ -23,5 +23,5 @@ class Scored(Complete):
                 raise e
         return ca
     
-    def run(self):
+    def run(self, optimise_alignment=True):
         return self
