@@ -8,7 +8,7 @@ import geometry as g
 from json import load
 import inspect
 from typing import Self, Tuple, Union
-from loguru import logger
+
 
 class ElementError(Exception):
     pass

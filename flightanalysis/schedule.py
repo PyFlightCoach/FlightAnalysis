@@ -2,7 +2,6 @@ from __future__ import annotations
 from . import Manoeuvre
 from geometry import Transformation, PX
 from flightdata import State, Collection
-import numpy as np
 from typing import Tuple
 
 
