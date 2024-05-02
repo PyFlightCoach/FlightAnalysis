@@ -3,5 +3,6 @@ pandas
 scipy
 fastdtw
 simplejson
+loguru
 pfc-geometry>=0.2.5
 flightdata>=0.2.7
