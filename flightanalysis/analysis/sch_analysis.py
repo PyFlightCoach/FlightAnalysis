@@ -9,7 +9,6 @@ from joblib import Parallel, delayed
 import os
 import pandas as pd
 from importlib.metadata import version
-import geometry as g
 
 
 class ScheduleAnalysis(Collection):
@@ -31,8 +30,6 @@ class ScheduleAnalysis(Collection):
         if info is None:
             info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
         sdef = SchedDef.load(info)
-
-        
 
         state = State.from_flight(flight, box).splitter_labels(
             data["mans"],
