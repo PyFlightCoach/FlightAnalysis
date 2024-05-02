@@ -8,12 +8,11 @@ import sys
 import argparse
 from datetime import datetime
 
-
-logger.enable("flightanalysis")
-logger.remove()
-logger.add(sys.stderr, level="INFO")
-
 def main():
+
+    logger.enable("flightanalysis")
+    logger.remove()
+    logger.add(sys.stderr, level="INFO")
 
     default_name = f'pfc_{datetime.now().strftime("%Y_%m_%d")}'
 

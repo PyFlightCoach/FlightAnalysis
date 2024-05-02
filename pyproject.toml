@@ -16,7 +16,7 @@ classifiers = ["Programming Language :: Python :: 3",]
 dynamic = ["version", "dependencies", "optional-dependencies"]
 
 [project.scripts]
-collect_logs = "flightanalysis.scripts.collect_logs:main"
+collect_logs = "flightanalysis.scripts.batch_analyse:main"
 flightline = "flightanalysis.scripts.collect_scores:main"
 
 [tool.setuptools.dynamic]
