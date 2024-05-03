@@ -4,7 +4,7 @@ from ..el_analysis import ElementAnalysis
 from flightdata import State
 from flightanalysis.definition import ManDef
 from flightanalysis.manoeuvre import Manoeuvre
-from flightanalysis.scoring import Results, Result, ManoeuvreResults, Measurement
+from flightanalysis.scoring import Results, ManoeuvreResults, Measurement
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.definition.maninfo import Position
 import numpy as np

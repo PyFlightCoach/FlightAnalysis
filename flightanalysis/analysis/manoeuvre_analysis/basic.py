@@ -30,8 +30,9 @@ class Basic(Analysis):
                     self = r
 
         if isinstance(self, Scored) and optimise_aligment:
+            self = Complete(**{k:v for k, v in list(self.__dict__.items())[:-1]}).run(True)
             self.stage = AlinmentStage.SECONDARY
-            self = self.run(True)
+            self = self.run_all(True)
                    
         return self
         
@@ -81,4 +82,5 @@ class Basic(Analysis):
 
 
 from .alignment import Alignment  # noqa: E402
+from .complete import Complete  # noqa: E402
 from .scored import Scored  # noqa: E402
