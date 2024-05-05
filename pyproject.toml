@@ -16,8 +16,8 @@ classifiers = ["Programming Language :: Python :: 3",]
 dynamic = ["version", "dependencies", "optional-dependencies"]
 
 [project.scripts]
-collect_logs = "flightanalysis.scripts.batch_analyse:main"
-flightline = "flightanalysis.scripts.collect_scores:main"
+batch_analyse = "flightanalysis.scripts.batch_analyse:main"
+collect_scores = "flightanalysis.scripts.collect_scores:main"
 
 [tool.setuptools.dynamic]
 dependencies = {file = ["requirements.txt"]}
