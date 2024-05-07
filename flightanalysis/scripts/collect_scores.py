@@ -5,7 +5,7 @@ import argparse
 import pandas as pd 
 from flightanalysis import ScheduleAnalysis
 from datetime import datetime
-
+from flightanalysis.scripts.plot_scores import plot_logs
 
 def main():
     logger.remove()
@@ -45,6 +45,9 @@ def main():
         logger.info(f'{sch}scores:\n{res}')
 
         res.to_csv(args.outfile.replace('_scores.csv', f'_{sch}_scores.csv'))
+
+    plot_logs([args.outfile.replace('_scores.csv', f'_{sch}_scores.csv') for sch in dfs.keys()])
+
 
 if __name__ == "__main__":
     main()
