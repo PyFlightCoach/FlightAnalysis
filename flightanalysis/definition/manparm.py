@@ -70,7 +70,6 @@ class ManParm(Opp):
 
         return Point.concatenate([Point.concatenate([v[0] for v in vi]).mean() for vi in vis ]), [np.mean([v[1]for v in vi]) for vi in vis]
 
-
     def get_downgrades(self, els, state: State):
         coll = self.collect(els)
         values = list(coll.values())
@@ -80,7 +79,7 @@ class ManParm(Opp):
             values,
             self.defaul,
             direction,
-            vis
+            [vis[0]] + [min(va, vb) for va, vb in zip(vis[:-1], vis[1:])]
         )
 
         keys, errors, dgs = self.criteria(list(coll.keys()), list(coll.values())) 
