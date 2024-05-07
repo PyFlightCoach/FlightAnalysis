@@ -58,17 +58,23 @@ class Continuous(Criteria):
         outd[:ldf] = np.linspace(np.mean(data[:ldf]), conv[0],ldf+1)[:-1]
         outd[-ldc:] = np.linspace(conv[-1], np.mean(data[-ldc:]), ldc+1)[1:]
         return outd
-
-
+    
+    @staticmethod
+    def convolve_wind(data, window_ratio, max_window):
+        window = min(len(data)//window_ratio, max_window)
+        sample = Continuous.convolve(data, window)
+        _mean = np.mean(sample)
+        sample = (sample - _mean) * window / max_window + _mean
+        return sample 
+    
 class ContAbs(Continuous):
     def prepare(self, values: npt.NDArray, expected: float):
-#        window = 30
         sample = values - expected
         if len(sample) <= 8:
             return np.linspace(values[0],values[-1], len(sample))
         else:
-            return Continuous.convolve(sample, min(len(values)//3, 40))
-
+            return Continuous.convolve_wind(values, 3, 40)
+        
     @staticmethod
     def mistakes(data, peaks, troughs):
         '''All increases away from zero are downgraded (only peaks)'''
@@ -85,7 +91,6 @@ class ContAbs(Continuous):
 class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
-        #window = 40
         if len(values) <= 8:
             return np.abs(np.linspace(
                 np.mean(values[:1+len(values)//3]), 
@@ -93,8 +98,8 @@ class ContRat(Continuous):
                 len(values)
             ))
         else:
-            return np.abs(Continuous.convolve(values, min(len(values)//3, 40)))
-            
+            return np.abs(Continuous.convolve_wind(values, 3, 40))
+
     @staticmethod
     def mistakes(data, peaks, troughs):
         '''All changes are downgraded (peaks and troughs)'''
