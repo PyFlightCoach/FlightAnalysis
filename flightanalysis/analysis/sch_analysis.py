@@ -9,6 +9,7 @@ from joblib import Parallel, delayed
 import os
 import pandas as pd
 from importlib.metadata import version
+import geometry as g
 
 
 class ScheduleAnalysis(Collection):
@@ -26,16 +27,16 @@ class ScheduleAnalysis(Collection):
         else:
             data = file
         flight = Flight.from_fc_json(data)
-        box = Origin.from_fcjson_parmameters(data["parameters"])
+        
         if info is None:
             info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
+        
         sdef = SchedDef.load(info)
-
+        box = Origin.from_fcjson_parmameters(data["parameters"])
         state = State.from_flight(flight, box).splitter_labels(
             data["mans"],
             sdef.uids
-        )#.move(g.Transformation(g.Point(-data['parameters']['moveEast'], -data['parameters']['moveNorth'], 0)))
-
+        )
         direction = -state.get_manoeuvre(1)[0].direction()[0]
 
         return ScheduleAnalysis(
