@@ -52,3 +52,7 @@ def main():
             logger.info(f'scores:\n{dumps(sa.scores(), indent=2)}')
         except Exception as e:
             logger.error(f'Error processing {file}: {e}')
+
+
+if __name__ == '__main__':
+    main()

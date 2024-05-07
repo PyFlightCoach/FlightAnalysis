@@ -46,3 +46,5 @@ def main():
 
         res.to_csv(args.outfile.replace('_scores.csv', f'_{sch}_scores.csv'))
 
+if __name__ == "__main__":
+    main()
