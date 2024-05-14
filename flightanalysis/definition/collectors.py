@@ -2,7 +2,7 @@
 from flightdata import Collection
 from . import Opp
 from uuid import uuid1
-
+from flightanalysis.scoring.measurement import Measurement
 
 class Collector(Opp):
     def __init__(self, elname, pname):
@@ -15,7 +15,9 @@ class Collector(Opp):
         return getattr(els.data[self.elname], self.pname)#(tp[0].transform, fl))[0]
     
     def visibility(self, els, state):
-        return getattr(els.data[self.elname], self.pname + '_visibility')(state.get_element(self.elname))
+        st = state.get_element(self.elname)
+        direc, vis =  getattr(els.data[self.elname], self.pname + '_visibility')(st)
+        return direc, vis * Measurement._inter_scale_vis(st)
 
     def __str__(self):
         return self.name
