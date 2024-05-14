@@ -4,7 +4,7 @@ from geometry import Point, Quaternion, PX, PY, PZ
 import numpy as np
 import pandas as pd
 import numpy.typing as npt
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Union, Self
 
 
@@ -15,6 +15,7 @@ class Measurement:
     expected: float
     direction: Point
     visibility: npt.NDArray
+    keys: npt.NDArray = None
 
     def __len__(self):
         return len(self.value)
@@ -96,6 +97,15 @@ class Measurement:
     def _rad_vis(loc:Point, axial_dir: Point) -> Union[Point, npt.NDArray]:
         #radial error more visible if axis is parallel to the view vector
         return axial_dir, (0.2+0.8*np.abs(Point.cos_angle_between(loc, axial_dir))) * Measurement._pos_vis(loc)
+
+    @staticmethod
+    def _inter_scale_vis(fl: State):
+        # factor of 1 when it takes up half the box height.
+        # reduces to zero for zero length el
+        depth = fl.pos.y.mean()
+        _range = fl.pos.max() - fl.pos.min()
+        length = max(_range.x[0], _range.z[0])
+        return max(1, length / (depth * 0.866025))   # np.tan(np.radians(60)) / 2
 
     @staticmethod
     def speed(fl: State, tp: State, direction: Point=None, axis='body') -> Self:

@@ -77,16 +77,6 @@ def snap_length(speed, roll, break_angle, break_rate, snap_rate):
 def snap_duration(roll, break_angle, break_rate, snap_rate):
     return (2 * abs(break_angle) / break_rate + abs(roll) / snap_rate)
 
-
-def short_line(name, speed, length, roll, extra_length):
-    if length.__class__.__name__ == 'ManParm':
-        el = ElDef.build(Line, name, speed, length.defaul, roll)
-        length.append(el.get_collector('length') + extra_length), ManParms()
-        return el
-    else:
-        return line(name, speed, length, roll)
-
-
 def parse_rolltypes(rolltypes, n):
     
     if rolltypes == 'roll' or rolltypes is None:
@@ -131,10 +121,7 @@ def roll_combo(
             snap_rate.collectors.add(eds[-2].get_collector("rate"))
 
         if i < rolls.n - 1 and (mode=='imac' or np.sign(r) == np.sign(rolls.value[i+1])):
-            eds.add(short_line(
-                f"{name}_{i+1}_pause",
-                speed, pause_length, 0, 30
-            ))
+            eds.add(line(f"{name}_{i+1}_pause", speed, pause_length, 0))
                             
     return eds, ManParms()
 
@@ -154,7 +141,7 @@ def pad(speed, line_length, eds: ElDefs):
         f"e_{eds[0].id}_pad_length", 
         F3A.inter.length,
         None, 
-        Collectors([e1.get_collector("length") + 40, e3.get_collector("length") + 40])
+        Collectors([e1.get_collector("length"), e3.get_collector("length")])
     ) # TODO added 40 here as pads tend to be short. This needs to be more transparent.
     eds = ElDefs([e1] + [ed for ed in eds] + [e3])
 

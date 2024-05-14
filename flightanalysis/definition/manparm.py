@@ -68,22 +68,21 @@ class ManParm(Opp):
     def collect_vis(self, els, state: State) -> Tuple[Point, list[float]]:
         vis = [[c.visibility(els, state) for c in collector.list_parms()] for collector in self.collectors]
 
-        return Point.concatenate([Point.concatenate([v[0] for v in vi]).mean() for vi in vis ]), [np.mean([v[1]for v in vi]) for vi in vis]
+        return Point.concatenate([Point.concatenate([v[0] for v in vi]).mean() for vi in vis ]), \
+            [np.mean([v[1] for v in vi]) for vi in vis]
 
     def get_downgrades(self, els, state: State):
-        coll = self.collect(els)
-        values = list(coll.values())
         direction, vis = self.collect_vis(els, state)
 
         meas = Measurement(
-            values,
+            [c(els) for c in self.collectors],
             self.defaul,
             direction,
-            [vis[0]] + [min(va, vb) for va, vb in zip(vis[:-1], vis[1:])]
+            [vis[0]] + [max(va, vb) for va, vb in zip(vis[:-1], vis[1:])],
+            [str(c) for c in self.collectors]
         )
 
-        keys, errors, dgs = self.criteria(list(coll.keys()), list(coll.values())) 
-        return Result(self.name, meas, values, errors, dgs * meas.visibility, keys)
+        return self.criteria(self.name, meas) 
 
     @property
     def value(self):
