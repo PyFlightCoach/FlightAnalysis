@@ -1,6 +1,5 @@
 from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, OutsideBound
 
-
 class F3ASingle:
     track=Single(Exponential(3.8197186342054885,0.9999999999999999, 100 ))
     roll=Single(Exponential(2.872721387028467,1.6309297535714575, 100 ))
@@ -20,10 +19,10 @@ class F3AIntra:
     box=InsideBound(Exponential(38.197186342054884,1, None ), [-1.0471975511965976, 1.0471975511965976])
     depth=MaxBound(Exponential(0.02500000000000001,0.9999999999999999, None ), 170)
 class F3AInter:
-    radius=Comparison(Exponential(1.0,0.4306765580733931, 2 ))
+    radius=Comparison(Exponential(0.4000000000000001,0.9999999999999999, 2 ))
     speed=Comparison(Exponential(0.25,0.8613531161467862, None ))
     roll_rate=Comparison(Exponential(0.25,1.1132827525593783, 2 ))
-    length=Comparison(Exponential(1.0,0.6826061944859854, 3 ))
+    length=Comparison(Exponential(0.6,1.0, 3 ))
     free=Comparison(Exponential(0,1, None ))
 
 
