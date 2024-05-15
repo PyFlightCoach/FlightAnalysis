@@ -24,16 +24,16 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_0_1_pause.length": "(e_0_1_pause.length+30)",
-          "e_0_2_pause.length": "(e_0_2_pause.length+30)",
-          "e_2_1_pause.length": "(e_2_1_pause.length+30)"
+          "e_0_1_pause.length": "e_0_1_pause.length",
+          "e_0_2_pause.length": "e_0_2_pause.length",
+          "e_2_1_pause.length": "e_2_1_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -43,7 +43,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -61,7 +61,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -79,7 +79,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -94,7 +94,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -123,7 +123,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -147,15 +147,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_2_pad1.length": "(e_2_pad1.length+40)",
-          "e_2_pad2.length": "(e_2_pad2.length+40)"
+          "e_2_pad1.length": "e_2_pad1.length",
+          "e_2_pad2.length": "e_2_pad2.length"
         }
       }
     },
@@ -174,7 +174,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -192,7 +192,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -238,7 +238,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-(((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -256,7 +256,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -274,7 +274,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-(((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -316,15 +316,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_1_1_pause.length": "(e_1_1_pause.length+30)",
-          "e_3_1_pause.length": "(e_3_1_pause.length+30)"
+          "e_1_1_pause.length": "e_1_1_pause.length",
+          "e_3_1_pause.length": "e_3_1_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -334,7 +334,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -351,7 +351,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -368,7 +368,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -383,7 +383,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 6.283185307179586,
@@ -398,7 +398,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -422,15 +422,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -440,7 +440,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -464,15 +464,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -493,7 +493,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+1.2499999999999998)+((30.0*abs(e_1_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_1_rolls[1]))/snap_rate))+1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -511,7 +511,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -546,7 +546,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+1.2499999999999998)+((30.0*abs(e_1_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_1_rolls[1]))/snap_rate))+1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -563,7 +563,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -581,7 +581,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -599,7 +599,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -641,9 +641,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 100,
@@ -660,7 +660,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -750,16 +750,16 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_0_1_pause.length": "(e_0_1_pause.length+30)",
-          "e_0_2_pause.length": "(e_0_2_pause.length+30)",
-          "e_0_3_pause.length": "(e_0_3_pause.length+30)"
+          "e_0_1_pause.length": "e_0_1_pause.length",
+          "e_0_2_pause.length": "e_0_2_pause.length",
+          "e_0_3_pause.length": "e_0_3_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -769,7 +769,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -787,7 +787,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -805,7 +805,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -820,7 +820,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -852,7 +852,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -884,7 +884,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -902,7 +902,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -920,7 +920,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -997,17 +997,17 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_1_1_pause.length": "(e_1_1_pause.length+30)",
-          "e_3_1_pause.length": "(e_3_1_pause.length+30)",
-          "e_3_2_pause.length": "(e_3_2_pause.length+30)",
-          "e_3_3_pause.length": "(e_3_3_pause.length+30)"
+          "e_1_1_pause.length": "e_1_1_pause.length",
+          "e_3_1_pause.length": "e_3_1_pause.length",
+          "e_3_2_pause.length": "e_3_2_pause.length",
+          "e_3_3_pause.length": "e_3_3_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -1017,7 +1017,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -1036,7 +1036,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -1055,7 +1055,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -1070,7 +1070,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1094,15 +1094,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -1112,7 +1112,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1142,15 +1142,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -1171,7 +1171,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-((((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-((((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1206,7 +1206,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1224,7 +1224,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-((((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-((((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1244,7 +1244,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[2])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1262,7 +1262,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1280,7 +1280,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1298,7 +1298,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1316,7 +1316,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[2])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1358,9 +1358,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -1376,7 +1376,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 6.283185307179586,
@@ -1391,7 +1391,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -1407,7 +1407,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 5.340707511102648,
@@ -1422,7 +1422,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1450,7 +1450,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1471,15 +1471,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -1489,7 +1489,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1510,15 +1510,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       },
       "e_5_pad_length": {
@@ -1526,15 +1526,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_5_pad1.length": "(e_5_pad1.length+40)",
-          "e_5_pad2.length": "(e_5_pad2.length+40)"
+          "e_5_pad1.length": "e_5_pad1.length",
+          "e_5_pad2.length": "e_5_pad2.length"
         }
       }
     },
@@ -1742,7 +1742,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -1757,7 +1757,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           }
         },
         "defaul": 100,
@@ -1790,7 +1790,7 @@
           "speed": "30.0",
           "radius": "e_0_radius",
           "angle": "((0.7853981633974483-((point_length/e_0_radius)*2))*0.5)",
-          "roll": "0.7853981633974483",
+          "roll": "e_0_rolls[0]",
           "ke": "0"
         }
       },
@@ -1802,7 +1802,7 @@
           "radius": "e_0_radius",
           "angle": "(point_length/e_0_radius)",
           "roll": "0",
-          "ke": "-0.7853981633974483"
+          "ke": "(0-e_0_rolls[3])"
         }
       },
       "e_0_1": {
@@ -1812,8 +1812,8 @@
           "speed": "30.0",
           "radius": "e_0_radius",
           "angle": "((0.7853981633974483-((point_length/e_0_radius)*2))*0.5)",
-          "roll": "0.7853981633974483",
-          "ke": "-0.7853981633974483"
+          "roll": "e_0_rolls[1]",
+          "ke": "(0-e_0_rolls[3])"
         }
       },
       "e_0_1_pause": {
@@ -1824,7 +1824,7 @@
           "radius": "e_0_radius",
           "angle": "(point_length/e_0_radius)",
           "roll": "0",
-          "ke": "-1.5707963267948966"
+          "ke": "(0-e_0_rolls[4])"
         }
       },
       "e_0_2_break": {
@@ -1841,8 +1841,8 @@
         "Kind": "Autorotation",
         "props": {
           "speed": "30.0",
-          "length": "(235.61944901923448/snap_rate)",
-          "roll": "7.853981633974483"
+          "length": "((30.0*abs(e_0_rolls[2]))/snap_rate)",
+          "roll": "e_0_rolls[2]"
         }
       },
       "e_0_2_recovery": {
@@ -1861,7 +1861,7 @@
           "radius": "e_0_radius",
           "angle": "2.748893571891069",
           "roll": "0",
-          "ke": "-9.42477796076938"
+          "ke": "(0-e_0_rolls[5])"
         }
       }
     }
@@ -1891,17 +1891,17 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_1_1_pause.length": "(e_1_1_pause.length+30)",
-          "e_1_2_pause.length": "(e_1_2_pause.length+30)",
-          "e_1_3_pause.length": "(e_1_3_pause.length+30)",
-          "e_3_1_pause.length": "(e_3_1_pause.length+30)"
+          "e_1_1_pause.length": "e_1_1_pause.length",
+          "e_1_2_pause.length": "e_1_2_pause.length",
+          "e_1_3_pause.length": "e_1_3_pause.length",
+          "e_3_1_pause.length": "e_3_1_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -1911,7 +1911,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1929,7 +1929,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 4.71238898038469,
@@ -1948,7 +1948,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -1963,7 +1963,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1993,15 +1993,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -2011,7 +2011,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -2035,15 +2035,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2064,7 +2064,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(255.56349186104043-(((((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(255.56349186104043-(((((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2082,7 +2082,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2100,7 +2100,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2118,7 +2118,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2136,7 +2136,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(255.56349186104043-(((((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(255.56349186104043-(((((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2156,7 +2156,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(110-(((((0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))+20.0)+1.2499999999999998)+((30.0*abs(e_3_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(110-(((((0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[1]))/snap_rate))+1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2174,7 +2174,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2209,7 +2209,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(110-(((((0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))+20.0)+1.2499999999999998)+((30.0*abs(e_3_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(110-(((((0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[1]))/snap_rate))+1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2251,17 +2251,17 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_1_1_pause.length": "(e_1_1_pause.length+30)",
-          "e_1_2_pause.length": "(e_1_2_pause.length+30)",
-          "e_3_1_pause.length": "(e_3_1_pause.length+30)",
-          "e_3_2_pause.length": "(e_3_2_pause.length+30)"
+          "e_1_1_pause.length": "e_1_1_pause.length",
+          "e_1_2_pause.length": "e_1_2_pause.length",
+          "e_3_1_pause.length": "e_3_1_pause.length",
+          "e_3_2_pause.length": "e_3_2_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -2271,7 +2271,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -2290,7 +2290,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -2309,7 +2309,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -2324,7 +2324,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -2351,15 +2351,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -2369,7 +2369,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -2396,15 +2396,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2425,7 +2425,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(183.84776310850233-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(183.84776310850233-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2443,7 +2443,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2461,7 +2461,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2479,7 +2479,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(183.84776310850233-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(183.84776310850233-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2499,7 +2499,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+20.0)+1.2499999999999998)+((30.0*abs(e_3_rolls[2]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[2]))/snap_rate))+1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2517,7 +2517,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2535,7 +2535,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2570,7 +2570,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+20.0)+1.2499999999999998)+((30.0*abs(e_3_rolls[2]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[2]))/snap_rate))+1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2612,15 +2612,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 10,
         "collectors": {
-          "e_2_1_pause.length": "(e_2_1_pause.length+30)",
-          "e_2_2_pause.length": "(e_2_2_pause.length+30)"
+          "e_2_1_pause.length": "e_2_1_pause.length",
+          "e_2_2_pause.length": "e_2_2_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -2630,7 +2630,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.9269908169872414,
@@ -2646,7 +2646,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.9269908169872414,
@@ -2663,7 +2663,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -2678,7 +2678,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -2701,7 +2701,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -2728,15 +2728,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_2_pad1.length": "(e_2_pad1.length+40)",
-          "e_2_pad2.length": "(e_2_pad2.length+40)"
+          "e_2_pad1.length": "e_2_pad1.length",
+          "e_2_pad2.length": "e_2_pad2.length"
         }
       }
     },
@@ -2783,7 +2783,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(150-(((((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+10)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))+10)+((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(150-(((((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2801,7 +2801,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "10",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2819,7 +2819,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "10",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2837,7 +2837,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(150-(((((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+10)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))+10)+((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(150-(((((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
           "roll": "0"
         }
       },

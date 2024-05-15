@@ -32,9 +32,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -50,9 +50,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 150,
@@ -66,15 +66,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_1_1_pause.length": "(e_1_1_pause.length+30)",
-          "e_5_1_pause.length": "(e_5_1_pause.length+30)"
+          "e_1_1_pause.length": "e_1_1_pause.length",
+          "e_5_1_pause.length": "e_5_1_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -84,7 +84,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -102,7 +102,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 2.356194490192345,
@@ -141,15 +141,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -180,15 +180,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       },
       "e_5_rolls": {
@@ -222,15 +222,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_5_pad1.length": "(e_5_pad1.length+40)",
-          "e_5_pad2.length": "(e_5_pad2.length+40)"
+          "e_5_pad1.length": "e_5_pad1.length",
+          "e_5_pad2.length": "e_5_pad2.length"
         }
       }
     },
@@ -251,7 +251,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -269,7 +269,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -287,7 +287,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -345,7 +345,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_5_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_5_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -363,7 +363,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -381,7 +381,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_5_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_5_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_5_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -423,9 +423,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -439,9 +439,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -456,7 +456,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 2.356194490192345,
@@ -492,15 +492,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -589,9 +589,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -608,9 +608,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 80,
@@ -628,7 +628,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -667,15 +667,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -706,15 +706,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       },
       "e_5_rolls": {
@@ -745,15 +745,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_5_pad1.length": "(e_5_pad1.length+40)",
-          "e_5_pad2.length": "(e_5_pad2.length+40)"
+          "e_5_pad1.length": "e_5_pad1.length",
+          "e_5_pad2.length": "e_5_pad2.length"
         }
       },
       "e_7_rolls": {
@@ -784,15 +784,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_7_pad1.length": "(e_7_pad1.length+40)",
-          "e_7_pad2.length": "(e_7_pad2.length+40)"
+          "e_7_pad1.length": "e_7_pad1.length",
+          "e_7_pad2.length": "e_7_pad2.length"
         }
       }
     },
@@ -987,9 +987,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -1003,9 +1003,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -1020,7 +1020,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1056,15 +1056,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -1147,17 +1147,17 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_0_1_pause.length": "(e_0_1_pause.length+30)",
-          "e_0_2_pause.length": "(e_0_2_pause.length+30)",
-          "e_0_4_pause.length": "(e_0_4_pause.length+30)",
-          "e_0_5_pause.length": "(e_0_5_pause.length+30)"
+          "e_0_1_pause.length": "e_0_1_pause.length",
+          "e_0_2_pause.length": "e_0_2_pause.length",
+          "e_0_4_pause.length": "e_0_4_pause.length",
+          "e_0_5_pause.length": "e_0_5_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -1167,7 +1167,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1234,7 +1234,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1252,7 +1252,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1279,7 +1279,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1297,7 +1297,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -1337,9 +1337,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -1355,7 +1355,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1370,7 +1370,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -1406,15 +1406,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -1517,9 +1517,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 100,
@@ -1535,7 +1535,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1552,7 +1552,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 2.356194490192345,
@@ -1728,9 +1728,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -1745,9 +1745,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -1763,7 +1763,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1804,15 +1804,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -1843,15 +1843,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2095,9 +2095,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -2112,9 +2112,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 91.92388155425118,
@@ -2130,7 +2130,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -2167,15 +2167,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -2206,15 +2206,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2341,9 +2341,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -2359,9 +2359,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -2377,7 +2377,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -2415,15 +2415,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -2454,15 +2454,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       },
       "e_5_rolls": {
@@ -2493,15 +2493,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_5_pad1.length": "(e_5_pad1.length+40)",
-          "e_5_pad2.length": "(e_5_pad2.length+40)"
+          "e_5_pad1.length": "e_5_pad1.length",
+          "e_5_pad2.length": "e_5_pad2.length"
         }
       }
     },
@@ -2658,9 +2658,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -2675,9 +2675,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -2690,14 +2690,14 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_3_1_pause.length": "(e_3_1_pause.length+30)"
+          "e_3_1_pause.length": "e_3_1_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -2707,7 +2707,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -2745,15 +2745,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -2787,15 +2787,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2854,7 +2854,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2872,7 +2872,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -2890,7 +2890,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2934,9 +2934,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -2951,7 +2951,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -2966,7 +2966,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 5.340707511102648,
@@ -3002,15 +3002,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -3107,9 +3107,9 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.4306765580733931,
-              "limit": 2
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": 55.0,
@@ -3125,9 +3125,9 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.6826061944859854,
-              "limit": 3
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": 130.0,
@@ -3141,14 +3141,14 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.6826061944859854,
-              "limit": 3
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": 20.0,
           "collectors": {
-            "e_1_1_pause.length": "(e_1_1_pause.length+30)"
+            "e_1_1_pause.length": "e_1_1_pause.length"
           }
         },
         "partial_roll_rate": {
@@ -3158,7 +3158,7 @@
             "lookup": {
               "factor": 0.25,
               "exponent": 1.1132827525593783,
-              "limit": 2
+              "limit": null
             }
           },
           "defaul": 1.5707963267948966,
@@ -3198,15 +3198,15 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.6826061944859854,
-              "limit": 3
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": null,
           "collectors": {
-            "e_1_pad1.length": "(e_1_pad1.length+40)",
-            "e_1_pad2.length": "(e_1_pad2.length+40)"
+            "e_1_pad1.length": "e_1_pad1.length",
+            "e_1_pad2.length": "e_1_pad2.length"
           }
         }
       },
@@ -3227,7 +3227,7 @@
           "Kind": "Line",
           "props": {
             "speed": "30.0",
-            "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+            "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
             "roll": "0"
           }
         },
@@ -3245,7 +3245,7 @@
           "Kind": "Line",
           "props": {
             "speed": "30.0",
-            "length": "20.0",
+            "length": "point_length",
             "roll": "0"
           }
         },
@@ -3263,7 +3263,7 @@
           "Kind": "Line",
           "props": {
             "speed": "30.0",
-            "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+            "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
             "roll": "0"
           }
         },
@@ -3345,9 +3345,9 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.4306765580733931,
-              "limit": 2
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": 55.0,
@@ -3363,9 +3363,9 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.6826061944859854,
-              "limit": 3
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": 130.0,
@@ -3381,7 +3381,7 @@
             "lookup": {
               "factor": 0.25,
               "exponent": 1.1132827525593783,
-              "limit": 2
+              "limit": null
             }
           },
           "defaul": 1.5707963267948966,
@@ -3421,15 +3421,15 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.6826061944859854,
-              "limit": 3
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": null,
           "collectors": {
-            "e_1_pad1.length": "(e_1_pad1.length+40)",
-            "e_1_pad2.length": "(e_1_pad2.length+40)"
+            "e_1_pad1.length": "e_1_pad1.length",
+            "e_1_pad2.length": "e_1_pad2.length"
           }
         },
         "e_5_pad_length": {
@@ -3437,15 +3437,15 @@
           "criteria": {
             "kind": "Comparison",
             "lookup": {
-              "factor": 1.0,
-              "exponent": 0.6826061944859854,
-              "limit": 3
+              "factor": 1.5,
+              "exponent": 1.0,
+              "limit": null
             }
           },
           "defaul": null,
           "collectors": {
-            "e_5_pad1.length": "(e_5_pad1.length+40)",
-            "e_5_pad2.length": "(e_5_pad2.length+40)"
+            "e_5_pad1.length": "e_5_pad1.length",
+            "e_5_pad2.length": "e_5_pad2.length"
           }
         }
       },
@@ -3590,9 +3590,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 50,
@@ -3606,9 +3606,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 60,
@@ -3623,7 +3623,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 12.566370614359172,
@@ -3659,15 +3659,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -3765,9 +3765,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 50,
@@ -3782,9 +3782,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 180.0,
@@ -3798,14 +3798,14 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
         "collectors": {
-          "e_1_1_pause.length": "(e_1_1_pause.length+30)"
+          "e_1_1_pause.length": "e_1_1_pause.length"
         }
       },
       "partial_roll_rate": {
@@ -3815,7 +3815,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -3831,7 +3831,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 2.356194490192345,
@@ -3870,15 +3870,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -3909,15 +3909,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -3938,7 +3938,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -3956,7 +3956,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "20.0",
+          "length": "point_length",
           "roll": "0"
         }
       },
@@ -3974,7 +3974,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+20.0)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(line_length-(((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -4058,9 +4058,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,

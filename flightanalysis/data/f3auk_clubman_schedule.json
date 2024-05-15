@@ -29,9 +29,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 65,
@@ -47,7 +47,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -62,7 +62,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -83,15 +83,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -214,9 +214,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 65,
@@ -232,7 +232,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -247,7 +247,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -268,15 +268,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -359,7 +359,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -418,9 +418,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 45,
@@ -436,7 +436,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -451,7 +451,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -472,15 +472,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -561,9 +561,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 100,
@@ -579,7 +579,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -595,7 +595,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -618,7 +618,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -712,9 +712,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -729,9 +729,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -747,7 +747,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -762,7 +762,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -783,15 +783,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -894,7 +894,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -910,7 +910,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -933,7 +933,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1005,9 +1005,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -1023,7 +1023,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 3.141592653589793,
@@ -1131,7 +1131,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1145,9 +1145,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 20.0,
@@ -1163,7 +1163,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1186,7 +1186,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1278,9 +1278,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -1295,9 +1295,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -1313,7 +1313,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1328,7 +1328,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1349,15 +1349,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -1467,9 +1467,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 100,
@@ -1484,9 +1484,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 200,
@@ -1502,7 +1502,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1518,7 +1518,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1539,15 +1539,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -1557,7 +1557,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1578,15 +1578,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_3_pad1.length": "(e_3_pad1.length+40)",
-          "e_3_pad2.length": "(e_3_pad2.length+40)"
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -1710,9 +1710,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -1726,9 +1726,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -1743,7 +1743,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 1.5707963267948966,
@@ -1758,7 +1758,7 @@
           "lookup": {
             "factor": 0,
             "exponent": 1,
-            "limit": 10
+            "limit": null
           },
           "desired": [
             [
@@ -1779,15 +1779,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": null,
         "collectors": {
-          "e_1_pad1.length": "(e_1_pad1.length+40)",
-          "e_1_pad2.length": "(e_1_pad2.length+40)"
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -1870,9 +1870,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.4306765580733931,
-            "limit": 2
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 55.0,
@@ -1885,9 +1885,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
@@ -1902,7 +1902,7 @@
           "lookup": {
             "factor": 0.25,
             "exponent": 1.1132827525593783,
-            "limit": 2
+            "limit": null
           }
         },
         "defaul": 5.340707511102648,
@@ -1985,9 +1985,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.0,
-            "exponent": 0.6826061944859854,
-            "limit": 3
+            "factor": 1.5,
+            "exponent": 1.0,
+            "limit": null
           }
         },
         "defaul": 130.0,
