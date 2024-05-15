@@ -1,6 +1,6 @@
 from __future__ import annotations
 from numbers import Number
-from flightdata import Collection
+from flightdata import Collection, State
 from uuid import uuid1
 from ast import literal_eval
 from dataclasses import dataclass
@@ -104,6 +104,14 @@ class Opp:
                 continue
         else:
             return coll[inp]
+
+    def list_parms(self) -> list[str]:
+        return []
+    
+    def extract_state(self, st: State):
+        elnames = list(set([parm.elname for parm in self.list_parms()]))
+        return State.stack([st.get_element(elname) for elname in elnames])
+
 
 from .mathopp import MathOpp
 from .funopp import FunOpp

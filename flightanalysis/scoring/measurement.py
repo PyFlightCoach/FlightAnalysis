@@ -100,12 +100,12 @@ class Measurement:
 
     @staticmethod
     def _inter_scale_vis(fl: State):
-        # factor of 1 when it takes up half the box height.
+        # factor of 1 when it takes up 1/4 of the box height.
         # reduces to zero for zero length el
         depth = fl.pos.y.mean()
         _range = fl.pos.max() - fl.pos.min()
-        length = max(_range.x[0], _range.z[0])
-        return max(1, length / (depth * 0.866025))   # np.tan(np.radians(60)) / 2
+        length = np.sqrt(_range.x[0]**2 +  _range.z[0] **2)
+        return min(1, length / (depth * 0.4330125))   # np.tan(np.radians(60)) / 4
 
     @staticmethod
     def speed(fl: State, tp: State, direction: Point=None, axis='body') -> Self:

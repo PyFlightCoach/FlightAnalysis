@@ -25,10 +25,10 @@ f3a=dict(
         depth=MaxBound(Exponential.fit_points([20, 40], [0.5, 1]), 170)
     ),
     inter=dict(
-        radius=Comparison(Exponential.fit_points([2,5], [4/5, 2], 2)),
+        radius=Comparison(Exponential.fit_points([1,2], [1.5, 3])),
         speed=Comparison(Exponential.fit_points([1,5], [0.25, 1.0])),
-        roll_rate=Comparison(Exponential.fit_points([1,5], [0.25, 1.5],2)),
-        length=Comparison(Exponential.fit_points([1,5], [3/5, 3], 3)),
+        roll_rate=Comparison(Exponential.fit_points([1,5], [0.25, 1.5])),
+        length=Comparison(Exponential.fit_points([1,2], [1.5, 3])),
         free=Comparison(free),
     )
 )
@@ -66,5 +66,5 @@ def plot_all(crits):
 if __name__ == "__main__":
     #plot_lookup(f3a['intra']['recovery_length'].lookup,-10,10)
 
- #   plot_all(f3a)
+#    plot_all(f3a)
     dump_criteria_to_py(f3a)

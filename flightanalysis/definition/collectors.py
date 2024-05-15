@@ -1,8 +1,8 @@
 """The collectors are serializable functions that return parameters from elements"""
-from flightdata import Collection
+from flightdata import Collection, State
 from . import Opp
 from uuid import uuid1
-from flightanalysis.scoring.measurement import Measurement
+
 
 class Collector(Opp):
     def __init__(self, elname, pname):
@@ -17,7 +17,7 @@ class Collector(Opp):
     def visibility(self, els, state):
         st = state.get_element(self.elname)
         direc, vis =  getattr(els.data[self.elname], self.pname + '_visibility')(st)
-        return direc, vis * Measurement._inter_scale_vis(st)
+        return direc, vis
 
     def __str__(self):
         return self.name
@@ -41,6 +41,8 @@ class Collector(Opp):
 
     def list_parms(self) -> list[str]:
         return [self]
+
+
 
 class Collectors(Collection):
     VType=Opp
