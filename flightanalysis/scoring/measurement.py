@@ -221,11 +221,6 @@ class Measurement:
         fwvel = fl.att.transform_point(fl.vel)
         twvel = tp.att.transform_point(tp.vel)
 
-        direction, vis = Measurement._vector_vis(
-            Point.vector_rejection(fwvel, twvel).unit(), 
-            fl.pos
-        )
-        
         fcvel = tr.transform_point(fwvel)
         tcvel = tr.transform_point(twvel)
         
@@ -233,13 +228,17 @@ class Measurement:
             verr = Point.vector_projection(fcvel, proj)
             sign = -np.ones_like(verr.x)
             sign[Point.is_parallel(verr, proj)] = 1
-            
             angles = sign * np.arctan(abs(verr) / abs(fl.vel))
-            
-            vis = np.linspace(vis[0], vis[1], len(vis))
+            direction, vis = Measurement._vector_vis(verr.unit(), fl.pos)
+#            vis = np.linspace(vis[0], vis[1], len(vis))
         elif fix == 'ang':
             cos_angles = Point.scalar_projection(Point.cross(fcvel, tcvel) / (abs(fcvel) * abs(tcvel)), proj)
             angles = np.arcsin(cos_angles)
+
+            direction, vis = Measurement._vector_vis(
+                Point.vector_rejection(fwvel, twvel).unit(), 
+                fl.pos
+            )
         else:
             raise AttributeError(f'fix must be "vel" or "ang", not {fix}')
         return Measurement(angles, 0, direction, vis)

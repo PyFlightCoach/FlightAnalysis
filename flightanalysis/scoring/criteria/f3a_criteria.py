@@ -16,7 +16,7 @@ class F3AIntra:
     pitch_break_length=InsideBound(Exponential(0.7,2.321928094887362, None ), [-2, 2])
     nose_drop_amount=OutsideBound(Exponential(20,1, None ), [-0.2617993877991494, 0.2617993877991494])
     recovery_length=MaxBound(Exponential(0.7,2.321928094887362, None ), 2)
-    box=InsideBound(Exponential(38.197186342054884,1, None ), [-1.0471975511965976, 1.0471975511965976])
+    box=InsideBound(Exponential(76.39437268410977,1, None ), [-1.0471975511965976, 1.0471975511965976])
     depth=MaxBound(Exponential(0.02500000000000001,0.9999999999999999, None ), 170)
 class F3AInter:
     radius=Comparison(Exponential(1.5,1.0, None ))
@@ -24,6 +24,7 @@ class F3AInter:
     roll_rate=Comparison(Exponential(0.25,1.1132827525593783, None ))
     length=Comparison(Exponential(1.5,1.0, None ))
     free=Comparison(Exponential(0,1, None ))
+
 
 
 class F3A:
