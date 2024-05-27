@@ -37,7 +37,7 @@ class Continuous(Criteria):
         
         return Result(
             name, m, sample, mistakes, 
-            self.lookup(mistakes) * self.visibility(m, dgids), 
+            self.lookup(mistakes, self.visibility(m, dgids)), 
             dgids
         )
         

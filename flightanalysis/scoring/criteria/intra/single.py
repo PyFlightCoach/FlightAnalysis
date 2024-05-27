@@ -19,11 +19,10 @@ class Single(Criteria):
         sample = self.prepare(m.value, m.expected)
         all_ids = np.array(range(len(m)))
         ids = all_ids if self.id is None else [all_ids[self.id]]
-        
-        
+                
         return Result(
             name, m, sample, sample[ids], 
-            self.lookup(sample[ids]) * m.visibility[ids],
+            self.lookup(sample[ids], m.visibility[ids]),
             ids
         )
         

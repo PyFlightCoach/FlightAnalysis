@@ -32,9 +32,9 @@ class Bounded(Criteria):
         
         mistakes = np.array([np.mean(sample[groups==grp]) for grp in set(groups)])
         dgids = np.array([ids[groups==grp][int(len(ids[groups==grp])/2)] for grp in set(groups)])
-        dgs = np.array([self.lookup(np.mean(sample[groups==grp])) * len(sample[groups==grp]) / len(sample) for grp in set(groups)])
+        dgs = np.array([self.lookup(np.mean(sample[groups==grp]), m.visibility[dgid]) * len(sample[groups==grp]) / len(sample) for dgid, grp in zip(dgids, set(groups)) ])
         
-        return Result(name, m, sample, mistakes[dgs>0], dgs[dgs>0] * m.visibility[dgids[dgs>0]], dgids[dgs>0])
+        return Result(name, m, sample, mistakes[dgs>0], dgs[dgs>0], dgids[dgs>0])
         
     def visiblity(self, measurement, ids):
         return np.mean(measurement.visibility[ids])

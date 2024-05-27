@@ -1,6 +1,6 @@
 from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, free, OutsideBound
 import numpy as np
-from itertools import chain
+
 
 f3a=dict(
     single=dict(
@@ -12,9 +12,9 @@ f3a=dict(
     intra=dict(
         track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [2, 6])),
         roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.5, 6])),
-        radius=ContRat(Exponential.fit_points([1,5], [0.5, 4], 2)),
+        radius=ContRat(Exponential.fit_points([1,5], [0.5, 4])),
         speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1)),
-        roll_rate=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1)),
+        roll_rate=ContRat(Exponential.fit_points([1,5], [0.15, 0.75])),
         stallturn_speed=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-2,2]),
         stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.5,2.5]), [-2,2]),
         spin_entry_length=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-5,5]),
@@ -25,10 +25,10 @@ f3a=dict(
         depth=MaxBound(Exponential.fit_points([20, 40], [0.5, 1]), 170)
     ),
     inter=dict(
-        radius=Comparison(Exponential.fit_points([1,2], [1.5, 3])),
-        speed=Comparison(Exponential.fit_points([1,5], [0.25, 1.0])),
-        roll_rate=Comparison(Exponential.fit_points([1,5], [0.25, 1.5])),
-        length=Comparison(Exponential.fit_points([1,2], [1.5, 3])),
+        radius=Comparison(Exponential.fit_points([1,2], [1, 2], 2)),
+        speed=Comparison(Exponential.fit_points([1,2], [0.25, 0.5], 1)),
+        roll_rate=Comparison(Exponential.fit_points([1,2], [0.25, 0.5], 1)),
+        length=Comparison(Exponential.fit_points([1,2], [1, 2], 2)),
         free=Comparison(free),
     )
 )
