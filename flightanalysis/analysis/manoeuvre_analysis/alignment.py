@@ -39,15 +39,6 @@ class Alignment(Basic):
                 raise e
         return ia
 
-    def alignment(self, radius=10):
-        assert self.stage < AlinmentStage.SECONDARY
-        logger.debug(f'Running alignment stage {self.stage}')
-        dist, aligned = State.align(self.flown, self.template, radius, self.stage==AlinmentStage.SETUP)
-        return Alignment(
-            self.mdef, aligned, self.direction, self.stage + 1, dist,
-            *self.manoeuvre.match_intention(self.template[0], aligned)
-        )
-    
 
     def run_alignment(self, radius=10):
         if self.stage > AlinmentStage.SETUP:
@@ -57,7 +48,12 @@ class Alignment(Basic):
             )
         while self.stage < AlinmentStage.SECONDARY:
             try:
-                self = self.alignment(radius)
+                logger.debug(f'Running alignment stage {self.stage}')
+                dist, aligned = State.align(self.flown, self.template, radius, self.stage==AlinmentStage.SETUP)
+                self = Alignment(
+                    self.mdef, aligned, self.direction, self.stage + 1, dist,
+                    *self.manoeuvre.match_intention(self.template[0], aligned)
+                )
             except Exception as ex:
                 logger.exception(f'Error running alignment stage {self.stage}, {ex}')
                 break
