@@ -34,6 +34,9 @@ class ManDef:
         self.mps: ManParms = ManParms.create_defaults_f3a() if mps is None else mps
         self.eds: ElDefs = ElDefs() if eds is None else eds
 
+    def __repr__(self):
+        return f"ManDef({self.info.name})"
+
     @property
     def uid(self):
         return self.info.short_name

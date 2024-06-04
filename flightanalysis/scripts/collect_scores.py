@@ -31,9 +31,9 @@ def main():
         logger.info(f'Processing file {log}')
         sa = ScheduleAnalysis.from_fcscore(log)
         total, scores = sa.scores()
-        if sa.sinfo.name not in odata:
-            odata[sa.sinfo.name] = {}
-        odata[sa.sinfo.name][log.stem] = dict(total=total, **scores)
+        if sa.sinfo.name.lower() not in odata:
+            odata[sa.sinfo.name.lower()] = {}
+        odata[sa.sinfo.name.lower()][log.stem] = dict(total=total, **scores)
 
     pd.options.display.float_format = '{:,.2f}'.format
     dfs = {}

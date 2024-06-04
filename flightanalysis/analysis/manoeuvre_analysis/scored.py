@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from .complete import Complete
 from flightanalysis.scoring import ManoeuvreResults
+from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from loguru import logger
 
 
@@ -25,3 +26,13 @@ class Scored(Complete):
     
     def run(self, optimise_alignment=True):
         return self
+    
+    def to_mindict(self, sinfo: ScheduleInfo):
+        return dict(
+            **super().to_mindict(sinfo),
+            scores = dict(
+                **self.scores.summary(),
+                total=self.scores.score(),
+                k=self.mdef.info.k
+            )
+        )
