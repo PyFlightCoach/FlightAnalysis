@@ -4,7 +4,7 @@ from flightdata import State
 from flightanalysis.manoeuvre import Manoeuvre
 from loguru import logger
 from .basic import AlinmentStage, Basic
-from flightanalysis.definition import ManDef
+from flightanalysis.definition import ManDef, ScheduleInfo, SchedDef
 
 
 @dataclass
@@ -72,6 +72,15 @@ class Alignment(Basic):
                 mdef, self.flown, self.direction, AlinmentStage.SECONDARY, 
                 self.dist, self.manoeuvre, self.template, correction, 
                 correction.create_template(self.template[0], self.flown)
+            )
+
+    def to_mindict(self, sinfo: ScheduleInfo):
+        if self.stage < AlinmentStage.SECONDARY:
+            return super().to_mindict(sinfo)
+        else:
+            return dict(
+                **super().to_mindict(sinfo),
+                els = self.flown.label_ranges('element').to_dict('records')
             )
 
 from .complete import Complete  # noqa: E402

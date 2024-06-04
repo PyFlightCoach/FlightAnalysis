@@ -50,7 +50,6 @@ class ScheduleAnalysis(Collection):
         )
     
     def run_all(self) -> Self:
-
         def parse_analyse_serialise(pad):
             res = analysis.Basic.from_dict(pad).run_all()
             logger.info(f'Completed {res.name}')

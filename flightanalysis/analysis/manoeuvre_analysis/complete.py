@@ -7,6 +7,7 @@ from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring import Results, ManoeuvreResults, Measurement
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.definition.maninfo import Position
+from flightanalysis.definition.scheduleinfo import ScheduleInfo
 import numpy as np
 from .alignment import Alignment, AlinmentStage
 from loguru import logger
@@ -62,6 +63,7 @@ class Complete(Alignment):
         st = el.get_data(self.flown)
         tp = el.get_data(self.template).relocate(st.pos[0])
         return ElementAnalysis(edef, self.mdef.mps, el, st, tp, el.ref_frame(tp))
+
 
     def update_templates(self):
         if not np.all(self.flown.element == self.template.element):    
@@ -159,5 +161,8 @@ class Complete(Alignment):
         from flightplotting import plotsec, plotdtw
         fig = plotdtw(self.flown, self.flown.data.element.unique())
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
+
+    def to_mindict(self, sinfo: ScheduleInfo):
+        return super().to_mindict(sinfo)
 
 from .scored import Scored  # noqa: E402
