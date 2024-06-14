@@ -6,4 +6,4 @@ simplejson
 loguru
 joblib
 pfc-geometry>=0.2.6
-flightdata>=0.2.11
+flightdata>=0.2.13

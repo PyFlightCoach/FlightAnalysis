@@ -31,7 +31,7 @@ class Measurement:
     def to_dict(self):
         return dict(
             value = list(self.value),
-            expected = self.expected,
+            expected = None if self.expected is None else float(self.expected),
             direction = self.direction.to_dicts(),
             visibility = list(self.visibility)
         )

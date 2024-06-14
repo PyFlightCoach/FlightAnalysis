@@ -2,14 +2,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from ..el_analysis import ElementAnalysis
 from flightdata import State
-from flightanalysis.definition import ManDef
+from flightanalysis.definition import ManDef, ScheduleInfo
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring import Results, ManoeuvreResults, Measurement
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.definition.maninfo import Position
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
 import numpy as np
-from .alignment import Alignment, AlinmentStage
+from .alignment import Alignment
 from loguru import logger
 
 
@@ -35,7 +34,7 @@ class Complete(Alignment):
         return pa
 
     def run(self, optimise_aligment=True) -> Scored:
-        if self.stage < AlinmentStage.OPTIMISED and optimise_aligment:
+        if optimise_aligment:
             self = self.optimise_alignment()
         self = self.update_templates()
         return Scored(**self.__dict__, 
@@ -72,8 +71,9 @@ class Complete(Alignment):
             correction = mdef.create(self.template[0].transform).add_lines()
 
             return Complete(
-                mdef, self.flown, self.direction, AlinmentStage.OPTIMISED, self.dist,
-                manoeuvre, template, correction, correction.create_template(template[0])
+                self.id, mdef, self.flown, self.direction,
+                manoeuvre, template, correction, 
+                correction.create_template(template[0])
             )
         else:
             return self
@@ -129,13 +129,6 @@ class Complete(Alignment):
             Measurement.depth(self.flown)
         )
         
-#        val = self.flown.pos.y.mean()
-#        id = np.abs(self.flown.pos.y - val).argmin()
-#        m = Measurement.depth(self.flown[id])
-#        error = np.maximum(m.value, 170) - 170
-#        dist_dg = F3A.single.distance.lookup(error) * m.visibility
-#        return Result("distance", m, m.value, error, dist_dg, [id])
-
     def intra(self):
         return self.manoeuvre.analyse(self.flown, self.template)
 
@@ -162,7 +155,6 @@ class Complete(Alignment):
         fig = plotdtw(self.flown, self.flown.data.element.unique())
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
 
-    def to_mindict(self, sinfo: ScheduleInfo):
-        return super().to_mindict(sinfo)
+
 
 from .scored import Scored  # noqa: E402
