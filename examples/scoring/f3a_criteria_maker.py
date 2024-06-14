@@ -4,17 +4,17 @@ import numpy as np
 
 f3a=dict(
     single=dict(
-        track=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100)),
-        roll=Single(Exponential.fit_points(np.radians([30, 90]), [1, 6], 100)),
-        angle=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 100)),
+        track=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6)),
+        roll=Single(Exponential.fit_points(np.radians([30, 90]), [1, 6], 6)),
+        angle=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6)),
 #        distance = Single(Exponential.fit_points([20, 40], [0.5, 1]))
     ),
     intra=dict(
-        track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [2, 6])),
-        roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.5, 6])),
-        radius=ContRat(Exponential.fit_points([1,5], [0.5, 4])),
+        track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6)),
+        roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.5, 6], 6)),
+        radius=ContRat(Exponential.fit_points([1,5], [0.5, 4], 3)),
         speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1)),
-        roll_rate=ContRat(Exponential.fit_points([1,5], [0.15, 0.75])),
+        roll_rate=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 2)),
         stallturn_speed=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-2,2]),
         stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.5,2.5]), [-2,2]),
         spin_entry_length=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-5,5]),

@@ -3,8 +3,10 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from flightdata import Collection
+from flightdata.base import to_list
 from flightanalysis.scoring.measurement import Measurement
 from dataclasses import dataclass
+
 
 @dataclass
 class Result:
@@ -14,24 +16,24 @@ class Result:
     """
     name: str
     measurement: Measurement 
-    sample: npt.ArrayLike  # the comparison built from the measurement
-    errors: npt.ArrayLike  # the errors resulting from the comparison
-    dgs: npt.ArrayLike # downgrades for the errors
-    keys: npt.ArrayLike # links from dgs to sample index
+    sample: npt.NDArray  # the comparison built from the measurement
+    errors: npt.NDArray  # the errors resulting from the comparison
+    dgs: npt.NDArray # downgrades for the errors
+    keys: npt.NDArray # links from dgs to sample index
 
     @property
     def total(self):
-        return sum(self.dgs)
+        return float(sum(self.dgs))
     
     def to_dict(self):
         return dict(
             name = self.name,
             measurement = self.measurement.to_dict() if isinstance(self.measurement, Measurement) else list(self.measurement),
-            sample=self.sample,
-            errors=self.errors,
-            dgs = self.dgs, 
-            keys = self.keys,
-            total = self.total
+            sample=to_list(self.sample),
+            errors=to_list(self.errors),
+            dgs=to_list(self.dgs),
+            keys=to_list(self.keys),
+            total=self.total
         )
     
     def __repr__(self):
@@ -45,7 +47,7 @@ class Result:
             np.array(data['sample']),
             np.array(data['errors']),
             np.array(data['dgs']),
-            data['keys']
+            np.array(data['keys'])
         )
 
     def info(self, i: int):
@@ -123,7 +125,6 @@ class Results(Collection):
         return dict(
             name = self.name,
             data = {k: v.to_dict() for k, v in self.data.items()},
-            summary = self.downgrade_summary(),
             total = self.total
         )
 
@@ -144,11 +145,11 @@ class ElementsResults(Collection):
 
     @property
     def total(self):
-        return sum(self.downgrade_list)
+        return sum([r.total for r in self])
     
     @property
     def downgrade_list(self):
-        return list(self.downgrade_df().iloc[-1, :])
+        return [r.total for r in self]
     
     def downgrade_df(self):
         df = pd.concat([idg.downgrade_df().sum() for idg in self], axis=1).T
@@ -161,7 +162,7 @@ class ElementsResults(Collection):
         return dict(
             data = {k: v.to_dict() for k, v in self.data.items()},
             summary = self.downgrade_list,
-            total = self.total
+            total = float(self.total)
         )
 
     @staticmethod

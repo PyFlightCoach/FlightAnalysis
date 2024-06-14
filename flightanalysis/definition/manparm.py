@@ -25,7 +25,7 @@ class ManParm(Opp):
 
     """
     criteria: Criteria
-    defaul:Any=None
+    defaul:Number=None
     collectors:Collectors=field(default_factory=lambda : Collectors())
 
 

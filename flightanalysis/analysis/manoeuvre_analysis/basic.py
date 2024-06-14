@@ -4,7 +4,7 @@ from flightdata import State, Flight, Origin
 from flightanalysis.definition import ManDef, SchedDef, ManOption
 import geometry as g
 from json import load
-from .analysis import AlinmentStage, Analysis
+from .analysis import Analysis
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 import numpy as np
 import pandas as pd
@@ -15,32 +15,23 @@ class Basic(Analysis):
     mdef: ManDef | ManOption
     flown: State
     direction: int
-    stage: AlinmentStage
 
     @property
     def name(self):
         return self.mdef.uid
 
-    def run_all(self, optimise_aligment=True):
+    def run_all(self, optimise_aligment=True, force=False) -> Scored:
         """Run the analysis to the final stage, for the case where the elements have not been labelled"""
-        res = [s.run_all(False) for s in self.run(False)]
-        self = res[0]
-        if len(res) > 1:
-            for r in res[1:]:
-                if r.stage < self.stage:
-                    continue
-                if r.dist < self.dist:
-                    self = r
+        drs = [r._run(True) for r in self.run()]
+        
+        dr = drs[np.argmin([dr[0] for dr in drs])]
 
-        if isinstance(self, Scored) and optimise_aligment:
-            self = Complete(**{k:v for k, v in list(self.__dict__.items())[:-1]}).run(True)
-            self.stage = AlinmentStage.SECONDARY
-            self = self.run_all(True)
-                   
-        return self
+        return dr[1].run_all(optimise_aligment, force)
 
-    def proceed(self, optimise_alignment=False) -> Scored:
+    def proceed(self) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements have already been labelled"""
+        if 'element' not in self.flown.data.columns:
+            return self
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
         elnames = self.flown.data.element.unique()
         for md in mopt:
@@ -58,17 +49,17 @@ class Basic(Analysis):
         mdef = ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds)
         corr = mdef.create(itrans).add_lines()
         return Complete(
-            mdef, self.flown, self.direction, AlinmentStage.SECONDARY,
-            1e9, man, tp, corr, corr.create_template(itrans, self.flown)
-        ).run(optimise_alignment)
+            self.id, mdef, self.flown, self.direction,
+            man, tp, corr, corr.create_template(itrans, self.flown)
+        )
 
     @classmethod
     def from_dict(Cls, data:dict) -> Basic:
         return Basic(
+            -1,
             ManDef.from_dict(data["mdef"]),
             State.from_dict(data["flown"]),
-            data['direction'],
-            data['stage']
+            data['direction']
         )
 
     def create_itrans(self) -> g.Transformation:
@@ -91,9 +82,9 @@ class Basic(Analysis):
             [m.info.short_name for m in sdef]
         )
         mdef= sdef[mid]
-        return Basic(mdef, state.get_manoeuvre(mdef.uid), AlinmentStage.SETUP)
+        return Basic(mid, mdef, state.get_manoeuvre(mdef.uid))
 
-    def run(self, optimise_aligment=True) -> list[Alignment]:
+    def run(self) -> list[Alignment]:
         itrans = self.create_itrans()
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 
@@ -101,30 +92,38 @@ class Basic(Analysis):
         for mdef in mopt:
             man = mdef.create(itrans).add_lines()
             als.append(Alignment(
-                mdef, self.flown, self.direction, AlinmentStage.SETUP, 
-                1e9, man, man.create_template(itrans)
+                self.id, mdef, self.flown, self.direction, 
+                man, man.create_template(itrans)
             ))
         return als
 
     def to_mindict(self, sinfo: ScheduleInfo):
-        return dict(
+        data = dict(
             **super().to_mindict(sinfo),
-            manoeuvre=self.name,
+            name=self.name,
+            id=self.id,
             data=self.flown._create_json_data().to_dict('records'),
             direction=self.direction,
         ) 
+        return data
 
     @staticmethod
     def from_mindict(data: dict):
-        mdef = getattr(SchedDef.load(ScheduleInfo(**data['sinfo'])), data['manoeuvre'])
-        st = State.from_flight(Flight.from_fc_json(data))
+        info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
+        
+        st = State.from_flight(
+            Flight.from_fc_json(data), 
+            Origin.from_fcjson_parmameters(data["parameters"])
+        )
+        
+        mdef = SchedDef.load(info)[data['id']] 
         
         if 'els' in data:
             df = pd.DataFrame(data['els'])
             df.columns = ['name', 'start', 'stop', 'length']
-            st = st.splitter_labels(df.to_dict('records'), target_col='element').label(manoeuvre=data['manoeuvre'])
+            st = st.splitter_labels(df.to_dict('records'), target_col='element').label(manoeuvre=data['name'])
 
-        return Basic(mdef, st, data['direction'], AlinmentStage.SETUP)
+        return Basic(data['id'], mdef, st, data['direction'])
     
 
 from .alignment import Alignment  # noqa: E402

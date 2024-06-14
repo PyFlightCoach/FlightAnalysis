@@ -41,11 +41,11 @@ class ScheduleAnalysis(Collection):
 
         return ScheduleAnalysis(
             [analysis.Basic(
+                i,
                 mdef, 
                 state.get_manoeuvre(mdef.uid), 
-                direction,
-                analysis.AlinmentStage.SETUP
-            ) for mdef in sdef],
+                direction
+            ) for i, mdef in enumerate(sdef)],
             info
         )
     
@@ -66,7 +66,6 @@ class ScheduleAnalysis(Collection):
 
         def parse_analyse_serialise(mad):
             an = analysis.Complete.from_dict(mad)
-            an.stage = analysis.AlinmentStage.SECONDARY
             return an.run_all().to_dict()
 
         logger.info(f'Starting {os.cpu_count()} alinment optimisation processes')

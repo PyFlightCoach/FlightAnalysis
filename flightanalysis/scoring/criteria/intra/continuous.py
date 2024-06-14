@@ -25,7 +25,7 @@ class Continuous(Criteria):
             first_val = not first_val
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
-    def __call__(self, name: str, m: Measurement) -> Result:
+    def __call__(self, name: str, m: Measurement, limits=True) -> Result:
         sample = self.prepare(m.value, m.expected)
         peak_locs = Continuous.get_peak_locs(sample)
         trough_locs = Continuous.get_peak_locs(sample, True)
@@ -34,10 +34,10 @@ class Continuous(Criteria):
             np.linspace(0, len(sample)-1, len(sample)).astype(int), 
             peak_locs, trough_locs
         )
-        
+
         return Result(
             name, m, sample, mistakes, 
-            self.lookup(mistakes, self.visibility(m, dgids)), 
+            self.lookup(mistakes, self.visibility(m, dgids), limits), 
             dgids
         )
         

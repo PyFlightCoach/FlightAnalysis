@@ -9,6 +9,13 @@ from loguru import logger
 class Scored(Complete):
     scores: ManoeuvreResults
 
+    def downgrade(self) -> Complete:
+        return Complete(
+            self.id, self.mdef, self.flown, self.direction, 
+            self.manoeuvre, self.template, self.corrected, 
+            self.corrected_template
+        )
+    
     @staticmethod
     def from_dict(data:dict, fallback=True):
         ca = Complete.from_dict(data, fallback)
@@ -23,16 +30,16 @@ class Scored(Complete):
             else:
                 raise e
         return ca
-    
-    def run(self, optimise_alignment=True):
-        return self
-    
-    def to_mindict(self, sinfo: ScheduleInfo):
-        return dict(
-            **super().to_mindict(sinfo),
-            scores = dict(
+        
+    def to_mindict(self, sinfo: ScheduleInfo=None, full=False):
+        data = dict(
+            **super().to_mindict(sinfo, full),
+            scores=dict(
                 **self.scores.summary(),
                 total=self.scores.score(),
                 k=self.mdef.info.k
             )
         )
+        
+        return data
+        

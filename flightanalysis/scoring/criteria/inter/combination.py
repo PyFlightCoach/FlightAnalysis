@@ -27,7 +27,7 @@ class Combination(Criteria):
 
     def check_option(self, values) -> int:
         """Given a set of values, return the option id which gives the least error"""
-        return np.sum(np.abs(self.get_errors(values)), axis=1).argmin()
+        return int(np.sum(np.abs(self.get_errors(values)), axis=1).argmin())
 
     @staticmethod
     def rolllist(rolls, reversable=True) -> Combination:
