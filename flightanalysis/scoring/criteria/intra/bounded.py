@@ -23,7 +23,7 @@ class Bounded(Criteria):
     def get_errors(self, ids: npt.NDArray, data: npt.NDArray):
         raise Exception("Method not available in base class")
     
-    def __call__(self, name: str, m: Measurement) -> Result:
+    def __call__(self, name: str, m: Measurement, limits=True) -> Result:
         '''each downgrade corresponds to a group of values outside the bounds, ids
         correspond to the last velue in each case'''
         sample = self.prepare(m.value, m.expected)
@@ -32,9 +32,9 @@ class Bounded(Criteria):
         
         mistakes = np.array([np.mean(sample[groups==grp]) for grp in set(groups)])
         dgids = np.array([ids[groups==grp][int(len(ids[groups==grp])/2)] for grp in set(groups)])
-        dgs = np.array([self.lookup(np.mean(sample[groups==grp])) * len(sample[groups==grp]) / len(sample) for grp in set(groups)])
+        dgs = np.array([self.lookup(np.mean(sample[groups==grp]), m.visibility[dgid], limits) * len(sample[groups==grp]) / len(sample) for dgid, grp in zip(dgids, set(groups)) ])
         
-        return Result(name, m, sample, mistakes[dgs>0], dgs[dgs>0] * m.visibility[dgids[dgs>0]], dgids[dgs>0])
+        return Result(name, m, sample, mistakes[dgs>0], dgs[dgs>0], dgids[dgs>0])
         
     def visiblity(self, measurement, ids):
         return np.mean(measurement.visibility[ids])

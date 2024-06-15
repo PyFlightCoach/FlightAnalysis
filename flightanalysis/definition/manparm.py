@@ -25,7 +25,7 @@ class ManParm(Opp):
 
     """
     criteria: Criteria
-    defaul:Any=None
+    defaul:Number=None
     collectors:Collectors=field(default_factory=lambda : Collectors())
 
 
@@ -78,7 +78,7 @@ class ManParm(Opp):
             [c(els) for c in self.collectors],
             self.defaul,
             direction,
-            [vis[0]] + [max(va, vb) for va, vb in zip(vis[:-1], vis[1:])],
+            np.array([vis[0]] + [max(va, vb) for va, vb in zip(vis[:-1], vis[1:])]),
             [str(c) for c in self.collectors]
         )
 

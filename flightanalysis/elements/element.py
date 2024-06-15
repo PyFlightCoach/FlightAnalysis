@@ -62,11 +62,11 @@ class Element:
     def score_series_builder(self, index):
         return lambda data: pd.Series(data, index=index)
 
-    def analyse(self, flown:State, template:State) -> Results:
-        return self.intra_scoring.apply(self, flown, template)
+    def analyse(self, flown:State, template:State, limits=True) -> Results:
+        return self.intra_scoring.apply(self, flown, template, limits)
 
-    def analyse_exit(self, fl, tp) -> Results:
-        return self.exit_scoring.apply(self, fl, tp)
+    def analyse_exit(self, fl, tp, limits=True) -> Results:
+        return self.exit_scoring.apply(self, fl, tp, limits)
 
     def ref_frame(self, template: State) -> g.Transformation:
         return template[0].transform
@@ -140,9 +140,9 @@ class Element:
         istate = istate if isinstance(istate, State) else State.from_transform(istate)
         tp = self.create_template(istate, fl.time)
         if self.uid=='entry_line':
-            res = self.analyse_exit(fl, tp)
+            res = self.analyse_exit(fl, tp, False)
         else:
-            res = self.analyse(fl, tp)
+            res = self.analyse(fl, tp, False)
         return res, tp
         
     @staticmethod

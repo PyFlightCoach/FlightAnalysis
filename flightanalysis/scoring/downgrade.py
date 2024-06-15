@@ -1,16 +1,11 @@
 
 from flightdata import Collection, State
-from .criteria import Criteria
+from .criteria import Bounded, ContAbs, ContRat, Single
 from .measurement import Measurement
 from .results import Results, Result
-from typing import Callable, Union
+from typing import Callable
 from geometry import Coord
 from dataclasses import dataclass
-import numpy as np
-import pandas as pd
-
-from scipy.signal import butter, filtfilt
-
 
 
 @dataclass
@@ -20,7 +15,7 @@ class DownGrade:
         criteria - takes a Measurement and calculates the score
     """
     measure: Callable[[State, State, Coord], Measurement]
-    criteria: Criteria
+    criteria: Bounded | ContAbs | ContRat | Single
 
     def to_dict(self):
         return dict(
@@ -32,8 +27,8 @@ class DownGrade:
     def name(self):
         return self.measure.__name__
     
-    def __call__(self, fl, tp) -> Result:
-        return self.criteria(self.measure.__name__, self.measure(fl, tp))
+    def __call__(self, fl, tp, limits=True) -> Result:
+        return self.criteria(self.measure.__name__, self.measure(fl, tp), limits)
         
 
 
@@ -41,6 +36,6 @@ class DownGrades(Collection):
     VType = DownGrade
     uid = "name"
 
-    def apply(self, el, fl, tp) -> Results:
-        return Results(el.uid, [dg(fl, tp) for dg in self])
+    def apply(self, el, fl, tp, limits=True) -> Results:
+        return Results(el.uid, [dg(fl, tp, limits) for dg in self])
        

@@ -15,6 +15,6 @@ class Comparison(Criteria):
 
         return Result(
             name, m, m.value, 
-            errors, self.lookup(errors) * m.visibility, 
+            errors, self.lookup(errors, m.visibility), 
             m.keys
         )

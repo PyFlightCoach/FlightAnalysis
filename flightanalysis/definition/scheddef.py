@@ -1,4 +1,4 @@
-from . import ManDef, ManInfo, ManOption, ScheduleInfo, fcj_schedule_names
+from . import ManDef, ManInfo, ManOption, ScheduleInfo
 from flightdata import State
 from typing import Tuple, Union, Self
 from geometry import Transformation
@@ -95,7 +95,7 @@ class SchedDef(Collection):
         fcj = self.label_exit_lines(template).create_fc_json(
             [0] + [man.info.k for man in self] + [0],
             sname,
-            fcj_schedule_names[kind.lower()][-1]
+            kind.lower()
         )
             
         with open(path, 'w') as f:

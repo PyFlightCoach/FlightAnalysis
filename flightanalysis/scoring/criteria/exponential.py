@@ -1,16 +1,18 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import numpy as np
-from typing import Union
+
 
 @dataclass
 class Exponential:
     factor: float
     exponent: float
-    limit: Union[float, None] = None
-    def __call__(self, value):
-        val = self.factor * value ** self.exponent
-        if self.limit:
+    limit: float | None = None
+    def __call__(self, value, visibility=1, limits=True):
+        if np.isscalar(visibility) and not np.isscalar(value):
+            visibility = np.full_like(value, visibility)
+        val = visibility * self.factor * value ** self.exponent
+        if self.limit and limits:
             val = np.minimum(val, self.limit)
         return val
     
