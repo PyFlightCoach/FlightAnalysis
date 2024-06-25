@@ -8,6 +8,16 @@ from flightanalysis.scoring.measurement import Measurement
 from dataclasses import dataclass
 
 
+def ease(val, factor=3):
+    '''factor == 3 for hard / no easement'''
+    b = 1.3 - factor*0.1
+    m = 6 / 6**b
+    return m * val**b
+
+def trunc(val):
+    return np.floor(val * 2) / 2
+
+
 @dataclass
 class Result:
     """
@@ -24,6 +34,10 @@ class Result:
     @property
     def total(self):
         return float(sum(self.dgs))
+    
+    def score(self, difficulty=3, truncate: None | str=None):
+        res = sum(ease(self.dgs, difficulty))
+        return trunc(res) if truncate=='result' else res
     
     def to_dict(self):
         return dict(
@@ -99,6 +113,10 @@ class Results(Collection):
     VType = Result
     uid="name"
 
+    def score(self, difficulty=3, truncate: None | str=False):
+        res = sum([r.score(difficulty, truncate) for r in self])
+        return trunc(res) if truncate=='results' else res
+
     def __init__(self, name, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = name
@@ -143,6 +161,9 @@ class ElementsResults(Collection):
     VType=Results
     uid="name"
 
+    def score(self, difficulty=3, truncate=False):
+        return sum([r.score(difficulty, truncate) for r in self])
+    
     @property
     def total(self):
         return sum([r.total for r in self])
@@ -181,8 +202,27 @@ class ManoeuvreResults:
     def summary(self):
         return {k: v.total for k, v in self.__dict__.items() if v is not None} 
 
-    def score(self):
-        return max(0, 10 - sum([v for v in self.summary().values()]))
+    def score_summary(self, difficulty, truncate):
+        intra=self.intra.score(difficulty, 'results' if truncate else None)
+        inter=self.inter.score(difficulty, 'result' if truncate else None)
+        positioning=self.positioning.score(difficulty, 'result' if truncate else None)
+        return dict(
+            truncate=truncate,
+            difficulty=difficulty,
+            intra=intra,
+            inter=inter,
+            positioning=positioning,
+            total=10 - intra - inter - positioning
+        )
+
+    def score(self, difficulty=3, truncate: bool=False):
+        return max(
+            0, 
+            10 - \
+                self.inter.score(difficulty, 'result' if truncate else None) - \
+                    self.intra.score(difficulty, 'results' if truncate else None) - \
+                        self.positioning.score(difficulty, 'result' if truncate else None)
+        )
     
     def to_dict(self):
         return dict(
