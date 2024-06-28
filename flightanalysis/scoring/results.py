@@ -207,8 +207,6 @@ class ManoeuvreResults:
         inter=self.inter.score(difficulty, 'result' if truncate else None)
         positioning=self.positioning.score(difficulty, 'result' if truncate else None)
         return dict(
-            truncate=truncate,
-            difficulty=difficulty,
             intra=intra,
             inter=inter,
             positioning=positioning,
@@ -216,13 +214,7 @@ class ManoeuvreResults:
         )
 
     def score(self, difficulty=3, truncate: bool=False):
-        return max(
-            0, 
-            10 - \
-                self.inter.score(difficulty, 'result' if truncate else None) - \
-                    self.intra.score(difficulty, 'results' if truncate else None) - \
-                        self.positioning.score(difficulty, 'result' if truncate else None)
-        )
+        return self.score_summary(difficulty, truncate)['total']
     
     def to_dict(self):
         return dict(
