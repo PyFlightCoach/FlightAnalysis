@@ -232,3 +232,16 @@ class ManoeuvreResults:
             ElementsResults.from_dict(data['intra']),
             Results.from_dict(data['positioning']),
         )
+    
+    def fcj_results(self):
+        res = []
+        for diff in [1,2,3]:
+            for trunc in [False, True]:
+                res.append(dict(
+                    score=self.score_summary(diff, trunc),
+                    properties=dict(
+                        difficulty=diff,
+                        truncate=trunc
+                    )                    
+                ))
+        return res

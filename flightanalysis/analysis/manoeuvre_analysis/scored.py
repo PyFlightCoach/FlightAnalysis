@@ -42,4 +42,9 @@ class Scored(Complete):
         )
         
         return data
-        
+    
+    def fcj_results(self):
+        return dict(
+            **super().fcj_results(),
+            results=self.scores.fcj_results()
+        )

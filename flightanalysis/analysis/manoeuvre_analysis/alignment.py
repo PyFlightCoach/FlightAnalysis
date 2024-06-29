@@ -92,6 +92,13 @@ class Alignment(Basic):
                 **data
             )
         return data
-        
+
+    def fcj_results(self):
+        df = self.flown.label_ranges('element').iloc[:,:3]
+        df.columns = ['name', 'start', 'stop']
+        return dict(
+            els=df.to_dict('records')
+        )
+
 from .complete import Complete  # noqa: E402
 from .scored import Scored  # noqa: E402

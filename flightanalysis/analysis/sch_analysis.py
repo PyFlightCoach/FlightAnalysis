@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Self, Union
-from json import load
+from json import load, dump
 from flightdata import Flight, State, Origin, Collection
 from flightanalysis.definition import SchedDef, ScheduleInfo
 from . import manoeuvre_analysis as analysis
@@ -9,7 +9,7 @@ from joblib import Parallel, delayed
 import os
 import pandas as pd
 from importlib.metadata import version
-import geometry as g
+from packaging import version as pkgversion
 
 
 class ScheduleAnalysis(Collection):
@@ -22,10 +22,8 @@ class ScheduleAnalysis(Collection):
 
     @staticmethod
     def from_fcj(file: Union[str, dict], info: ScheduleInfo=None) -> ScheduleAnalysis:
-        if isinstance(file, str):
-            data = load(open(file, 'r'))
-        else:
-            data = file
+        data = load(open(file, 'r')) if isinstance(file, str) else file
+
         flight = Flight.from_fc_json(data)
         
         if info is None:
@@ -33,25 +31,50 @@ class ScheduleAnalysis(Collection):
         
         sdef = SchedDef.load(info)
         box = Origin.from_fcjson_parmameters(data["parameters"])
-        state = State.from_flight(flight, box).splitter_labels(
-            data["mans"],
-            sdef.uids
-        )
+        state = State.from_flight(flight, box).splitter_labels(data["mans"],sdef.uids)
         direction = -state.get_manoeuvre(1)[0].direction()[0]
 
-        return ScheduleAnalysis(
-            [analysis.Basic(
-                i,
-                mdef, 
-                state.get_manoeuvre(mdef.uid), 
-                direction
-            ) for i, mdef in enumerate(sdef)],
-            info
-        )
+        if 'fcs_scores' in data:
+            versions = [pkgversion.parse(res['fa_version']) for res in data['fcs_scores']]
+            ilatest = versions.index(max(versions))
+
+        mas = []
+        for i, mdef in enumerate(sdef):
+            st = state.get_manoeuvre(mdef.uid)
+
+            if 'fcs_scores' in data and len(data['fcs_scores']) > 0:
+                df = pd.DataFrame(data['fcs_scores'][ilatest]['manresults'][i+1]['els'])
+                st = st.splitter_labels(df.to_dict('records'), target_col='element')
+            
+            mas.append(analysis.Basic(i, mdef, st, direction).proceed())
+
+        return ScheduleAnalysis(mas,info)
     
+    def append_scores_to_fcj(self, file: Union[str, dict]) -> dict:
+        data = load(open(file, 'r')) if isinstance(file, str) else file
+
+        new_results = dict(
+            fa_version = version('flightanalysis'),
+            manresults = [None] + \
+                [man.fcj_results() if hasattr(man, 'fcj_results') else None for man in self]
+        )
+
+        if 'fcs_scores' not in data:
+            data['fcs_scores'] = []
+
+        for res in data['fcs_scores']:
+            if res['fa_version'] == new_results['fa_version']:
+                res['manresults'] = new_results['manresults']
+                break
+        else:
+            data['fcs_scores'].append(new_results)
+
+        return data
+        
+
     def run_all(self) -> Self:
         def parse_analyse_serialise(pad):
-            res = analysis.Basic.from_dict(pad).run_all()
+            res = analysis.parse_dict(pad).run_all()
             logger.info(f'Completed {res.name}')
             return res.to_dict()
         
@@ -73,23 +96,6 @@ class ScheduleAnalysis(Collection):
         madicts = Parallel(n_jobs=os.cpu_count())(delayed(parse_analyse_serialise)(mad) for mad in inmadicts)
         return ScheduleAnalysis([analysis.Scored.from_dict(mad) for mad in madicts], self.sinfo)
     
-    @staticmethod
-    def from_fcscore(file: Union[str, dict], fallback=True) -> ScheduleAnalysis:
-        if isinstance(file, str) or isinstance(file, os.PathLike):
-            data = load(open(file, 'r'))
-        else:
-            data = file
-        sinfo = ScheduleInfo(**data['sinfo'])
-        sdef = SchedDef.load(sinfo)
-
-        mas = []
-        for mdef in sdef:
-            mas.append(analysis.Scored.from_dict(
-                data['data'][mdef.info.short_name],
-                fallback
-            ))
-
-        return ScheduleAnalysis(mas, sinfo)
     
     def scores(self):
         scores = {}
@@ -101,16 +107,4 @@ class ScheduleAnalysis(Collection):
     def summarydf(self):
         return pd.DataFrame([ma.scores.summary() if hasattr(ma, 'scores') else {} for ma in self])
 
-    def to_fcscore(self, name: str) -> dict:        
-        total, scores = self.scores()
-       
-        odata = dict(
-            name = name,
-            client_version = 'Py',
-            server_version = version('flightanalysis'),
-            sinfo = self.sinfo.__dict__,
-            score = total,
-            manscores = scores,
-            data = self.to_dict()
-        )
-        return odata
+    
