@@ -40,15 +40,13 @@ def main():
             logger.info(f'Processing file {i} of {len(all_logs)} - {file}')
             data = load(open(file, 'r'))
             
-            if 'analysis.json' not in file.name:
-                sa = ScheduleAnalysis.from_fcj(data)
-            else:
-                sa = ScheduleAnalysis.from_fcscore(data)
+            sa = ScheduleAnalysis.from_fcj(data)
+            
             logger.info(sa.sinfo)
             sa = sa.run_all()
 
-            with open(outdir / f'{file.stem}_analysis.json', 'w') as f:
-                dump(sa.to_fcscore(file.stem), f, indent=4, cls=NumpyEncoder)
+            with open(outdir / f'{file.stem}.json', 'w') as f:
+                dump(sa.append_scores_to_fcj(data), f, indent=4, cls=NumpyEncoder)
             logger.info(f'scores:\n{dumps(sa.scores(), indent=2)}')
         except Exception as e:
             logger.error(f'Error processing {file}: {e}')

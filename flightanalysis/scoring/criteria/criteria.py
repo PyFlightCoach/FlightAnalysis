@@ -38,6 +38,10 @@ class Criteria:
         _so = f"{self.__class__.__name__}(Exponential({self.lookup.factor},{self.lookup.exponent}, {self.lookup.limit} )"
         if hasattr(self, 'bound'):
             _so = f"{_so}, {self.bound}"
+        if hasattr(self, 'max_window'):
+            _so = f"{_so}, {self.max_window}"
+        if hasattr(self, 'window_ratio'):
+            _so = f"{_so}, {self.window_ratio}"
         return _so + ')'
         
 @dataclass

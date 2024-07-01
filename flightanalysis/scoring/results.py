@@ -210,7 +210,7 @@ class ManoeuvreResults:
             intra=intra,
             inter=inter,
             positioning=positioning,
-            total=10 - intra - inter - positioning
+            total=max(10 - intra - inter - positioning, 0)
         )
 
     def score(self, difficulty=3, truncate: bool=False):

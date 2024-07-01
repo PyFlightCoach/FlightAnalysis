@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Self, Union
 from json import load, dump
-from flightdata import Flight, State, Origin, Collection
+from flightdata import Flight, State, Origin, Collection, NumpyEncoder
 from flightanalysis.definition import SchedDef, ScheduleInfo
 from . import manoeuvre_analysis as analysis
 from loguru import logger
@@ -10,7 +10,7 @@ import os
 import pandas as pd
 from importlib.metadata import version
 from packaging import version as pkgversion
-
+from pathlib import Path
 
 class ScheduleAnalysis(Collection):
     VType=analysis.Analysis
@@ -21,8 +21,8 @@ class ScheduleAnalysis(Collection):
         self.sinfo = sinfo
 
     @staticmethod
-    def from_fcj(file: Union[str, dict], info: ScheduleInfo=None) -> ScheduleAnalysis:
-        data = load(open(file, 'r')) if isinstance(file, str) else file
+    def from_fcj(file: Union[Union[str, bytes, os.PathLike], dict], info: ScheduleInfo=None) -> ScheduleAnalysis:
+        data = file if isinstance(file, dict) else load(open(file, 'r'))
 
         flight = Flight.from_fc_json(data)
         
@@ -50,8 +50,8 @@ class ScheduleAnalysis(Collection):
 
         return ScheduleAnalysis(mas,info)
     
-    def append_scores_to_fcj(self, file: Union[str, dict]) -> dict:
-        data = load(open(file, 'r')) if isinstance(file, str) else file
+    def append_scores_to_fcj(self, file: Union[str, dict], ofile: str=None) -> dict:
+        data = file if isinstance(file, dict) else load(open(file, 'r'))
 
         new_results = dict(
             fa_version = version('flightanalysis'),
@@ -69,14 +69,27 @@ class ScheduleAnalysis(Collection):
         else:
             data['fcs_scores'].append(new_results)
 
+        if ofile:
+            if ofile=='same':
+                ofile = file
+            dump(data, open(ofile, 'w'), cls=NumpyEncoder, indent=2)
+
         return data
-        
+    
+#    def export_fcj_and_internals(self, file: Union[str, dict]):
+#        data = load(open(file, 'r')) if isinstance(file, str) else file
+#        fcj = self.append_scores_to_fcj(data)
+
 
     def run_all(self) -> Self:
         def parse_analyse_serialise(pad):
-            res = analysis.parse_dict(pad).run_all()
-            logger.info(f'Completed {res.name}')
-            return res.to_dict()
+            try:
+                pad = analysis.parse_dict(pad)
+                pad = pad.run_all()
+                logger.info(f'Completed {pad.name}')
+            except Exception as e:
+                logger.error(f'Failed to process {pad.name}: {repr(e)}')
+            return pad.to_dict()
         
         logger.info(f'Starting {os.cpu_count()} analysis processes')
         madicts = Parallel(n_jobs=os.cpu_count())(

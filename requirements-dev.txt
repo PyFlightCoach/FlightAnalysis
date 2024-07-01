@@ -5,7 +5,7 @@ fastdtw
 simplejson
 loguru
 joblib
-pfc-geometry>=0.2.6
-flightdata>=0.2.14
-ardupilot_log_reader>=0.3.1
+pfc-geometry>=0.2.7
+flightdata>=0.2.15
+ardupilot_log_reader>=0.3.3
 pymavlink
