@@ -4,7 +4,7 @@ from geometry import Point, Quaternion, PX, PY, PZ
 import numpy as np
 import pandas as pd
 import numpy.typing as npt
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Union, Self
 
 
@@ -72,7 +72,7 @@ class Measurement:
     def _vector_vis(direction: Point, loc: Point) -> Union[Point, npt.NDArray]:
         #a vector error is more visible if it is perpendicular to the viewing vector
         # 0 to np.pi, pi/2 gives max, 0&np.pi give min
-        return direction,  (1 - 0.8* np.abs(Point.cos_angle_between(loc, direction))) * Measurement._pos_vis(loc)
+        return direction,  (1 - 0.9* np.abs(Point.cos_angle_between(loc, direction))) * Measurement._pos_vis(loc)
 
     @staticmethod
     def _roll_vis(fl: State, tp: State) -> Union[Point, npt.NDArray]:
@@ -89,7 +89,7 @@ class Measurement:
         ao[np.abs(afl) > np.abs(atp)] = atp[np.abs(afl) > np.abs(atp)]
         ao[np.sign(azfl) != np.sign(aztp)] = 0 # wings have passed through the view vector
 
-        rvis = (1-0.8*np.abs(ao))
+        rvis = (1-0.9*np.abs(ao))
         
         return fl.att.transform_point(PZ()), rvis * Measurement._pos_vis(fl.pos)
 

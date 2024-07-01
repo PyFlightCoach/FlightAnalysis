@@ -1,7 +1,6 @@
 from __future__ import annotations
 import numpy as np
 import numpy.typing as npt
-import pandas as pd
 from .. import Criteria
 from dataclasses import dataclass
 from flightanalysis.scoring import Measurement, Result
@@ -13,6 +12,9 @@ class Continuous(Criteria):
     only downgrades for increases (away from zero) of the value.
     treats each separate increase (peak - trough) as a new error.
     """
+    max_window: int = 40
+    window_ratio: int = 3
+
     @staticmethod
     def get_peak_locs(arr, rev=False):
         increasing = np.sign(np.diff(np.abs(arr)))>0
@@ -66,14 +68,15 @@ class Continuous(Criteria):
         _mean = np.mean(sample)
         sample = (sample - _mean) * window / max_window + _mean
         return sample 
-    
+
+
 class ContAbs(Continuous):
     def prepare(self, values: npt.NDArray, expected: float):
         sample = values - expected
         if len(sample) <= 8:
             return np.linspace(values[0],values[-1], len(sample))
         else:
-            return Continuous.convolve_wind(values, 3, 40)
+            return Continuous.convolve_wind(values, self.window_ratio, self.max_window)
         
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -98,7 +101,7 @@ class ContRat(Continuous):
                 len(values)
             ))
         else:
-            return np.abs(Continuous.convolve_wind(values, 3, 40))
+            return np.abs(Continuous.convolve_wind(values, self.window_ratio, self.max_window))
 
     @staticmethod
     def mistakes(data, peaks, troughs):
