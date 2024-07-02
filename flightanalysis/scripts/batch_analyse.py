@@ -8,6 +8,7 @@ import sys
 import argparse
 from datetime import datetime
 
+
 def main():
 
     logger.enable("flightanalysis")
