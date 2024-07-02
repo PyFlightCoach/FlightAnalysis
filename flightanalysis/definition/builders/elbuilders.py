@@ -142,7 +142,7 @@ def pad(speed, line_length, eds: ElDefs):
         F3A.inter.length,
         None, 
         Collectors([e1.get_collector("length"), e3.get_collector("length")])
-    ) # TODO added 40 here as pads tend to be short. This needs to be more transparent.
+    ) 
     eds = ElDefs([e1] + [ed for ed in eds] + [e3])
 
     if isinstance(line_length, ManParm):
