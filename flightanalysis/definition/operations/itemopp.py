@@ -2,17 +2,17 @@
 from __future__ import annotations
 from flightdata import Collection
 from dataclasses import dataclass
-from typing import Any
+
 from .operation import Opp
 from .funopp import FunOpp
-
+from numbers import Number
 
 
 @dataclass
 class ItemOpp(Opp):
     """This class creates an Operation that returns a single item,
         usually from a Combination manparm"""
-    a: Any
+    a: Opp | Number
     item: int
     
     def __call__(self, mps, **kwargs):
@@ -23,9 +23,11 @@ class ItemOpp(Opp):
 
     @staticmethod
     def parse_f(inp: str, parser, name:str=None):
-        contents = inp.split("[")
+        if not inp.endswith("]"):
+            raise ValueError("ItemOpp must be in the form of 'a[item]'")
+        contents = inp.rsplit("[", 1)
         if not len(contents) == 2:
-            raise ValueError
+            raise ValueError("ItemOpp must be in the form of 'a[item]'")
         return ItemOpp(
             name,
             Opp.parse_f(contents[0], parser, name), 
@@ -34,12 +36,14 @@ class ItemOpp(Opp):
 
     @staticmethod
     def parse(inp: str, coll: Collection, name:str=None):
-        contents = inp.split("[")
+        if not inp.endswith("]"):
+            raise ValueError("ItemOpp must be in the form of 'a[item]'")
+        contents = inp.rsplit("[", 1)
         if not len(contents) == 2:
             raise ValueError
         return ItemOpp(
             name,
-            coll.VType.parse(contents[0], coll), 
+            coll.VType.parse(contents[0], coll, name), 
             int(contents[1][:-1])
         )
 

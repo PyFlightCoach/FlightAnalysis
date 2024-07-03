@@ -1,15 +1,15 @@
 from __future__ import annotations
 from flightdata import Collection
 from dataclasses import dataclass
-from typing import Any
 from .operation import Opp
+from numbers import Number
 
 
 @dataclass
 class FunOpp(Opp):
     """This class facilitates various functions that operate on Values and their serialisation"""
     funs = ["abs"]
-    a: Any
+    a: Opp | Number
     opp: str
 
     def __call__(self, mps, **kwargs):
@@ -23,9 +23,7 @@ class FunOpp(Opp):
     @staticmethod 
     def parse_f(inp: str, parser, name=None):
         for fun in FunOpp.funs:
-            if len(fun) >= len(inp) - 2:
-                continue
-            if fun == inp[:len(fun)]:
+            if inp.startswith(fun):
                 return FunOpp(
                     name,
                     Opp.parse_f(inp[len(fun)+1:-1], parser, name), 
@@ -36,9 +34,7 @@ class FunOpp(Opp):
     @staticmethod 
     def parse(inp: str, coll: Collection, name=None):
         for fun in FunOpp.funs:
-            if len(fun) >= len(inp) - 2:
-                continue
-            if fun == inp[:len(fun)]:
+            if inp.startswith(fun):
                 return FunOpp(
                     name,
                     coll.VType.parse(inp[len(fun)+1:-1], coll), 
