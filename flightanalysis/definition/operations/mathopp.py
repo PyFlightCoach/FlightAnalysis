@@ -3,7 +3,7 @@ from flightdata import Collection
 from dataclasses import dataclass
 from numbers import Number
 from .operation import Opp
-
+from typing import Callable
 
 oplu = {
     "+": lambda a, b: a + b,
@@ -29,7 +29,7 @@ class MathOpp(Opp):
         return f"({str(self.a)}{self.opp}{str(self.b)})"
 
     @staticmethod
-    def parse_f(inp:str, parser, name:str=None):
+    def parse(inp:str, coll: Collection | Callable, name:str=None):
         if inp.startswith("(") and inp.endswith(")"):
             bcount = 0
             for i, l in enumerate(inp):
@@ -39,26 +39,8 @@ class MathOpp(Opp):
                 if bcount == 1 and l in oplu.keys():
                     return MathOpp(
                         name,
-                        Opp.parse_f(inp[1:i], parser, name),
-                        Opp.parse_f(inp[i+1:-1], parser, name),
-                        l
-                    )
-                    
-        raise ValueError(f"cannot read an MathOpp from the outside of {inp}")
-
-    @staticmethod
-    def parse(inp:str, coll: Collection, name:str=None):
-        if inp.startswith("(") and inp.endswith(")"):
-            bcount = 0
-            for i, l in enumerate(inp):
-                bcount += 1 if l=="(" else 0
-                bcount -=1 if l==")" else 0
-            
-                if bcount == 1 and l in oplu.keys():
-                    return MathOpp(
-                        name,
-                        coll.VType.parse(inp[1:i], coll),
-                        coll.VType.parse(inp[i+1:-1], coll),
+                        Opp.parse(inp[1:i], coll, name),
+                        Opp.parse(inp[i+1:-1], coll, name),
                         l
                     )
                     

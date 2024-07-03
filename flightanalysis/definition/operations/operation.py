@@ -62,33 +62,16 @@ class Opp:
     def __rtruediv__(self, other) -> MathOpp:
         return MathOpp(self.name, other, self, "/")
 
-    def __abs__(self) -> MathOpp:
-        return FunOpp(self.name, self, "abs")
-
     def __getitem__(self, i) -> ItemOpp:
         return ItemOpp(self.name, self, i)
 
     @staticmethod
-    def parse_f(inp, parser, name=None):
-        """Parse an Operation from a string"""
-        for test in [
-            lambda inp : float(inp),
-            lambda inp : FunOpp.parse_f(inp, parser, name),
-            lambda inp : MathOpp.parse_f(inp, parser, name),
-            lambda inp : ItemOpp.parse_f(inp, parser, name),
-            lambda inp : SumOpp.parse_f(inp, parser, name),
-            lambda inp : literal_eval(inp)
-        ]: 
-            try: 
-                return test(inp.strip(" "))
-            except ValueError:
-                continue
-        else:
-            return parser(inp)
-
-    @staticmethod
     def parse(inp, coll:Collection | Callable, name=None):
         """Parse an Operation from a string"""
+        inp = inp.strip(" ")
+        if isinstance(inp, Number) or isinstance(inp, Opp):
+            return inp 
+
         for test in [
             lambda inp : float(inp),
             lambda inp : FunOpp.parse(inp, coll, name),
@@ -97,10 +80,8 @@ class Opp:
             lambda inp : SumOpp.parse(inp, coll, name),
             lambda inp : literal_eval(inp)
         ]:
-            if isinstance(inp, Number) or isinstance(inp, Opp):
-                return inp 
-            try: 
-                return test(inp.strip(" "))
+            try:
+                return test(inp)
             except ValueError:
                 continue
         else:

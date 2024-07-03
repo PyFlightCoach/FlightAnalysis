@@ -2,7 +2,7 @@
 from __future__ import annotations
 from flightdata import Collection
 from dataclasses import dataclass
-
+from typing import Callable
 from .operation import Opp
 from .funopp import FunOpp
 from numbers import Number
@@ -22,29 +22,16 @@ class ItemOpp(Opp):
         return f"{self.a.name}[{self.item}]"
 
     @staticmethod
-    def parse_f(inp: str, parser, name:str=None):
+    def parse(inp: str, coll: Collection | Callable, name:str=None):
         if not inp.endswith("]"):
             raise ValueError("ItemOpp must be in the form of 'a[item]'")
-        contents = inp.rsplit("[", 1)
-        if not len(contents) == 2:
-            raise ValueError("ItemOpp must be in the form of 'a[item]'")
-        return ItemOpp(
-            name,
-            Opp.parse_f(contents[0], parser, name), 
-            int(contents[1][:-1])
-        )
-
-    @staticmethod
-    def parse(inp: str, coll: Collection, name:str=None):
-        if not inp.endswith("]"):
-            raise ValueError("ItemOpp must be in the form of 'a[item]'")
-        contents = inp.rsplit("[", 1)
+        contents = inp[:-1].rsplit("[", 1)
         if not len(contents) == 2:
             raise ValueError
         return ItemOpp(
             name,
-            coll.VType.parse(contents[0], coll, name), 
-            int(contents[1][:-1])
+            Opp.parse(contents[0], coll, name), 
+            int(contents[1])
         )
 
     def __abs__(self):
