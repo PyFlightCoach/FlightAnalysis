@@ -3,6 +3,7 @@ from flightdata import Collection
 from dataclasses import dataclass
 from .operation import Opp
 from numbers import Number
+from typing import Callable
 
 
 @dataclass
@@ -20,24 +21,14 @@ class FunOpp(Opp):
     def __str__(self):
         return f"{self.opp}({str(self.a)})"
 
-    @staticmethod 
-    def parse_f(inp: str, parser, name=None):
-        for fun in FunOpp.funs:
-            if inp.startswith(fun):
-                return FunOpp(
-                    name,
-                    Opp.parse_f(inp[len(fun)+1:-1], parser, name), 
-                    fun
-                )
-        raise ValueError(f"cannot read a FunOpp from the outside of {inp}")
 
     @staticmethod 
-    def parse(inp: str, coll: Collection, name=None):
+    def parse(inp: str, coll: Collection | Callable, name=None):
         for fun in FunOpp.funs:
             if inp.startswith(fun):
                 return FunOpp(
                     name,
-                    coll.VType.parse(inp[len(fun)+1:-1], coll), 
+                    Opp.parse(inp[len(fun)+1:-1], coll, name), 
                     fun
                 )
         raise ValueError(f"cannot read a FunOpp from the outside of {inp}")

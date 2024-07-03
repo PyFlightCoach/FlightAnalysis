@@ -1,5 +1,5 @@
 """The collectors are serializable functions that return parameters from elements"""
-from flightdata import Collection, State
+from flightdata import Collection
 from . import Opp
 from uuid import uuid1
 
@@ -23,10 +23,14 @@ class Collector(Opp):
         return self.name
 
     @staticmethod
+    def from_str(sdat):
+        return Collector(*sdat.split("."))
+
+    @staticmethod
     def parse(ins, name=None):
-        return Opp.parse_f(
+        return Opp.parse(
             ins, 
-            lambda ins : Collector(*ins.strip(" ").split(".")),
+            Collector.from_str,
             uuid1() if name is None else name
         )
         

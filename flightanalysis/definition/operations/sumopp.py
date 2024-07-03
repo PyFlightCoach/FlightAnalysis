@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from .operation import Opp
 from numbers import Number
 from itertools import chain
+from typing import Callable
+
 
 @dataclass
 class SumOpp(Opp):
@@ -16,21 +18,12 @@ class SumOpp(Opp):
     def __str__(self):
         return f"sum({','.join([str(v) for v in self.vals])})"
     
-    @staticmethod 
-    def parse_f(inp: str, parser, name=None):                
-        if inp.startswith("sum"):
-            return SumOpp(
-                name,
-                [Opp.parse_f(val, parser, name) for val in inp[4:-1].split(',')]
-            )
-        raise ValueError(f"cannot read a SumOpp from the outside of {inp}")
-
     @staticmethod
-    def parse(inp: str, coll: Collection, name=None):
+    def parse(inp: str, coll: Collection | Callable, name=None):
         if inp.startswith("sum"):
             return SumOpp(
                 name,
-                [coll.VType.parse(val, coll) for val in inp[4:-1].split(',')]
+                [Opp.parse(val, coll, name) for val in inp[4:-1].split(',')]
             )
         raise ValueError(f"cannot read a SumOpp from the outside of {inp}")
     
