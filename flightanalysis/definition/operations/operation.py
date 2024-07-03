@@ -4,7 +4,7 @@ from flightdata import Collection, State
 from uuid import uuid1
 from ast import literal_eval
 from dataclasses import dataclass
-
+from typing import Callable
 
 @dataclass
 class Opp:
@@ -70,12 +70,13 @@ class Opp:
 
     @staticmethod
     def parse_f(inp, parser, name=None):
-        """Parse a an Operation from a string"""
+        """Parse an Operation from a string"""
         for test in [
             lambda inp : float(inp),
             lambda inp : FunOpp.parse_f(inp, parser, name),
             lambda inp : MathOpp.parse_f(inp, parser, name),
             lambda inp : ItemOpp.parse_f(inp, parser, name),
+            lambda inp : SumOpp.parse_f(inp, parser, name),
             lambda inp : literal_eval(inp)
         ]: 
             try: 
@@ -86,24 +87,24 @@ class Opp:
             return parser(inp)
 
     @staticmethod
-    def parse(inp, coll:Collection, name=None):
-        """Parse a an Operation from a string
-        TODO move to the subclass and call parse_f"""
+    def parse(inp, coll:Collection | Callable, name=None):
+        """Parse an Operation from a string"""
         for test in [
-            lambda inp, mps : float(inp),
-            lambda inp, mps : FunOpp.parse(inp, coll, name),
-            lambda inp, mps : MathOpp.parse(inp, coll, name),
-            lambda inp, mps : ItemOpp.parse(inp, coll, name),
-            lambda inp, mps : literal_eval(inp)
+            lambda inp : float(inp),
+            lambda inp : FunOpp.parse(inp, coll, name),
+            lambda inp : MathOpp.parse(inp, coll, name),
+            lambda inp : ItemOpp.parse(inp, coll, name),
+            lambda inp : SumOpp.parse(inp, coll, name),
+            lambda inp : literal_eval(inp)
         ]:
             if isinstance(inp, Number) or isinstance(inp, Opp):
                 return inp 
             try: 
-                return test(inp.strip(" "), coll)
+                return test(inp.strip(" "))
             except ValueError:
                 continue
         else:
-            return coll[inp]
+            return coll[inp] if isinstance(coll, Collection) else coll(inp)
 
     def list_parms(self) -> list[str]:
         return []
@@ -113,6 +114,7 @@ class Opp:
         return State.stack([st.get_element(elname) for elname in elnames])
 
 
-from .mathopp import MathOpp
-from .funopp import FunOpp
-from .itemopp import ItemOpp
+from .mathopp import MathOpp  # noqa: E402
+from .funopp import FunOpp  # noqa: E402
+from .itemopp import ItemOpp  # noqa: E402
+from .sumopp import SumOpp  # noqa: E402

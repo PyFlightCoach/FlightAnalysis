@@ -2,7 +2,7 @@ from typing import List, Callable, Union, Dict, Tuple
 import numpy as np
 from flightanalysis.elements import Element
 from inspect import getfullargspec
-from . import ManParm, ManParms, Opp, ItemOpp
+from . import ManParm, ManParms, Opp, ItemOpp, SumOpp
 from flightdata import Collection
 from numbers import Number
 from . import Collector, Collectors
@@ -143,7 +143,7 @@ class ElDefs(Collection):
 
     def builder_sum(self, name:str, oppname=None) -> Callable:
         """A function to return the sum of the requested parameter used when constructing the elements from the mps"""
-        opp = sum(self.builder_list(name))
+        opp = SumOpp(name, self.builder_list(name))
         if hasattr(opp, name):
             opp.name = uuid1() if oppname is None else oppname
         return opp
@@ -155,7 +155,7 @@ class ElDefs(Collection):
 
     def collector_sum(self, name, oppname=None) -> Callable:
         """A function that returns the sum of the requested parameter from an elements collection"""
-        opp = sum(self.collector_list(name))
+        opp = SumOpp(name, self.collector_list(name))
         if hasattr(opp, name):
             opp.name = uuid1() if oppname is None else oppname
         return opp
