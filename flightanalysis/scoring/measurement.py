@@ -108,20 +108,13 @@ class Measurement:
         return min(1, length / (depth * 0.8660254))   # np.tan(np.radians(60)) / 2
 
     @staticmethod
-    def speed(fl: State, tp: State, direction: Point=None, axis='body') -> Self:
+    def speed(fl: State, tp: State, direction: Point=None) -> Self:
         if direction:
-            def get_body_direction(st: State):
-                if axis == 'body':
-                    return direction
-                else:
-                    world_direction = tp[0].transform.rotate(direction) if axis == 'ref_frame' else direction
-                    return st.att.inverse().transform_point(world_direction)
-            body_direction = get_body_direction(fl)
+            body_direction = fl.att.inverse().transform_point(direction)
             value = Point.scalar_projection(fl.vel, body_direction)
         
             return Measurement(
-                value, 
-                np.mean(Point.scalar_projection(tp.vel, get_body_direction(tp))),
+                value, np.mean(abs(tp.vel)),
                 *Measurement._vector_vis(
                     fl.att.transform_point(direction).unit(), 
                     fl.pos
@@ -131,8 +124,7 @@ class Measurement:
         else:
             value = abs(fl.vel)
             return Measurement(
-            value, 
-            np.mean(abs(tp.vel)),
+            value, np.mean(abs(tp.vel)),
             *Measurement._vector_vis(
                 fl.att.transform_point(fl.vel).unit(), 
                 fl.pos
