@@ -24,9 +24,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 20.0,
@@ -42,8 +42,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -60,8 +60,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -78,8 +78,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -147,9 +147,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -238,7 +238,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(e_2_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -274,7 +274,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(e_2_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_2_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -316,9 +316,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 20.0,
@@ -333,8 +333,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -350,8 +350,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -367,8 +367,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -382,8 +382,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 6.283185307179586,
@@ -422,9 +422,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -464,9 +464,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -493,7 +493,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_1_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate),point_length,1.2499999999999998,((30.0*abs(e_1_rolls[1]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -546,7 +546,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_1_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate),point_length,1.2499999999999998,((30.0*abs(e_1_rolls[1]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -563,7 +563,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -599,7 +599,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -641,9 +641,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 100,
@@ -750,9 +750,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 20.0,
@@ -768,8 +768,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -786,8 +786,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -804,8 +804,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -997,9 +997,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 20.0,
@@ -1016,8 +1016,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -1035,8 +1035,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -1054,8 +1054,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -1094,9 +1094,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -1142,9 +1142,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -1171,7 +1171,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-((((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(1.2499999999999998,((30.0*abs(e_1_rolls[0]))/snap_rate),1.2499999999999998,point_length,((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1224,7 +1224,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-((((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(1.2499999999999998,((30.0*abs(e_1_rolls[0]))/snap_rate),1.2499999999999998,point_length,((abs(e_1_rolls[1])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1244,7 +1244,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[2])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1316,7 +1316,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[2])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1358,15 +1358,15 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 130.0,
         "collectors": {
-          "e_1": "(((((0+e_1_pad1.length)+e_1_0_break.length)+e_1_0_autorotation.length)+e_1_0_recovery.length)+e_1_pad2.length)",
-          "e_3": "(((((0+e_3_pad1.length)+e_3_0_break.length)+e_3_0_autorotation.length)+e_3_0_recovery.length)+e_3_pad2.length)"
+          "e_1": "sum(e_1_pad1.length,e_1_0_break.length,e_1_0_autorotation.length,e_1_0_recovery.length,e_1_pad2.length)",
+          "e_3": "sum(e_3_pad1.length,e_3_0_break.length,e_3_0_autorotation.length,e_3_0_recovery.length,e_3_pad2.length)"
         }
       },
       "full_roll_rate": {
@@ -1375,8 +1375,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 6.283185307179586,
@@ -1390,8 +1390,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -1406,8 +1406,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 5.340707511102648,
@@ -1471,9 +1471,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -1510,9 +1510,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -1526,9 +1526,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -1570,7 +1570,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(line_length-sum(1.2499999999999998,((30.0*abs(e_1_rolls[0]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -1605,7 +1605,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((1.2499999999999998+((30.0*abs(e_1_rolls[0]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(line_length-sum(1.2499999999999998,((30.0*abs(e_1_rolls[0]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -1625,7 +1625,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((1.2499999999999998+((30.0*abs(e_3_rolls[0]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(line_length-sum(1.2499999999999998,((30.0*abs(e_3_rolls[0]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -1660,7 +1660,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-((1.2499999999999998+((30.0*abs(e_3_rolls[0]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(line_length-sum(1.2499999999999998,((30.0*abs(e_3_rolls[0]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -1680,7 +1680,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(0+((abs(directions[2])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(directions[2])*30.0)/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1698,7 +1698,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(0+((abs(directions[2])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(130-sum(((abs(directions[2])*30.0)/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -1741,8 +1741,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -1891,9 +1891,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 20.0,
@@ -1910,8 +1910,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 1.5707963267948966,
@@ -1928,8 +1928,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 4.71238898038469,
@@ -1947,8 +1947,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -1993,9 +1993,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -2035,9 +2035,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -2064,7 +2064,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(255.56349186104043-(((((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(255.56349186104043-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[2])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2136,7 +2136,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(255.56349186104043-(((((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(255.56349186104043-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[2])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[3])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2156,7 +2156,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(110-(((((0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(110-sum(((abs(e_3_rolls[0])*30.0)/full_roll_rate),point_length,1.2499999999999998,((30.0*abs(e_3_rolls[1]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2209,7 +2209,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(110-(((((0+((abs(e_3_rolls[0])*30.0)/full_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[1]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(110-sum(((abs(e_3_rolls[0])*30.0)/full_roll_rate),point_length,1.2499999999999998,((30.0*abs(e_3_rolls[1]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2251,9 +2251,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 20.0,
@@ -2270,8 +2270,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -2289,8 +2289,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.141592653589793,
@@ -2308,8 +2308,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -2351,9 +2351,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -2396,9 +2396,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -2425,7 +2425,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(183.84776310850233-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(183.84776310850233-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2479,7 +2479,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(183.84776310850233-(((((0+((abs(e_1_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
+          "length": "(0.5*(183.84776310850233-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_1_rolls[2])*30.0)/partial_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2499,7 +2499,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[2]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[1])*30.0)/partial_roll_rate),point_length,1.2499999999999998,((30.0*abs(e_3_rolls[2]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2570,7 +2570,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-(((((((0+((abs(e_3_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_3_rolls[1])*30.0)/partial_roll_rate))+point_length)+1.2499999999999998)+((30.0*abs(e_3_rolls[2]))/snap_rate))+1.2499999999999998)))",
+          "length": "(0.5*(130-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_3_rolls[1])*30.0)/partial_roll_rate),point_length,1.2499999999999998,((30.0*abs(e_3_rolls[2]))/snap_rate),1.2499999999999998)))",
           "roll": "0"
         }
       },
@@ -2612,9 +2612,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": 10,
@@ -2629,8 +2629,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.9269908169872414,
@@ -2645,8 +2645,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 3.9269908169872414,
@@ -2662,8 +2662,8 @@
           "kind": "Comparison",
           "lookup": {
             "factor": 0.25,
-            "exponent": 1.1132827525593783,
-            "limit": null
+            "exponent": 1.0000000000000002,
+            "limit": 1
           }
         },
         "defaul": 12.566370614359172,
@@ -2728,9 +2728,9 @@
         "criteria": {
           "kind": "Comparison",
           "lookup": {
-            "factor": 1.5,
+            "factor": 1.0,
             "exponent": 1.0,
-            "limit": null
+            "limit": 2
           }
         },
         "defaul": null,
@@ -2783,7 +2783,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(150-(((((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(150-sum(((abs(e_2_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_2_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
           "roll": "0"
         }
       },
@@ -2837,7 +2837,7 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(150-(((((0+((abs(e_2_rolls[0])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[1])*30.0)/partial_roll_rate))+point_length)+((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
+          "length": "(0.5*(150-sum(((abs(e_2_rolls[0])*30.0)/partial_roll_rate),point_length,((abs(e_2_rolls[1])*30.0)/partial_roll_rate),point_length,((abs(e_2_rolls[2])*30.0)/full_roll_rate))))",
           "roll": "0"
         }
       },

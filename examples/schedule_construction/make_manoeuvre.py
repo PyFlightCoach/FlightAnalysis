@@ -1,4 +1,4 @@
-from flightplotting import plotdtw, plotsec, plot_regions
+from flightplotting import plotsec, plot_regions
 from flightplotting.traces import axis_rate_trace
 from flightanalysis import (
     ManDef, BoxLocation, Position, Height, Direction, 

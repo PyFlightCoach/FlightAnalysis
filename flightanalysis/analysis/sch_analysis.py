@@ -34,7 +34,7 @@ class ScheduleAnalysis(Collection):
         state = State.from_flight(flight, box).splitter_labels(data["mans"],sdef.uids)
         direction = -state.get_manoeuvre(1)[0].direction()[0]
 
-        if 'fcs_scores' in data:
+        if 'fcs_scores' in data and len(data['fcs_scores']) > 0:
             versions = [pkgversion.parse(res['fa_version']) for res in data['fcs_scores']]
             ilatest = versions.index(max(versions))
 
