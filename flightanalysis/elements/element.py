@@ -191,3 +191,11 @@ class Elements(Collection):
     def copy_directions(self, other: Self) -> Self:
         return Elements([es.copy_direction(eo) for es, eo in zip(self, other)])
     
+    def to_df(self):
+        params = pd.DataFrame(
+            [{k: getattr(e, k) for k in inspect.getfullargspec(e.__init__).args[1:-1]} for e in self]
+        )
+        names = pd.DataFrame(
+            [[e.uid, e.__class__.__name__] for e in self], columns=['name', 'class']
+        )
+        return pd.concat([names, params], axis=1).fillna('-')

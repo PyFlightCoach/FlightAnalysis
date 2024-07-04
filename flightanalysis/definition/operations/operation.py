@@ -68,10 +68,9 @@ class Opp:
     @staticmethod
     def parse(inp, coll:Collection | Callable, name=None):
         """Parse an Operation from a string"""
-        inp = inp.strip(" ")
         if isinstance(inp, Number) or isinstance(inp, Opp):
             return inp 
-
+        inp = inp.strip(" ")
         for test in [
             lambda inp : float(inp),
             lambda inp : FunOpp.parse(inp, coll, name),

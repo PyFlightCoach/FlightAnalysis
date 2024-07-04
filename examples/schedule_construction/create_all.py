@@ -4,7 +4,7 @@ from f3a_p25 import p25_def
 from f3a_f25 import f25_def
 from imac_unlim2024 import sdef as imac_unl2024_def
 from f3auk_clubman import clubman_def as f3auk_club_def
-from f3auk_Intermediate import intermediate_def as f3auk_int_def
+from f3auk_intermediate import intermediate_def as f3auk_int_def
 
 sdefs = {
     'f3a_p23_schedule': p23_def, 

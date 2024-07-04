@@ -14,7 +14,7 @@ class Alignment(Basic):
 
     def __getattr__(self, name) -> ElementAnalysis:
         return ElementAnalysis(
-            self.mdef.data[name],
+            self.mdef.eds.data[name],
             self.mdef.mps,
             self.manoeuvre.elements.data[name],
             self.flown.get_element(name),
