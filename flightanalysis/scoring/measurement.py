@@ -109,24 +109,36 @@ class Measurement:
 
     @staticmethod
     def speed(fl: State, tp: State, direction: Point=None, axis='body') -> Self:
-        direction=Point(1,1,1) if direction is None else direction
-        def get_body_direction(st: State):
-            if axis == 'body':
-                return direction
-            else:
-                world_direction = tp[0].transform.rotate(direction) if axis == 'ref_frame' else direction
-                return st.att.inverse().transform_point(world_direction)
-        body_direction = get_body_direction(fl)
-        value = Point.scalar_projection(fl.vel, body_direction)
+        if direction:
+            def get_body_direction(st: State):
+                if axis == 'body':
+                    return direction
+                else:
+                    world_direction = tp[0].transform.rotate(direction) if axis == 'ref_frame' else direction
+                    return st.att.inverse().transform_point(world_direction)
+            body_direction = get_body_direction(fl)
+            value = Point.scalar_projection(fl.vel, body_direction)
         
-        return Measurement(
+            return Measurement(
+                value, 
+                np.mean(Point.scalar_projection(tp.vel, get_body_direction(tp))),
+                *Measurement._vector_vis(
+                    fl.att.transform_point(direction).unit(), 
+                    fl.pos
+                )
+            )
+        
+        else:
+            value = abs(fl.vel)
+            return Measurement(
             value, 
-            np.mean(Point.scalar_projection(tp.vel, get_body_direction(tp))),
+            np.mean(abs(tp.vel)),
             *Measurement._vector_vis(
-                fl.att.transform_point(direction).unit(), 
+                fl.att.transform_point(fl.vel).unit(), 
                 fl.pos
             )
         )
+        
 
     @staticmethod
     def roll_angle(fl: State, tp: State) -> Self:
