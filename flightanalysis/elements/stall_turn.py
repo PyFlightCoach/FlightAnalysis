@@ -18,7 +18,7 @@ class StallTurn(Element):
         def width(fl, tp):
             return Measurement.length(fl, tp, g.PY())
         def speed(fl, tp):
-            return Measurement.speed(fl, tp, g.PZ(), 'world')
+            return Measurement.speed(fl, tp, g.PZ())
         def roll_angle(fl, tp):
             return Measurement.roll_angle_z(fl, tp)
         return DownGrades([
