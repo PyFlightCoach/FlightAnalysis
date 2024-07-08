@@ -168,6 +168,10 @@ class Measurement:
             0, 
             *Measurement._roll_vis(fl, tp)
         )
+    
+    @staticmethod
+    def roll_angle_p(fl: State, tp: State) -> Self:
+        return Measurement.roll_angle_proj(fl, tp, PX())
 
     @staticmethod
     def roll_angle_y(fl: State, tp: State) -> Self:
@@ -211,13 +215,14 @@ class Measurement:
         )
     
     @staticmethod
-    def track_proj(fl: State, tp: State, proj: Point, fix='ang'):
+    def track_proj(fl: State, tp: State, proj: Point, fix='ang', soft=False):
         """
         Direction is the world frame scalar rejection of the velocity difference onto the template velocity 
         vector.
         proj defines the axis in the ref_frame (tp[0].transform) to work on.
         if fix=='vel' we are only interested in velocity errors in the proj vector. (loop axial track)
         if fix=='ang' we are only interested in angle errors about the proj vector. (loop exit track)
+        if soft, the error is not downgraded when the speed is reduced to 50% of the maximum
         """
         ref_frame = tp[0].transform
         tr = ref_frame.q.inverse()
@@ -245,7 +250,25 @@ class Measurement:
             )
         else:
             raise AttributeError(f'fix must be "vel" or "ang", not {fix}')
+        
+        if soft:
+            angles[fl.vel.x < fl.vel.x.max() * 0.6] = 0
+            pass
         return Measurement(angles, 0, direction, vis)
+
+    @staticmethod
+    def get_proj(tp: State):
+        #proj = g.Point(0, np.cos(el.ke), np.sin(el.ke))
+        return PX().cross(tp[0].arc_centre()).unit()
+    
+    @staticmethod
+    def track_proj_vel(fl: State, tp: State):
+        return Measurement.track_proj(fl, tp, Measurement.get_proj(tp), fix='vel')
+    
+    @staticmethod
+    def track_proj_ang(fl: State, tp: State):
+        return Measurement.track_proj(fl, tp, Measurement.get_proj(tp), fix='ang')
+    
 
     @staticmethod
     def track_y(fl: State, tp:State) -> Measurement:
@@ -255,6 +278,18 @@ class Measurement:
     @staticmethod
     def track_z(fl: State, tp: State) -> Measurement:
         return Measurement.track_proj(fl, tp, PY())
+
+    @staticmethod
+    def soft_track_z(fl: State, tp: State) -> Measurement:
+        '''stop downgrading track errors when the speed has reduced to 50%'''
+        return Measurement.track_proj(fl, tp, PY(), soft=True)
+
+
+    @staticmethod
+    def soft_track_y(fl: State, tp: State) -> Measurement:
+        '''stop downgrading track errors when the speed has reduced to 50%'''
+        return Measurement.track_proj(fl, tp, PZ(), soft=True)
+
 
     @staticmethod
     def radius(fl:State, tp:State, proj: Point) -> Measurement:
@@ -307,6 +342,10 @@ class Measurement:
                 tp[0].att.transform_point(wproj)
             )  
         )
+
+    @staticmethod
+    def curvature_proj(fl: State, tp: State) -> Measurement:
+        return Measurement.curvature(fl, tp, Measurement.get_proj(tp))
 
     @staticmethod
     def depth_vis(loc: Point):

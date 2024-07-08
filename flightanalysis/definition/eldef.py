@@ -1,4 +1,4 @@
-from typing import List, Callable, Union, Dict, Tuple
+from typing import List, Callable, Union, Tuple
 import numpy as np
 from flightanalysis.elements import Element
 from inspect import getfullargspec
@@ -6,10 +6,12 @@ from . import ManParm, ManParms, Opp, ItemOpp, SumOpp
 from flightdata import Collection
 from numbers import Number
 from . import Collector, Collectors
-import inspect
 from uuid import uuid1
+from dataclasses import dataclass
+from flightanalysis.scoring.downgrade import DownGrades
+from flightanalysis.scoring.f3a_downgrades import dgs
 
-
+@dataclass
 class ElDef:
     """This class creates a function to build an element (Loop, Line, Snap, Spin, Stallturn)
     based on a ManParms collection. 
@@ -17,42 +19,35 @@ class ElDef:
     The eldef also contains a set of collectors. These are a dict of str:callable pairs
     that collect the relevant parameter for this element from an Elements collection.
     """
-    def __init__(self, name, Kind, props: Dict[str, Union[Number, Opp]]):
-        """ElDef Constructor
-
-        Args:
-            name (_type_): the name of the Eldef, must be unique and work as an attribute
-            Kind (_type_): the class of the element (Loop, Line etc)
-            props (dict): The element property generators (Number, Opp)
-        """
-        self.name = name
-        self.Kind = Kind
-        self.props = props       
-        self.collectors = Collectors.from_eldef(self)
+    name: str # the name of the Eldef, must be unique and work as an attribute
+    Kind: object # the class of the element (Loop, Line etc)
+    props: dict[str, Number | Opp] # The element property generators (Number, Opp)
+    dgs: DownGrades # The DownGrades applicable this element
 
     def get_collector(self, name) -> Collector:
-        return self.collectors[f"{self.name}.{name}"]
+        return Collector(self.name, name)
 
     def to_dict(self):
         return dict(
             name = self.name,
             Kind = self.Kind.__name__,
-            props = {k: str(v) for k, v in self.props.items()}
+            props = {k: str(v) for k, v in self.props.items()},
+            dgs = [dg.name for dg in self.dgs]
         )
 
     def __repr__(self):
-        return f"ElDef({self.name}, {self.Kind.__name__}, {self.props})"
+        return f"ElDef({self.name}, {self.Kind.__name__}, {[f'{k[0]}={str(v)}' for k, v in self.props.items()]}, {[dg.name for dg in self.dgs]})"
 
     @staticmethod
     def from_dict(data: dict, mps: ManParms): 
         return ElDef(
             name=data["name"],
             Kind = Element.from_name(data["Kind"]),
-            props = {k: ManParm.parse(v, mps) for k, v in data["props"].items()}
+            props = {k: ManParm.parse(v, mps) for k, v in data["props"].items()},
+            dgs = DownGrades([dgs[dg] for dg in data["dgs"]])
         )
 
-
-    def __call__(self, mps: ManParms, **kwargs) -> Element:
+    def __call__(self, mps: ManParms) -> Element:
         el_kwargs = {}
         args = getfullargspec(self.Kind.__init__).args
         for pname, prop in self.props.items():
@@ -77,14 +72,16 @@ class ElDef:
         except Exception as e:
             raise Exception(f"Error creating {self.name}, a {self.Kind.__name__} with {el_kwargs}") from e
     
-    def build(Kind, name, *args, **kwargs):
-        elargs = list(inspect.signature(Kind.__init__).parameters)[1:-1]
-        for arg, argname in zip(args, elargs[:len(args)] ):
-            kwargs[argname] = arg
+    @staticmethod
+    def build(Kind, name: str, props: list[Opp | Number], dgs: DownGrades):
+        pnames = getfullargspec(Kind.__init__).args[2:]
+        ed = ElDef(
+            name, Kind, 
+            {k: v for k, v in zip(pnames, props)},
+            dgs
+        )
         
-        ed = ElDef(name, Kind, kwargs)
-        
-        for key, value in kwargs.items():
+        for key, value in zip(pnames, props):
             if isinstance(value, ManParm):
                 value.append(ed.get_collector(key))
             elif isinstance(value, ItemOpp):
@@ -100,15 +97,12 @@ class ElDef:
         return int(self.name.split("_")[1])
 
 
-
-
-
 class ElDefs(Collection):
-    VType=ElDef
-    uid="name"
     """This class wraps a dict of ElDefs, which would generally be used sequentially to build a manoeuvre.
     It provides attribute access to the ElDefs based on their names. 
     """
+    VType=ElDef
+    uid="name"
 
     @staticmethod
     def from_dict(data: dict, mps: ManParms):
@@ -143,23 +137,23 @@ class ElDefs(Collection):
 
     def builder_sum(self, name:str, oppname=None) -> Callable:
         """A function to return the sum of the requested parameter used when constructing the elements from the mps"""
-        opp = SumOpp(name, self.builder_list(name))
+        blist = self.builder_list(name)
+        opp = blist[0] if len(blist) == 1 else SumOpp(name, blist)
         if hasattr(opp, name):
             opp.name = uuid1() if oppname is None else oppname
         return opp
 
     def collector_list(self, name: str) -> Collectors:
         """A list of the functions that return the requested parameter from an elements collection"""
-        return Collectors([e.get_collector(name) for e in self if f"{e.name}.{name}" in e.collectors.data])
-
+        return Collectors([e.get_collector(name) for e in self if name in e.Kind.parameters])
 
     def collector_sum(self, name, oppname=None) -> Callable:
         """A function that returns the sum of the requested parameter from an elements collection"""
-        opp = SumOpp(name, self.collector_list(name))
+        clist = self.collector_list(name)
+        opp = clist[0] if len(clist) == 1 else SumOpp(name, clist)
         if hasattr(opp, name):
             opp.name = uuid1() if oppname is None else oppname
-        return opp
-    
+        return opp   
 
     def get_centre(self, mps: ManParms) -> Tuple[int, float]:
         """Get the centre element id and the location of the centre within it.

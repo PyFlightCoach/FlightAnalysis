@@ -1,38 +1,21 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, PX, PY, PZ, Time
+from geometry import Transformation, PY, Time
 from flightdata import State
 from .element import Element
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Measurement, DownGrade, DownGrades
 from .line import Line
+from dataclasses import dataclass
+from typing import ClassVar
 
 
+@dataclass
 class PitchBreak(Element):
-    parameters = Element.parameters + "length,break_angle".split(",")
-    def __init__(self, speed: float, length: float, break_angle: float, uid: str=None):
-        super().__init__(uid, speed)
-        self.length=length
-        self.break_angle = break_angle
-
-    @property
-    def intra_scoring(self) -> DownGrades:
-        '''TODO check the pitch departure is in the right direction
-        TODO perhaps limit the roll amount'''
-        def length(fl, tp):
-            return Measurement.length(fl, tp, PX())
-        def roll_angle(fl, tp):
-            return Measurement.roll_angle_proj(fl, tp, PY())
-        return DownGrades([
-            DownGrade(length, F3A.intra.pitch_break_length)
-        ])
-
-    @property
-    def exit_scoring(self) -> DownGrades:
-        return DownGrades()
+    parameters: ClassVar[list[str]] = Element.parameters + "length,break_angle".split(",")
+    length: float
+    break_angle: float
 
     def create_template(self, istate: State, time: Time=None) -> State:
-        return Line(self.speed, self.length).create_template(
+        return Line("pitch_break", self.speed, self.length).create_template(
             istate, 
             time
         ).superimpose_rotation(

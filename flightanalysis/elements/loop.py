@@ -1,54 +1,26 @@
 from __future__ import annotations
 import numpy as np
 from geometry import Transformation, Point, PX, Time
-from typing import Union
 from flightdata import State
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Measurement, DownGrade, DownGrades
+from flightanalysis.scoring import Measurement
 from . import Element
-from numbers import Number
+from dataclasses import dataclass
+from typing import ClassVar
 
+@dataclass
 class Loop(Element):
-    parameters = Element.parameters + "radius,angle,roll,ke,rate".split(",")
+    '''Create a loop element
+    ke should be a number between 0 and 2*pi, or False for 0, True for np.pi/2. 
+    angle represents the amount of loop to perform. Can be positive to produce an outside loop if ke==0.
+    '''
+    parameters: ClassVar[list[str]] = Element.parameters + "radius,angle,roll,ke,rate".split(",")
+    angle: float
+    radius: float
+    roll: float
+    ke: float
 
-    def __init__(self, speed: float, radius: float, angle: float, roll:float=0.0, ke: Union[bool, Number] = False, uid: str=None):
-        '''Create a loop element
-        ke should be a number between 0 and 2*pi, or False for 0, True for np.pi/2. 
-        angle represents the amount of loop to perform. Can be positive to produce an outside loop if ke==0.
-        '''
-        super().__init__(uid, speed)
-        assert not radius == 0 and not angle == 0
-        self.angle = angle
-        self.radius = radius
-        self.roll = roll
-        if isinstance(ke, bool):
-            ke = np.pi/2 if ke else 0
-        self.ke = ke
-
-    @property
-    def intra_scoring(self) -> DownGrades:
-        proj = Point(0, np.cos(self.ke), np.sin(self.ke))
-        def track_y(fl, tp):
-            return Measurement.track_proj(fl, tp, proj, fix='vel')
-        def track_z(fl, tp):
-            return Measurement.track_proj(fl, tp, proj, fix='ang')
-        def curvature(fl, tp):
-            return Measurement.curvature(fl, tp, proj)
-        _intra_scoring = DownGrades([
-            DownGrade(Measurement.speed, F3A.intra.speed),
-            DownGrade(curvature, F3A.intra.radius),
-            DownGrade(track_y, F3A.intra.track),
-            DownGrade(track_z, F3A.single.track),
-        ])
-        def roll_angle(fl, tp):
-            return Measurement.roll_angle_proj(fl, tp, Point(0, np.cos(self.ke), np.sin(self.ke)))
-
-        if not self.roll == 0:
-            _intra_scoring.add(DownGrade(Measurement.roll_rate, F3A.intra.roll_rate))
-            _intra_scoring.add(DownGrade(roll_angle, F3A.single.roll))
-        else:
-            _intra_scoring.add(DownGrade(roll_angle, F3A.intra.roll))
-        return _intra_scoring
+    #if isinstance(ke, bool):
+    #    ke = np.pi/2 if ke else 0
 
     def describe(self):
         d1 = "loop" if self.roll==0 else "rolling loop"

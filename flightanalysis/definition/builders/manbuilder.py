@@ -1,9 +1,10 @@
 from flightanalysis.definition import ManDef, ManParm, ManParms, ElDef, ElDefs, DummyMPs, Opp
-from typing import Dict, Callable
+from typing import Callable
 from functools import partial
 from .elbuilders import line, loopmaker, rollmaker, stallturn, spin
 import numpy as np
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
+from dataclasses import dataclass
 
 
 class MBTags:
@@ -21,16 +22,16 @@ def r(turns):
 
 dp = DummyMPs()
 
-
+@dataclass
 class ManBuilder():
-    def __init__(self, mps: ManParms, mpmaps:Dict[str, dict]):
-        self.mps = mps
-        self.mpmaps = mpmaps
+    mps: ManParms
+    mpmaps:dict[str, dict]
 
     def __getattr__(self, name):
         if name in self.mpmaps:
             return partial(self.el, name)
-    
+        raise AttributeError(f"ManBuilder has no attribute {name}")
+        
     def el(self, kind, *args, **kwargs):
         """Setup kwargs to pull defaults from mpmaps
         returns a function that appends the created elements to a ManDef"""
@@ -46,11 +47,9 @@ class ManBuilder():
         def append_el(md: ManDef, **kwargs) -> ElDefs:
             full_kwargs = {}
             for k, a in kwargs.items():
-                if isinstance(a, Opp):
-                    a = str(a) # serialise and parse again to make sure its coming from this mandef
-                if isinstance(a, str):
+                if isinstance(a, str) or isinstance(a, Opp):
                     try:
-                        a = ManParm.parse(a, md.mps)
+                        a = ManParm.parse(str(a), md.mps)# serialise and parse again to make sure its coming from this mandef
                     except Exception:
                         pass
                 full_kwargs[k] = a
@@ -81,10 +80,9 @@ class ManBuilder():
             else:
                 c1 = len(md.eds.data)
                 try:
-                    new_eds = em(md)    
+                    new_eds = em(md)
                 except Exception as ex:
                     raise Exception(f"Error running elmaker {i} of {md.info.name}") from ex
-
 
                 c2 = len(md.eds.data)
 
@@ -123,9 +121,10 @@ f3amb = ManBuilder(
             func=line,
             args=[],
             kwargs=dict(
-                roll=0.0,
                 speed=30.0,
-                length="line_length"
+                length="line_length",
+                soft_start=False,
+                soft_end=False
             )
         ),
         loop=dict(
@@ -161,8 +160,10 @@ f3amb = ManBuilder(
                 break_angle=np.radians(10), 
                 snap_rate='snap_rate', 
                 break_rate=2*np.pi,
-                rolltypes='roll'
-            )    
+                rolltypes='roll',
+                soft_start=False,
+                soft_end=False
+            )
         ),
         stallturn=dict(
             func=stallturn,
@@ -187,7 +188,9 @@ f3amb = ManBuilder(
                 break_angle=np.radians(10), 
                 snap_rate='snap_rate', 
                 break_rate=2*np.pi,
-                rolltypes='snap'
+                rolltypes='snap',
+                soft_start=False,
+                soft_end=False
             )    
         ),
         spin=dict(

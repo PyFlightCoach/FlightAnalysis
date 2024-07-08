@@ -3,29 +3,14 @@ import numpy as np
 import geometry as g
 from flightdata import State
 from .element import Element
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Measurement, DownGrade, DownGrades
+from dataclasses import dataclass
+from typing import ClassVar
+from flightanalysis.scoring.measurement import Measurement
 
-
+@dataclass
 class StallTurn(Element):
-    parameters = Element.parameters + ["yaw_rate"]
-    def __init__(self, speed:float, yaw_rate:float=3.0, uid: str=None):
-        super().__init__(uid, speed)
-        self.yaw_rate = yaw_rate
-
-    @property
-    def intra_scoring(self) -> DownGrades:
-        def width(fl, tp):
-            return Measurement.length(fl, tp, g.PY())
-        def speed(fl, tp):
-            return Measurement.speed(fl, tp, g.PZ())
-        def roll_angle(fl, tp):
-            return Measurement.roll_angle_z(fl, tp)
-        return DownGrades([
-            DownGrade(roll_angle, F3A.intra.roll),
-            DownGrade(width, F3A.intra.stallturn_width),
-            DownGrade(speed, F3A.intra.stallturn_speed),
-        ])
+    parameters: ClassVar[list[str]] = Element.parameters + ["yaw_rate"]
+    yaw_rate: float
 
     def describe(self):
         return f"stallturn, yaw rate = {self.yaw_rate}"
@@ -53,7 +38,7 @@ class StallTurn(Element):
         return self.set_parms(
             yaw_rate=abs(self.yaw_rate) * np.sign(other.yaw_rate)
         )
-    
+
     def yaw_rate_visibility(self, st: State):
         return Measurement._vector_vis(
             st.att.transform_point(g.PZ(1)).mean(), 

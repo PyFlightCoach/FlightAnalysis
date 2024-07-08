@@ -5,14 +5,13 @@ from dataclasses import dataclass
 from typing import Callable
 from .operation import Opp
 from .funopp import FunOpp
-from numbers import Number
 
 
 @dataclass
 class ItemOpp(Opp):
     """This class creates an Operation that returns a single item,
         usually from a Combination manparm"""
-    a: Opp | Number
+    a: Opp
     item: int
     
     def __call__(self, mps, **kwargs):

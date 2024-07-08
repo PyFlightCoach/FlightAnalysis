@@ -14,21 +14,25 @@ class DownGrade:
         measure - a Measurement constructor
         criteria - takes a Measurement and calculates the score
     """
+    name: str
     measure: Callable[[State, State, Coord], Measurement]
     criteria: Bounded | ContAbs | ContRat | Single
+    display_name: str = None
 
     def to_dict(self):
         return dict(
+            name=self.name,
             measure=self.measure.__name__,
-            criteria=self.criteria.to_dict()
+            criteria=self.criteria.to_dict(),
+            display_name=self.display_name
         )
-
-    @property
-    def name(self):
-        return self.measure.__name__
     
     def __call__(self, fl, tp, limits=True) -> Result:
-        return self.criteria(self.measure.__name__, self.measure(fl, tp), limits)
+        return self.criteria(
+            self.display_name if self.display_name else self.name, 
+            self.measure(fl, tp), 
+            limits
+        )
         
 
 

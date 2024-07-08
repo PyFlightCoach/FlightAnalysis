@@ -9,25 +9,19 @@ import plotly.graph_objects as go
 from json import dumps
 
 mdef: ManDef = f3amb.create(ManInfo(
-            "Triangle", "trgle", k=3, position=Position.CENTRE, 
-            start=BoxLocation(Height.TOP, Direction.UPWIND, Orientation.INVERTED),
-            end=BoxLocation(Height.TOP)
-        ),[
-            MBTags.CENTRE,
-            f3amb.loop(np.pi/4),
-            f3amb.roll("2x4"),
-            f3amb.loop(-np.pi*3/4), 
-            centred(f3amb.roll(r(1),line_length=str(2 * c45 * f3amb.mps.line_length))),
-            f3amb.loop(-np.pi*3/4),
-            f3amb.roll("2x4"),
-            f3amb.loop(np.pi/4),
-            MBTags.CENTRE
-        ], line_length=150)
+    "Figure Z", "Z", k=4, position=Position.CENTRE, 
+    start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
+    end=BoxLocation(Height.TOP)
+),[
+    f3amb.loop(3*np.pi/4),
+    centred(f3amb.snap(r(1))),
+    f3amb.loop(-3*np.pi/4),
+], line_length=60, loop_radius=50)
 
 data = mdef.to_dict()
 print(dumps(data, indent=2))
 mdef = ManDef.from_dict(data)
-mdef.mps.line_length.defaul=300
+
 it = mdef.info.initial_transform(170, 1)
 
 man = mdef.create(it)

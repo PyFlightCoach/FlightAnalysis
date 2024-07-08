@@ -2,37 +2,16 @@ from __future__ import annotations
 import numpy as np
 from geometry import Transformation, P0, PX, Time
 from flightdata import State
-
-from .element import Element, ElementError
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Measurement, DownGrade, DownGrades
-
+from .element import Element
+from dataclasses import dataclass
+from typing import ClassVar
 
 
+@dataclass
 class Line(Element):
-    parameters = Element.parameters + "length,roll,rate".split(",")
-
-    def __init__(self, speed, length, roll=0, uid:str=None):
-        super().__init__(uid, speed)
-        self.length = length
-        self.roll = roll
-        if length <= 0:
-            raise ElementError(f"Error creating {self.__repr__()}, length must be positive")
-    
-    @property
-    def intra_scoring(self) -> DownGrades:
-        _intra_scoring = DownGrades([
-            DownGrade(Measurement.speed, F3A.intra.speed),
-            DownGrade(Measurement.track_y, F3A.intra.track),
-            DownGrade(Measurement.track_z, F3A.intra.track)
-        ])
-
-        if not self.roll == 0:
-            _intra_scoring.add(DownGrade(Measurement.roll_rate, F3A.intra.roll_rate))
-            _intra_scoring.add(DownGrade(Measurement.roll_angle, F3A.single.roll))
-        else:
-            _intra_scoring.add(DownGrade(Measurement.roll_angle, F3A.intra.roll))
-        return _intra_scoring
+    parameters: ClassVar[list[str]] = Element.parameters + "length,roll,rate".split(",")
+    length: float
+    roll: float = 0   
 
     def describe(self):
         d1 = "line" if self.roll==0 else f"{self.roll} roll"

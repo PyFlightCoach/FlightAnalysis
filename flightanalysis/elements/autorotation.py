@@ -5,16 +5,17 @@ from flightdata import State
 from .element import Element
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring import Measurement, DownGrade, DownGrades
+from dataclasses import dataclass
+from typing import ClassVar
 
 
+@dataclass
 class Autorotation(Element):
     """much like a line, but rolls happens around the velocity vector,
     rather than the body x axis"""
-    parameters = Element.parameters + "length,roll,rate,angle".split(",")
-    def __init__(self, speed: float, length: float, roll: float, uid: str):
-        super().__init__(uid, speed)
-        self.length = length
-        self.roll = roll
+    parameters: ClassVar[list[str]] = Element.parameters + "length,roll,rate,angle".split(",")
+    length: float
+    roll: float = 0   
         
     @property
     def intra_scoring(self):
