@@ -15,6 +15,7 @@ import numpy as np
 from flightanalysis.elements import Line, Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo
+from flightanalysis.scoring.f3a_downgrades import DGGrps
 from flightdata import State
 from geometry import Transformation, Euler, Point
 from . import ManParms, ElDef, ElDefs, Position, Direction
@@ -105,7 +106,7 @@ class ManDef:
                     man_start_x = min(box_edge - template.pos.x) 
             length = max(man_start_x - itrans.translation.x[0] * heading, 30)
 
-        return ElDef.build(Line, "entry_line", 30.0, length, 0)
+        return ElDef.build(Line, "entry_line", [30.0, length], DGGrps.exits)
 
     def create(self, itrans=None, depth=None, wind=None, cross=None) -> Manoeuvre:
         """Create the manoeuvre based on the default values in self.mps.
@@ -140,6 +141,8 @@ class ManDef:
         fig = plotdtw(template, template.data.element.unique())
         fig = plotsec(template, fig=fig, nmodels=20, scale=3)
         return fig
+
+
 
 
 from .manoption import ManOption  # noqa: E402

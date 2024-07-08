@@ -7,6 +7,13 @@ from flightanalysis import ScheduleAnalysis
 from datetime import datetime
 from flightanalysis.scripts.plot_scores import plot_logs
 
+import json_stream
+
+
+#data = json_stream.load(open('_trials/snap_alignment/manual_F3A FAI_P25_24_07_05_00000186.json', 'r'))['fcs_scores']
+#scores = json_stream.to_standard_types(data)
+
+
 def main():
     logger.remove()
     logger.add(sys.stderr, level="INFO")

@@ -51,14 +51,14 @@ class Manoeuvre:
         if self.entry_line:
             els.add(self.entry_line)
         elif create_entry:
-            els.add(Line(self.elements[0].speed, 30, 0, "entry_line"))
+            els.add(Line("entry_line", self.elements[0].speed, 30, 0))
 
         els.add(self.elements)
 
         if self.exit_line:
             els.add(self.exit_line)
         elif create_exit:
-            els.add(Line(self.elements[0].speed, 30, 0, "exit_line"))
+            els.add(Line("exit_line", self.elements[0].speed, 30, 0))
 
         return els
 
@@ -139,21 +139,6 @@ class Manoeuvre:
             self.uid, 
             Elements(self.all_elements().copy_directions(other.all_elements()))
         )
-
-    def analyse(self, flown: State, template: State):
-        fl=self.entry_line.get_data(flown)
-        tp=self.entry_line.get_data(template).relocate(fl.pos[0])
-        
-        ers = [Results(self.entry_line.uid, self.entry_line.analyse_exit(fl, tp))]
-        logger.debug(f'Intra analysis of entry line complete, total dg = {ers[-1].total}')
-
-        for el in self.elements:
-            fl = el.get_data(flown)
-            tp = el.get_data(template).relocate(fl.pos[0])
-            ers.append(Results(el.uid, el.analyse(fl, tp)))
-            logger.debug(f'Intra analysis of {el.uid} complete, total dg = {ers[-1].total}')
-
-        return ElementsResults(ers)
 
     def optimise_alignment(self, template: State, aligned: State) -> State:
         els = self.all_elements()

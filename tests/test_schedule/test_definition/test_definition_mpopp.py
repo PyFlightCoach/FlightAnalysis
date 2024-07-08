@@ -1,11 +1,11 @@
 from pytest import fixture
 
-from flightanalysis.definition import *
-
+from flightanalysis import ManParms, Opp, ManParm
+from flightanalysis.definition.builders.manbuilder import f3amb
 
 @fixture
 def mps():
-    return ManParms.create_defaults_f3a()
+    return f3amb.mps
 
 
 def test_number_opp(mps):

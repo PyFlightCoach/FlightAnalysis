@@ -2,26 +2,23 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 from flightdata import State, Collection
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Measurement, DownGrade, DownGrades, Results
+from flightanalysis.scoring import Measurement, Results
 import geometry as g
 from json import load
 import inspect
-from typing import Self, Tuple, Union
+from typing import Self, Tuple, Union, ClassVar
+from dataclasses import dataclass
 
 
 class ElementError(Exception):
     pass
 
 
+@dataclass
 class Element:   
-    parameters = ["speed"]
-
-    def __init__(self, uid: str, speed: float):        
-        self.uid = uid
-        if speed < 0:
-            raise ValueError("negative speeds are not allowed")
-        self.speed = speed
+    parameters: ClassVar[list[str]] = ["speed"]
+    uid: str
+    speed: float
 
     def get_data(self, st: State):
         return st.get_element(self.uid)
@@ -45,9 +42,8 @@ class Element:
     def to_dict(self, exit_only: bool=False):
         return dict(
             kind=self.__class__.__name__, 
-            **{p: getattr(self, p) for p in self.parameters},
             uid=self.uid,
-            scoring = self.exit_scoring.to_dict() if exit_only else self.intra_scoring.to_dict() 
+            **{p: getattr(self, p) for p in self.parameters}
         )
 
     def set_parms(self, **parms):
@@ -58,15 +54,6 @@ class Element:
                 kwargs[key] = value
         
         return self.__class__(**kwargs)
-
-    def score_series_builder(self, index):
-        return lambda data: pd.Series(data, index=index)
-
-    def analyse(self, flown:State, template:State, limits=True) -> Results:
-        return self.intra_scoring.apply(self, flown, template, limits)
-
-    def analyse_exit(self, fl, tp, limits=True) -> Results:
-        return self.exit_scoring.apply(self, fl, tp, limits)
 
     def ref_frame(self, template: State) -> g.Transformation:
         return template[0].transform
@@ -80,18 +67,6 @@ class Element:
             )
         else:
             return time.reset_zero().scale(duration)
-
-    @property
-    def intra_scoring(self) -> DownGrades:
-        return DownGrades()
-
-    @property
-    def exit_scoring(self):
-        return DownGrades([
-            DownGrade(Measurement.track_y, F3A.single.track),
-            DownGrade(Measurement.track_z, F3A.single.track),
-            DownGrade(Measurement.roll_angle, F3A.single.roll),
-        ])
 
     @classmethod
     def from_name(Cls, name) -> Element:
@@ -128,7 +103,6 @@ class Element:
 
     def length_vec(self, itrans, fl):
         return fl.pos[-1] - fl.pos[0]
-
     
     def create_template(self, istate: State, time: g.Time=None) -> State:
         raise Exception('Not available on base class')

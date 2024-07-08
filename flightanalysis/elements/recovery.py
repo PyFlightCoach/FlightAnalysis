@@ -1,33 +1,19 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, PX, PY, PZ, Time
+from geometry import Transformation, PY, Time
 from flightdata import State
 from .element import Element
 from .line import Line
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
-from flightanalysis.scoring import Measurement, DownGrade, DownGrades
+from dataclasses import dataclass
+from typing import ClassVar
 
-
+@dataclass
 class Recovery(Element):
-    parameters = Element.parameters + ["length"]
-    def __init__(self, speed, length, uid: str=None):
-        super().__init__(uid, speed)
-        self.length = length
-
-    @property
-    def intra_scoring(self) -> DownGrades:
-        '''TODO perhaps limit the roll amount'''
-        def length(fl, tp):
-            return Measurement.length(fl, tp, PX())
-        return DownGrades([
-            DownGrade(Measurement.track_z, F3A.single.track),
-            DownGrade(Measurement.track_y, F3A.single.track),
-            DownGrade(length, F3A.intra.recovery_length),
-            DownGrade(Measurement.roll_angle, F3A.intra.roll)
-        ])
+    parameters: ClassVar[list[str]] = Element.parameters + ["length"]
+    length: float
 
     def create_template(self, istate: State, time: Time=None) -> State:
-        return Line(self.speed, self.length).create_template(
+        return Line("recovery" ,self.speed, self.length, 0).create_template(
             istate, 
             time
         ).superimpose_rotation(
@@ -47,7 +33,3 @@ class Recovery(Element):
     
     def copy_direction(self, other: Recovery) -> Recovery:
         return self.set_parms()
-
-    @property
-    def exit_scoring(self) -> DownGrades:
-        return DownGrades()

@@ -3,10 +3,10 @@ import numpy as np
 from flightdata import Collection
 from flightanalysis.manoeuvre import Manoeuvre
 from flightdata import State
-from flightanalysis.scoring import Criteria, Combination, Measurement, Result, Comparison, Results, Single
+from flightanalysis.scoring import Criteria, Combination, Measurement, Comparison, Results, Single
 from . import Collector, Collectors, Opp
 from dataclasses import dataclass, field
-from typing import Any, Self
+from typing import Self
 import pandas as pd
 from geometry import Point
 from numbers import Number
@@ -163,7 +163,16 @@ class ManParms(Collection):
         else:
             raise ValueError(f"Cannot parse rolls from {rolls}")
 
-
+    def to_df(self):
+        return pd.DataFrame(
+            [[
+                mp.name, 
+                mp.criteria.__class__.__name__,
+                mp.defaul, 
+                ','.join([str(v) for v in mp.collectors])
+            ] for mp in self],
+            columns=['name', 'criteria', 'default', 'collectors']
+        )
 
 
 class DummyMPs:

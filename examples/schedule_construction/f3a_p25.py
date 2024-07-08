@@ -3,11 +3,8 @@ from flightanalysis import (
     Height, Direction, MBTags, f3amb, centred, r, ManParm,
     ManOption, Combination, c45
 )
-
+from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
-
-
-
 
 p25_def = SchedDef([
     f3amb.create(ManInfo(
@@ -232,6 +229,10 @@ p25_def = SchedDef([
                 [-1/4, -3/8, -1/8, -1/4]
         ])), 0)),
 ])
+
+p25_def.stall.eds.e_1.dgs = DGGrps.st_line_decel
+p25_def.stall.eds.e_3_pad1.dgs = DGGrps.st_line_accel
+p25_def.iSpin.eds.e_1_pad1.dgs = DGGrps.sp_line_accel
 
 
 if __name__ == "__main__":

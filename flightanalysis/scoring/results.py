@@ -51,7 +51,7 @@ class Result:
         )
     
     def __repr__(self):
-        return f'Result({self.name}, {self.total})'
+        return f'Result({self.name}, {self.total:.3f})'
     
     @staticmethod
     def from_dict(data) -> Result:
@@ -121,6 +121,9 @@ class Results(Collection):
         super().__init__(*args, **kwargs)
         self.name = name
 
+    def __repr__(self):
+        return f'Results({self.name}, {self.total:.2f}, ({",".join([f"{res.total:.2f}" for res in self])}))'
+
     @property
     def total(self):
         return sum([cr.total for cr in self])
@@ -160,6 +163,9 @@ class ElementsResults(Collection):
     """
     VType=Results
     uid="name"
+
+    def __repr__(self): 
+        return f'ElementsResults, total = {self.total:.2f}, \n {super().__repr__()}'
 
     def score(self, difficulty=3, truncate=False):
         return sum([r.score(difficulty, truncate) for r in self])

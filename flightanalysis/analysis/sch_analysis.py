@@ -21,7 +21,7 @@ class ScheduleAnalysis(Collection):
         self.sinfo = sinfo
 
     @staticmethod
-    def from_fcj(file: Union[Union[str, bytes, os.PathLike], dict], info: ScheduleInfo=None) -> ScheduleAnalysis:
+    def from_fcj(file: Union[Union[str, bytes, os.PathLike], dict], info: ScheduleInfo=None, proceed=True) -> ScheduleAnalysis:
         data = file if isinstance(file, dict) else load(open(file, 'r'))
 
         flight = Flight.from_fc_json(data)
@@ -45,8 +45,11 @@ class ScheduleAnalysis(Collection):
             if 'fcs_scores' in data and len(data['fcs_scores']) > 0:
                 df = pd.DataFrame(data['fcs_scores'][ilatest]['manresults'][i+1]['els'])
                 st = st.splitter_labels(df.to_dict('records'), target_col='element')
-            
-            mas.append(analysis.Basic(i, mdef, st, direction).proceed())
+            #.proceed()
+            nma = analysis.Basic(i, mdef, st, direction)
+            if proceed:
+                nma = nma.proceed()
+            mas.append(nma)
 
         return ScheduleAnalysis(mas,info)
     

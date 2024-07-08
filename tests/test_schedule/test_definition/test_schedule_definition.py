@@ -1,16 +1,17 @@
 from pytest import fixture
 
-from flightanalysis.definition import *
-from flightanalysis.elements import *
-from flightanalysis.scoring import *
-from flightanalysis import Manoeuvre, SchedDef
+from flightanalysis import (
+    Manoeuvre, f3amb, Position, BoxLocation, ManInfo, 
+    Height, Direction, Orientation, ManDef, ElDef
+)
+
 import numpy as np
 from json import load
 
 
 
 @fixture(scope="session")
-def vline():
+def vline() -> ManDef:
     return f3amb.create(ManInfo("Vertical Line", "vline", 2,
             Position.CENTRE,
             BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
@@ -26,20 +27,19 @@ def vline():
     
 
 @fixture(scope="session")
-def man(vline):
+def man(vline: ManDef):
     return vline.create(vline.info.initial_transform(170,1))
 
-def test_create(man):
+def test_create(man: Manoeuvre):
     assert isinstance(man, Manoeuvre)
     
-def test_collect(vline, man):
+def test_collect(vline: ManDef, man: Manoeuvre):
     downgrades = vline.mps.collect(man)
     assert np.all(downgrades.speed.downgrades==0)
  
 
-def test_to_from_dict(vline):
-    
-    
+def test_to_from_dict(vline: ManDef):
+       
     vld = vline.to_dict()
 
     vl2 = ManDef.from_dict(vld)#
