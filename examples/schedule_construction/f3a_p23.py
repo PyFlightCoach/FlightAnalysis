@@ -1,11 +1,11 @@
 """This file defines a P23 sequence using the ManDef Classes and helper functions."""
-from flightanalysis.definition import *
-from flightanalysis.elements import *
-from flightanalysis.scoring import *
+from flightanalysis import (
+    SchedDef, ManInfo, BoxLocation, Position, Orientation, 
+    Height, Direction, MBTags, f3amb, centred, r, ManParm,
+    Combination, c45
+)
+from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
-
-c45 = np.cos(np.radians(45))
-
 
 
 p23_def = SchedDef([
@@ -221,6 +221,13 @@ p23_def = SchedDef([
             Combination(desired=[[np.pi], [-np.pi]]), 0
         ))
 ])
+
+
+p23_def.iSp.eds.e_1.dgs = DGGrps.sp_line_accel
+p23_def.M.eds.e_1_pad2.dgs = DGGrps.st_line_decel
+p23_def.M.eds.e_3.dgs = DGGrps.st_line_accel
+p23_def.M.eds.e_5.dgs = DGGrps.st_line_decel
+p23_def.M.eds.e_7_pad1.dgs = DGGrps.st_line_accel
 
 if __name__ == "__main__":
     
