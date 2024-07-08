@@ -101,20 +101,32 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(130-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -123,27 +135,46 @@
           "speed": "30.0",
           "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(130-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.9269908169872414",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -176,11 +207,18 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "100",
           "angle": "6.283185307179586",
-          "roll": "0.0",
+          "radius": "100",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -286,20 +324,32 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(130-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -308,27 +358,46 @@
           "speed": "30.0",
           "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(130-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(130-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.9269908169872414",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -384,7 +453,14 @@
           "speed": "30.0",
           "length": "((abs(e_0_rolls[0])*30.0)/1.5707963267948966)",
           "roll": "e_0_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       }
     }
   },
@@ -490,20 +566,32 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(90-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(90-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -512,27 +600,46 @@
           "speed": "30.0",
           "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(90-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(90-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.9269908169872414",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -641,11 +748,18 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.141592653589793",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -654,16 +768,28 @@
           "speed": "30.0",
           "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "30",
-          "roll": "0.0"
-        }
+          "length": "30"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_3_0": {
         "name": "e_3_0",
@@ -672,18 +798,32 @@
           "speed": "30.0",
           "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_3_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.141592653589793",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -801,20 +941,32 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -823,47 +975,78 @@
           "speed": "30.0",
           "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.141592653589793",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_3": {
         "name": "e_3",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "line_length",
-          "roll": "0.0"
-        }
+          "length": "line_length"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -958,16 +1141,28 @@
           "speed": "30.0",
           "length": "((abs(e_0_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_0_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "100",
-          "roll": "0.0"
-        }
+          "length": "100"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2_0": {
         "name": "e_2_0",
@@ -976,7 +1171,14 @@
           "speed": "30.0",
           "length": "((abs(e_2_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_2_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       }
     }
   },
@@ -1038,38 +1240,60 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1": {
         "name": "e_1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "150",
-          "roll": "0.0"
-        }
+          "length": "150"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Line",
         "props": {
           "speed": "3",
-          "length": "10",
-          "roll": "0.0"
-        }
+          "length": "10"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
         "Kind": "Line",
         "props": {
           "speed": "1",
-          "length": "5",
-          "roll": "0.0"
-        }
+          "length": "5"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -1077,27 +1301,44 @@
         "props": {
           "speed": "0.0",
           "yaw_rate": "stallturn_rate"
-        }
+        },
+        "dgs": [
+          "stallturn_width",
+          "stallturn_speed",
+          "stallturn_roll_angle"
+        ]
       },
       "e_5": {
         "name": "e_5",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "165",
-          "roll": "0.0"
-        }
+          "length": "165"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_6": {
         "name": "e_6",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -1211,36 +1452,60 @@
           "speed": "30.0",
           "length": "((abs(e_0_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_0_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "ee_pause",
-          "roll": "0.0"
-        }
+          "length": "ee_pause"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "100",
           "angle": "-6.283185307179586",
-          "roll": "0.0",
+          "radius": "100",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_3": {
         "name": "e_3",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "ee_pause",
-          "roll": "0.0"
-        }
+          "length": "ee_pause"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_4_0": {
         "name": "e_4_0",
@@ -1249,7 +1514,14 @@
           "speed": "30.0",
           "length": "((abs(e_4_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_4_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       }
     }
   },
@@ -1367,40 +1639,64 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1": {
         "name": "e_1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "line_length",
-          "roll": "0.0"
-        }
+          "length": "line_length"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.141592653589793",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_3_pad1": {
         "name": "e_3_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_3_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_3_0": {
         "name": "e_3_0",
@@ -1409,27 +1705,46 @@
           "speed": "30.0",
           "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_3_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_3_pad2": {
         "name": "e_3_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_3_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -1596,20 +1911,32 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "3.9269908169872414",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -1618,36 +1945,60 @@
           "speed": "30.0",
           "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "4.71238898038469",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_3_pad1": {
         "name": "e_3_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_3_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_3_0": {
         "name": "e_3_0",
@@ -1656,27 +2007,46 @@
           "speed": "30.0",
           "length": "((abs(e_3_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_3_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_3_pad2": {
         "name": "e_3_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_3_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_3_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "0.7853981633974483",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -1797,20 +2167,32 @@
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -1819,27 +2201,46 @@
           "speed": "30.0",
           "length": "((abs(e_1_rolls[0])*30.0)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
-        }
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "(0.5*(line_length-sum(((abs(e_1_rolls[0])*30.0)/partial_roll_rate))))",
-          "roll": "0"
-        }
+          "length": "(0.5*(line_length-((abs(e_1_rolls[0])*30.0)/partial_roll_rate)))"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "-1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -1919,7 +2320,12 @@
           "speed": "10",
           "radius": "0.8726646259971647",
           "break_angle": "0.5235987755982988"
-        }
+        },
+        "dgs": [
+          "nose_drop_length",
+          "nose_drop_roll_angle",
+          "nose_drop_angle"
+        ]
       },
       "e_0_autorotation": {
         "name": "e_0_autorotation",
@@ -1928,7 +2334,10 @@
           "speed": "10",
           "length": "(188.49555921538757/spin_rate)",
           "roll": "18.84955592153876"
-        }
+        },
+        "dgs": [
+          "autorotation_roll_angle"
+        ]
       },
       "e_0_recovery": {
         "name": "e_0_recovery",
@@ -1936,27 +2345,45 @@
         "props": {
           "speed": "10",
           "length": "0.8726646259971647"
-        }
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "recovery_length",
+          "end_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "line_length",
-          "roll": "0.0"
-        }
+          "length": "line_length"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
-          "radius": "loop_radius",
           "angle": "1.5707963267948966",
-          "roll": "0.0",
+          "radius": "loop_radius",
+          "roll": "0",
           "ke": "0"
-        }
+        },
+        "dgs": [
+          "speed",
+          "curvature",
+          "track_proj_vel",
+          "track_proj_ang",
+          "roll_angle_p"
+        ]
       }
     }
   },
@@ -2002,9 +2429,14 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "line_length",
-          "roll": "0.0"
-        }
+          "length": "line_length"
+        },
+        "dgs": [
+          "speed",
+          "track_y",
+          "track_z",
+          "roll_angle"
+        ]
       }
     }
   }

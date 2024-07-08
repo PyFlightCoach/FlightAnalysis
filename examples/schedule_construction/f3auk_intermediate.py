@@ -2,12 +2,13 @@
 UKF3A Intermediate Template
 Author Vince Beesley
 '''
-from flightanalysis import *
+from flightanalysis import (
+    SchedDef, ManInfo, BoxLocation, Position, Orientation, 
+    Height, Direction, MBTags, f3amb, centred, r, ManParm,
+    ManOption, Combination, c45
+)
+from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
-
-
-
-c45 = np.cos(np.radians(45))
 
 intermediate_def = SchedDef([  
    
@@ -75,12 +76,12 @@ intermediate_def = SchedDef([
             end=BoxLocation(Height.TOP)            
         ),
         [   
-            f3amb.loop(-np.pi/2),            
-            f3amb.line(roll=np.pi),
+            f3amb.loop(-np.pi/2),     
+            f3amb.roll(np.pi),
             f3amb.loop(np.pi/2), 
             centred(f3amb.line()),
             f3amb.loop(np.pi/2), 
-            f3amb.line(roll=np.pi),       
+            f3amb.roll(np.pi),       
             f3amb.loop(-np.pi/2),                               
            ], line_length = 100
         ),
