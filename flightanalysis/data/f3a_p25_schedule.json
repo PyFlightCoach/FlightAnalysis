@@ -5080,8 +5080,10 @@
         },
         "defaul": 0,
         "collectors": {
+          "e_1.roll": "e_1.roll",
           "e_2.angle": "e_2.angle",
-          "e_3.angle": "e_3.angle"
+          "e_3.angle": "e_3.angle",
+          "e_3.roll": "e_3.roll"
         }
       }
     },
@@ -5111,7 +5113,7 @@
           "speed": "30.0",
           "angle": "0.7853981633974483",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "rke_opt[0]",
           "ke": "0"
         },
         "dgs": [
@@ -5119,7 +5121,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_2": {
@@ -5147,7 +5150,7 @@
           "speed": "30.0",
           "angle": "rke_opt[2]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "rke_opt[3]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -5155,7 +5158,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       }
     }

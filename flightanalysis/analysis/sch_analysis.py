@@ -3,14 +3,12 @@ from typing import Self, Union
 from json import load, dump
 from flightdata import Flight, State, Origin, Collection, NumpyEncoder
 from flightanalysis.definition import SchedDef, ScheduleInfo
+from flightanalysis import __version__
 from . import manoeuvre_analysis as analysis
 from loguru import logger
 from joblib import Parallel, delayed
 import os
 import pandas as pd
-from importlib.metadata import version
-from packaging import version as pkgversion
-from pathlib import Path
 
 class ScheduleAnalysis(Collection):
     VType=analysis.Analysis
@@ -21,7 +19,7 @@ class ScheduleAnalysis(Collection):
         self.sinfo = sinfo
 
     @staticmethod
-    def from_fcj(file: Union[Union[str, bytes, os.PathLike], dict], info: ScheduleInfo=None, proceed=True) -> ScheduleAnalysis:
+    def from_fcj(file: Union[str | bytes, dict], info: ScheduleInfo=None, proceed=True) -> ScheduleAnalysis:
         data = file if isinstance(file, dict) else load(open(file, 'r'))
 
         flight = Flight.from_fc_json(data)
@@ -30,12 +28,12 @@ class ScheduleAnalysis(Collection):
             info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
         
         sdef = SchedDef.load(info)
-        box = Origin.from_fcjson_parmameters(data["parameters"])
+        box = Origin.from_fcjson_parameters(data["parameters"])
         state = State.from_flight(flight, box).splitter_labels(data["mans"],sdef.uids)
         direction = -state.get_manoeuvre(1)[0].direction()[0]
 
         if 'fcs_scores' in data and len(data['fcs_scores']) > 0:
-            versions = [pkgversion.parse(res['fa_version']) for res in data['fcs_scores']]
+            versions = [res['fa_version'] for res in data['fcs_scores']]
             ilatest = versions.index(max(versions))
 
         mas = []
@@ -45,7 +43,7 @@ class ScheduleAnalysis(Collection):
             if 'fcs_scores' in data and len(data['fcs_scores']) > 0:
                 df = pd.DataFrame(data['fcs_scores'][ilatest]['manresults'][i+1]['els'])
                 st = st.splitter_labels(df.to_dict('records'), target_col='element')
-            #.proceed()
+            
             nma = analysis.Basic(i, mdef, st, direction)
             if proceed:
                 nma = nma.proceed()
@@ -57,7 +55,7 @@ class ScheduleAnalysis(Collection):
         data = file if isinstance(file, dict) else load(open(file, 'r'))
 
         new_results = dict(
-            fa_version = version('flightanalysis'),
+            fa_version = __version__,
             manresults = [None] + \
                 [man.fcj_results() if hasattr(man, 'fcj_results') else None for man in self]
         )
@@ -73,17 +71,10 @@ class ScheduleAnalysis(Collection):
             data['fcs_scores'].append(new_results)
 
         if ofile:
-            if ofile=='same':
-                ofile = file
-            dump(data, open(ofile, 'w'), cls=NumpyEncoder, indent=2)
+            dump(data, open(file if ofile=='same' else ofile, 'w'), cls=NumpyEncoder, indent=2)
 
         return data
     
-#    def export_fcj_and_internals(self, file: Union[str, dict]):
-#        data = load(open(file, 'r')) if isinstance(file, str) else file
-#        fcj = self.append_scores_to_fcj(data)
-
-
     def run_all(self) -> Self:
         def parse_analyse_serialise(pad):
             try:

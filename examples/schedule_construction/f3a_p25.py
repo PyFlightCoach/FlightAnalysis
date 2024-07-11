@@ -219,8 +219,8 @@ p25_def = SchedDef([
             f3amb.loop(r(3/8)),
             f3amb.loop(r(1/8), rolls="rke_opt[0]"),
             MBTags.CENTRE,
-            f3amb.loop("rke_opt[1]", ke=True),
-            f3amb.loop("rke_opt[2]", ke=True, rolls="rke_opt[3]"),
+            f3amb.loop("rke_opt[1]", ke=np.pi/2),
+            f3amb.loop("rke_opt[2]", ke=np.pi/2, rolls="rke_opt[3]"),
             MBTags.CENTRE
         ],
         rke_opt=ManParm("rke_opt", 

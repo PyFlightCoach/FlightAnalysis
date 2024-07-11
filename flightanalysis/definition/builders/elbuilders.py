@@ -217,11 +217,14 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
     break_angle, snap_rate, break_rate, mode ):
     '''This will create a set of ElDefs to represent a series of loops and the pads at the ends if padded==True.'''
 
+    
     ke = 0 if not ke else np.pi/2
     rollangle = angle if rollangle is None else rollangle
-        
-    if (isinstance(rolls, Number) or isinstance(rolls, ItemOpp) ) and rollangle == angle:
+    
+    if rolls == 0:
         return loop(name, speed, radius, angle, ke)
+    if (isinstance(rolls, Number) or isinstance(rolls, ItemOpp) ) and rollangle == angle:
+        return rolling_loop(name, speed, radius, angle, rolls, ke)
     
     mps = ManParms()
     eds = ElDefs()

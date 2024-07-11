@@ -42,11 +42,11 @@ class ManDef:
     def uid(self):
         return self.info.short_name
 
-    def to_dict(self):
+    def to_dict(self, criteria=False):
         return dict(
             info = self.info.to_dict(),
             mps = self.mps.to_dict(),
-            eds = self.eds.to_dict()
+            eds = self.eds.to_dict(criteria)
         )
 
     @staticmethod

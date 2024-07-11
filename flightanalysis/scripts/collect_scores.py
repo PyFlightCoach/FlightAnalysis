@@ -1,60 +1,110 @@
 from pathlib import Path
-from loguru import logger
-import sys
 import argparse
 import pandas as pd 
-from flightanalysis import ScheduleAnalysis
-from datetime import datetime
-from flightanalysis.scripts.plot_scores import plot_logs
+from flightanalysis.fcjson import FCJ
+from flightanalysis import enable_logging, logger, ScheduleAnalysis
+from flightanalysis.version import get_version
+from datetime import datetime, date
+from flightanalysis import ScheduleInfo
+from dataclasses import dataclass
+import re
+import plotly.express as px
 
-import json_stream
+
+@dataclass
+class FCJScore():
+    file: str
+    created: date
+    schedule: ScheduleInfo
+    scores: pd.DataFrame
+
+    @staticmethod
+    def parse_fcj(file: str, fcj: FCJ):
+        try:
+            created = datetime.strptime(Path(file).parent.stem, '%Y_%m_%d')
+        except ValueError:
+            created = datetime.strptime(re.search(r'_\d{2}_\d{2}_\d{2}_', fcj.name)[0], '_%y_%m_%d_')
+        return FCJScore(
+            file = file,
+            created = created,
+            schedule = ScheduleInfo(*fcj.parameters.schedule).fcj_to_pfc(),
+            scores = fcj.pfc_version_df() if len(fcj.fcs_scores) > 0 else pd.DataFrame([])
+        )
+
+    @staticmethod
+    def parse_file(file: str):
+        with open(file, 'r') as f:
+            fcj = FCJ.model_validate_json(f.read())
+        return FCJScore.parse_fcj(file, fcj)
+
+    def run_analysis(self):
+        if get_version() not in self.version_totals():
+            fcj = FCJ.model_validate_json(open(self.file, 'r').read())
+
+            sa = ScheduleAnalysis.from_fcj(fcj.model_dump()).run_all()
+            data = sa.append_scores_to_fcj(fcj.model_dump(), self.file)
+            return FCJScore.parse_fcj(self.file, FCJ.model_validate(data)) 
+            #except Exception as e:
+            #    logger.error(f'Error processing {self.file}: {e}')
+            #    return self
+        else:
+            return self
+        
+
+    def __repr__(self):
+        return f'FCJScore({self.file}, {self.created}, {self.schedule}, {list(self.scores.index.levels[0])})'
+
+    def version_totals(self):
+        if len(self.scores) == 0:
+            return dict()
+        else:
+            return self.scores.groupby('version').kfac.sum().iloc[:,-1].to_dict()
+
+    def summary(self):
+        return dict(
+            file = self.file,
+            created = self.created,
+            schedule = self.schedule,
+            **self.version_totals()
+        )
+
+def collect_scores(files: list[str], run=False) -> pd.DataFrame:
+    data = []
+    for i, file in enumerate(files):
+        logger.info(f'log {i} of {len(files)}: {file}')
+        try:
+            fcjscore = FCJScore.parse_file(file)
+            if get_version() not in fcjscore.version_totals() and run:
+                fcjscore = fcjscore.run_analysis()
+            if len(fcjscore.scores) > 0:
+                data.append(fcjscore.summary())
+                logger.info(fcjscore.version_totals())
+        except Exception as e:
+            logger.error(f'Error processing {file}: {e}')   
+    
+    return pd.DataFrame(data)
 
 
-#data = json_stream.load(open('_trials/snap_alignment/manual_F3A FAI_P25_24_07_05_00000186.json', 'r'))['fcs_scores']
-#scores = json_stream.to_standard_types(data)
 
 
 def main():
-    logger.remove()
-    logger.add(sys.stderr, level="INFO")
-
-    default_name = f'pfc_{datetime.now().strftime("%Y_%m_%d")}'
-
+    enable_logging()
+    
     parser = argparse.ArgumentParser(description='Collect scores for all analysis jsons in a directory')
-    parser.add_argument('-f', '--folder', default=default_name, help=f'Source directory, defaults to {default_name}')
-    parser.add_argument('-o', '--outfile', default=f'{default_name}_scores.csv', help='Output file')
+    parser.add_argument('-f', '--folder', default='.', help='Source directory, defaults to current')
+    parser.add_argument('-o', '--outfile', default='fcs_scores.csv', help='Output file')
+    parser.add_argument('-r', '--run', default=False, action=argparse.BooleanOptionalAction, help='run analysis for current version if it does not exist')
     args = parser.parse_args()
 
-    outdir = Path(args.folder)
 
-    all_logs = [f for f in sorted(list(outdir.rglob('*analysis.json')))]
 
-    odata = {}
+    all_logs = [f for f in sorted(list(Path(args.folder).rglob('*.json')))]
 
-    for log in all_logs:
-        if log.stat().st_size == 0:
-            logger.info(f'Empty file {log}')
-            continue
-        logger.info(f'Processing file {log}')
-        sa = ScheduleAnalysis.from_fcscore(log)
-        total, scores = sa.scores()
-        if sa.sinfo.name.lower() not in odata:
-            odata[sa.sinfo.name.lower()] = {}
-        odata[sa.sinfo.name.lower()][log.stem] = dict(total=total, **scores)
+    scoredf = collect_scores(all_logs, args.run)
+    scoredf.to_csv(args.outfile, index=False)
 
-    pd.options.display.float_format = '{:,.2f}'.format
-    dfs = {}
-    for sch, v in odata.items():
-        dfs[sch] = pd.DataFrame.from_dict(v, orient='index')
-        dfs[sch].index.name = 'source_file'
-
-    for sch, res in dfs.items():
-        logger.info(f'{sch}scores:\n{res}')
-
-        res.to_csv(args.outfile.replace('_scores.csv', f'_{sch}_scores.csv'))
-
-    plot_logs([args.outfile.replace('_scores.csv', f'_{sch}_scores.csv') for sch in dfs.keys()])
 
 
 if __name__ == "__main__":
     main()
+    

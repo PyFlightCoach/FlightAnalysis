@@ -2,7 +2,12 @@
 UKF3A Clubman template
 Author Vince Beesley
 '''
-from flightanalysis import *
+from flightanalysis import (
+    SchedDef, ManInfo, BoxLocation, Position, Orientation, 
+    Height, Direction, MBTags, f3amb, centred, r, ManParm,
+    ManOption, Combination, c45
+)
+from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
 
 clubman_def = SchedDef([  
@@ -106,11 +111,9 @@ clubman_def = SchedDef([
         ),
         [
             f3amb.loop(np.pi/2),
-            f3amb.line(length=150),                       
-            f3amb.line(speed = 3, length = 10),
-            f3amb.line(speed = 1, length = 5),
+            f3amb.line(),
             f3amb.stallturn(),
-            f3amb.line(length=165), 
+            f3amb.line(), 
             f3amb.loop(np.pi/2)
         ]),
 
@@ -196,7 +199,9 @@ clubman_def = SchedDef([
     ]
 )
 
-
+clubman_def.stall.eds.e_1.dgs = DGGrps.st_line_decel
+clubman_def.stall.eds.e_3.dgs = DGGrps.st_line_accel
+clubman_def.spin.eds.e_1.dgs = DGGrps.sp_line_decel
 
 if __name__ == "__main__":
 
