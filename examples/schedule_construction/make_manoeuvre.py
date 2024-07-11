@@ -2,24 +2,35 @@ from flightplotting import plotsec, plot_regions
 from flightplotting.traces import axis_rate_trace
 from flightanalysis import (
     ManDef, BoxLocation, Position, Height, Direction, 
-    Orientation, ManInfo, r, MBTags, c45, centred)
+    Orientation, ManInfo, r, MBTags, c45, centred, ManParm, Combination)
 import numpy as np
 from flightanalysis.definition import f3amb
+from flightdata import NumpyEncoder
 import plotly.graph_objects as go
 from json import dumps
 
 mdef: ManDef = f3amb.create(ManInfo(
-    "Figure Z", "Z", k=4, position=Position.CENTRE, 
-    start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
-    end=BoxLocation(Height.TOP)
-),[
-    f3amb.loop(3*np.pi/4),
-    centred(f3amb.snap(r(1))),
-    f3amb.loop(-3*np.pi/4),
-], line_length=60, loop_radius=50)
+            "Figure S", "figS", k=5, position=Position.CENTRE, 
+            start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
+            end=BoxLocation(Height.TOP)
+        ),[
+            MBTags.CENTRE,
+            f3amb.loop(r(3/8)),
+            f3amb.loop(r(1/8), rolls="rke_opt[0]"),
+            MBTags.CENTRE,
+            f3amb.loop("rke_opt[1]", ke=np.pi/2),
+            f3amb.loop("rke_opt[2]", ke=np.pi/2, rolls="rke_opt[3]"),
+            MBTags.CENTRE
+        ],
+        rke_opt=ManParm("rke_opt", 
+            Combination(desired=r([
+                [1/4, 3/8, 1/8, 1/4], 
+                [-1/4, -3/8, -1/8, -1/4]
+        ])), 0))
+
 
 data = mdef.to_dict()
-print(dumps(data, indent=2))
+print(dumps(data, indent=2, cls=NumpyEncoder))
 mdef = ManDef.from_dict(data)
 
 it = mdef.info.initial_transform(170, 1)

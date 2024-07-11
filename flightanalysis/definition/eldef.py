@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from flightanalysis.scoring.downgrade import DownGrades
 from flightanalysis.scoring.f3a_downgrades import dgs
 
+
 @dataclass
 class ElDef:
     """This class creates a function to build an element (Loop, Line, Snap, Spin, Stallturn)
@@ -27,12 +28,12 @@ class ElDef:
     def get_collector(self, name) -> Collector:
         return Collector(self.name, name)
 
-    def to_dict(self):
+    def to_dict(self, criteria=False):
         return dict(
             name = self.name,
             Kind = self.Kind.__name__,
             props = {k: str(v) for k, v in self.props.items()},
-            dgs = [dg.name for dg in self.dgs]
+            dgs = [dg.to_dict() if criteria else dg.name for dg in self.dgs]
         )
 
     def __repr__(self):
@@ -44,7 +45,7 @@ class ElDef:
             name=data["name"],
             Kind = Element.from_name(data["Kind"]),
             props = {k: ManParm.parse(v, mps) for k, v in data["props"].items()},
-            dgs = DownGrades([dgs[dg] for dg in data["dgs"]])
+            dgs = DownGrades([dgs[dg if isinstance(dg, str) else dgs[dg['name']] ]for dg in data["dgs"]])
         )
 
     def __call__(self, mps: ManParms) -> Element:
@@ -108,8 +109,8 @@ class ElDefs(Collection):
     def from_dict(data: dict, mps: ManParms):
         return ElDefs([ElDef.from_dict(v, mps) for v in data.values()])
 
-    def to_dict(self):
-        return {v.name: v.to_dict() for v in self}
+    def to_dict(self, criteria=False):
+        return {v.name: v.to_dict(criteria) for v in self}
     
     def get_new_name(self): 
         new_id = 0 if len(self.data) == 0 else list(self.data.values())[-1].id + 1

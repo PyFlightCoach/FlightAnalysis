@@ -10,6 +10,7 @@ from flightanalysis import (
 from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
 
+
 intermediate_def = SchedDef([  
    
     f3amb.create(ManInfo

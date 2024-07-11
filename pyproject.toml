@@ -16,7 +16,6 @@ classifiers = ["Programming Language :: Python :: 3",]
 dynamic = ["version", "dependencies", "optional-dependencies"]
 
 [project.scripts]
-batch_analyse = "flightanalysis.scripts.batch_analyse:main"
 collect_scores = "flightanalysis.scripts.collect_scores:main"
 plot_scores = "flightanalysis.scripts.plot_scores:main"
 

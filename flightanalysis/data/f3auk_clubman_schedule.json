@@ -1215,7 +1215,23 @@
         "defaul": 55.0,
         "collectors": {
           "e_0.radius": "e_0.radius",
-          "e_6.radius": "e_6.radius"
+          "e_4.radius": "e_4.radius"
+        }
+      },
+      "line_length": {
+        "name": "line_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": 130.0,
+        "collectors": {
+          "e_1.length": "e_1.length",
+          "e_3.length": "e_3.length"
         }
       },
       "stallturn_rate": {
@@ -1230,7 +1246,7 @@
         },
         "defaul": 3.141592653589793,
         "collectors": {
-          "e_4.yaw_rate": "e_4.yaw_rate"
+          "e_2.yaw_rate": "e_2.yaw_rate"
         }
       }
     },
@@ -1258,45 +1274,16 @@
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "150"
+          "length": "line_length"
         },
         "dgs": [
-          "speed",
           "track_y",
-          "track_z",
+          "soft_track_z",
           "roll_angle"
         ]
       },
       "e_2": {
         "name": "e_2",
-        "Kind": "Line",
-        "props": {
-          "speed": "3",
-          "length": "10"
-        },
-        "dgs": [
-          "speed",
-          "track_y",
-          "track_z",
-          "roll_angle"
-        ]
-      },
-      "e_3": {
-        "name": "e_3",
-        "Kind": "Line",
-        "props": {
-          "speed": "1",
-          "length": "5"
-        },
-        "dgs": [
-          "speed",
-          "track_y",
-          "track_z",
-          "roll_angle"
-        ]
-      },
-      "e_4": {
-        "name": "e_4",
         "Kind": "StallTurn",
         "props": {
           "speed": "0.0",
@@ -1308,22 +1295,21 @@
           "stallturn_roll_angle"
         ]
       },
-      "e_5": {
-        "name": "e_5",
+      "e_3": {
+        "name": "e_3",
         "Kind": "Line",
         "props": {
           "speed": "30.0",
-          "length": "165"
+          "length": "line_length"
         },
         "dgs": [
-          "speed",
           "track_y",
-          "track_z",
+          "soft_track_z",
           "roll_angle"
         ]
       },
-      "e_6": {
-        "name": "e_6",
+      "e_4": {
+        "name": "e_4",
         "Kind": "Loop",
         "props": {
           "speed": "30.0",
@@ -2361,8 +2347,7 @@
           "length": "line_length"
         },
         "dgs": [
-          "speed",
-          "track_y",
+          "soft_track_y",
           "track_z",
           "roll_angle"
         ]

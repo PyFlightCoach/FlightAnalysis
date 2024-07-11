@@ -94,10 +94,12 @@
         },
         "defaul": 0,
         "collectors": {
+          "e_0.roll": "e_0.roll",
           "e_2.angle": "e_2.angle",
           "e_4.angle": "e_4.angle",
           "e_6.angle": "e_6.angle",
-          "e_8.angle": "e_8.angle"
+          "e_8.angle": "e_8.angle",
+          "e_8.roll": "e_8.roll"
         }
       }
     },
@@ -109,7 +111,7 @@
           "speed": "30.0",
           "angle": "0.7853981633974483",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[0]",
           "ke": "0"
         },
         "dgs": [
@@ -117,7 +119,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_1": {
@@ -141,7 +144,7 @@
           "speed": "30.0",
           "angle": "roll_option[1]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "3.141592653589793",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -149,7 +152,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_3": {
@@ -173,7 +177,7 @@
           "speed": "30.0",
           "angle": "roll_option[2]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "3.141592653589793",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -181,7 +185,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_5": {
@@ -205,7 +210,7 @@
           "speed": "30.0",
           "angle": "roll_option[3]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "3.141592653589793",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -213,7 +218,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_7": {
@@ -237,7 +243,7 @@
           "speed": "30.0",
           "angle": "roll_option[4]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[5]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -245,7 +251,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       }
     }
@@ -829,7 +836,7 @@
           "speed": "30.0",
           "angle": "-3.141592653589793",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "3.141592653589793",
           "ke": "0"
         },
         "dgs": [
@@ -837,7 +844,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       }
     }
@@ -1101,7 +1109,7 @@
           "speed": "30.0",
           "angle": "3.141592653589793",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "3.141592653589793",
           "ke": "0"
         },
         "dgs": [
@@ -1109,7 +1117,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_3_pad1": {
@@ -1461,8 +1470,11 @@
         "defaul": 1,
         "collectors": {
           "e_0.angle": "e_0.angle",
+          "e_0.roll": "e_0.roll",
           "e_1.angle": "e_1.angle",
-          "e_2.angle": "e_2.angle"
+          "e_1.roll": "e_1.roll",
+          "e_2.angle": "e_2.angle",
+          "e_2.roll": "e_2.roll"
         }
       }
     },
@@ -1474,7 +1486,7 @@
           "speed": "30.0",
           "angle": "roll_option[0]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[1]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -1482,7 +1494,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_1": {
@@ -1492,7 +1505,7 @@
           "speed": "30.0",
           "angle": "roll_option[2]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[3]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -1500,7 +1513,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_2": {
@@ -1510,7 +1524,7 @@
           "speed": "30.0",
           "angle": "roll_option[4]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[5]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -1518,7 +1532,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       }
     }
@@ -3126,8 +3141,33 @@
         },
         "defaul": 0,
         "collectors": {
+          "e_0.roll": "e_0.roll",
           "e_2.angle": "e_2.angle",
-          "e_4.angle": "e_4.angle"
+          "e_4.angle": "e_4.angle",
+          "e_4.roll": "e_4.roll"
+        }
+      },
+      "top_roll_option": {
+        "name": "top_roll_option",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": null
+          },
+          "desired": [
+            [
+              -3.141592653589793
+            ],
+            [
+              3.141592653589793
+            ]
+          ]
+        },
+        "defaul": 0,
+        "collectors": {
+          "e_2.roll": "e_2.roll"
         }
       },
       "e_1_rolls": {
@@ -3217,7 +3257,7 @@
           "speed": "30.0",
           "angle": "2.356194490192345",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[0]",
           "ke": "0"
         },
         "dgs": [
@@ -3225,7 +3265,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_1_pad1": {
@@ -3279,7 +3320,7 @@
           "speed": "30.0",
           "angle": "roll_option[1]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "top_roll_option[0]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -3287,7 +3328,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_3_pad1": {
@@ -3341,7 +3383,7 @@
           "speed": "30.0",
           "angle": "roll_option[2]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[3]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -3349,7 +3391,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       }
     }
@@ -4190,9 +4233,11 @@
         },
         "defaul": 0,
         "collectors": {
+          "e_0.roll": "e_0.roll",
           "e_1.angle": "e_1.angle",
           "e_3.angle": "e_3.angle",
-          "e_4.angle": "e_4.angle"
+          "e_4.angle": "e_4.angle",
+          "e_4.roll": "e_4.roll"
         }
       },
       "e_2_rolls": {
@@ -4227,7 +4272,7 @@
           "speed": "30.0",
           "angle": "1.5707963267948966",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[0]",
           "ke": "0"
         },
         "dgs": [
@@ -4235,7 +4280,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       },
       "e_1": {
@@ -4319,7 +4365,7 @@
           "speed": "30.0",
           "angle": "roll_option[3]",
           "radius": "loop_radius",
-          "roll": "0",
+          "roll": "roll_option[4]",
           "ke": "1.5707963267948966"
         },
         "dgs": [
@@ -4327,7 +4373,8 @@
           "curvature",
           "track_proj_vel",
           "track_proj_ang",
-          "roll_angle_p"
+          "roll_rate",
+          "end_roll_angle_p"
         ]
       }
     }
