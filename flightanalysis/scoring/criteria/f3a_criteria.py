@@ -6,7 +6,7 @@ class F3ASingle:
     roll=Single(Exponential(2.872721387028467,1.6309297535714575, 6 ))
     angle=Single(Exponential(3.8197186342054885,0.9999999999999999, 6 ))
 class F3AIntra:
-    track=ContAbs(Exponential(3.8197186342054885,0.9999999999999999, 6 ), 20, 3)
+    track=ContAbs(Exponential(3.8197186342054885,0.9999999999999999, 6 ), 5, 3)
     roll=ContAbs(Exponential(3.3937161800825275,1.2618595071429148, 6 ), 30, 3)
     radius=ContRat(Exponential(0.5,1.2920296742201793, 3 ), 40, 3)
     speed=ContRat(Exponential(0.15,1.0, 1 ), 50, 3)
