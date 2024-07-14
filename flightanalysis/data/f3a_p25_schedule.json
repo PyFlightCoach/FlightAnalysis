@@ -3761,7 +3761,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "roll_angle"
+          "end_roll_angle"
         ]
       },
       "e_1_pad1": {
@@ -4619,7 +4619,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "roll_angle"
+          "end_roll_angle"
         ]
       },
       "e_1_pad2": {
