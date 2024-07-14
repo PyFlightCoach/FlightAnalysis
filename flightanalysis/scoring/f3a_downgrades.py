@@ -39,7 +39,7 @@ class DGGrps:
     rolling_loop = DownGrades([dgs.speed, dgs.curvature, dgs.track_proj_vel, dgs.track_proj_ang, dgs.roll_rate, dgs.end_roll_angle_p])
     nose_drop = DownGrades([dgs.nose_drop_length, dgs.nose_drop_roll_angle, dgs.nose_drop_angle])
     pitch_break = DownGrades([dgs.pitch_break_length])
-    recovery = DownGrades([dgs.end_track_y, dgs.end_track_z, dgs.recovery_length, dgs.end_roll_angle])
+    recovery = DownGrades([dgs.end_track_y, dgs.end_track_z, dgs.recovery_length, dgs.roll_angle])
     stallturn = DownGrades([dgs.stallturn_width, dgs.stallturn_speed, dgs.stallturn_roll_angle])
     autorotation = DownGrades([dgs.autorotation_roll_angle])
     st_line_decel = DownGrades([dgs.track_y, dgs.soft_track_z, dgs.roll_angle])
