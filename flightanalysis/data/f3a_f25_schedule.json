@@ -1085,7 +1085,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "end_roll_angle"
+          "roll_angle"
         ]
       },
       "e_1_pad2": {
@@ -1328,7 +1328,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "end_roll_angle"
+          "roll_angle"
         ]
       },
       "e_1_pad1": {
@@ -1833,7 +1833,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "end_roll_angle"
+          "roll_angle"
         ]
       },
       "e_3_1_break": {
@@ -1871,7 +1871,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "end_roll_angle"
+          "roll_angle"
         ]
       },
       "e_3_pad2": {
@@ -4337,7 +4337,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "end_roll_angle"
+          "roll_angle"
         ]
       },
       "e_3": {
@@ -4992,7 +4992,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "end_roll_angle"
+          "roll_angle"
         ]
       },
       "e_5_pad2": {

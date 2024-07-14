@@ -171,7 +171,7 @@ class Measurement:
     
     @staticmethod
     def roll_angle_p(fl: State, tp: State) -> Self:
-        return Measurement.roll_angle_proj(fl, tp, PX())
+        return Measurement.roll_angle_proj(fl, tp, Measurement.get_proj(tp))
 
     @staticmethod
     def roll_angle_y(fl: State, tp: State) -> Self:

@@ -2336,7 +2336,7 @@
           "end_track_y",
           "end_track_z",
           "recovery_length",
-          "end_roll_angle"
+          "roll_angle"
         ]
       },
       "e_1": {
