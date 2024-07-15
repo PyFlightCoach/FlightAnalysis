@@ -95,13 +95,15 @@ class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
         if len(values) <= 8:
-            return np.abs(np.linspace(
+            vals = np.linspace(
                 np.mean(values[:1+len(values)//3]), 
                 np.mean(values[-1-len(values)//3:]), 
                 len(values)
-            ))
+            )
         else:
-            return np.abs(Continuous.convolve_wind(values, self.window_ratio, self.max_window))
+            vals = Continuous.convolve_wind(values, self.window_ratio, self.max_window)
+        vals[np.sign(vals)==-np.sign(np.mean(vals))]=0
+        return vals
 
     @staticmethod
     def mistakes(data, peaks, troughs):

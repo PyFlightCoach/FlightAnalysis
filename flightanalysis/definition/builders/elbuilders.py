@@ -4,7 +4,6 @@ from flightanalysis.definition.collectors import Collectors
 from flightanalysis.definition import ItemOpp
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring.f3a_downgrades import DGGrps
-from flightanalysis.scoring.downgrade import DownGrades
 from numbers import Number
 import numpy as np
 

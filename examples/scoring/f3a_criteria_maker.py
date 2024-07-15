@@ -11,9 +11,9 @@ f3a=dict(
     intra=dict(
         track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6), 20),
         roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.5, 6], 6), 30),
-        radius=ContRat(Exponential.fit_points([1,5], [0.5, 4], 3), 40),
+        radius=ContRat(Exponential.fit_points([1,2], [0.6, 1.2], 1.5), 40),
         speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1), 50),
-        roll_rate=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 2), 40),
+        roll_rate=ContRat(Exponential.fit_points([1,3], [0.3, 0.9], 1), 40),
         stallturn_speed=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-2,2]),
         stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.5,2.5]), [-2,2]),
         spin_entry_length=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-5,5]),
@@ -50,10 +50,10 @@ def plot_all(crits):
     from plotly.subplots import make_subplots
     import plotly.graph_objects as go
     criteria = [cr for crit in crits.values() for cr in crit.values()]
-    names = [cr for crit in crits.values() for cr in crit.keys()]
+    names = [f'{k}_{cr}' for k, crit in crits.items() for cr in crit.keys()]
 
     nplots = sum([len(cr) for cr in crits.values()])
-    ncols=5
+    ncols=7
     fig = make_subplots(int(np.ceil(nplots / ncols)), ncols, subplot_titles=names)
     
     for i, crit in enumerate(criteria):
@@ -65,5 +65,5 @@ def plot_all(crits):
 if __name__ == "__main__":
     #plot_lookup(f3a['intra']['recovery_length'].lookup,-10,10)
 
-#    plot_all(f3a)
+ #   plot_all(f3a)
     dump_criteria_to_py(f3a)
