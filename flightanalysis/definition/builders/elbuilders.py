@@ -8,12 +8,8 @@ from numbers import Number
 import numpy as np
 
 
-def line(name: str, speed, length, soft_start=False, soft_end=False):
+def line(name: str, speed, length):
     dgs = DGGrps.line
-    if soft_start:
-        dgs = DGGrps.line_accel
-    if soft_end:
-        dgs = DGGrps.line_decel
     return ElDef.build(
         Line, name, 
         [speed, length],
@@ -89,13 +85,6 @@ def spin(name, turns, break_angle, rate, speed, break_rate, reversible):
         DGGrps.nose_drop, 
     )
 
-    #if isinstance(turns, Number):
-    #    turns = ManParm(f"{name}_rolls", 
-    #        Combination.rolllist(
-    #            [turns] if np.isscalar(turns) else turns, 
-    #            reversible
-    #    ), 0) 
-
     autorotation = ElDef.build(
         Autorotation, f"{name}_autorotation", 
         [speed, speed * abs(turns)/rate, turns],
@@ -153,15 +142,15 @@ def roll_combo(
     return eds, ManParms()
 
 
-def pad(speed, line_length, eds: ElDefs, soft_start: bool = False, soft_end: bool = False):
+def pad(speed, line_length, eds: ElDefs):
     '''This will add pads to the ends of the element definitions to
       make the total length equal to line_length'''
     eds = ElDefs([eds]) if isinstance(eds, ElDef) else eds
     
     pad_length = 0.5 * (line_length - eds.builder_sum("length"))
     
-    e1 = line(f"e_{eds[0].id}_pad1", speed, pad_length, soft_start, False)[0]
-    e3 = line(f"e_{eds[0].id}_pad2", speed, pad_length, False, soft_end)[0]
+    e1 = line(f"e_{eds[0].id}_pad1", speed, pad_length)[0]
+    e3 = line(f"e_{eds[0].id}_pad2", speed, pad_length)[0]
     
     mp = ManParm(
         f"e_{eds[0].id}_pad_length", 
@@ -180,7 +169,7 @@ def pad(speed, line_length, eds: ElDefs, soft_start: bool = False, soft_end: boo
 def rollmaker(name, rolls, rolltypes, speed, partial_rate, 
     full_rate, pause_length, line_length, reversible, 
     break_angle, snap_rate, break_rate,
-    padded, mode, soft_start, soft_end):
+    padded, mode):
     '''This will create a set of ElDefs to represent a series of rolls or snaps
       and pauses between them and the pads at the ends if padded==True.
     '''
@@ -206,7 +195,7 @@ def rollmaker(name, rolls, rolltypes, speed, partial_rate,
     mps.add(rcmps)
             
     if padded:
-        eds, padmps = pad(speed, line_length, eds, soft_start, soft_end)
+        eds, padmps = pad(speed, line_length, eds)
         mps.add(padmps)
 
     return eds, mps

@@ -21,7 +21,7 @@ class F3AIntra:
     depth=MaxBound(Exponential(0.02500000000000001,0.9999999999999999, None ), 170)
 class F3AInter:
     radius=Comparison(Exponential(1.0,1.0, 2 ))
-    speed=Comparison(Exponential(0.25,1.0000000000000002, 1 ))
+    speed=Comparison(Exponential(0,1, None ))
     roll_rate=Comparison(Exponential(0.25,1.0000000000000002, 1 ))
     length=Comparison(Exponential(1.0,1.0, 2 ))
     free=Comparison(Exponential(0,1, None ))
