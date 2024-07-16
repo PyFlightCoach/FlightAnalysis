@@ -1,4 +1,5 @@
 from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, free, OutsideBound
+from flightanalysis.definition.builders.schedules.create_all import create_all
 import numpy as np
 
 
@@ -9,11 +10,11 @@ f3a=dict(
         angle=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6)),
     ),
     intra=dict(
-        track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6), 20),
-        roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.5, 6], 6), 30),
-        radius=ContRat(Exponential.fit_points([1,2], [0.6, 1.2], 1.5), 40),
-        speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1), 50),
-        roll_rate=ContRat(Exponential.fit_points([1,3], [0.3, 0.9], 1), 40),
+        track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6), 5),
+        roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.5, 6], 6), 10),
+        radius=ContRat(Exponential.fit_points([1,2], [0.5, 1], 1), 60),
+        speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1), 5),
+        roll_rate=ContRat(Exponential.fit_points([1,3], [0.3, 0.9], 0.5), 60),
         stallturn_speed=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-2,2]),
         stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.5,2.5]), [-2,2]),
         spin_entry_length=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-5,5]),
@@ -34,12 +35,21 @@ f3a=dict(
 
 
 def dump_criteria_to_py(criteria):
-    with open('examples/scoring/temp.py', 'w') as f:
+    file = 'flightanalysis/scoring/criteria/f3a_criteria.py'
+    with open(file, 'r') as f:
+        lines = f.readlines()
+    first_line = lines.index('### Generated code ###\n')
+    last_line = lines.index('### End Generated code ###\n')
+    
+
+    with open(file, 'w') as f:
+
+        f.writelines(lines[:first_line+1])
         for group, v in criteria.items():
             f.write(f'class F3A{group.capitalize()}:\n')
             for n, crit in v.items():
                 f.write(f'    {n}={crit.to_py()}\n')
-
+        f.writelines(lines[last_line:])
 
 def plot_lookup(lu, v0=0, v1=10):
     import plotly.express as px
@@ -67,3 +77,4 @@ if __name__ == "__main__":
 
  #   plot_all(f3a)
     dump_criteria_to_py(f3a)
+    create_all()
