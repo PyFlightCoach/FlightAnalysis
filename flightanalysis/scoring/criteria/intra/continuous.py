@@ -103,13 +103,13 @@ class ContRat(Continuous):
         else:
             vals = Continuous.convolve_wind(values, self.window_ratio, self.max_window)
         vals[np.sign(vals)==-np.sign(np.mean(vals))]=0
-        return vals
+        return abs(vals)
 
     @staticmethod
     def mistakes(data, peaks, troughs):
         '''All changes are downgraded (peaks and troughs)'''
         values = data[peaks + troughs]
-        return np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:]) - 1
+        return np.minimum(np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:]) - 1, 10)
     
     @staticmethod
     def dgids(ids, peaks, troughs):
