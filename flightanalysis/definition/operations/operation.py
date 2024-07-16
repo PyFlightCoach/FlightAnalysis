@@ -6,6 +6,7 @@ from ast import literal_eval
 from dataclasses import dataclass
 from typing import Callable
 
+
 @dataclass
 class Opp:
     __array_priority__ = 15.0

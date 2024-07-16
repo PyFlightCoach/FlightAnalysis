@@ -21,7 +21,6 @@ class FunOpp(Opp):
     def __str__(self):
         return f"{self.opp}({str(self.a)})"
 
-
     @staticmethod 
     def parse(inp: str, coll: Collection | Callable, name=None):
         for fun in FunOpp.funs:

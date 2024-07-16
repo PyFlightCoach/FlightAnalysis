@@ -106,6 +106,7 @@ class ManBuilder():
 f3amb = ManBuilder(
     ManParms([
         ManParm("speed", F3A.inter.speed, 30.0),
+        ManParm("spin_speed", F3A.inter.speed, 10.0),
         ManParm("loop_radius", F3A.inter.radius, 55.0),
         ManParm("line_length", F3A.inter.length, 130.0),
         ManParm("point_length", F3A.inter.length, 20.0),
@@ -121,17 +122,15 @@ f3amb = ManBuilder(
             func=line,
             args=[],
             kwargs=dict(
-                speed=30.0,
+                speed="speed",
                 length="line_length",
-                soft_start=False,
-                soft_end=False
             )
         ),
         loop=dict(
             func=loopmaker,
             args=["angle"],
             kwargs=dict(
-                speed=30.0, 
+                speed="speed", 
                 radius='loop_radius', 
                 rolls=0.0, 
                 ke=False, 
@@ -151,7 +150,7 @@ f3amb = ManBuilder(
             kwargs=dict(
                 padded=True,
                 reversible=True,
-                speed=30.0,
+                speed="speed",
                 line_length="line_length",
                 partial_rate="partial_roll_rate",
                 full_rate="full_roll_rate",
@@ -160,9 +159,7 @@ f3amb = ManBuilder(
                 break_angle=np.radians(10), 
                 snap_rate='snap_rate', 
                 break_rate=2*np.pi,
-                rolltypes='roll',
-                soft_start=False,
-                soft_end=False
+                rolltypes='roll'
             )
         ),
         stallturn=dict(
@@ -179,7 +176,7 @@ f3amb = ManBuilder(
             kwargs=dict(
                 padded=True,
                 reversible=True,
-                speed=30.0,
+                speed="speed",
                 line_length="line_length",
                 partial_rate="partial_roll_rate",
                 full_rate="full_roll_rate",
@@ -188,16 +185,14 @@ f3amb = ManBuilder(
                 break_angle=np.radians(10), 
                 snap_rate='snap_rate', 
                 break_rate=2*np.pi,
-                rolltypes='snap',
-                soft_start=False,
-                soft_end=False
+                rolltypes='snap'
             )    
         ),
         spin=dict(
             func=spin,
             args=["turns"],
             kwargs=dict(
-                speed=10,
+                speed="spin_speed",
                 break_angle=np.radians(30),
                 rate="spin_rate",
                 break_rate=6,

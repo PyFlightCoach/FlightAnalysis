@@ -16,14 +16,14 @@ class SumOpp(Opp):
         return sum([self.get_vf(v)(mps, **kwargs) for v in self.vals])
 
     def __str__(self):
-        return f"sum({','.join([str(v) for v in self.vals])})"
+        return f"sum([{','.join([str(v) for v in self.vals])}])"
     
     @staticmethod
     def parse(inp: str, coll: Collection | Callable, name=None):
         if inp.startswith("sum"):
             return SumOpp(
                 name,
-                [Opp.parse(val, coll, name) for val in inp[4:-1].split(',')]
+                [Opp.parse(val, coll, name) for val in inp[5:-2].split(',')]
             )
         raise ValueError(f"cannot read a SumOpp from the outside of {inp}")
     

@@ -18,7 +18,7 @@ class ManParm(Opp):
     For example, the loop diameters, line lengths, roll direction. 
         name (str): a short name, must work as an attribute so no spaces or funny characters
         criteria (Comparison): The comparison criteria function to be used when judging this parameter
-        defaul (float): A defaul value (or defaul option if specified in criteria)
+        defaul (float): A default value (or default option if specified in criteria)
         collectors (Collectors): a list of functions that will pull values for this parameter from an Elements 
             collection. If the manoeuvre was flown correctly these should all be the same. The resulting list 
             can be passed through the criteria (Comparison callable) to calculate a downgrade.
@@ -27,7 +27,6 @@ class ManParm(Opp):
     criteria: Criteria
     defaul:Number=None
     collectors:Collectors=field(default_factory=lambda : Collectors())
-
 
     @property
     def n(self):
