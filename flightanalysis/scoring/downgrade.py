@@ -40,6 +40,6 @@ class DownGrades(Collection):
     VType = DownGrade
     uid = "name"
 
-    def apply(self, el, fl, tp, limits=True) -> Results:
-        return Results(el.uid, [dg(fl, tp, limits) for dg in self])
+    def apply(self, name, fl, tp, limits=True) -> Results:
+        return Results(name, [dg(fl, tp, limits) for dg in self])
        

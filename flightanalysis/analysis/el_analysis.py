@@ -2,7 +2,6 @@ from __future__ import annotations
 from flightdata import State
 from typing import Self
 from flightanalysis import ElDef, Element, ManParms
-import numpy as np
 from dataclasses import dataclass
 import geometry as g
 
@@ -36,5 +35,5 @@ class ElementAnalysis:
         )
     
     def intra_score(self):
-        return self.edef.dgs.apply(self.el, self.fl, self.tp)
+        return self.edef.dgs.apply(self.el.uid, self.fl, self.tp)
     

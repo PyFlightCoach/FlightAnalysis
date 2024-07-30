@@ -14,7 +14,6 @@ import numpy as np
 from .basic import Basic
 from .alignment import Alignment
 from loguru import logger
-from typing import Union
 
 
 @dataclass
@@ -99,7 +98,7 @@ class Complete(Alignment):
         el: Element = self.manoeuvre.all_elements()[eln].match_intention(itrans, fl)        
         tp = el.create_template(State.from_transform(itrans), fl.time)
         
-        return ed.dgs.apply(el, fl, tp, False), tp[-1].att
+        return ed.dgs.apply(el.uid, fl, tp, False), tp[-1].att
 
     def optimise_split(self, itrans: g.Transformation, eln1: str, eln2: str, fl: State) -> int:
         

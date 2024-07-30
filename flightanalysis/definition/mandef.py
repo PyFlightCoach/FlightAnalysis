@@ -104,7 +104,7 @@ class ManDef:
             elif self.info.position ==  Position.END:
                     box_edge = np.tan(np.radians(60)) * (np.abs(template.pos.y) + itrans.pos.y[0])
                     man_start_x = min(box_edge - template.pos.x) 
-            length = max(man_start_x - itrans.translation.x[0] * heading, 30)
+            length = max(man_start_x - itrans.translation.x[0] * heading, 10)
 
         return ElDef.build(Line, "entry_line", [30.0, length], DGGrps.exits)
 
