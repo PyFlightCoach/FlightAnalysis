@@ -113,7 +113,7 @@ class Manoeuvre:
                 elms[-2].break_angle = pos_break if pos_break > -neg_break else neg_break
                 
             templates.append(elms[-1].create_template(
-                templates[-1][-1].relocate(st[0].pos), 
+                templates[-1][-1],#.relocate(st[0].pos), 
                 st.time.extend() if i < len(els) - 1 else st.time
             ))
                     
@@ -126,7 +126,7 @@ class Manoeuvre:
         for i, el in enumerate(els):
             st = el.get_data(aligned)
             templates.append(el.create_template(
-                templates[-1][-1].relocate(st[0].pos), 
+                templates[-1][-1],#.relocate(st[0].pos), 
                 st.time.extend() if i < len(els) - 1 else st.time
             ))
         return State.stack(templates[1:])

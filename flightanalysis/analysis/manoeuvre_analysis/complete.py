@@ -73,8 +73,8 @@ class Complete(Alignment):
         
     def get_ea(self, name):
         el = getattr(self.manoeuvre.all_elements(), name)
-        st = el.get_data(self.flown)
-        tp = el.get_data(self.template).relocate(st.pos[0])
+        st = self.flown.get_label_subset(element=name)
+        tp = self.template.get_label_subset(element=name).relocate(st.pos[0])# el.get_data(self.template)
 
         return ElementAnalysis(self.get_edef(name), self.mdef.mps, el, st, tp, el.ref_frame(tp))
 

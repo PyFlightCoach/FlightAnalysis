@@ -17,9 +17,9 @@ class Alignment(Basic):
             self.mdef.eds.data[name],
             self.mdef.mps,
             self.manoeuvre.elements.data[name],
-            self.flown.get_element(name),
-            self.template.get_element(name),
-            self.template.get_element(name)[0].transform
+            self.flown.get_label_subset(element=name),
+            self.template.get_label_subset(element=name),
+            self.template.get_label_subset(element=name)[0].transform
         )
 
     def run_all(self, optimise_aligment=True, force=False) -> Alignment | Complete | Scored:
