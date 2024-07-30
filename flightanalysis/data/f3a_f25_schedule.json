@@ -1182,7 +1182,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_1_0_recovery": {
@@ -1461,7 +1461,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_0_recovery": {
@@ -2012,7 +2012,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_3_0_recovery": {
@@ -2051,7 +2051,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_3_1_recovery": {
@@ -4693,7 +4693,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_2_0_recovery": {
@@ -5398,7 +5398,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_5_0_recovery": {

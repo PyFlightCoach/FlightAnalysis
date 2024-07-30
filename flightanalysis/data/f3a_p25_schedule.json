@@ -4065,7 +4065,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_0_recovery": {
@@ -4995,7 +4995,7 @@
         },
         "dgs": [
           "autorotation_roll_angle",
-          "roll_rate"
+          "autorotation_rate"
         ]
       },
       "e_1_0_recovery": {

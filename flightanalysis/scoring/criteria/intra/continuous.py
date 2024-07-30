@@ -4,6 +4,8 @@ import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass
 from flightanalysis.scoring import Measurement, Result
+from scipy.signal import filtfilt
+from scipy.signal import butter
 
 
 @dataclass
@@ -12,8 +14,9 @@ class Continuous(Criteria):
     only downgrades for increases (away from zero) of the value.
     treats each separate increase (peak - trough) as a new error.
     """
-    max_window: int = 40
-    window_ratio: int = 3
+    cutoff: int = 4
+#    max_window: int = 40
+#    window_ratio: int = 3
 
     @staticmethod
     def get_peak_locs(arr, rev=False):
@@ -49,6 +52,10 @@ class Continuous(Criteria):
         return np.array([np.mean(measurement.visibility[a:b]) for a, b in zip(rids[:-1], rids[1:])])
 
     @staticmethod
+    def filter(data, cutoff, order=5):
+        return filtfilt(*butter(order, cutoff, fs=25, btype='low', analog=False), data)
+
+    @staticmethod
     def convolve(data, width):
         kernel = np.ones(width) / width
         outd = np.full(len(data), np.nan)
@@ -72,11 +79,7 @@ class Continuous(Criteria):
 
 class ContAbs(Continuous):
     def prepare(self, values: npt.NDArray, expected: float):
-        sample = values - expected
-        if len(sample) <= 8:
-            return np.linspace(values[0],values[-1], len(sample))
-        else:
-            return Continuous.convolve_wind(values, self.window_ratio, self.max_window)
+        return Continuous.filter(values, self.cutoff)
         
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -94,14 +97,7 @@ class ContAbs(Continuous):
 class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
-        if len(values) <= 8:
-            vals = np.linspace(
-                np.mean(values[:1+len(values)//3]), 
-                np.mean(values[-1-len(values)//3:]), 
-                len(values)
-            )
-        else:
-            vals = Continuous.convolve_wind(values, self.window_ratio, self.max_window)
+        vals = Continuous.filter(values, self.cutoff)
         vals[np.sign(vals)==-np.sign(np.mean(vals))]=0
         return abs(vals)
 
