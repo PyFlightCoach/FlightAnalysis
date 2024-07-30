@@ -1563,7 +1563,8 @@
           "roll": "e_1_rolls[0]"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_1_0_recovery": {
@@ -2263,7 +2264,8 @@
           "roll": "15.707963267948966"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_0_recovery": {

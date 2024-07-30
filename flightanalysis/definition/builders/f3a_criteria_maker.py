@@ -15,6 +15,7 @@ f3a=dict(
         radius=ContRat(Exponential.fit_points([1,2], [0.5, 1], 1), 60),
         speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1), 5),
         roll_rate=ContRat(Exponential.fit_points([1,3], [0.3, 0.9], 0.5), 60),
+        autorotation_rate=ContRat(Exponential.fit_points([1,3], [0.3, 0.9], 0.5), 5),
         stallturn_speed=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-2,2]),
         stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.5,2.5]), [-2,2]),
         spin_entry_length=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-5,5]),
@@ -75,6 +76,6 @@ def plot_all(crits):
 if __name__ == "__main__":
     #plot_lookup(f3a['intra']['recovery_length'].lookup,-10,10)
 
-    plot_all(f3a)
-#    dump_criteria_to_py(f3a)
-#    create_all()
+#    plot_all(f3a)
+    dump_criteria_to_py(f3a)
+    create_all()

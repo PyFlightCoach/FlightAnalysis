@@ -1181,7 +1181,8 @@
           "roll": "e_1_rolls[0]"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_1_0_recovery": {
@@ -1459,7 +1460,8 @@
           "roll": "18.84955592153876"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_0_recovery": {
@@ -2009,7 +2011,8 @@
           "roll": "e_3_rolls[0]"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_3_0_recovery": {
@@ -2047,7 +2050,8 @@
           "roll": "e_3_rolls[1]"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_3_1_recovery": {
@@ -4688,7 +4692,8 @@
           "roll": "e_2_rolls[0]"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_2_0_recovery": {
@@ -5392,7 +5397,8 @@
           "roll": "e_5_rolls[0]"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_5_0_recovery": {

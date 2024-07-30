@@ -14,6 +14,7 @@ dgs = DownGrades([
     DownGrade("roll_angle", Measurement.roll_angle, F3A.intra.roll, "roll_angle"),
     DownGrade("speed", Measurement.speed, F3A.intra.speed, "speed"),
     DownGrade("roll_rate", Measurement.roll_rate, F3A.intra.roll_rate, "roll_rate"),
+    DownGrade("autorotation_rate", Measurement.roll_rate, F3A.intra.autorotation_rate, "roll_rate"),
     DownGrade("curvature", Measurement.curvature_proj, F3A.intra.radius, "curvature"),
     DownGrade("track_proj_vel", Measurement.track_proj_vel, F3A.intra.track, "track_y"),
     DownGrade("track_proj_ang", Measurement.track_proj_ang, F3A.single.track, "track_z"),
@@ -41,7 +42,7 @@ class DGGrps:
     pitch_break = DownGrades([dgs.pitch_break_length])
     recovery = DownGrades([dgs.end_track_y, dgs.end_track_z, dgs.recovery_length, dgs.end_roll_angle])
     stallturn = DownGrades([dgs.stallturn_width, dgs.stallturn_speed, dgs.stallturn_roll_angle])
-    autorotation = DownGrades([dgs.autorotation_roll_angle])
+    autorotation = DownGrades([dgs.autorotation_roll_angle, dgs.autorotation_rate])
     st_line_decel = DownGrades([dgs.track_y, dgs.soft_track_z, dgs.roll_angle])
     st_line_accel = DownGrades([dgs.track_y, dgs.soft_track_z, dgs.roll_angle])
     sp_line_decel = DownGrades([dgs.soft_track_y, dgs.track_z, dgs.roll_angle])

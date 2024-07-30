@@ -11,6 +11,7 @@ class F3AIntra:
     radius=ContRat(Exponential(0.5,1.0000000000000002, 1 ), 60, 3)
     speed=ContRat(Exponential(0.15,1.0, 1 ), 5, 3)
     roll_rate=ContRat(Exponential(0.3,1.0, 0.5 ), 60, 3)
+    autorotation_rate=ContRat(Exponential(0.3,1.0, 0.5 ), 5, 3)
     stallturn_speed=InsideBound(Exponential(0.08879139070041006,1.75647079736603, None ), [-2, 2])
     stallturn_width=InsideBound(Exponential(0.14798565116735013,1.75647079736603, None ), [-2, 2])
     spin_entry_length=InsideBound(Exponential(0.08879139070041006,1.75647079736603, None ), [-5, 5])

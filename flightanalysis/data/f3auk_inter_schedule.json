@@ -2584,7 +2584,8 @@
           "roll": "3"
         },
         "dgs": [
-          "autorotation_roll_angle"
+          "autorotation_roll_angle",
+          "roll_rate"
         ]
       },
       "e_0_recovery": {
