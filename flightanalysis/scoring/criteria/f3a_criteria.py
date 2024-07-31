@@ -6,9 +6,9 @@ class F3ASingle:
     roll=Single(Exponential(2.872721387028467,1.6309297535714575, 6 ))
     angle=Single(Exponential(3.8197186342054885,0.9999999999999999, 6 ))
 class F3AIntra:
-    track=ContAbs(Exponential(3.8197186342054885,0.9999999999999999, 6 ), 4)
-    roll=ContAbs(Exponential(3.3937161800825275,1.2618595071429148, 6 ), 4)
-    radius=ContRat(Exponential(0.5,1.0000000000000002, 1 ), 1)
+    track=ContAbs(Exponential(3.6157124327118417,1.12154551155295, 6 ), 4)
+    roll=ContAbs(Exponential(3.148677661514303,1.427815739996445, 6 ), 1)
+    radius=ContRat(Exponential(0.3333333333333333,1.0, 1 ), 0.5)
     speed=ContRat(Exponential(0.15,1.0, 1 ), 4)
     roll_rate=ContRat(Exponential(0.3,1.0, 0.5 ), 1)
     autorotation_rate=ContRat(Exponential(0.3,1.0, 0.5 ), 2)

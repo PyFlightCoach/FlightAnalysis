@@ -15,8 +15,6 @@ class Continuous(Criteria):
     treats each separate increase (peak - trough) as a new error.
     """
     cutoff: int = 4
-#    max_window: int = 40
-#    window_ratio: int = 3
 
     @staticmethod
     def get_peak_locs(arr, rev=False):
@@ -53,7 +51,7 @@ class Continuous(Criteria):
 
     @staticmethod
     def filter(data, cutoff, order=5):
-        return filtfilt(*butter(order, cutoff, fs=25, btype='low', analog=False), data)
+        return filtfilt(*butter(order, cutoff, fs=25, btype='low', analog=False), data, padlen=len(data)-1)
 
     @staticmethod
     def convolve(data, width):
@@ -98,9 +96,20 @@ class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
         vals = Continuous.filter(values, self.cutoff)
+
+        if len(vals) <= 8:
+            #vals = np.linspace(
+            #    np.mean(values[:1+len(values)//3]), 
+            #    np.mean(values[-1-len(values)//3:]), 
+            #    len(values)
+            #)
+            pass
+        else:
+            vals= Continuous.convolve_wind(vals, 3, 40)
+
         vals[np.sign(vals)==-np.sign(np.mean(vals))]=0
         return abs(vals)
-
+    
     @staticmethod
     def mistakes(data, peaks, troughs):
         '''All changes are downgraded (peaks and troughs)'''

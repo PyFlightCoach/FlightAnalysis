@@ -157,8 +157,8 @@ class Measurement:
         tr_rf_proj = trfl.att.inverse().transform_point(rfproj) # proj vector in track axis
         tp_rf_proj = tp.att.inverse().transform_point(rfproj) # proj vector in template body axis (body == track for template)
         with np.errstate(invalid='ignore'):
-            fl_roll_angle = np.arcsin(Point.cross(tr_rf_proj, proj).x)
-            tp_roll_angle = np.arcsin(Point.cross(tp_rf_proj, proj).x)
+            fl_roll_angle = np.arcsin(np.clip(Point.cross(tr_rf_proj, proj).x, -1, 1))
+            tp_roll_angle = np.arcsin(np.clip(Point.cross(tp_rf_proj, proj).x, -1, 1))
 
         flturns = np.sum(Point.scalar_projection(fl.rvel, fl.vel) * fl.dt) / (2*np.pi)
         tpturns = np.sum(Point.scalar_projection(tp.rvel, tp.vel) * tp.dt) / (2*np.pi)
