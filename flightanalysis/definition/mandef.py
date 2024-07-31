@@ -16,6 +16,7 @@ from flightanalysis.elements import Line, Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo
 from flightanalysis.scoring.f3a_downgrades import DGGrps
+
 from flightdata import State
 from geometry import Transformation, Euler, Point
 from . import ManParms, ElDef, ElDefs, Position, Direction
@@ -34,7 +35,7 @@ class ManDef:
         self.info: ManInfo = info
         self.mps: ManParms = ManParms.create_defaults_f3a() if mps is None else mps
         self.eds: ElDefs = ElDefs() if eds is None else eds
-
+        
     def __repr__(self):
         return f"ManDef({self.info.name})"
 
