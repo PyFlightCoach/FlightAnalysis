@@ -223,11 +223,11 @@ p23_def = SchedDef([
 ])
 
 
-p23_def.iSp.eds.e_1.dgs = DGGrps.sp_line_accel
-p23_def.M.eds.e_1_pad2.dgs = DGGrps.st_line_decel
-p23_def.M.eds.e_3.dgs = DGGrps.st_line_accel
-p23_def.M.eds.e_5.dgs = DGGrps.st_line_decel
-p23_def.M.eds.e_7_pad1.dgs = DGGrps.st_line_accel
+p23_def.iSp.eds.e_1.dgs = {'': DGGrps.sp_line_accel}
+p23_def.M.eds.e_1_pad2.dgs = {'': DGGrps.st_line_decel}
+p23_def.M.eds.e_3.dgs = {'': DGGrps.st_line_accel}
+p23_def.M.eds.e_5.dgs = {'': DGGrps.st_line_decel}
+p23_def.M.eds.e_7_pad1.dgs = {'': DGGrps.st_line_accel}
 
 if __name__ == "__main__":
     

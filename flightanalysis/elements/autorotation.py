@@ -35,12 +35,12 @@ class Autorotation(Element):
     def rate(self):
         return self.angle * self.speed / self.length
     
-    def create_template(self, istate: State, time: Time=None):
+    def create_template(self, istate: State, fl: State=None):
         return istate.copy(
             vel=istate.vel.scale(self.speed),
             rvel=P0()
         ).fill(
-            Element.create_time(self.length / self.speed, time)
+            Element.create_time(self.length / self.speed, fl)
         ).superimpose_rotation(
             istate.vel.unit(),
             self.angle

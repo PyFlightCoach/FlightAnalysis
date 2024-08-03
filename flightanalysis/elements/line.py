@@ -21,7 +21,7 @@ class Line(Element):
     def rate(self):
         return self.roll * self.speed / self.length
 
-    def create_template(self, istate: State, time: Time=None) -> State:
+    def create_template(self, istate: State, fl: State=None) -> State:
         """construct a State representing the judging frame for this line element
 
         Args:
@@ -36,7 +36,7 @@ class Line(Element):
              
         return self._add_rolls(
             istate.copy(vel=v, rvel=P0()).fill(
-                Element.create_time(self.length / self.speed, time)
+                Element.create_time(self.length / self.speed, fl)
             ), 
             self.roll
         )

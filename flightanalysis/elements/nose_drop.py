@@ -17,14 +17,14 @@ class NoseDrop(Element):
     radius: float
     break_angle: float
 
-    def create_template(self, istate: State, time: Time=None) -> State:
+    def create_template(self, istate: State, fl: State=None) -> State:
         _inverted = 1 if istate.transform.rotation.is_inverted()[0] else -1
         
         alpha =  np.arctan2(istate.vel.z, istate.vel.x)[0]
 
-        return Loop("nose_drop", self.speed, 0.5*np.pi*_inverted, self.radius, 0, 0).create_template(
-            istate, time
-        ).superimpose_rotation(
+        return Loop(
+            "nose_drop", self.speed, 0.5*np.pi*_inverted, self.radius, 0, 0
+        ).create_template(istate, fl).superimpose_rotation(
             PY(), 
             -alpha - abs(self.break_angle) * _inverted
         ).label(element=self.uid)

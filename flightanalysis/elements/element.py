@@ -33,7 +33,7 @@ class Element:
             return False
         if not self.uid == other.uid:
             return False
-        return np.all([np.isclose(getattr(self, p), getattr(other, p), 0.01) for p in self.__class__.parameters])
+        return np.all([abs(getattr(self, p) - getattr(other, p)) < 0.01 for p in self.__class__.parameters])
 
     def __repr__(self):
         args = ['uid'] + inspect.getfullargspec(self.__init__).args[1:-1]
@@ -59,14 +59,15 @@ class Element:
         return template[0].transform
 
     @staticmethod
-    def create_time(duration: float, time: g.Time=None):
-        if time is None:
+    def create_time(duration: float, fl: State=None):
+        
+        if not fl:
             n = max(int(np.ceil(duration * State._construct_freq)), 3)
             return g.Time.from_t(
                 np.linspace(0, duration, n)
             )
         else:
-            return time.reset_zero().scale(duration)
+            return fl.time.reset_zero().scale(duration)
 
     @classmethod
     def from_name(Cls, name) -> Element:
@@ -112,48 +113,6 @@ class Element:
 
     def match_intention(self, itrans: g.Transformation, flown: State) -> Self:
         raise Exception('Not available on base class')
-
-    def score(self, istate: Union[State, g.Transformation], fl: State) -> Tuple[Results, State]:
-        istate = istate if isinstance(istate, State) else State.from_transform(istate)
-        tp = self.create_template(istate, fl.time)
-        if self.uid=='entry_line':
-            res = self.analyse_exit(fl, tp, False)
-        else:
-            res = self.analyse(fl, tp, False)
-        return res, tp
-        
-    @staticmethod
-    def optimise_split(itrans: g.Transformation, el1: Element, el2: Element, fl1: State, fl2: State):
-        
-        def get_score(cel1: Element, cel2: Element, cfl1: State, cfl2: State):
-            res, tp = cel1.match_intention(itrans, cfl1).score(itrans, cfl1)
-            ist2=State.from_transform(g.Transformation(tp.att[-1], cfl2.pos[0]), vel=tp.vel[-1])
-            ist2= ist2.relocate(cfl2.pos[0])
-            res2, tp2 = cel2.match_intention(ist2.transform, cfl2).score(ist2, cfl2)
-            return res.total + res2.total
-        
-        dgs = {0: get_score(el1, el2, fl1, fl2)}
-        
-        steps=int(len(fl2) > len(fl1)) * 2 - 1
-        new_dg = get_score(el1, el2, *State.shift_multi(steps, fl1, fl2))
-        if new_dg > dgs[0]:
-            steps=-steps
-        else:
-            steps+=np.sign(steps)
-            dgs[steps] = new_dg
-            
-        while True:
-            if (steps>0 and len(fl2)<=steps+3) or (steps<0 and len(fl1) <=-steps+3):
-                break
-            new_dg = get_score(el1, el2, *State.shift_multi(steps, fl1, fl2))
-            if new_dg < list(dgs.values())[-1]:
-                steps+=np.sign(steps)
-                dgs[steps] = new_dg
-            else:
-                break
-        min_dg_step = np.argmin(np.array(list(dgs.values())))
-        out_steps = list(dgs.keys())[min_dg_step]
-        return out_steps
 
 
 class Elements(Collection):

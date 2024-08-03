@@ -5,8 +5,6 @@ import numpy as np
 from dataclasses import dataclass
 from flightdata.state import State
 from flightanalysis.elements import Elements, Element, Line, Autorotation
-from flightanalysis.scoring import Results, ElementsResults
-from loguru import logger
 
 
 @dataclass
@@ -15,37 +13,41 @@ class Manoeuvre:
     elements: Elements
     exit_line: Line
     uid: str = None
-    
+
     @staticmethod
     def from_dict(data) -> Manoeuvre:
         return Manoeuvre(
             Line.from_dict(data["entry_line"]) if data["entry_line"] else None,
             Elements.from_dicts(data["elements"]),
             Line.from_dict(data["exit_line"]) if data["exit_line"] else None,
-            data["uid"]
+            data["uid"],
         )
 
     def to_dict(self):
         return dict(
-            entry_line=self.entry_line.to_dict(exit_only=True) if self.entry_line else None,
+            entry_line=self.entry_line.to_dict(exit_only=True)
+            if self.entry_line
+            else None,
             elements=self.elements.to_dicts(),
             exit_line=self.exit_line.to_dict() if self.exit_line else None,
-            uid=self.uid
+            uid=self.uid,
         )
 
     @staticmethod
-    def from_all_elements(uid:str, els: List[Element]) -> Manoeuvre:
+    def from_all_elements(uid: str, els: List[Element]) -> Manoeuvre:
         hasentry = 1 if els[0].uid.startswith("entry_") else None
         hasexit = -1 if els[-1].uid.startswith("exit_") else None
 
         return Manoeuvre(
-            els[0] if hasentry else None, 
-            els[hasentry:hasexit], 
-            els[-1] if hasexit else None, 
-            uid
+            els[0] if hasentry else None,
+            els[hasentry:hasexit],
+            els[-1] if hasexit else None,
+            uid,
         )
 
-    def all_elements(self, create_entry: bool = False, create_exit: bool = False) -> Elements:
+    def all_elements(
+        self, create_entry: bool = False, create_exit: bool = False
+    ) -> Elements:
         els = Elements()
 
         if self.entry_line:
@@ -63,38 +65,44 @@ class Manoeuvre:
         return els
 
     def add_lines(self, add_entry=True, add_exit=True) -> Manoeuvre:
-        return Manoeuvre.from_all_elements(self.uid, self.all_elements(add_entry, add_exit))
-    
+        return Manoeuvre.from_all_elements(
+            self.uid, self.all_elements(add_entry, add_exit)
+        )
+
     def remove_lines(self, remove_entry=True, remove_exit=True) -> Manoeuvre:
         return Manoeuvre(
-            None if remove_entry else self.entry_line, 
-            self.elements, 
-            None if remove_exit else self.exit_line, 
-            self.uid
+            None if remove_entry else self.entry_line,
+            self.elements,
+            None if remove_exit else self.exit_line,
+            self.uid,
         )
-    
-    def create_template(self, initial: Union[Transformation, State], aligned:State=None) -> State:
-        
-        istate = State.from_transform(initial, vel=PX()) if isinstance(initial, Transformation) else initial
+
+    def create_template(
+        self, initial: Union[Transformation, State], aligned: State = None
+    ) -> State:
+        istate = (
+            State.from_transform(initial, vel=PX())
+            if isinstance(initial, Transformation)
+            else initial
+        )
         aligned = self.get_data(aligned) if aligned else None
         templates = []
         els = self.all_elements()
         for i, element in enumerate(els):
-            time = element.get_data(aligned).time if aligned is not None else None
-
-            if i < len(els)-1 and time is not None:
-                time = time.extend()
-            templates.append(element.create_template(istate, time))
+            templates.append(
+                element.create_template(
+                    istate, element.get_data(aligned) if aligned else None
+                )
+            )
             istate = templates[-1][-1]
-        
-        return State.stack(templates).label(manoeuvre=self.uid)
 
+        return State.stack(templates).label(manoeuvre=self.uid)
 
     def get_data(self, st: State) -> State:
         return st.get_manoeuvre(self.uid)
 
     def match_intention(self, istate: State, aligned: State) -> Tuple[Self, State]:
-        """Create a new manoeuvre with all the elements scaled to match the corresponding 
+        """Create a new manoeuvre with all the elements scaled to match the corresponding
         flown element"""
 
         elms = Elements()
@@ -106,64 +114,44 @@ class Manoeuvre:
             elms.add(elm.match_intention(templates[-1][-1].transform, st))
 
             if isinstance(elms[-1], Autorotation):
-                #copy the autorotation pitch offset back to the preceding pitch departure
+                # copy the autorotation pitch offset back to the preceding pitch departure
                 angles = np.arctan2(st.vel.z, st.vel.x)
                 pos_break = max(angles)
                 neg_break = min(angles)
-                elms[-2].break_angle = pos_break if pos_break > -neg_break else neg_break
-                
-            templates.append(elms[-1].create_template(
-                templates[-1][-1],#.relocate(st[0].pos), 
-                st.time.extend() if i < len(els) - 1 else st.time
-            ))
-                    
-        return Manoeuvre.from_all_elements(self.uid, elms), State.stack(templates[1:]).label(manoeuvre=self.uid)
+                elms[-2].break_angle = (
+                    pos_break if pos_break > -neg_break else neg_break
+                )
+
+            templates.append(
+                elms[-1].create_template(templates[-1][-1],  st)
+            )
+
+        return Manoeuvre.from_all_elements(self.uid, elms), State.stack(
+            templates[1:]
+        ).label(manoeuvre=self.uid)
 
     def el_matched_tp(self, istate: State, aligned: State) -> State:
         els = self.all_elements()
-        aligned= self.get_data(aligned)
+        aligned = self.get_data(aligned)
         templates = [istate]
         for i, el in enumerate(els):
             st = el.get_data(aligned)
-            templates.append(el.create_template(
-                templates[-1][-1],#.relocate(st[0].pos), 
-                st.time.extend() if i < len(els) - 1 else st.time
-            ))
+            templates.append(el.create_template(templates[-1][-1], st))
         return State.stack(templates[1:])
 
     def copy(self):
-        return Manoeuvre.from_all_elements(self.uid, self.all_elements().copy(deep=True))
+        return Manoeuvre.from_all_elements(
+            self.uid, self.all_elements().copy(deep=True)
+        )
 
     def copy_directions(self, other: Manoeuvre) -> Self:
         return Manoeuvre.from_all_elements(
-            self.uid, 
-            Elements(self.all_elements().copy_directions(other.all_elements()))
+            self.uid,
+            Elements(self.all_elements().copy_directions(other.all_elements())),
         )
 
-    def optimise_alignment(self, template: State, aligned: State) -> State:
-        els = self.all_elements()
-        elns = list(els.data.keys())
-
-        padjusted = set(elns)
-        count=0
-        while len(padjusted) > 0 and count < 2:
-            adjusted = set()
-            for eln1, eln2 in zip(elns[:-1], elns[1:]):
-                if (eln1 in padjusted) or (eln2 in padjusted):
-                    fl1, fl2 = aligned.get_element(eln1), aligned.get_element(eln2)
-                    tp0 = template.get_element(eln1)
-                    steps = Element.optimise_split(tp0[0].relocate(fl1[0].pos), els[eln1], els[eln2], fl1, fl2)
-                    logger.debug(f'Adjusting split between {eln1} and {eln2} by {steps} steps')
-                    if not steps == 0:
-                        aligned = aligned.shift_label(steps, 2, manoeuvre=self.uid, element=eln1)
-                        adjusted.update([eln1, eln2])
-            padjusted = adjusted
-            count+=1
-            logger.debug(f'pass {count}, {len(padjusted)} elements adjusted:\n{padjusted}')
-        return aligned
-    
     def descriptions(self):
         return [e.describe() for e in self.elements]
-    
+
     def __repr__(self):
-        return f'Manoeuvre({self.uid}, len={len(self.elements)})'
+        return f"Manoeuvre({self.uid}, len={len(self.elements)})"

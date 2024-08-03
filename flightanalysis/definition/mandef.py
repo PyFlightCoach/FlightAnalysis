@@ -36,6 +36,7 @@ class ManDef:
         self.mps: ManParms = ManParms.create_defaults_f3a() if mps is None else mps
         self.eds: ElDefs = ElDefs() if eds is None else eds
         
+        
     def __repr__(self):
         return f"ManDef({self.info.name})"
 
@@ -43,11 +44,11 @@ class ManDef:
     def uid(self):
         return self.info.short_name
 
-    def to_dict(self, criteria=False):
+    def to_dict(self):
         return dict(
             info = self.info.to_dict(),
             mps = self.mps.to_dict(),
-            eds = self.eds.to_dict(criteria)
+            eds = self.eds.to_dict()
         )
 
     @staticmethod

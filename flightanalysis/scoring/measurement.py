@@ -76,8 +76,6 @@ class Measurement:
 
     @staticmethod
     def _roll_vis(fl: State, tp: State) -> Union[Point, npt.NDArray]:
-        
-        
         afl = Point.cos_angle_between(fl.pos, fl.att.transform_point(PZ()))
         atp = Point.cos_angle_between(tp.pos, tp.att.transform_point(PZ()))
 
@@ -193,7 +191,7 @@ class Measurement:
             Point.scalar_projection(v, direction), 0,
             *Measurement._vector_vis(ref_frame.q.transform_point(distance), fl.pos)
         )
-            
+
     @staticmethod
     def roll_rate(fl: State, tp: State) -> Measurement:
         """vector in the body X axis, length is equal to the roll rate"""
@@ -202,6 +200,17 @@ class Measurement:
             abs(wrvel) * np.sign(fl.p), 
             np.mean(tp.p), 
             *Measurement._roll_vis(fl, tp)
+        )
+    
+    @staticmethod
+    def autorotation_rate(fl: State, tp: State) -> Measurement:
+        p = abs(fl.att.transform_point(fl.p * PX()))  * np.sign(fl.p)
+        #sel = np.char.endswith(fl.element.astype(str), '_autorotation')
+        return Measurement(
+            p,
+            np.mean(tp.p),
+            fl.pos,
+            Measurement._pos_vis(fl.pos)
         )
     
     @staticmethod
@@ -215,7 +224,7 @@ class Measurement:
         )
     
     @staticmethod
-    def track_proj(fl: State, tp: State, proj: Point, fix='ang', soft=False):
+    def track_proj(fl: State, tp: State, proj: Point, fix='ang'):
         """
         Direction is the world frame scalar rejection of the velocity difference onto the template velocity 
         vector.
@@ -251,9 +260,6 @@ class Measurement:
         else:
             raise AttributeError(f'fix must be "vel" or "ang", not {fix}')
         
-        if soft:
-            angles[fl.vel.x < fl.vel.x.max() * 0.6] = 0
-            pass
         return Measurement(angles, 0, direction, vis)
 
     @staticmethod
@@ -278,18 +284,6 @@ class Measurement:
     @staticmethod
     def track_z(fl: State, tp: State) -> Measurement:
         return Measurement.track_proj(fl, tp, PY())
-
-    @staticmethod
-    def soft_track_z(fl: State, tp: State) -> Measurement:
-        '''stop downgrading track errors when the speed has reduced to 50%'''
-        return Measurement.track_proj(fl, tp, PY(), soft=True)
-
-
-    @staticmethod
-    def soft_track_y(fl: State, tp: State) -> Measurement:
-        '''stop downgrading track errors when the speed has reduced to 50%'''
-        return Measurement.track_proj(fl, tp, PZ(), soft=True)
-
 
     @staticmethod
     def radius(fl:State, tp:State, proj: Point) -> Measurement:
@@ -398,4 +392,14 @@ class Measurement:
             np.arctan(fl.pos.x / fl.pos.y),
             0.0,
             *Measurement.lateral_pos_vis(fl.pos)
+        )
+    
+    def break_angle(fl: State, tp: State) -> Measurement:
+        """angle error in the velocity vector about the template Z axis"""
+        pitchfl = np.arctan2(fl.vel.z, fl.vel.x)
+                
+        return Measurement(
+            pitchfl-pitchfl[0],
+            0,
+            *Measurement._roll_vis(fl, tp)
         )

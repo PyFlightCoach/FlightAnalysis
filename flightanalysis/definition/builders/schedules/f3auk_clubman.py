@@ -199,9 +199,9 @@ clubman_def = SchedDef([
     ]
 )
 
-clubman_def.stall.eds.e_1.dgs = DGGrps.st_line_decel
-clubman_def.stall.eds.e_3.dgs = DGGrps.st_line_accel
-clubman_def.spin.eds.e_1.dgs = DGGrps.sp_line_decel
+clubman_def.stall.eds.e_1.dgs = {'': DGGrps.st_line_decel}
+clubman_def.stall.eds.e_3.dgs = {'': DGGrps.st_line_accel}
+clubman_def.spin.eds.e_1.dgs = {'': DGGrps.sp_line_decel}
 
 if __name__ == "__main__":
 

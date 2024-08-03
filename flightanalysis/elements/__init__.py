@@ -6,3 +6,5 @@ from .nose_drop import NoseDrop
 from .pitch_break import PitchBreak
 from .recovery import Recovery
 from .autorotation import Autorotation
+from .snap import Snap
+from .spin import Spin

@@ -14,7 +14,7 @@ import numpy as np
 from .basic import Basic
 from .alignment import Alignment
 from loguru import logger
-
+from itertools import chain
 
 @dataclass
 class Complete(Alignment):
@@ -72,15 +72,15 @@ class Complete(Alignment):
             return self.mdef.eds[name]
         
     def get_ea(self, name):
-        el = getattr(self.manoeuvre.all_elements(), name)
-        st = self.flown.get_label_subset(element=name)
-        tp = self.template.get_label_subset(element=name).relocate(st.pos[0])# el.get_data(self.template)
+        el: Element = getattr(self.manoeuvre.all_elements(), name)
+        st = el.get_data(self.flown)
+        tp = el.get_data(self.template).relocate(st.pos[0])# el.get_data(self.template)
 
         return ElementAnalysis(self.get_edef(name), self.mdef.mps, el, st, tp, el.ref_frame(tp))
 
 
     def update_templates(self):
-        if not np.all(self.flown.element == self.template.element):    
+        if not len(self.flown) == len(self.template) or not np.all(self.flown.element == self.template.element):    
             manoeuvre, template = self.manoeuvre.match_intention(self.template[0], self.flown)
             mdef = ManDef(self.mdef.info, self.mdef.mps.update_defaults(self.manoeuvre), self.mdef.eds)
             correction = mdef.create(self.template[0].transform).add_lines()
@@ -96,17 +96,19 @@ class Complete(Alignment):
     def get_score(self, eln: str, itrans: g.Transformation, fl: State) -> tuple[Results, g.Transformation]:
         ed: ElDef = self.get_edef(eln)
         el: Element = self.manoeuvre.all_elements()[eln].match_intention(itrans, fl)        
-        tp = el.create_template(State.from_transform(itrans), fl.time)
+        tp = el.create_template(State.from_transform(itrans), fl)
         
         return ed.dgs.apply(el.uid, fl, tp, False), tp[-1].att
 
     def optimise_split(self, itrans: g.Transformation, eln1: str, eln2: str, fl: State) -> int:
-        
+        el1: Element = self.manoeuvre.all_elements()[eln1]
+        el2: Element = self.manoeuvre.all_elements()[eln2]
+
         def score_split(steps: int) -> float:
             new_fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
-            res1, new_iatt = self.get_score(eln1, itrans, new_fl.get_element(eln1))
+            res1, new_iatt = self.get_score(eln1, itrans, el1.get_data(new_fl))
             
-            el2fl = new_fl.get_element(eln2)
+            el2fl = el2.get_data(new_fl)
             res2 = self.get_score(
                 eln2, 
                 g.Transformation(new_iatt,  el2fl[0].pos ), 
@@ -118,7 +120,7 @@ class Complete(Alignment):
 
         dgs = {0: score_split(0)}
         
-        steps=int(len(fl.get_element(eln1)) > len(fl.get_element(eln2))) * 2 - 1
+        steps=int(len(el1.get_data(fl)) > len(el2.get_data(fl))) * 2 - 1
 
         new_dg = score_split(steps)
         if new_dg > dgs[0]:
@@ -128,7 +130,7 @@ class Complete(Alignment):
             dgs[steps] = new_dg
             
         while True:
-            if (steps>0 and len(fl.get_element(eln2))<=steps+3) or (steps<0 and len(fl.get_element(eln1)) <=-steps+3):
+            if (steps>0 and len(el2.get_data(fl))<=steps+3) or (steps<0 and len(el1.get_data(fl)) <=-steps+3):
                 break
             new_dg = score_split(steps)
             if new_dg < list(dgs.values())[-1]:
@@ -151,8 +153,8 @@ class Complete(Alignment):
             for eln1, eln2 in zip(elns[:-1], elns[1:]):
                 if (eln1 in padjusted) or (eln2 in padjusted):
                     itrans = g.Transformation(
-                        self.template.get_element(eln1)[0].att,
-                        fl.get_element(eln1)[0].pos
+                        self.manoeuvre.all_elements()[eln1].get_data(self.template)[0].att,
+                        self.manoeuvre.all_elements()[eln1].get_data(fl)[0].pos
                     )
                     steps = self.optimise_split(itrans, eln1, eln2, fl)
                     
@@ -217,7 +219,7 @@ class Complete(Alignment):
         )
         
     def intra(self):
-        return ElementsResults([ea.intra_score() for ea in self])
+        return ElementsResults(list(chain([ea.intra_score() for ea in self])))
 
     def inter(self):
         return self.mdef.mps.collect(self.manoeuvre, self.template)

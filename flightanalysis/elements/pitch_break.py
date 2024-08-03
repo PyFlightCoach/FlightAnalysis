@@ -14,11 +14,10 @@ class PitchBreak(Element):
     length: float
     break_angle: float
 
-    def create_template(self, istate: State, time: Time=None) -> State:
-        return Line("pitch_break", self.speed, self.length).create_template(
-            istate, 
-            time
-        ).superimpose_rotation(
+    def create_template(self, istate: State, fl: State=None) -> State:
+        return Line(
+            "pitch_break", self.speed, self.length
+        ).create_template(istate, fl).superimpose_rotation(
             PY(),
             self.break_angle
         ).label(element=self.uid)

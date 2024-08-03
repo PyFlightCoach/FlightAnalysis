@@ -90,9 +90,10 @@ class Opp:
     def list_parms(self) -> list[str]:
         return []
     
-    def extract_state(self, st: State):
+    def extract_state(self, els, st: State):
         elnames = list(set([parm.elname for parm in self.list_parms()]))
-        return State.stack([st.get_element(elname) for elname in elnames])
+
+        return State.stack([els.data[elname].get_data(st) for elname in elnames])
 
 
 from .mathopp import MathOpp  # noqa: E402
