@@ -15,7 +15,7 @@ class Collector(Opp):
         return getattr(els.data[self.elname], self.pname)#(tp[0].transform, fl))[0]
     
     def visibility(self, els, state):
-        st = state.get_element(self.elname)
+        st = els.data[self.elname].get_data(state)
         direc, vis =  getattr(els.data[self.elname], self.pname + '_visibility')(st)
         return direc, vis
 

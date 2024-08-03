@@ -15,27 +15,44 @@ class Bounded(Criteria):
     The downgrade is the average distance from the bound multiplied by the ratio
     of the group width to the total width and by the average visibility of the group.
     """
-    bound: Union[float,list[float]] = 0
+
+    bound: Union[float, list[float]] = 0
 
     def prepare(self, value: npt.NDArray, expected: float):
-        return self.get_errors(value - expected) 
-    
+        return self.get_errors(value - expected)
+
     def get_errors(self, ids: npt.NDArray, data: npt.NDArray):
         raise Exception("Method not available in base class")
-    
-    def __call__(self, name: str, m: Measurement, limits=True) -> Result:
-        '''each downgrade corresponds to a group of values outside the bounds, ids
-        correspond to the last velue in each case'''
-        sample = self.prepare(m.value, m.expected)
-        ids = np.linspace(0, len(sample)-1, len(sample)).astype(int)
-        groups = np.concatenate([[0], np.diff(sample!=0).cumsum()])
-        
-        mistakes = np.array([np.mean(sample[groups==grp]) for grp in set(groups)])
-        dgids = np.array([ids[groups==grp][int(len(ids[groups==grp])/2)] for grp in set(groups)])
-        dgs = np.array([self.lookup(np.mean(sample[groups==grp]), m.visibility[dgid], limits) * len(sample[groups==grp]) / len(sample) for dgid, grp in zip(dgids, set(groups)) ])
-        
-        return Result(name, m, sample, mistakes[dgs>0], dgs[dgs>0], dgids[dgs>0])
-        
+
+    def __call__(
+        self, name: str, m: Measurement, sids: npt.NDArray, limits=True
+    ) -> Result:
+        """each downgrade corresponds to a group of values outside the bounds, ids
+        correspond to the last velue in each case"""
+        sample = self.prepare(m.value[sids], m.expected)
+        ids = np.linspace(0, len(sample) - 1, len(sample)).astype(int)
+        groups = np.concatenate([[0], np.diff(sample != 0).cumsum()])
+
+        mistakes = np.array([np.mean(sample[groups == grp]) for grp in set(groups)])
+        dgids = np.array(
+            [
+                ids[groups == grp][int(len(ids[groups == grp]) / 2)]
+                for grp in set(groups)
+            ]
+        )
+        dgs = np.array(
+            [
+                self.lookup(np.mean(sample[groups == grp]), m.visibility[dgid], limits)
+                * len(sample[groups == grp])
+                / len(sample)
+                for dgid, grp in zip(dgids, set(groups))
+            ]
+        )
+
+        return Result(
+            name, m, sample, sids, mistakes[dgs > 0], dgs[dgs > 0], dgids[dgs > 0]
+        )
+
     def visiblity(self, measurement, ids):
         return np.mean(measurement.visibility[ids])
 
@@ -43,6 +60,7 @@ class Bounded(Criteria):
 @dataclass
 class MaxBound(Bounded):
     """Downgrade values above the bound."""
+
     def get_errors(self, data: npt.NDArray):
         oarr = np.zeros_like(data)
         oarr[data > self.bound] = data[data > self.bound] - self.bound
@@ -52,6 +70,7 @@ class MaxBound(Bounded):
 @dataclass
 class MinBound(Bounded):
     """Downgrade values below the bound."""
+
     def get_errors(self, data: npt.NDArray):
         oarr = np.zeros_like(data)
         oarr[data < self.bound] = self.bound - data[data < self.bound]
@@ -61,6 +80,7 @@ class MinBound(Bounded):
 @dataclass
 class OutsideBound(Bounded):
     """Downgrade values inside the bound."""
+
     def get_errors(self, data: npt.NDArray):
         midbound = np.mean(self.bound)
         oarr = np.zeros_like(data)
@@ -74,6 +94,7 @@ class OutsideBound(Bounded):
 @dataclass
 class InsideBound(Bounded):
     """Downgrade values outside the bound."""
+
     def get_errors(self, data: npt.NDArray):
         oarr = np.zeros_like(data)
         oarr[data > self.bound[1]] = data[data > self.bound[1]] - self.bound[1]

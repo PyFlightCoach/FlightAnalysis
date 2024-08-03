@@ -1,5 +1,5 @@
 from ..eldef import ElDef, ElDefs, ManParm, ManParms
-from flightanalysis.elements import Line, Loop, StallTurn, PitchBreak, Autorotation, Recovery, NoseDrop
+from flightanalysis.elements import Line, Loop, StallTurn, PitchBreak, Autorotation, Recovery, NoseDrop, Snap, Spin
 from flightanalysis.definition.collectors import Collectors
 from flightanalysis.definition import ItemOpp
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
@@ -9,18 +9,17 @@ import numpy as np
 
 
 def line(name: str, speed, length):
-    dgs = DGGrps.line
     return ElDef.build(
         Line, name, 
         [speed, length],
-        dgs, 
+        {'': DGGrps.line}, 
     ), ManParms()
 
 def roll(name: str, speed, rate, rolls):
     el = ElDef.build(
         Line, name, 
         [speed, abs(rolls) * speed / rate, rolls],
-        DGGrps.roll,
+        {'': DGGrps.roll},
     )
     if isinstance(rate, ManParm):
         rate.collectors.add(el.get_collector("rate"))
@@ -30,7 +29,7 @@ def loop(name: str, speed, radius, angle, ke):
     ed = ElDef.build(
         Loop, name, 
         [speed, angle, radius, 0, ke],
-        DGGrps.loop,
+        {'': DGGrps.loop},
     )
     return ed, ManParms()
 
@@ -38,7 +37,7 @@ def rolling_loop(name, speed, radius, angle, roll, ke):
     ed = ElDef.build(
         Loop, name, 
         [speed, angle, radius, roll, ke],
-        DGGrps.rolling_loop,
+        {'': DGGrps.rolling_loop},
     )
     return ed, ManParms()
 
@@ -46,61 +45,43 @@ def stallturn(name, speed, yaw_rate):
     return ElDef.build(
         StallTurn, name, 
         [speed, yaw_rate],
-        DGGrps.stallturn, 
+        {'': DGGrps.stallturn}, 
     ), ManParms()
 
-def snap(name, rolls, break_angle, rate, speed, break_rate):
-    '''This will create a snap'''
-    eds = ElDefs()
-    
-    eds.add(ElDef.build(
-        PitchBreak, f"{name}_break", 
-        [speed, speed * abs(break_angle)/break_rate, break_angle],
-        DGGrps.pitch_break,
-    ))
-    
-    eds.add(ElDef.build(
-        Autorotation, f"{name}_autorotation", 
-        [speed, speed*abs(rolls)/rate, rolls],
-        DGGrps.autorotation
-    ))
-
-    if isinstance(rate, ManParm):
-        rate.collectors.add(eds[-1].get_collector("rate"))
-    
-    eds.add(ElDef.build(
-        Recovery, f"{name}_recovery", 
-        [speed, speed * abs(break_angle)/break_rate],
-        DGGrps.recovery,
-    ))
-     
-    return eds, ManParms()
-
-
-def spin(name, turns, break_angle, rate, speed, break_rate, reversible):   
-    
-    nose_drop = ElDef.build(
-        NoseDrop, f"{name}_break", 
-        [speed, speed * break_angle/break_rate, break_angle],
-        DGGrps.nose_drop, 
+def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll):
+    ed = ElDef.build(
+        Snap, name,
+        [speed, speed * abs(rolls)/rate, rolls, break_angle, break_roll, recovery_roll],
+        {
+            '': DGGrps.snap,
+            'break': DGGrps.pitch_break,
+            'autorotation': DGGrps.autorotation,
+            'recovery': DGGrps.recovery,
+        }
     )
+    if isinstance(rate, ManParm):
+        rate.collectors.add(ed.get_collector('rate'))
+    return ed, ManParms()
 
-    autorotation = ElDef.build(
-        Autorotation, f"{name}_autorotation", 
-        [speed, speed * abs(turns)/rate, turns],
-        DGGrps.autorotation
+
+def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns):   
+    
+    height = Spin.get_height(speed, rate, turns, nd_turns, recovery_turns)
+    ed = ElDef.build(
+        Spin, name, 
+        [speed, height, turns, break_angle, nd_turns, recovery_turns],
+        {
+            '': DGGrps.spin,
+            'break': DGGrps.nose_drop,
+            'autorotation': DGGrps.autorotation,
+            'recovery': DGGrps.recovery,
+        }
     )
 
     if isinstance(rate, ManParm):
-        rate.collectors.add(autorotation.get_collector("rate"))
+        rate.collectors.add(ed.get_collector("rate"))
 
-    recovery = ElDef.build(
-        Recovery, f"{name}_recovery", 
-        [speed, speed * break_angle/break_rate],
-        DGGrps.recovery,
-    )
-
-    return ElDefs([nose_drop, autorotation, recovery]), ManParms()
+    return ed, ManParms()
 
 
 def parse_rolltypes(rolltypes, n):
@@ -117,7 +98,7 @@ def parse_rolltypes(rolltypes, n):
 def roll_combo(
         name, speed, rolls, rolltypes, 
         partial_rate, full_rate, pause_length,
-        break_angle, snap_rate, break_rate, mode) -> ElDefs:
+        break_angle, snap_rate, break_roll, recovery_roll, mode) -> ElDefs:
     '''This creates a set of ElDefs to represent a list of rolls or snaps
       and pauses between them if mode==f3a it does not create pauses when roll direction is reversed
     '''
@@ -133,7 +114,7 @@ def roll_combo(
             )[0])
         else:
             eds.add(snap(
-                f"{name}_{i}", rolls[i], break_angle, snap_rate, speed, break_rate
+                f"{name}_{i}", rolls[i], break_angle, snap_rate, speed, break_roll, recovery_roll
             )[0])
 
         if i < rolls.n - 1 and (mode=='imac' or np.sign(r) == np.sign(rolls.value[i+1])):
@@ -168,8 +149,8 @@ def pad(speed, line_length, eds: ElDefs):
 
 def rollmaker(name, rolls, rolltypes, speed, partial_rate, 
     full_rate, pause_length, line_length, reversible, 
-    break_angle, snap_rate, break_rate,
-    padded, mode):
+    break_angle, snap_rate, break_roll, recovery_roll, padded, mode
+):
     '''This will create a set of ElDefs to represent a series of rolls or snaps
       and pauses between them and the pads at the ends if padded==True.
     '''
@@ -184,12 +165,12 @@ def rollmaker(name, rolls, rolltypes, speed, partial_rate,
             rate = full_rate if abs(_r)>=2*np.pi else partial_rate
             eds, rcmps = roll(f"{name}_roll", speed, rate, _rolls)
         else:
-            eds, rcmps = snap(f"{name}_snap", _rolls, break_angle, snap_rate, speed, break_rate)
+            eds, rcmps = snap(f"{name}_snap", _rolls, break_angle, snap_rate, speed, break_roll, recovery_roll)
     else:
         eds, rcmps = roll_combo(
             name, speed, _rolls, rolltypes, 
             partial_rate, full_rate, pause_length,
-            break_angle, snap_rate, break_rate, mode
+            break_angle, snap_rate, break_roll, recovery_roll, mode
         )
         
     mps.add(rcmps)
@@ -202,7 +183,7 @@ def rollmaker(name, rolls, rolltypes, speed, partial_rate,
 
 
 def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, reversible, pause_length,
-    break_angle, snap_rate, break_rate, mode ):
+    break_angle, snap_rate, break_roll, recovery_roll, mode ):
     '''This will create a set of ElDefs to represent a series of loops and the pads at the ends if padded==True.'''
 
     
@@ -239,8 +220,6 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
         eds.add(loop(f"{name}_pad1", speed, internal_rad, (angle - rollangle) / 2, ke)[0])
 
     if multi_rolls:
-        #TODO cannot cope with options that change whether a pause is required or not.
-        #this will need to be covered in some other way
         if mode == 'f3a':
             has_pause = np.concatenate([np.diff(np.sign(rvs)), np.ones(1)]) == 0
         else:
@@ -273,7 +252,7 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
                 eds.add(rolling_loop(f"{name}_{i}", speed, internal_rad, r, rolls[i], ke=ke - roll_done)[0]) 
             else:
                 ed, mps = snap(
-                    f"{name}_{i}", rolls[i], break_angle, snap_rate, speed, break_rate
+                    f"{name}_{i}", rolls[i], break_angle, snap_rate, speed, break_roll, recovery_roll
                 )
                 eds.add(ed)
                 snap_rate.collectors.add(eds[-2].get_collector("rate"))

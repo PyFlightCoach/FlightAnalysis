@@ -10,20 +10,17 @@ from typing import Union
 
 @dataclass
 class Single(Criteria):
-    id: int | None = -1
     def prepare(self, value: npt.NDArray, expected: float) -> npt.NDArray:
         return abs(value - expected)
              
-    def __call__(self, name: str, m: Measurement, limits=True) -> Result:
+    def __call__(self, name: str, m: Measurement, sids: npt.NDArray, limits=True) -> Result:
         
-        sample = self.prepare(m.value, m.expected)
-        all_ids = np.array(range(len(m)))
-        ids = all_ids if self.id is None else np.array([all_ids[self.id]])
+        sample = self.prepare(m.value[sids], m.expected)
                 
         return Result(
-            name, m, sample, sample[ids], 
-            self.lookup(sample[ids], m.visibility[ids], limits),
-            ids
+            name, m, sample, sids, sample,
+            self.lookup(sample, m.visibility, limits),
+            np.arange(len(sample))
         )
         
 

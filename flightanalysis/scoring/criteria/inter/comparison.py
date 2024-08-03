@@ -14,7 +14,7 @@ class Comparison(Criteria):
         errors = np.maximum(vals[:-1], vals[1:]) / np.minimum(vals[:-1], vals[1:]) - 1
 
         return Result(
-            name, m, m.value, 
+            name, m, m.value, np.arange(len(m.value)),  
             errors, self.lookup(errors, m.visibility), 
             m.keys
         )

@@ -28,22 +28,6 @@ class Continuous(Criteria):
             first_val = not first_val
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
-    def __call__(self, name: str, m: Measurement, limits=True) -> Result:
-        sample = self.prepare(m.value, m.expected)
-        peak_locs = Continuous.get_peak_locs(sample)
-        trough_locs = Continuous.get_peak_locs(sample, True)
-        mistakes = self.__class__.mistakes(sample, peak_locs, trough_locs)
-        dgids = self.__class__.dgids(
-            np.linspace(0, len(sample)-1, len(sample)).astype(int), 
-            peak_locs, trough_locs
-        )
-
-        return Result(
-            name, m, sample, mistakes, 
-            self.lookup(mistakes, self.visibility(m, dgids), limits), 
-            dgids
-        )
-        
     
     def visibility(self, measurement, ids):
         rids = np.concatenate([[0], ids])
@@ -92,6 +76,23 @@ class ContAbs(Continuous):
         return ids[first_peak:][peaks[first_peak:]]
 
 
+    def __call__(self, name: str, m: Measurement, sids: npt.NDArray, limits=True) -> Result:
+        sample = self.prepare(m.value[sids], m.expected)
+        peak_locs = Continuous.get_peak_locs(sample)
+        trough_locs = Continuous.get_peak_locs(sample, True)
+        mistakes = self.__class__.mistakes(sample, peak_locs, trough_locs)
+        dgids = self.__class__.dgids(
+            np.linspace(0, len(sample)-1, len(sample)).astype(int), 
+            peak_locs, trough_locs
+        )
+
+        return Result(
+            name, m, sample, sids, mistakes, 
+            self.lookup(mistakes, self.visibility(m, dgids), limits), 
+            dgids
+        )
+        
+
 class ContRat(Continuous):
     
     def prepare(self, values: npt.NDArray, expected: float):
@@ -105,10 +106,11 @@ class ContRat(Continuous):
             #)
             pass
         else:
-            vals= Continuous.convolve_wind(vals, 3, 40)
+            pass
+            #vals= Continuous.convolve_wind(vals, 5, 20)
 
         vals[np.sign(vals)==-np.sign(np.mean(vals))]=0
-        return abs(vals)
+        return vals
     
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -120,4 +122,22 @@ class ContRat(Continuous):
     def dgids(ids, peaks, troughs):
         return ids[peaks + troughs][1:]
     
-         
+
+    def __call__(self, name: str, m: Measurement, sids: npt.NDArray, limits=True) -> Result:
+        
+        sample = self.prepare(m.value[sids], m.expected)
+        absample = np.abs(sample)
+        peak_locs = Continuous.get_peak_locs(absample)
+        trough_locs = Continuous.get_peak_locs(absample, True)
+        mistakes = self.__class__.mistakes(absample, peak_locs, trough_locs)
+        dgids = self.__class__.dgids(
+            np.linspace(0, len(sample)-1, len(sample)).astype(int), 
+            peak_locs, trough_locs
+        )
+
+        return Result(
+            name, m, sample, sids, mistakes, 
+            self.lookup(mistakes, self.visibility(m, dgids), limits), 
+            dgids
+        )
+        

@@ -237,9 +237,9 @@ a25_def = SchedDef([
     ]  
 )
  
-a25_def.stall.eds.e_1.dgs = DGGrps.st_line_decel
-a25_def.stall.eds.e_3_pad1.dgs = DGGrps.st_line_accel
-a25_def.iSpin.eds.e_1.dgs = DGGrps.sp_line_accel
+a25_def.stall.eds.e_1.dgs = {'': DGGrps.st_line_decel}
+a25_def.stall.eds.e_3_pad1.dgs = {'': DGGrps.st_line_accel}
+a25_def.iSpin.eds.e_1.dgs = {'': DGGrps.sp_line_accel}
 
 
 if __name__ == "__main__":

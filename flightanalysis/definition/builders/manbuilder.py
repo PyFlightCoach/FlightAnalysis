@@ -35,7 +35,7 @@ class ManBuilder():
     def el(self, kind, *args, **kwargs):
         """Setup kwargs to pull defaults from mpmaps
         returns a function that appends the created elements to a ManDef"""
-        
+        ##TODO something like this: kwargs.update(dict(zip(myfunc.func_code.co_varnames, args)))
         all_kwargs = self.mpmaps[kind]["kwargs"].copy() # take the defaults
         for k,a in kwargs.items():
             all_kwargs[k]=a  # take the **kwargs if they were specified
@@ -139,8 +139,9 @@ f3amb = ManBuilder(
                 reversible=True,
                 pause_length="point_length",
                 break_angle=np.radians(10), 
-                snap_rate='snap_rate', 
-                break_rate=2*np.pi, 
+                snap_rate='snap_rate',
+                break_roll=np.pi/4,
+                recovery_roll=np.pi/2,
                 mode='f3a'
             )
         ),
@@ -157,8 +158,9 @@ f3amb = ManBuilder(
                 pause_length="point_length",
                 mode='f3a',
                 break_angle=np.radians(10), 
-                snap_rate='snap_rate', 
-                break_rate=2*np.pi,
+                snap_rate='snap_rate',
+                break_roll=np.pi/4,
+                recovery_roll=np.pi/2, 
                 rolltypes='roll'
             )
         ),
@@ -184,7 +186,8 @@ f3amb = ManBuilder(
                 mode='f3a',
                 break_angle=np.radians(10), 
                 snap_rate='snap_rate', 
-                break_rate=2*np.pi,
+                break_roll=np.pi/4,
+                recovery_roll=np.pi/2,
                 rolltypes='snap'
             )    
         ),
@@ -195,8 +198,8 @@ f3amb = ManBuilder(
                 speed="spin_speed",
                 break_angle=np.radians(30),
                 rate="spin_rate",
-                break_rate=6,
-                reversible=True
+                nd_turns=np.pi/2,
+                recovery_turns=np.pi/2
             )
         )
 
