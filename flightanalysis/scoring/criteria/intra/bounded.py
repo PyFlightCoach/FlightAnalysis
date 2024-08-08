@@ -3,8 +3,6 @@ import numpy as np
 import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass
-from typing import Union
-from flightanalysis.scoring import Measurement, Result
 
 
 @dataclass
@@ -16,45 +14,34 @@ class Bounded(Criteria):
     of the group width to the total width and by the average visibility of the group.
     """
 
-    bound: Union[float, list[float]] = 0
+    bound: float | list[float] = 0
 
-    def prepare(self, value: npt.NDArray, expected: float):
-        return self.get_errors(value - expected)
+    def prepare(self, value: npt.NDArray):
+        return self.get_errors(value)
 
     def get_errors(self, ids: npt.NDArray, data: npt.NDArray):
         raise Exception("Method not available in base class")
 
-    def __call__(
-        self, name: str, m: Measurement, sids: npt.NDArray, limits=True
-    ) -> Result:
+    def __call__(self, vs: npt.NDArray, limits=True):
         """each downgrade corresponds to a group of values outside the bounds, ids
-        correspond to the last velue in each case"""
-        sample = self.prepare(m.value[sids], m.expected)
+        correspond to the last value in each case"""
+        sample = self.prepare(vs)
         ids = np.linspace(0, len(sample) - 1, len(sample)).astype(int)
         groups = np.concatenate([[0], np.diff(sample != 0).cumsum()])
 
-        mistakes = np.array([np.mean(sample[groups == grp]) for grp in set(groups)])
         dgids = np.array(
             [
                 ids[groups == grp][int(len(ids[groups == grp]) / 2)]
                 for grp in set(groups)
             ]
         )
-        dgs = np.array(
-            [
-                self.lookup(np.mean(sample[groups == grp]), m.visibility[dgid], limits)
-                * len(sample[groups == grp])
-                / len(sample)
-                for dgid, grp in zip(dgids, set(groups))
-            ]
-        )
+        errors = np.array([
+            np.mean(sample[groups == grp]) * len(sample[groups == grp]) / len(sample)
+            for grp in set(groups)
+        ])
+        dgs = self.lookup(errors)
 
-        return Result(
-            name, m, sample, sids, mistakes[dgs > 0], dgs[dgs > 0], dgids[dgs > 0]
-        )
-
-    def visiblity(self, measurement, ids):
-        return np.mean(measurement.visibility[ids])
+        return errors, dgs, dgids
 
 
 @dataclass

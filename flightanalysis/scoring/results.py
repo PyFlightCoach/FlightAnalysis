@@ -73,8 +73,15 @@ class Result:
             np.array(data["keys"]),
         )
 
-    def info(self, i: int):
-        return f"downgrade={np.round(self.dgs[i], 3)}\nerror={np.round(self.errors[i],3)}\nvisibility={np.round(self.measurement.visibility[self.keys[i]], 2)}"
+    def info(self, i: int, deg: bool = False):
+        def f(x):
+            return x if not deg else np.degrees(x)
+
+        return "\n".join([
+            f"downgrade={self.dgs[i]:.3f}",
+            f"error={f(self.errors[i]):.2f}",
+            f"visibility={self.measurement.visibility[self.keys[i]]:.2f}"
+        ]) 
 
     def summary_df(self):
         return pd.DataFrame(
@@ -93,9 +100,8 @@ class Result:
     def plot(self, deg=False):
         import plotly.graph_objects as go
 
-        f = lambda x: x
-        if deg:
-            f = lambda x: np.degrees(x)
+        def f(x):
+            return x if not deg else np.degrees(x)
 
         fig = go.Figure(
             layout=dict(
@@ -103,24 +109,30 @@ class Result:
                 yaxis2=dict(
                     title="visibility", overlaying="y", range=[0, 1], side="right"
                 ),
+                title=f"{self.name}, {self.total:.2f}"
             )
         )
 
         x = np.arange(0, len(self.measurement), 1)
-        fig.add_trace(go.Scatter(x=x, y=f(self.measurement.value), name="flown"))
-        fig.add_trace(go.Scatter(x=x[self.sample_keys], y=f(self.measurement.value[self.sample_keys]), name="inrange", line=dict(color='red')))
+        fig.add_trace(
+            go.Scatter(
+                x=x,
+                y=f(self.measurement.value),
+                name="flown",
+                line=dict(color="blue", width=1, dash="dash"),
+            )
+        )
 
         fig.add_trace(
             go.Scatter(
                 x=x[self.sample_keys],
                 y=f(self.sample),
                 name="sample",
-                yaxis="y",
-                line=dict(width=3, color="black"),
+                line=dict(width=1, color="black"),
             )
         )
 
-        hovtxt = [self.info(i) for i in range(len(self.keys))]
+        hovtxt = [self.info(i, deg) for i in range(len(self.keys))]
 
         fig.add_trace(
             go.Scatter(
@@ -199,6 +211,9 @@ class Results(Collection):
         return Results(
             data["name"], [Result.from_dict(v) for v in data["data"].values()]
         )
+
+
+    
 
 
 class ElementsResults(Collection):
