@@ -10,14 +10,17 @@ import plotly.graph_objects as go
 from json import dumps
 import geometry as g
 
-mdef: ManDef = f3amb.create(
-    ManInfo(
-        "snap", "Sn", k=4, position=Position.CENTRE, 
-        start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
-        end=BoxLocation(Height.TOP)
-    ),
-    [centred(f3amb.snap(r(1), padded=False))], 
-)
+mdef: ManDef = f3amb.create(ManInfo(
+    "Comet", "Com", k=3, position=Position.END, 
+    start=BoxLocation(Height.TOP, Direction.DOWNWIND, Orientation.UPRIGHT),
+    end=BoxLocation(Height.BTM)
+),[
+    f3amb.loop(-np.pi/4),
+    f3amb.roll("2x4"),
+    f3amb.loop(-3*np.pi/2),
+    f3amb.roll(r(1)),
+    f3amb.loop(np.pi/4),
+], line_length=(1/c45 + 1) * 50 + 30 - (1/c45 - 2) * 50, loop_radius=50)
 
 
 data = mdef.to_dict()

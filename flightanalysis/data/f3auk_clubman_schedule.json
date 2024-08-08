@@ -128,10 +128,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -145,9 +145,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -162,8 +162,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -179,9 +179,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -198,10 +198,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -260,10 +260,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -398,10 +398,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -415,9 +415,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -432,8 +432,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -449,9 +449,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -468,10 +468,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -548,8 +548,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -686,10 +686,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -703,9 +703,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -720,8 +720,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -737,9 +737,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -756,10 +756,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -897,10 +897,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -915,8 +915,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -932,9 +932,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -949,8 +949,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -969,10 +969,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -1121,10 +1121,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -1138,9 +1138,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1155,8 +1155,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -1172,9 +1172,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1191,10 +1191,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -1208,9 +1208,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1227,10 +1227,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -1348,8 +1348,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -1365,9 +1365,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1382,8 +1382,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -1491,10 +1491,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -1509,7 +1509,7 @@
           "": [
             "track_y_decel",
             "track_z_decel",
-            "roll_angle"
+            "line_roll_angle"
           ]
         }
       },
@@ -1539,7 +1539,7 @@
           "": [
             "track_y_accel",
             "track_z_accel",
-            "roll_angle"
+            "line_roll_angle"
           ]
         }
       },
@@ -1556,10 +1556,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -1698,8 +1698,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -1715,9 +1715,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1734,10 +1734,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -1751,9 +1751,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1768,8 +1768,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -1920,10 +1920,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -1937,9 +1937,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1956,10 +1956,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -1973,9 +1973,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -1990,8 +1990,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -2007,9 +2007,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2026,10 +2026,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -2229,10 +2229,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -2246,9 +2246,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2263,8 +2263,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -2280,9 +2280,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2299,10 +2299,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -2316,9 +2316,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2333,8 +2333,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -2350,9 +2350,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2369,10 +2369,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -2522,10 +2522,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       },
@@ -2539,9 +2539,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2556,8 +2556,8 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
+            "line_track_y",
+            "line_track_z",
             "roll_rate",
             "end_roll_angle"
           ]
@@ -2573,9 +2573,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2592,10 +2592,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -2734,8 +2734,8 @@
         "dgs": {
           "": [
             "track_y_decel",
-            "track_z",
-            "roll_angle"
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       },
@@ -2752,10 +2752,10 @@
         "dgs": {
           "": [
             "speed",
-            "curvature",
-            "track_proj_vel",
-            "track_proj_ang",
-            "roll_angle_p"
+            "loop_curvature",
+            "loop_track_y",
+            "loop_track_z",
+            "loop_roll_angle"
           ]
         }
       }
@@ -2823,9 +2823,9 @@
         "dgs": {
           "": [
             "speed",
-            "track_y",
-            "track_z",
-            "roll_angle"
+            "line_track_y",
+            "line_track_z",
+            "line_roll_angle"
           ]
         }
       }

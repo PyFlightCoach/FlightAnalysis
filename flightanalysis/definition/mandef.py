@@ -108,7 +108,7 @@ class ManDef:
                     man_start_x = min(box_edge - template.pos.x) 
             length = max(man_start_x - itrans.translation.x[0] * heading, 10)
 
-        return ElDef.build(Line, "entry_line", [30.0, length], DGGrps.exits)
+        return ElDef.build(Line, "entry_line", [30.0, length], {'':DGGrps.exits})
 
     def create(self, itrans=None, depth=None, wind=None, cross=None) -> Manoeuvre:
         """Create the manoeuvre based on the default values in self.mps.

@@ -1,11 +1,11 @@
 from flightdata import Collection, State
-from .criteria import Bounded, ContAbs, ContRat, Single
+from .criteria import Bounded, ContAbs, ContRat, Single, Criteria
 from .measurement import Measurement
 from .results import Results, Result
 from typing import Callable
 from geometry import Coord
 from dataclasses import dataclass
-from .subsetters import Subsetter
+from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
 
 
@@ -15,31 +15,57 @@ class DownGrade:
     measure - a Measurement constructor
     criteria - takes a Measurement and calculates the score
     display_name - the name to display in the results
-    subsetter - the subsetter to apply to the measurement before scoring
+    selector - the selector to apply to the measurement before scoring
     """
 
     name: str
-    measure: Callable[[State, State, Coord], Measurement]
-    criteria: Bounded | ContAbs | ContRat | Single
-    display_name: str = None
-    subsetter: Subsetter = None
+    measure: Callable[
+        [State, State, Coord], Measurement
+    ]  # gets the flown and template measurements
+    smoothers: RefFuncs  # smoothes the measurement
+    selectors: RefFuncs  # selects the values to downgrade
+    criteria: (Bounded | ContAbs | ContRat | Single)  # looks up the downgrades based on the errors
+    display_name: str
 
     def to_dict(self):
         return dict(
             name=self.name,
             measure=self.measure.__name__,
+            smoothers=self.smoothers.to_list(),
+            selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(),
             display_name=self.display_name,
-            subsetter=str(self.subsetter) if self.subsetter else "all",
         )
 
     def __call__(self, fl, tp, limits=True) -> Result:
-        return self.criteria(
-            self.display_name if self.display_name else self.name,
-            self.measure(fl, tp),
-            self.subsetter(fl) if self.subsetter else np.arange(len(fl)),
-            limits,
+        measurement: Measurement = self.measure(fl, tp)
+        sample = measurement.value
+        for sm in self.smoothers:
+            sample = sm(sample)
+        ids = np.arange(len(fl))
+        subset = sample.copy()
+        for s in self.selectors:
+            ids = s(fl, subset)
+            fl = State(fl.data.iloc[ids])
+            subset = subset[ids]
+        return Result(
+            self.display_name,
+            measurement,
+            sample[ids],
+            ids,
+            *self.criteria(sample[ids], limits)
         )
+
+
+def dg(
+    name: str,
+    display_name: str,
+    measure: Callable,
+    smoothers: RefFunc | list[RefFunc],
+    selectors: RefFunc | list[RefFunc],
+    criteria: Criteria,
+):
+    return DownGrade(name, measure, RefFuncs(smoothers), RefFuncs(selectors) , criteria, display_name)
 
 
 class DownGrades(Collection):

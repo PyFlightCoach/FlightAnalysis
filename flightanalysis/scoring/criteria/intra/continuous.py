@@ -3,24 +3,25 @@ import numpy as np
 import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass
-from flightanalysis.scoring import Measurement, Result
-from scipy.signal import filtfilt
-from scipy.signal import butter
+from typing import Tuple
 
 
 @dataclass
 class Continuous(Criteria):
-    """Works on a continously changing set of values. 
+    """Works on a continously changing set of values.
     only downgrades for increases (away from zero) of the value.
     treats each separate increase (peak - trough) as a new error.
     """
+
     cutoff: int = 4
 
     @staticmethod
     def get_peak_locs(arr, rev=False):
-        increasing = np.sign(np.diff(np.abs(arr)))>0
+        increasing = np.sign(np.diff(np.abs(arr))) > 0
         last_downgrade = np.column_stack([increasing[:-1], increasing[1:]])
-        peaks = np.sum(last_downgrade.astype(int) * [10,1], axis=1) == (1 if rev else 10)
+        peaks = np.sum(last_downgrade.astype(int) * [10, 1], axis=1) == (
+            1 if rev else 10
+        )
         last_val = increasing[-1]
         first_val = not increasing[0]
         if rev:
@@ -28,47 +29,43 @@ class Continuous(Criteria):
             first_val = not first_val
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
-    
     def visibility(self, measurement, ids):
         rids = np.concatenate([[0], ids])
-        return np.array([np.mean(measurement.visibility[a:b]) for a, b in zip(rids[:-1], rids[1:])])
+        return np.array(
+            [np.mean(measurement.visibility[a:b]) for a, b in zip(rids[:-1], rids[1:])]
+        )
 
-    @staticmethod
-    def filter(data, cutoff, order=5):
-        return filtfilt(*butter(order, cutoff, fs=25, btype='low', analog=False), data, padlen=len(data)-1)
+    def __call__(
+        self, vs: npt.NDArray, limits=True
+    ) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
+        vs = np.abs(vs)
+        peak_locs = Continuous.get_peak_locs(vs)
+        trough_locs = Continuous.get_peak_locs(vs, True)
+        mistakes = self.__class__.mistakes(vs, peak_locs, trough_locs)
+        dgids = self.__class__.dgids(
+            np.linspace(0, len(vs) - 1, len(vs)).astype(int), peak_locs, trough_locs
+        )
+        return mistakes, self.lookup(mistakes, limits), dgids
 
-    @staticmethod
-    def convolve(data, width):
-        kernel = np.ones(width) / width
-        outd = np.full(len(data), np.nan)
-        conv = np.convolve(data, kernel, mode='valid')
-        ld = (len(data) - len(conv))/2
-        ldc = int(np.ceil(ld))
-        ldf = int(np.floor(ld))
-        outd[ldf:-ldc] = conv
-        outd[:ldf] = np.linspace(np.mean(data[:ldf]), conv[0],ldf+1)[:-1]
-        outd[-ldc:] = np.linspace(conv[-1], np.mean(data[-ldc:]), ldc+1)[1:]
-        return outd
-    
-    @staticmethod
-    def convolve_wind(data, window_ratio, max_window):
-        window = min(len(data)//window_ratio, max_window)
-        sample = Continuous.convolve(data, window)
-        _mean = np.mean(sample)
-        sample = (sample - _mean) * window / max_window + _mean
-        return sample 
+    def mistakes(self, data, peaks, troughs):
+        raise NotImplementedError("This method should be implemented in the subclass")
+
+    def dgids(self, ids, peaks, troughs):
+        raise NotImplementedError("This method should be implemented in the subclass")
 
 
 class ContAbs(Continuous):
-    def prepare(self, values: npt.NDArray, expected: float):
-        return Continuous.filter(values, self.cutoff)
-        
+    """Downgrades for all increases away from zero, error is defined as peak - trough"""
+
     @staticmethod
     def mistakes(data, peaks, troughs):
-        '''All increases away from zero are downgraded (only peaks)'''
+        """All increases away from zero are downgraded (only peaks)"""
         last_trough = -1 if troughs[-1] else None
         first_peak = 1 if peaks[0] else 0
-        return np.abs(data[first_peak:][peaks[first_peak:]] - data[:last_trough][troughs[:last_trough]])
+        return np.abs(
+            data[first_peak:][peaks[first_peak:]]
+            - data[:last_trough][troughs[:last_trough]]
+        )
 
     @staticmethod
     def dgids(ids, peaks, troughs):
@@ -76,68 +73,19 @@ class ContAbs(Continuous):
         return ids[first_peak:][peaks[first_peak:]]
 
 
-    def __call__(self, name: str, m: Measurement, sids: npt.NDArray, limits=True) -> Result:
-        sample = self.prepare(m.value[sids], m.expected)
-        peak_locs = Continuous.get_peak_locs(sample)
-        trough_locs = Continuous.get_peak_locs(sample, True)
-        mistakes = self.__class__.mistakes(sample, peak_locs, trough_locs)
-        dgids = self.__class__.dgids(
-            np.linspace(0, len(sample)-1, len(sample)).astype(int), 
-            peak_locs, trough_locs
-        )
-
-        return Result(
-            name, m, sample, sids, mistakes, 
-            self.lookup(mistakes, self.visibility(m, dgids), limits), 
-            dgids
-        )
-        
-
 class ContRat(Continuous):
-    
-    def prepare(self, values: npt.NDArray, expected: float):
-        vals = Continuous.filter(values, self.cutoff)
+    """Downgrades for all changes, error is defined as max(peak, trough) / min(peak, trough) - 1"""
 
-        if len(vals) <= 8:
-            #vals = np.linspace(
-            #    np.mean(values[:1+len(values)//3]), 
-            #    np.mean(values[-1-len(values)//3:]), 
-            #    len(values)
-            #)
-            pass
-        else:
-            pass
-            #vals= Continuous.convolve_wind(vals, 5, 20)
-
-        vals[np.sign(vals)==-np.sign(np.mean(vals))]=0
-        return vals
-    
     @staticmethod
     def mistakes(data, peaks, troughs):
-        '''All changes are downgraded (peaks and troughs)'''
+        """All changes are downgraded (peaks and troughs)"""
         values = data[peaks + troughs]
-        return np.minimum(np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:]) - 1, 10)
-    
+        return np.minimum(
+            np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:])
+            - 1,
+            10,
+        )
+
     @staticmethod
     def dgids(ids, peaks, troughs):
         return ids[peaks + troughs][1:]
-    
-
-    def __call__(self, name: str, m: Measurement, sids: npt.NDArray, limits=True) -> Result:
-        
-        sample = self.prepare(m.value[sids], m.expected)
-        absample = np.abs(sample)
-        peak_locs = Continuous.get_peak_locs(absample)
-        trough_locs = Continuous.get_peak_locs(absample, True)
-        mistakes = self.__class__.mistakes(absample, peak_locs, trough_locs)
-        dgids = self.__class__.dgids(
-            np.linspace(0, len(sample)-1, len(sample)).astype(int), 
-            peak_locs, trough_locs
-        )
-
-        return Result(
-            name, m, sample, sids, mistakes, 
-            self.lookup(mistakes, self.visibility(m, dgids), limits), 
-            dgids
-        )
-        

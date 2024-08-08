@@ -1,5 +1,5 @@
 from ..eldef import ElDef, ElDefs, ManParm, ManParms
-from flightanalysis.elements import Line, Loop, StallTurn, PitchBreak, Autorotation, Recovery, NoseDrop, Snap, Spin
+from flightanalysis.elements import Line, Loop, StallTurn, Snap, Spin
 from flightanalysis.definition.collectors import Collectors
 from flightanalysis.definition import ItemOpp
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
