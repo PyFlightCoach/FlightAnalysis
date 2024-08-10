@@ -10,80 +10,117 @@ from .loop import Loop
 
 @dataclass
 class Spin(Element):
-    parameters: ClassVar[list[str]] = Element.parameters + \
-        ['height', 'turns', 'pitch', 'drop_turns', 'recovery_turns', 'rate']
+    parameters: ClassVar[list[str]] = Element.parameters + [
+        "height",
+        "turns",
+        "pitch",
+        "drop_turns",
+        "recovery_turns",
+        "rate",
+    ]
 
     height: float
-    turns: float
+    turns: float  # sounds strange but this is in radians
     pitch: float
-    drop_turns: float
-    recovery_turns: float
+    drop_turns: float  # radians
+    recovery_turns: float  # radians
+
+    @property
+    def length(self):
+        return (
+            (abs(self.turns) + self.drop_turns + self.recovery_turns)
+            * self.speed
+            / self.rate
+        )
 
     @property
     def rate(self):
-        return self.speed * (abs(self.turns) + self.drop_turns * (2/np.pi - 1) + self.recovery_turns) / self.height
-        #return (self.turns + self.drop_turns + self.recovery_turns) * self.speed / self.height
-    
+        return (
+            (abs(self.turns) + (4 / np.pi - 1) * self.drop_turns + self.recovery_turns)
+            * self.speed
+            / self.height
+        )
+
     @staticmethod
-    def get_height(speed: float, rate: float, turns: float, drop_turns: float, recovery_turns: float):
-        return (abs(turns) + drop_turns * (2/np.pi - 1) + recovery_turns) * speed / rate
+    def get_height(
+        speed: float,
+        rate: float,
+        turns: float,
+        drop_turns: float,
+        recovery_turns: float,
+    ):
+        return (
+            (abs(turns) + (4 / np.pi - 1) * drop_turns + recovery_turns) * speed / rate
+        )
 
-    def create_template(self, istate: State, time: g.Time=None) -> State:
+    def create_template(self, istate: State, fl: State = None) -> State:
         _inverted = 1 if istate.transform.rotation.is_inverted()[0] else -1
-        rate= self.rate
+        rate = self.rate
 
-        _ttot = (abs(self.turns) + self.drop_turns + self.recovery_turns) / rate
-        _tdr = 2 * self.drop_turns / rate
+        ttot = self.length / self.speed
+
+        _td = 2 * self.drop_turns / rate
+        tnd = g.Time.uniform(_td, int(np.ceil(len(fl) * _td / ttot)) if fl else None)
+
         _trec = 2 * self.recovery_turns / rate
-        
-        time = Element.create_time(_ttot, time)
-
-        ind = int(np.ceil(len(time) * _tdr / _ttot))
-        irec = int(np.ceil(len(time) * _trec / _ttot))
-
-        
-        tnd = time[0:ind+1]
-        nd: State = Loop(self.uid + "_nose_drop", self.speed, 0.5*np.pi*_inverted, 
-                  2*self.drop_turns * self.speed / (rate * np.pi), 0, 0
-        ).create_template(
-            istate, tnd
-        ).superimpose_rotation(
-            g.PY(), -abs(self.pitch) * _inverted
-        ).superimpose_angles(
-            g.PZ(np.sign(self.turns) * self.drop_turns) * tnd.t / tnd.t[-1],
-            "world"
+        trec = g.Time.uniform(
+            _trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None
         )
 
-        tau = time[ind:-irec+1].reset_zero()
-        au: State = nd[-1].copy(rvel=g.P0()).fill(
-            tau
-        ).label(element=self.uid + '_autorotation').superimpose_rotation(
-            g.PZ(),
-            np.sign(self.turns) * (abs(self.turns) - self.drop_turns - self.recovery_turns),
-            'world'
+        _tau = ttot - _td - _trec
+        tau = g.Time.uniform(_tau, len(fl) - len(tnd) - len(trec) + 2 if fl else None)
+
+        nd: State = (
+            istate.copy(
+                vel=istate.vel.scale(self.speed),
+                rvel=g.PY(_inverted * 0.5 * np.pi / _td),
+            )
+            .fill(tnd)
+            .superimpose_rotation(g.PY(), -abs(self.pitch) * _inverted)
+            .superimpose_angles(
+                g.PZ(np.sign(self.turns))
+                * rate
+                * tnd.t**2
+                / (2 * _td),
+                reference="world",
+            )
         )
 
-        trec = time[-irec-1:-1].reset_zero()
-        rec: State = au[-1].copy(rvel=g.P0()).fill(
-            trec
-        ).superimpose_rotation(
-            g.PY(), 
-            abs(self.pitch) * _inverted
-        ).superimpose_angles(
-            g.PZ(np.sign(self.turns) * self.recovery_turns) * trec.t / trec.t[-1],
-            "world"
-        ).label(element=self.uid + '_recovery')
+        au: State = (
+            nd[-1]
+            .copy(rvel=g.P0())
+            .fill(tau)
+            .label(element=self.uid + "_autorotation")
+            .superimpose_rotation(
+                g.PZ(),
+                np.sign(self.turns) * (abs(self.turns) - self.drop_turns - self.recovery_turns),
+                "world",
+            )
+        )
 
-        return State.stack([nd, au, rec])
+        rec: State = (
+            au[-1]
+            .copy(rvel=g.P0())
+            .fill(trec)
+            .superimpose_rotation(g.PY(), abs(self.pitch) * _inverted)
+            .superimpose_angles(
+                g.PZ(np.sign(self.turns))
+                * rate
+                * (trec.t - 0.5 * trec.t**2 / _trec),
+                "world",
+            )
+        )
+
+        return State.stack([nd, au, rec]).label(element=self.uid)
 
     def describe(self):
         return f"Spin {self.turns}, {self.pitch}"
-    
+
     def match_intention(self, transform: g.Transformation, flown: State) -> Spin:
         time = Element.create_time(self.length / self.speed, flown)
-        ipb = int(np.ceil(len(time) * abs(self.break_roll / self.roll)))
-        irec = int(np.ceil(len(time) * abs(self.recovery_roll / self.roll)))
 
+        ipb = int(np.ceil(len(time) * abs(self.drop_turns / self.turns)))
+        irec = int(np.ceil(len(time) * abs(self.recovery_turns / self.turns)))
 
         pitch = np.arctan2(flown.vel.z, flown.vel.x)[ipb:-irec]
         maxpitch = np.max(pitch)
@@ -91,8 +128,7 @@ class Spin(Element):
         pitch = maxpitch if abs(maxpitch) > abs(minpitch) else minpitch
         return self.set_parms(
             length=abs(self.length_vec(transform, flown))[0],
-            roll=np.sign(np.mean(flown.p)) * abs(self.roll),
+            roll=np.sign(np.mean(flown.p)) * abs(self.turns),
             speed=np.mean(abs(flown.vel)),
-            pitch=pitch
+            pitch=pitch,
         )
-    

@@ -116,7 +116,7 @@ p23_def = SchedDef([
                 [np.pi*1.5, -np.pi/2], 
                 [-np.pi*1.5, np.pi/2]
             ]),
-            0
+            0, "rad"
         )
     ),
     f3amb.create(ManInfo("Reverese Figure Et",  "rEt",  4, Position.CENTRE,
@@ -161,7 +161,7 @@ p23_def = SchedDef([
                 [np.pi*3/2, np.pi*3/2],
                 [-np.pi*3/2, -np.pi*3/2],
             ]),
-            1
+            1, "rad"
         ),
         line_length=150.0
     ),
@@ -180,7 +180,7 @@ p23_def = SchedDef([
                 [-np.pi/2, np.pi/2],
                 [np.pi/2, -np.pi/2]
             ]
-        ),0)),
+        ),0, "rad")),
     f3amb.create(ManInfo("Triangular Loop", "trgle", 3,Position.CENTRE,
             BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
             BoxLocation(Height.BTM)
@@ -218,7 +218,7 @@ p23_def = SchedDef([
         loop_radius=80,
         roll_option=ManParm(
             "roll_option", 
-            Combination(desired=[[np.pi], [-np.pi]]), 0
+            Combination(desired=[[np.pi], [-np.pi]]), 0, "rad"
         ))
 ])
 

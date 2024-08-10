@@ -11,17 +11,15 @@ from json import dumps
 import geometry as g
 
 mdef: ManDef = f3amb.create(ManInfo(
-    "Comet", "Com", k=3, position=Position.END, 
-    start=BoxLocation(Height.TOP, Direction.DOWNWIND, Orientation.UPRIGHT),
-    end=BoxLocation(Height.BTM)
+    "Spin", "iSpin", k=3, position=Position.CENTRE, 
+    start=BoxLocation(Height.TOP, Direction.UPWIND, Orientation.INVERTED),
+    end=BoxLocation(Height.BTM),
 ),[
-    f3amb.loop(-np.pi/4),
-    f3amb.roll("2x4"),
-    f3amb.loop(-3*np.pi/2),
-    f3amb.roll(r(1)),
-    f3amb.loop(np.pi/4),
-], line_length=(1/c45 + 1) * 50 + 30 - (1/c45 - 2) * 50, loop_radius=50)
-
+    MBTags.CENTRE,
+    f3amb.spin(r(2)),
+    f3amb.roll(r(0.5), line_length=165),
+    f3amb.loop(np.pi/2),
+])
 
 data = mdef.to_dict()
 print(dumps(data, indent=2, cls=NumpyEncoder))
@@ -33,8 +31,8 @@ man = mdef.create(it)
 
 tp = man.create_template(it)
 
-fig = plot_regions(tp, 'element', span=0.25)
-fig = plotsec(tp, fig=fig, nmodels=10, scale=1)
+fig = plot_regions(tp, 'element', span=5)
+fig = plotsec(tp, fig=fig, nmodels=10, scale=5)
 #fig.add_traces(boxtrace())
 fig.show()
 

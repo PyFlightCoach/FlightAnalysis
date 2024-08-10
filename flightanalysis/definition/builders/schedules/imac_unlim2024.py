@@ -39,7 +39,7 @@ sdef = SchedDef([
         directions=ManParm('directions', Combination(desired=[
             [r(0.49), -r(1), r(0.02), r(0.49), r(1)],
             [-r(0.49), r(1), -r(0.02), -r(0.49), -r(1)]
-        ]), 1),
+        ]), 1, "rad"),
         loop_radius=100),
     imacmb.create(ManInfo(
                 "Immelman", "Imm", k=39, position=Position.END, 
@@ -79,7 +79,7 @@ sdef = SchedDef([
         directions=ManParm('directions', Combination(desired=[
             [-r(1.75), r(1), r(1.75)],
             [r(1.75), -r(1), -r(1.75)]
-        ]), 1),
+        ]), 1, "rad"),
         full_roll_rate=2*np.pi
     ),
     imacmb.create(ManInfo(

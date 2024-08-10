@@ -35,15 +35,14 @@ class ManBuilder():
     def el(self, kind, *args, **kwargs):
         """Setup kwargs to pull defaults from mpmaps
         returns a function that appends the created elements to a ManDef"""
-        ##TODO something like this: kwargs.update(dict(zip(myfunc.func_code.co_varnames, args)))
+
         all_kwargs = self.mpmaps[kind]["kwargs"].copy() # take the defaults
+        
         for k,a in kwargs.items():
             all_kwargs[k]=a  # take the **kwargs if they were specified
-        for k, a in zip(self.mpmaps[kind]["args"], args):
-            if k in kwargs:
-                raise ValueError(f"Argument {k} specified twice")
-            all_kwargs[k] = a  # take the *args
-        
+
+        all_kwargs.update(dict(zip(self.mpmaps[kind]["args"], args))) # take the *args
+
         def append_el(md: ManDef, **kwargs) -> ElDefs:
             full_kwargs = {}
             for k, a in kwargs.items():
@@ -105,17 +104,16 @@ class ManBuilder():
 
 f3amb = ManBuilder(
     ManParms([
-        ManParm("speed", F3A.inter.speed, 30.0),
-        ManParm("spin_speed", F3A.inter.speed, 10.0),
-        ManParm("loop_radius", F3A.inter.radius, 55.0),
-        ManParm("line_length", F3A.inter.length, 130.0),
-        ManParm("point_length", F3A.inter.length, 20.0),
-        ManParm("partial_roll_rate", F3A.inter.roll_rate, np.pi/2),
-        ManParm("full_roll_rate", F3A.inter.roll_rate, 3*np.pi/4),
-        ManParm("snap_rate", F3A.inter.roll_rate, 4*np.pi),
-        ManParm("stallturn_rate", F3A.inter.roll_rate, np.pi),
-        ManParm("spin_rate", F3A.inter.roll_rate, 1.7*np.pi),
-        ManParm("ee_pause", F3A.inter.length, 20.0)
+        ManParm("speed", F3A.inter.speed, 30.0, "m/s"),
+        ManParm("loop_radius", F3A.inter.radius, 55.0, "m"),
+        ManParm("line_length", F3A.inter.length, 130.0, "m"),
+        ManParm("point_length", F3A.inter.length, 20.0, "m"),
+        ManParm("partial_roll_rate", F3A.inter.roll_rate, np.pi/2, "rad/s"),
+        ManParm("full_roll_rate", F3A.inter.roll_rate, 3*np.pi/4, "rad/s"),
+        ManParm("snap_rate", F3A.inter.roll_rate, 4*np.pi, "rad/s"),
+        ManParm("stallturn_rate", F3A.inter.roll_rate, np.pi, "rad/s"),
+        ManParm("spin_rate", F3A.inter.roll_rate, 1.7*np.pi, "rad/s"),
+        ManParm("ee_pause", F3A.inter.length, 20.0, "m")
     ]),
     mpmaps=dict(
         line=dict(
@@ -195,30 +193,29 @@ f3amb = ManBuilder(
             func=spin,
             args=["turns"],
             kwargs=dict(
-                speed="spin_speed",
+                speed=10,
                 break_angle=np.radians(30),
                 rate="spin_rate",
-                nd_turns=np.pi/2,
+                nd_turns=np.pi/4,
                 recovery_turns=np.pi/2
             )
         )
-
     )
 )
 
 
 imacmb = ManBuilder(
     ManParms([
-        ManParm("speed", F3A.inter.speed, 30.0),
-        ManParm("loop_radius", F3A.inter.radius, 55.0),
-        ManParm("line_length", F3A.inter.length, 130.0),
-        ManParm("point_length", F3A.inter.length, 20.0),
-        ManParm("partial_roll_rate", F3A.inter.roll_rate, np.pi),
-        ManParm("full_roll_rate", F3A.inter.roll_rate, np.pi),
-        ManParm("snap_rate", F3A.inter.roll_rate, 4*np.pi),
-        ManParm("stallturn_rate", F3A.inter.roll_rate, 2*np.pi),
-        ManParm("spin_rate", F3A.inter.roll_rate, 1.7*np.pi),
-        ManParm("ee_pause", F3A.inter.length, 20.0)
+        ManParm("speed", F3A.inter.speed, 30.0, "m/s"),
+        ManParm("loop_radius", F3A.inter.radius, 55.0, "m"),
+        ManParm("line_length", F3A.inter.length, 130.0, "m"),
+        ManParm("point_length", F3A.inter.length, 20.0, "m"),
+        ManParm("partial_roll_rate", F3A.inter.roll_rate, np.pi, "rad/s"),
+        ManParm("full_roll_rate", F3A.inter.roll_rate, np.pi, "rad/s"),
+        ManParm("snap_rate", F3A.inter.roll_rate, 4*np.pi, "rad/s"),
+        ManParm("stallturn_rate", F3A.inter.roll_rate, 2*np.pi, "rad/s"),
+        ManParm("spin_rate", F3A.inter.roll_rate, 1.7*np.pi, "rad/s"),
+        ManParm("ee_pause", F3A.inter.length, 20.0, "m")
     ]),
     mpmaps=dict(
         line=dict(

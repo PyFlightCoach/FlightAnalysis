@@ -116,17 +116,18 @@ class ManDef:
         Returns:
             Manoeuvre: The manoeuvre
         """
-        try:
-            return Manoeuvre(
-                self.create_entry_line(
-                    self.info.initial_transform(depth, wind, cross) if itrans is None else itrans
-                )(self.mps),
-                Elements([ed(self.mps) for ed in self.eds]), 
-                None,
-                uid=self.info.short_name
-            )
-        except Exception as e:
-            raise Exception(f"Error creating manoeuvre {self.info.short_name} due to: {e}") from e
+        #try:
+        return Manoeuvre(
+            self.create_entry_line(
+                self.info.initial_transform(depth, wind, cross) if itrans is None else itrans
+            )(self.mps),
+            Elements([ed(self.mps) for ed in self.eds]), 
+            None,
+            uid=self.info.short_name
+        )
+        #except Exception as e:
+        #    raise Exception(f"Error creating manoeuvre {self.info.short_name} due to: {e}") from e
+        
     def _create(self) -> Manoeuvre:
         return Manoeuvre(
             None,
