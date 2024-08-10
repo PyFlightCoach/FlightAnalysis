@@ -90,7 +90,7 @@ p25_def = SchedDef([
         ], loop_radius=100, 
         roll_option=ManParm("roll_option", Combination(
             desired=r([[-0.25, 0.25], [0.25, -0.25]])
-        ), 0)),
+        ), 0, "rad")),
     f3amb.create(ManInfo(
             "Humpty", "hB", k=3, position=Position.END, 
             start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
@@ -188,7 +188,7 @@ p25_def = SchedDef([
                 Combination(desired=r([
                     [1/4, -1/4], 
                     [1/4, 1/4]
-        ])), 0)),
+        ])), 0, "rad")),
     ]),
     f3amb.create(ManInfo(
             "Figure Z", "Z", k=4, position=Position.CENTRE, 
@@ -227,7 +227,7 @@ p25_def = SchedDef([
             Combination(desired=r([
                 [1/4, 3/8, 1/8, 1/4], 
                 [-1/4, -3/8, -1/8, -1/4]
-        ])), 0)),
+        ])), 0, "rad")),
 ])
 
 p25_def.stall.eds.e_1.dgs = {'': DGGrps.st_line_decel}

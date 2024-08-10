@@ -35,6 +35,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
@@ -54,6 +55,7 @@
           }
         },
         "defaul": 65,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius"
@@ -70,6 +72,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_1_0.rate": "e_1_0.rate"
         }
@@ -93,24 +96,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
-        }
-      },
-      "e_1_pad_length": {
-        "name": "e_1_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_1_pad1.length": "e_1_pad1.length",
-          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -241,6 +229,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed"
         }
@@ -305,6 +294,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
@@ -324,6 +314,7 @@
           }
         },
         "defaul": 65,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius"
@@ -340,6 +331,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_1_0.rate": "e_1_0.rate"
         }
@@ -363,24 +355,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
-        }
-      },
-      "e_1_pad_length": {
-        "name": "e_1_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_1_pad1.length": "e_1_pad1.length",
-          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -508,6 +485,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0_0.speed": "e_0_0.speed"
         }
@@ -531,6 +509,7 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_0_0.roll": "e_0_0.roll"
         }
@@ -593,6 +572,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
@@ -612,6 +592,7 @@
           }
         },
         "defaul": 45,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius"
@@ -628,6 +609,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_1_0.rate": "e_1_0.rate"
         }
@@ -651,24 +633,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
-        }
-      },
-      "e_1_pad_length": {
-        "name": "e_1_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_1_pad1.length": "e_1_pad1.length",
-          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -796,6 +763,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
@@ -815,6 +783,7 @@
           }
         },
         "defaul": 100,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_4.radius": "e_4.radius"
@@ -831,6 +800,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_3_0.rate": "e_3_0.rate"
@@ -855,6 +825,7 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
         }
@@ -878,6 +849,7 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_3_0.roll": "e_3_0.roll"
         }
@@ -1009,6 +981,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
@@ -1030,6 +1003,7 @@
           }
         },
         "defaul": 55.0,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius",
@@ -1047,6 +1021,7 @@
           }
         },
         "defaul": 130.0,
+        "unit": "m",
         "collectors": {
           "e_1": "sum([e_1_pad1.length,e_1_0.length,e_1_pad2.length])",
           "e_3.length": "e_3.length"
@@ -1063,6 +1038,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_1_0.rate": "e_1_0.rate"
         }
@@ -1086,24 +1062,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
-        }
-      },
-      "e_1_pad_length": {
-        "name": "e_1_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_1_pad1.length": "e_1_pad1.length",
-          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -1267,6 +1228,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0_0.speed": "e_0_0.speed",
           "e_1.speed": "e_1.speed",
@@ -1284,6 +1246,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_0_0.rate": "e_0_0.rate",
           "e_2_0.rate": "e_2_0.rate"
@@ -1308,6 +1271,7 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_0_0.roll": "e_0_0.roll"
         }
@@ -1331,6 +1295,7 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_2_0.roll": "e_2_0.roll"
         }
@@ -1422,6 +1387,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
@@ -1440,6 +1406,7 @@
           }
         },
         "defaul": 55.0,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_4.radius": "e_4.radius"
@@ -1456,6 +1423,7 @@
           }
         },
         "defaul": 130.0,
+        "unit": "m",
         "collectors": {
           "e_1.length": "e_1.length",
           "e_3.length": "e_3.length"
@@ -1472,6 +1440,7 @@
           }
         },
         "defaul": 3.141592653589793,
+        "unit": "rad/s",
         "collectors": {
           "e_2.yaw_rate": "e_2.yaw_rate"
         }
@@ -1599,6 +1568,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0_0.speed": "e_0_0.speed",
           "e_1.speed": "e_1.speed",
@@ -1618,6 +1588,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_0_0.rate": "e_0_0.rate",
           "e_4_0.rate": "e_4_0.rate"
@@ -1634,6 +1605,7 @@
           }
         },
         "defaul": 20.0,
+        "unit": "m",
         "collectors": {
           "e_1.length": "e_1.length",
           "e_3.length": "e_3.length"
@@ -1658,6 +1630,7 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_0_0.roll": "e_0_0.roll"
         }
@@ -1681,6 +1654,7 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_4_0.roll": "e_4_0.roll"
         }
@@ -1808,6 +1782,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
@@ -1829,6 +1804,7 @@
           }
         },
         "defaul": 55.0,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius",
@@ -1846,6 +1822,7 @@
           }
         },
         "defaul": 130.0,
+        "unit": "m",
         "collectors": {
           "e_1.length": "e_1.length",
           "e_3": "sum([e_3_pad1.length,e_3_0.length,e_3_pad2.length])"
@@ -1862,6 +1839,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_3_0.rate": "e_3_0.rate"
         }
@@ -1885,24 +1863,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_3_0.roll": "e_3_0.roll"
-        }
-      },
-      "e_3_pad_length": {
-        "name": "e_3_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_3_pad1.length": "e_3_pad1.length",
-          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2075,6 +2038,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
@@ -2098,6 +2062,7 @@
           }
         },
         "defaul": 100,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius",
@@ -2115,6 +2080,7 @@
           }
         },
         "defaul": 200,
+        "unit": "m",
         "collectors": {
           "e_1": "sum([e_1_pad1.length,e_1_0.length,e_1_pad2.length])",
           "e_3": "sum([e_3_pad1.length,e_3_0.length,e_3_pad2.length])"
@@ -2131,6 +2097,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_1_0.rate": "e_1_0.rate",
           "e_3_0.rate": "e_3_0.rate"
@@ -2155,24 +2122,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
-        }
-      },
-      "e_1_pad_length": {
-        "name": "e_1_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_1_pad1.length": "e_1_pad1.length",
-          "e_1_pad2.length": "e_1_pad2.length"
         }
       },
       "e_3_rolls": {
@@ -2194,24 +2146,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_3_0.roll": "e_3_0.roll"
-        }
-      },
-      "e_3_pad_length": {
-        "name": "e_3_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_3_pad1.length": "e_3_pad1.length",
-          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2414,6 +2351,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
@@ -2433,6 +2371,7 @@
           }
         },
         "defaul": 55.0,
+        "unit": "m",
         "collectors": {
           "e_0.radius": "e_0.radius",
           "e_2.radius": "e_2.radius"
@@ -2449,6 +2388,7 @@
           }
         },
         "defaul": 130.0,
+        "unit": "m",
         "collectors": {
           "e_1": "sum([e_1_pad1.length,e_1_0.length,e_1_pad2.length])"
         }
@@ -2464,6 +2404,7 @@
           }
         },
         "defaul": 1.5707963267948966,
+        "unit": "rad/s",
         "collectors": {
           "e_1_0.rate": "e_1_0.rate"
         }
@@ -2487,24 +2428,9 @@
           ]
         },
         "defaul": 0,
+        "unit": "rad",
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
-        }
-      },
-      "e_1_pad_length": {
-        "name": "e_1_pad_length",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 1.0,
-            "exponent": 1.0,
-            "limit": 2
-          }
-        },
-        "defaul": null,
-        "collectors": {
-          "e_1_pad1.length": "e_1_pad1.length",
-          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -2634,24 +2560,10 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed"
-        }
-      },
-      "spin_speed": {
-        "name": "spin_speed",
-        "criteria": {
-          "kind": "Comparison",
-          "lookup": {
-            "factor": 0,
-            "exponent": 1,
-            "limit": null
-          }
-        },
-        "defaul": 10.0,
-        "collectors": {
-          "e_0.speed": "e_0.speed"
         }
       },
       "loop_radius": {
@@ -2665,6 +2577,7 @@
           }
         },
         "defaul": 55.0,
+        "unit": "m",
         "collectors": {
           "e_2.radius": "e_2.radius"
         }
@@ -2680,6 +2593,7 @@
           }
         },
         "defaul": 130.0,
+        "unit": "m",
         "collectors": {
           "e_1.length": "e_1.length"
         }
@@ -2695,6 +2609,7 @@
           }
         },
         "defaul": 5.340707511102648,
+        "unit": "rad/s",
         "collectors": {
           "e_0.rate": "e_0.rate"
         }
@@ -2705,23 +2620,27 @@
         "name": "e_0",
         "Kind": "Spin",
         "props": {
-          "speed": "spin_speed",
-          "height": "((19.84955592153876*spin_speed)/spin_rate)",
+          "speed": "10",
+          "height": "(206.34954084936203/spin_rate)",
           "turns": "18.84955592153876",
           "pitch": "0.5235987755982988",
-          "drop_turns": "1.5707963267948966",
+          "drop_turns": "0.7853981633974483",
           "recovery_turns": "1.5707963267948966"
         },
         "dgs": {
           "": [
             "autorotation_roll_angle"
           ],
-          "break": [],
+          "break": [
+            "break_alpha_delta"
+          ],
           "autorotation": [
             "autorotation_rate",
             "autorotation_break_angle"
           ],
-          "recovery": []
+          "recovery": [
+            "recovery_alpha_delta"
+          ]
         }
       },
       "e_1": {
@@ -2792,6 +2711,7 @@
           }
         },
         "defaul": 30.0,
+        "unit": "m/s",
         "collectors": {
           "e_0.speed": "e_0.speed"
         }
@@ -2807,6 +2727,7 @@
           }
         },
         "defaul": 130.0,
+        "unit": "m",
         "collectors": {
           "e_0.length": "e_0.length"
         }

@@ -58,8 +58,8 @@ def autorot_break(fl: State, vs: npt.NDArray, rot: float):
 @selectors.add
 def autorot_recovery(fl: State, vs: npt.NDArray, rot: float):
     """return all the indices less than rotation from the end of the autorotation"""
-    rot = fl.get_rotation()
-    return np.arange(np.where((np.abs(rot[-1]) - np.abs(rot)) > rot)[0][-1], len(fl))
+    rots = fl.get_rotation()
+    return np.arange(np.where((np.abs(rots[-1]) - np.abs(rots)) > rot)[0][-1], len(fl))
 
 
 @selectors.add

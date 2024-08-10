@@ -135,8 +135,8 @@ def pad(speed, line_length, eds: ElDefs):
     
     mp = ManParm(
         f"e_{eds[0].id}_pad_length", 
-        F3A.inter.length,
-        collectors = Collectors([e1.get_collector("length"), e3.get_collector("length")])
+        F3A.inter.length, "m",
+        Collectors([e1.get_collector("length"), e3.get_collector("length")])
     )
 
     eds = ElDefs([e1] + [ed for ed in eds] + [e3])
@@ -200,7 +200,7 @@ def loopmaker(name, speed, radius, angle, rolls, ke, rollangle, rolltypes, rever
 
     rad = radius if isinstance(radius, Number) else radius.value
 
-    internal_rad = ManParm(f'{name}_radius', F3A.inter.free, rad )
+    internal_rad = ManParm(f'{name}_radius', F3A.inter.free, rad, "m" )
 
     rolls = mps.parse_rolls(rolls, name, reversible) if not rolls==0 else 0
 

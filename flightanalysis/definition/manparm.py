@@ -35,6 +35,7 @@ class ManParm(Opp):
 
     criteria: Criteria
     defaul: Number = None
+    unit: str = "m"
     collectors: Collectors = field(default_factory=lambda: Collectors())
 
     @property
@@ -50,6 +51,7 @@ class ManParm(Opp):
             name=self.name,
             criteria=self.criteria.to_dict(),
             defaul=self.defaul,  # because default is reserverd in javascript
+            unit=self.unit,
             collectors=self.collectors.to_dict(),
         )
 
@@ -59,6 +61,7 @@ class ManParm(Opp):
             name=data["name"],
             criteria=Criteria.from_dict(data["criteria"]),
             defaul=data["defaul"],
+            unit=data["unit"],
             collectors=Collectors.from_dict(data["collectors"]),
         )
 
@@ -99,6 +102,7 @@ class ManParm(Opp):
         meas = Measurement(
             [c(els) for c in self.collectors],
             self.defaul,
+            self.unit,
             direction,
             np.array([vis[0]] + [max(va, vb) for va, vb in zip(vis[:-1], vis[1:])]),
             [str(c) for c in self.collectors],
@@ -132,6 +136,7 @@ class ManParm(Opp):
             name=self.name,
             criteria=self.criteria,
             defaul=self.defaul,
+            unit=self.unit,
             collectors=self.collectors.copy(),
         )
 
@@ -140,7 +145,7 @@ class ManParm(Opp):
 
     def __repr__(self):
         return (
-            f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul})"
+            f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul}, {self.unit})"
         )
 
 
@@ -179,7 +184,7 @@ class ManParms(Collection):
                     defaul = mp.criteria.check_option(flown_parm)
                 else:
                     defaul = np.mean(np.abs(flown_parm)) * np.sign(mp.defaul)
-                mps.append(ManParm(mp.name, mp.criteria, defaul, mp.collectors))
+                mps.append(ManParm(mp.name, mp.criteria, defaul, mp.unit, mp.collectors))
             else:
                 mps.append(mp)
         return ManParms(mps)
@@ -194,7 +199,7 @@ class ManParms(Collection):
             return rolls
         elif isinstance(rolls, str):
             return self.add(
-                ManParm(f"{name}_rolls", Combination.rollcombo(rolls, reversible), 0)
+                ManParm(f"{name}_rolls", Combination.rollcombo(rolls, reversible), 0, "rad")
             )
         elif isinstance(rolls, Number) or pd.api.types.is_list_like(rolls):
             return self.add(
@@ -203,7 +208,7 @@ class ManParms(Collection):
                     Combination.rolllist(
                         [rolls] if np.isscalar(rolls) else rolls, reversible
                     ),
-                    0,
+                    0, "rad",
                 )
             )
         else:
@@ -216,11 +221,12 @@ class ManParms(Collection):
                     mp.name,
                     mp.criteria.__class__.__name__,
                     mp.defaul,
+                    mp.unit,
                     ",".join([str(v) for v in mp.collectors]),
                 ]
                 for mp in self
             ],
-            columns=["name", "criteria", "default", "collectors"],
+            columns=["name", "criteria", "default", "unit", "collectors"],
         )
 
 

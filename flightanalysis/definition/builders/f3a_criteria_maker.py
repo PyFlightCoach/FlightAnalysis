@@ -1,4 +1,4 @@
-from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, free, OutsideBound
+from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, free, OutsideBound, MinBound
 from flightanalysis.definition.builders.schedules.create_all import create_all
 import numpy as np
 
@@ -22,6 +22,8 @@ f3a=dict(
         #pitch_break_length=InsideBound(Exponential.fit_points([1, 2], [0.7,3.5]), [-2,2]),
         break_angle=OutsideBound(Exponential.fit_points(np.radians([7.5/2, 7.5]), [3,6]), [np.radians(-7.5), np.radians(7.5)]),
         nose_drop_amount=OutsideBound(Exponential(20,1), [-np.radians(15), np.radians(15)]),
+        break_alpha_delta=MinBound(Exponential(20,1), 0.1),
+        recovery_alpha_delta=MaxBound(Exponential(20,1), -0.1),
         recovery_length=MaxBound(Exponential.fit_points([1, 2], [0.7,3.5]), 2),
         box=InsideBound(Exponential(10/np.radians(7.5), 1), [-np.radians(60), np.radians(60)]), # 10 points if the entire manoeuvre is 7.5 degrees outside the box
         depth=MaxBound(Exponential.fit_points([20, 40], [0.5, 1]), 170)

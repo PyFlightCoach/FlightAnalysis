@@ -28,7 +28,7 @@ f25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(desired=[
             [r(1/4), -r(1/4), r(1/4), -r(1/4), r(1/8), -r(1/4)], 
             [-r(1/4), r(1/4), -r(1/4), r(1/4), -r(1/8), r(1/4)]
-        ]), 0),
+        ]), 0, "rad"),
         line_length=70
         ),
     f3amb.create(ManInfo(
@@ -92,7 +92,7 @@ f25_def = SchedDef([
          roll_option=ManParm("roll_option", Combination(desired=[
             [np.pi/2, np.pi, -np.pi, -np.pi, np.pi/2, np.pi], 
             [-np.pi/2, -np.pi, np.pi, np.pi, -np.pi/2, -np.pi]
-        ]), 1),
+        ]), 1, "rad"),
         ),
     f3amb.create(ManInfo(
             "Shark Fin", "sFin", k=4, position=Position.END, 
@@ -131,7 +131,7 @@ f25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(desired=[
                 [np.pi/2, -np.pi/2, -np.pi/2, np.pi/2], 
                 [-np.pi/2, np.pi/2, np.pi/2, -np.pi/2]
-            ]), 0),
+            ]), 0, "rad"),
         ),
     f3amb.create(ManInfo(
             "Humpty_2", "hB2", k=3, position=Position.END, 
@@ -158,8 +158,8 @@ f25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(desired=r([
                 [-1/4, -1/4, -3/8, -1/4], 
                 [1/4, 1/4, 3/8, 1/4]
-            ])), 0),
-        top_roll_option=ManParm("top_roll_option", Combination(desired=r([[-1/2], [1/2]])), 0),
+            ])), 0, "rad"),
+        top_roll_option=ManParm("top_roll_option", Combination(desired=r([[-1/2], [1/2]])), 0, "rad"),
     ),
     f3amb.create(ManInfo(
             "Half 8 Sided Loop", "h8L", k=3, position=Position.END, 
@@ -177,7 +177,7 @@ f25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(desired=[
                 [np.pi/2, -np.pi/4, -np.pi/4, -np.pi/2], 
                 [-np.pi/2, np.pi/4, np.pi/4, np.pi/2]
-            ]), 0),
+            ]), 0, "rad"),
         ),
     f3amb.create(ManInfo(
             "45 degree downline", "dl45", k=4, position=Position.CENTRE, 
@@ -214,7 +214,7 @@ f25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(desired=[
                 [np.pi/2, -np.pi/2, -np.pi/2, -np.pi/2, -np.pi/2], 
                 [-np.pi/2, np.pi/2, np.pi/2, np.pi/2, np.pi/2]
-            ]), 0),
+            ]), 0, "rad"),
         ),
     f3amb.create(ManInfo(
             "Split S", "keS", k=4, position=Position.END, 
@@ -228,7 +228,7 @@ f25_def = SchedDef([
         roll_option=ManParm("roll_option", Combination(desired=[
                 [np.pi/2, -np.pi, np.pi/2], 
                 [-np.pi/2, np.pi, -np.pi/2],
-            ]), 0),
+            ]), 0, "rad"),
         ),
     f3amb.create(ManInfo(
             "Stall Turn", "stall", k=5, position=Position.CENTRE, 
