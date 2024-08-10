@@ -2650,7 +2650,10 @@
         "d": "DRIVEN",
         "o": "DRIVEN"
       },
-      "centre_points": [],
+      "centre_points": [
+        0,
+        4
+      ],
       "centred_els": []
     },
     "mps": {

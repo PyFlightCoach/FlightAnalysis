@@ -1,4 +1,4 @@
-from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, OutsideBound, MinBound
+from flightanalysis.scoring.criteria import Single, Exponential, Continuous, InsideBound, MaxBound, Comparison, OutsideBound, MinBound
 
 ### Generated code ###
 class F3ASingle:
@@ -6,12 +6,12 @@ class F3ASingle:
     roll=Single(Exponential(2.872721387028467,1.6309297535714575, 6 ))
     angle=Single(Exponential(3.8197186342054885,0.9999999999999999, 6 ))
 class F3AIntra:
-    track=ContAbs(Exponential(3.6157124327118417,1.12154551155295, 6 ), 4)
-    roll=ContAbs(Exponential(3.148677661514303,1.427815739996445, 6 ), 1)
-    radius=ContRat(Exponential(0.3333333333333333,1.0, 1 ), 0.5)
-    speed=ContRat(Exponential(0.15,1.0, 1 ), 4)
-    roll_rate=ContRat(Exponential(0.3,1.0, 0.5 ), 1)
-    autorotation_rate=ContRat(Exponential(0.3,1.0, 0.5 ), 2)
+    track=Continuous(Exponential(3.6157124327118417,1.12154551155295, 6 ), 4)
+    roll=Continuous(Exponential(3.148677661514303,1.427815739996445, 6 ), 1)
+    radius=Continuous(Exponential(0.3333333333333333,1.0, 1 ), 0.5)
+    speed=Continuous(Exponential(0.15,1.0, 1 ), 4)
+    roll_rate=Continuous(Exponential(0.3,1.0, 0.5 ), 1)
+    autorotation_rate=Continuous(Exponential(0.3,1.0, 0.5 ), 2)
     stallturn_speed=InsideBound(Exponential(0.08879139070041006,1.75647079736603, None ), [-2, 2])
     stallturn_width=InsideBound(Exponential(0.14798565116735013,1.75647079736603, None ), [-2, 2])
     break_angle=OutsideBound(Exponential(45.83662361046588,1.0000000000000002, None ), [-0.1308996938995747, 0.1308996938995747])

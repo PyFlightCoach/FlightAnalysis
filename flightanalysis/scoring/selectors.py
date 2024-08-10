@@ -33,13 +33,13 @@ def after_slowdown(fl: State, vs: npt.NDArray, sp: float):
 @selectors.add
 def before_slowdown(fl: State, vs: npt.NDArray, sp: float):
     """return all the indices before the speed has dropped below min_speed"""
-    return np.arange(np.argmax(abs(fl.vel.x) < sp))
+    return np.arange(np.argmax(abs(fl.vel.x) < sp) | len(fl))
 
 
 @selectors.add
 def before_speedup(fl: State, vs: npt.NDArray, sp: float):
     """return all the indices before the speed has accelerated above min_speed"""
-    return np.arange(np.argmax(abs(fl.vel.x) > sp))
+    return np.arange(np.argmax(abs(fl.vel.x) > sp) | len(fl))
 
 
 @selectors.add

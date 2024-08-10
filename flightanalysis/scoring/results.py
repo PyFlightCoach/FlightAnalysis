@@ -45,9 +45,7 @@ class Result:
     def to_dict(self):
         return dict(
             name=self.name,
-            measurement=self.measurement.to_dict()
-            if isinstance(self.measurement, Measurement)
-            else list(self.measurement),
+            measurement=self.measurement.to_dict()  if isinstance(self.measurement, Measurement) else list(self.measurement),
             sample=to_list(self.sample),
             sample_keys=to_list(self.sample_keys),
             errors=to_list(self.errors),
@@ -63,9 +61,7 @@ class Result:
     def from_dict(data) -> Result:
         return Result(
             data["name"],
-            Measurement.from_dict(data["measurement"])
-            if isinstance(data["measurement"], dict)
-            else np.array(data["measurement"]),
+            Measurement.from_dict(data["measurement"]) if isinstance(data["measurement"], dict) else np.array(data["measurement"]),
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
             np.array(data["errors"]),
@@ -73,14 +69,16 @@ class Result:
             np.array(data["keys"]),
         )
 
-    def info(self, i: int, deg: bool = False):
+    def info(self, i: int):
         def f(x):
-            return x if not deg else np.degrees(x)
+            return np.degrees(x) if self.measurement.unit == "rad" else x
 
         return "\n".join([
-            f"downgrade={self.dgs[i]:.3f}",
-            f"error={f(self.errors[i]):.2f}",
-            f"visibility={self.measurement.visibility[self.keys[i]]:.2f}"
+            f"dg={self.dgs[i]:.3f}",
+            f"meas={f(self.measurement.value[self.keys[i]]):.2f}",
+            f"vis={self.measurement.visibility[self.keys[i]]:.2f}",
+            f"err={f(self.errors[i]):.2f}",
+            
         ]) 
 
     def summary_df(self):
@@ -88,20 +86,20 @@ class Result:
             np.column_stack(
                 [
                     self.keys,
+                    self.measurement.visibility,
                     self.sample,
                     self.errors,
-                    self.measurement.visibility,
                     self.dgs,
                 ]
             ),
-            columns=["collector", "value", "error", "visibility", "downgrade"],
+            columns=["collector", "visibility", "value", "error", "downgrade"],
         )
 
-    def plot(self, deg=False):
+    def plot(self):
         import plotly.graph_objects as go
 
         def f(x):
-            return x if not deg else np.degrees(x)
+            return np.degrees(x) if self.measurement.unit == "rad" else x
 
         fig = go.Figure(
             layout=dict(
@@ -132,7 +130,7 @@ class Result:
             )
         )
 
-        hovtxt = [self.info(i, deg) for i in range(len(self.keys))]
+        hovtxt = [self.info(i) for i in range(len(self.keys))]
 
         fig.add_trace(
             go.Scatter(

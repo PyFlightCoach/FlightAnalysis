@@ -1,5 +1,5 @@
 from pytest import fixture, mark, approx
-from flightanalysis.scoring.criteria import Single, Exponential, Criteria, Combination, ContRat, ContAbs, Comparison, MaxBound, InsideBound, OutsideBound, Continuous
+from flightanalysis.scoring.criteria import Single, Exponential, Criteria, Combination, Continuous, Comparison, MaxBound, InsideBound, OutsideBound, Continuous
 from flightanalysis.scoring import Measurement
 from flightanalysis import NoseDrop
 from flightdata import State
@@ -16,11 +16,11 @@ def single():
 
 @fixture
 def contrat():
-    return ContRat(Exponential(1,1))
+    return Continuous(Exponential(1,1))
 
 @fixture
 def contabs():
-    return ContAbs(Exponential(1,1))
+    return Continuous(Exponential(1,1))
 
 
 @fixture
@@ -177,26 +177,26 @@ def mistakes_inputs(data):
 def test_contabs_mistakes():
     data = np.array([0,1,2,1,0,1,2,1,0,1,2,1,0])
     np.testing.assert_array_equal(
-        ContAbs.mistakes(*mistakes_inputs(data)), 
+        Continuous.mistakes(*mistakes_inputs(data)), 
         [2,2,2]
     )
 
     data = np.array([2,1,0,1,2,1,0,1,2,1,0,1,2])
     np.testing.assert_array_equal(
-        ContAbs.mistakes(*mistakes_inputs(data)), 
+        Continuous.mistakes(*mistakes_inputs(data)), 
         [2,2,2]
     )
 
 def test_contrat_mistakes():
     data = np.array([0,1,2,1,0,1,2,1,0,1,2,1,0]) + 2
     np.testing.assert_array_equal(
-        ContRat.mistakes(*mistakes_inputs(data)), 
+        Continuous.mistakes(*mistakes_inputs(data)), 
         [1,1,1,1,1,1]
     )
 
     data = 4 - np.array([0,1,2,1,0,1,2,1,0,1,2,1,0])
     np.testing.assert_array_equal(
-        ContRat.mistakes(*mistakes_inputs(data)), 
+        Continuous.mistakes(*mistakes_inputs(data)), 
         [1,1,1,1,1,1]
     )
 

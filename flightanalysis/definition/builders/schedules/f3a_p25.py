@@ -107,7 +107,9 @@ p25_def = SchedDef([
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
             end=BoxLocation(Height.BTM)
         ),[
+            MBTags.CENTRE,
             f3amb.loop(r(1), rolls=[r(0.5), -r(0.5)], rollangle=r(0.5), reversible=True),
+            MBTags.CENTRE,
         ],
         loop_radius=100,
     ),

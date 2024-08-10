@@ -35,9 +35,7 @@ class Continuous(Criteria):
             [np.mean(measurement.visibility[a:b]) for a, b in zip(rids[:-1], rids[1:])]
         )
 
-    def __call__(
-        self, vs: npt.NDArray, limits=True
-    ) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
+    def __call__(self, vs: npt.NDArray, limits=True) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         vs = np.abs(vs)
         peak_locs = Continuous.get_peak_locs(vs)
         trough_locs = Continuous.get_peak_locs(vs, True)
@@ -46,16 +44,6 @@ class Continuous(Criteria):
             np.linspace(0, len(vs) - 1, len(vs)).astype(int), peak_locs, trough_locs
         )
         return mistakes, self.lookup(mistakes, limits), dgids
-
-    def mistakes(self, data, peaks, troughs):
-        raise NotImplementedError("This method should be implemented in the subclass")
-
-    def dgids(self, ids, peaks, troughs):
-        raise NotImplementedError("This method should be implemented in the subclass")
-
-
-class ContAbs(Continuous):
-    """Downgrades for all increases away from zero, error is defined as peak - trough"""
 
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -72,20 +60,3 @@ class ContAbs(Continuous):
         first_peak = 1 if peaks[0] else 0
         return ids[first_peak:][peaks[first_peak:]]
 
-
-class ContRat(Continuous):
-    """Downgrades for all changes, error is defined as max(peak, trough) / min(peak, trough) - 1"""
-
-    @staticmethod
-    def mistakes(data, peaks, troughs):
-        """All changes are downgraded (peaks and troughs)"""
-        values = data[peaks + troughs]
-        return np.minimum(
-            np.maximum(values[:-1], values[1:]) / np.minimum(values[:-1], values[1:])
-            - 1,
-            10,
-        )
-
-    @staticmethod
-    def dgids(ids, peaks, troughs):
-        return ids[peaks + troughs][1:]
