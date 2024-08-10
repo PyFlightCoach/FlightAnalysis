@@ -101,7 +101,6 @@ class ManParm(Opp):
 
         meas = Measurement(
             [c(els) for c in self.collectors],
-            self.defaul,
             self.unit,
             direction,
             np.array([vis[0]] + [max(va, vb) for va, vb in zip(vis[:-1], vis[1:])]),

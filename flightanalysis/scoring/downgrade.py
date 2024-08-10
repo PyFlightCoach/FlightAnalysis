@@ -1,5 +1,6 @@
+from __future__ import annotations
 from flightdata import Collection, State
-from .criteria import Bounded, ContAbs, ContRat, Single, Criteria
+from .criteria import Bounded, Continuous, Single, Criteria
 from .measurement import Measurement
 from .results import Results, Result
 from typing import Callable
@@ -24,8 +25,18 @@ class DownGrade:
     ]  # gets the flown and template measurements
     smoothers: RefFuncs  # smoothes the measurement
     selectors: RefFuncs  # selects the values to downgrade
-    criteria: (Bounded | ContAbs | ContRat | Single)  # looks up the downgrades based on the errors
+    criteria: (Bounded | Continuous | Single)  # looks up the downgrades based on the errors
     display_name: str
+
+    def rename(self, name: str):
+        return DownGrade(
+            name,
+            self.measure,
+            self.smoothers,
+            self.selectors,
+            self.criteria,
+            self.display_name,
+        )
 
     def to_dict(self):
         return dict(
@@ -39,21 +50,26 @@ class DownGrade:
 
     def __call__(self, fl, tp, limits=True) -> Result:
         measurement: Measurement = self.measure(fl, tp)
-        sample = measurement.value
+        
+        sample = measurement.value * measurement.visibility
+        
         for sm in self.smoothers:
             sample = sm(sample)
+
         ids = np.arange(len(fl))
-        subset = sample.copy()
+
         for s in self.selectors:
-            ids = s(fl, subset)
+            sub_ids = s(fl, sample)
             fl = State(fl.data.iloc[ids])
-            subset = subset[ids]
+            sample = sample[sub_ids]
+            ids = ids[sub_ids]
+        
         return Result(
             self.display_name,
             measurement,
-            sample[ids],
+            sample,
             ids,
-            *self.criteria(sample[ids], limits)
+            *self.criteria(sample, limits)
         )
 
 

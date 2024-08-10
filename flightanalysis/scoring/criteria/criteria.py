@@ -1,5 +1,6 @@
 from .exponential import Exponential, free
 from dataclasses import dataclass, field
+import numpy.typing as npt
 
 
 def all_subclasses(cls):
@@ -40,9 +41,8 @@ class Criteria:
             _so = f"{_so}, {self.bound}"
         if hasattr(self, 'cutoff'):
             _so = f"{_so}, {self.cutoff}"
-#        if hasattr(self, 'window_ratio'):
-#            _so = f"{_so}, {self.window_ratio}"
         return _so + ')'
+    
         
 @dataclass
 class CriteriaRes:

@@ -1,4 +1,4 @@
-from flightanalysis.scoring.criteria import Single, Exponential, ContAbs, ContRat, InsideBound, MaxBound, Comparison, free, OutsideBound, MinBound
+from flightanalysis.scoring.criteria import Single, Exponential, Continuous, InsideBound, MaxBound, Comparison, free, OutsideBound, MinBound
 from flightanalysis.definition.builders.schedules.create_all import create_all
 import numpy as np
 
@@ -10,12 +10,12 @@ f3a=dict(
         angle=Single(Exponential.fit_points(np.radians([30, 90]), [2, 6], 6)),
     ),
     intra=dict(
-        track=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.75, 6], 6), 4),
-        roll=ContAbs(Exponential.fit_points(np.radians([30, 90]), [1.25, 6], 6), 1),
-        radius=ContRat(Exponential.fit_points([1.5,3], [0.5, 1], 1), 0.5),
-        speed=ContRat(Exponential.fit_points([1,5], [0.15, 0.75], 1), 4),
-        roll_rate=ContRat(Exponential.fit_points([1,3], [0.3, 0.9], 0.5), 1),
-        autorotation_rate=ContRat(Exponential.fit_points([1,3], [0.3, 0.9], 0.5), 2),
+        track=Continuous(Exponential.fit_points(np.radians([30, 90]), [1.75, 6], 6), 4),
+        roll=Continuous(Exponential.fit_points(np.radians([30, 90]), [1.25, 6], 6), 1),
+        radius=Continuous(Exponential.fit_points([1.5,3], [0.5, 1], 1), 0.5),
+        speed=Continuous(Exponential.fit_points([1,5], [0.15, 0.75], 1), 4),
+        roll_rate=Continuous(Exponential.fit_points([1,3], [0.3, 0.9], 0.5), 1),
+        autorotation_rate=Continuous(Exponential.fit_points([1,3], [0.3, 0.9], 0.5), 2),
         stallturn_speed=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-2,2]),
         stallturn_width=InsideBound(Exponential.fit_points([2, 5], [0.5,2.5]), [-2,2]),
         #spin_entry_length=InsideBound(Exponential.fit_points([2, 5], [0.3,1.5]), [-5,5]),

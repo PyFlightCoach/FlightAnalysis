@@ -10,7 +10,7 @@ from flightanalysis.scoring import (
     Measurement,
     ElementsResults,
     Result,
-    DownGrades
+    DownGrades,
 )
 from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.scoring.f3a_downgrades import DGGrps
@@ -126,8 +126,11 @@ class Complete(Alignment):
         ed: ElDef = self.get_edef(eln)
         el: Element = self.manoeuvre.all_elements()[eln].match_intention(itrans, fl)
         tp = el.create_template(State.from_transform(itrans), fl)
-        return DownGrades(list(chain(*ed.dgs.values()))).apply(el.uid, fl, tp, False), tp[-1].att
-#        return ed.dgs.apply(el.uid, fl, tp, False), tp[-1].att
+        return DownGrades(list(chain(*ed.dgs.values()))).apply(
+            el.uid, fl, tp, False
+        ), tp[-1].att
+
+    #        return ed.dgs.apply(el.uid, fl, tp, False), tp[-1].att
 
     def optimise_split(
         self, itrans: g.Transformation, eln1: str, eln2: str, fl: State
@@ -216,7 +219,9 @@ class Complete(Alignment):
             meas,
             meas.value,
             np.arange(len(meas.value)),
-            errors, dgs * meas.visibility[keys], keys
+            errors,
+            dgs * meas.visibility[keys],
+            keys,
         )
 
     def top_box(self):
@@ -227,9 +232,11 @@ class Complete(Alignment):
             meas,
             meas.value,
             np.arange(len(meas.value)),
-            errors, dgs * meas.visibility[keys], keys
+            errors,
+            dgs * meas.visibility[keys],
+            keys,
         )
-        #return F3A.intra.box("top box", Measurement.top_box(self.flown))
+        # return F3A.intra.box("top box", Measurement.top_box(self.flown))
 
     def create_centre_result(self, name: str, st: State) -> Result:
         meas = Measurement.centre_box(st)
@@ -247,12 +254,11 @@ class Complete(Alignment):
     def centre(self):
         results = Results("centres")
         for cpid in self.mdef.info.centre_points:
-            results.add(
-                self.create_centre_result(
-                    f"centre point {cpid}",
-                    self.manoeuvre.elements[cpid + 1].get_data(self.flown)[0],
-                )
-            )
+            if cpid < len(self.manoeuvre.elements) - 1:
+                st = self.manoeuvre.elements[cpid].get_data(self.flown)[0]
+            else:
+                st = self.manoeuvre.elements[cpid - 1].get_data(self.flown)[-1]
+            results.add(self.create_centre_result(f"centre point {cpid}", st))
 
         for ceid, fac in self.mdef.info.centred_els:
             ce = self.manoeuvre.elements[ceid + 1].get_data(self.flown)[0]
@@ -265,10 +271,10 @@ class Complete(Alignment):
             )
 
         if len(results) == 0 and self.mdef.info.position == Position.CENTRE:
-            al = self.flown.get_element(slice(1, -1, None))
-            midy = (
-                self.flown.get_element(1).y[0] + self.flown.get_element(-1).y[-1]
-            ) / 2
+            al = State(self.flown.data.loc[
+                (self.flown.data.element != "entry_line") & (self.flown.data.element != "exit_line")
+            ])
+            midy = (np.max(al.y) + np.min(al.y)) / 2
             midid = np.abs(al.pos.y - midy).argmin()
             results.add(self.create_centre_result("centred manoeuvre", al[midid]))
 
