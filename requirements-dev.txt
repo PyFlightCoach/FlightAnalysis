@@ -10,3 +10,4 @@ flightdata>=0.2.17
 ardupilot_log_reader>=0.3.3
 pymavlink
 GitPython
+pyperclip
