@@ -82,7 +82,7 @@ class Alignment(Basic):
 
     def _proceed(self) -> Complete:
         if "element" in self.flown.data.columns:
-            correction = self.mdef.create(self.template[0].transform)
+            correction = self.mdef.create()
             return Complete(
                 self.id,
                 self.mdef,

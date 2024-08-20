@@ -2,12 +2,12 @@
 
 from flightanalysis import (
     SchedDef, ManInfo, BoxLocation, Position, Orientation, 
-    Height, Direction, MBTags, f3amb, centred, r, c45
+    Height, Direction, ManParm,
+    Combination
 )
+from flightanalysis.definition.builders.manbuilder import f3amb, MBTags, centred, r, c45
 from flightanalysis.scoring.f3a_downgrades import DGGrps
-
 import numpy as np
-
 
 a25_def = SchedDef([
      f3amb.create(ManInfo
@@ -237,9 +237,10 @@ a25_def = SchedDef([
     ]  
 )
  
-a25_def.stall.eds.e_1.dgs = {'': DGGrps.st_line_decel}
-a25_def.stall.eds.e_3_pad1.dgs = {'': DGGrps.st_line_accel}
-a25_def.iSpin.eds.e_1.dgs = {'': DGGrps.sp_line_accel}
+a25_def.stall.eds.e_1.dgs = DGGrps.st_line_before
+a25_def.stall.eds.e_3_pad1.dgs = DGGrps.st_line_after
+a25_def.iSpin.eds.entry_line.dgs = DGGrps.sp_line_before
+a25_def.iSpin.eds.e_1.dgs = DGGrps.sp_line_after
 
 
 if __name__ == "__main__":

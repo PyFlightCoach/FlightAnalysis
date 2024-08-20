@@ -27,7 +27,7 @@ mdef = ManDef.from_dict(data)
 
 it = g.Transformation(g.Point(-20,150,50), mdef.info.initial_transform(150, 1).rotation)
 
-man = mdef.create(it)
+man = mdef.create()
 
 tp = man.create_template(it)
 

@@ -31,6 +31,7 @@ class SchedDef(Collection):
                 ipos if len(templates) == 0 else templates[-1][-1].pos,
                 md.info.start.initial_rotation(wind) if len(templates) == 0 else templates[-1][-1].att
             )
+            md.fit_box(itrans)
             man = md.create(itrans)
             templates.append(man.create_template(itrans))
             mans.append(man)

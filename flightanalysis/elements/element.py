@@ -39,7 +39,7 @@ class Element:
         args = ['uid'] + inspect.getfullargspec(self.__init__).args[1:-1]
         return f'{self.__class__.__name__}({", ".join([str(getattr(self,a)) for a in args])})'
 
-    def to_dict(self, exit_only: bool=False):
+    def to_dict(self):
         return dict(
             kind=self.__class__.__name__, 
             uid=self.uid,

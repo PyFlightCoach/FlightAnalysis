@@ -29,21 +29,20 @@ class Continuous(Criteria):
             first_val = not first_val
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
-    def visibility(self, measurement, ids):
-        rids = np.concatenate([[0], ids])
-        return np.array(
-            [np.mean(measurement.visibility[a:b]) for a, b in zip(rids[:-1], rids[1:])]
-        )
 
     def __call__(self, vs: npt.NDArray, limits=True) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
+        if len(vs) <= 1:
+            return np.array([]), np.array([]), np.array([], dtype=int)
+        
         vs = np.abs(vs)
+        
         peak_locs = Continuous.get_peak_locs(vs)
         trough_locs = Continuous.get_peak_locs(vs, True)
         mistakes = self.__class__.mistakes(vs, peak_locs, trough_locs)
         dgids = self.__class__.dgids(
             np.linspace(0, len(vs) - 1, len(vs)).astype(int), peak_locs, trough_locs
         )
-        return mistakes, self.lookup(mistakes, limits), dgids
+        return mistakes, self.lookup(np.abs(mistakes), limits), dgids
 
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -60,3 +59,18 @@ class Continuous(Criteria):
         first_peak = 1 if peaks[0] else 0
         return ids[first_peak:][peaks[first_peak:]]
 
+
+@dataclass
+class ContinuousValue(Continuous):
+
+
+    @staticmethod
+    def mistakes(data, peaks, troughs):
+        '''All changes are downgraded (peaks and troughs)'''
+        values = data[peaks + troughs]
+        return values[:-1] - values[1:]
+    
+
+    @staticmethod
+    def dgids(ids, peaks, troughs):
+        return ids[peaks + troughs][1:]

@@ -2,7 +2,7 @@ from flightdata import State
 from geometry import Point, Quaternion, Transformation, PX, PY, PZ, Euldeg, P0
 from pytest import fixture, approx
 import numpy as np
-from flightanalysis import Loop, Measurement, r, Autorotation, NoseDrop
+from flightanalysis import Loop, Measurement, r
 from flightanalysis.scoring.f3a_downgrades import dgs
 from geometry.testing import assert_almost_equal
 
@@ -79,25 +79,6 @@ def test_roll_angle_proj():
     tp = Loop('loop', 30, np.pi/2, 50, r(1.6), 0).create_template(State.from_transform(), fl.time)
     meas = Measurement.roll_angle_proj(fl, tp, PY())
     assert np.abs(np.round(meas.value[-1] / (2*np.pi)))==approx(1)
-
-
-def test_roll_angle_proj_spin():
-    fl = Autorotation('sp', 10, 30, r(3)).create_template(State.from_transform(Transformation(Euldeg(180, 20, 0), P0()), vel=Point(np.sin(np.radians(20)), 0, np.cos(np.radians(20)))))
-    tp = Autorotation('sp', 10, 30, r(2)).create_template(State.from_transform(Transformation(Euldeg(180, 20, 0), P0()), vel=Point(np.sin(np.radians(20)), 0, np.cos(np.radians(20)))))
-    
-    meas = Measurement.roll_angle_proj(fl, tp, PY())
-    assert np.abs(np.round(meas.value[-1] / (2*np.pi)))==approx(1)
-
-
-def test_nose_drop():
-    fl = NoseDrop('nd', 3, 5, np.radians(20)).create_template(
-        State.from_transform(
-            Transformation(Euldeg(180, 0, 0), P0()),
-            vel=PX(3)
-        )
-    )
-    meas = Measurement.nose_drop(fl, fl)
-    assert np.degrees(meas.value[0]) == approx(-70)
 
 
 def test_pos_vis():

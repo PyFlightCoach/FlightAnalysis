@@ -4,9 +4,10 @@ Author Vince Beesley
 '''
 from flightanalysis import (
     SchedDef, ManInfo, BoxLocation, Position, Orientation, 
-    Height, Direction, MBTags, f3amb, centred, r, ManParm,
-    ManOption, Combination, c45
+    Height, Direction, ManParm,
+    Combination
 )
+from flightanalysis.definition.builders.manbuilder import f3amb, MBTags, centred, r, c45
 from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
 

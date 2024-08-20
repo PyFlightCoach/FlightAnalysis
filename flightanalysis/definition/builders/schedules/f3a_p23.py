@@ -1,9 +1,10 @@
 """This file defines a P23 sequence using the ManDef Classes and helper functions."""
 from flightanalysis import (
     SchedDef, ManInfo, BoxLocation, Position, Orientation, 
-    Height, Direction, MBTags, f3amb, centred, r, ManParm,
-    Combination, c45
+    Height, Direction, ManParm,
+    Combination
 )
+from flightanalysis.definition.builders.manbuilder import f3amb, MBTags, centred, r, c45
 from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
 
@@ -223,11 +224,12 @@ p23_def = SchedDef([
 ])
 
 
-p23_def.iSp.eds.e_1.dgs = {'': DGGrps.sp_line_accel}
-p23_def.M.eds.e_1_pad2.dgs = {'': DGGrps.st_line_decel}
-p23_def.M.eds.e_3.dgs = {'': DGGrps.st_line_accel}
-p23_def.M.eds.e_5.dgs = {'': DGGrps.st_line_decel}
-p23_def.M.eds.e_7_pad1.dgs = {'': DGGrps.st_line_accel}
+p23_def.iSp.eds.entry_line = DGGrps.sp_line_before
+p23_def.iSp.eds.e_1.dgs = DGGrps.sp_line_after
+p23_def.M.eds.e_1_pad2.dgs = DGGrps.st_line_before
+p23_def.M.eds.e_3.dgs = DGGrps.st_line_after
+p23_def.M.eds.e_5.dgs = DGGrps.st_line_before
+p23_def.M.eds.e_7_pad1.dgs = DGGrps.st_line_after
 
 if __name__ == "__main__":
     

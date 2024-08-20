@@ -2,12 +2,15 @@
    Author Angel Espinosa with help from Thomas David
 """
 
-from flightanalysis.definition import *
-from flightanalysis.elements import *
-from flightanalysis.scoring.criteria import *
+from flightanalysis import (
+    SchedDef, ManInfo, BoxLocation, Position, Orientation, 
+    Height, Direction, ManParm,
+    Combination
+)
+from flightanalysis.definition.builders.manbuilder import f3amb, MBTags, centred, r, c45
+from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
 
-c45 = np.cos(np.radians(45))
 
 Intm24FC_def = SchedDef([
 

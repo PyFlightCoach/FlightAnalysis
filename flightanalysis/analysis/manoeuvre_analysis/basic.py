@@ -47,12 +47,12 @@ class Basic(Analysis):
 
         itrans = self.create_itrans()
         man, tp = (
-            mdef.create(itrans)
+            mdef.create()
             .add_lines()
             .match_intention(State.from_transform(itrans), self.flown)
         )
         mdef = ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds)
-        corr = mdef.create(itrans).add_lines()
+        corr = mdef.create().add_lines()
         return Complete(
             self.id,
             mdef,
@@ -99,7 +99,7 @@ class Basic(Analysis):
 
         als = []
         for mdef in mopt:
-            man = mdef.create(itrans).add_lines()
+            man = mdef.create().add_lines()
             als.append(
                 Alignment(
                     self.id,
