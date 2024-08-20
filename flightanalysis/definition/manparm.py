@@ -115,6 +115,7 @@ class ManParm(Opp):
             mistakes,
             dgs * meas.visibility,
             ids,
+            self.criteria
         )
 
     @property

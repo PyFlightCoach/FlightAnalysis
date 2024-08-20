@@ -1,6 +1,5 @@
 from .exponential import Exponential, free
 from dataclasses import dataclass, field
-import numpy.typing as npt
 
 
 def all_subclasses(cls):
@@ -12,6 +11,9 @@ def all_subclasses(cls):
 @dataclass
 class Criteria:
     lookup: Exponential = field(default_factory=lambda : free)
+
+    def prepare(self, value):
+        return value
 
     def to_dict(self):
         data = self.__dict__.copy()

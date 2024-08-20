@@ -5,8 +5,7 @@ from flightdata import State
 from .element import Element
 from dataclasses import dataclass
 from typing import ClassVar
-from .loop import Loop
-
+from flightanalysis.scoring.selectors import autorotation
 
 @dataclass
 class Spin(Element):
@@ -54,6 +53,7 @@ class Spin(Element):
         )
 
     def create_template(self, istate: State, fl: State = None) -> State:
+        istate = istate.copy(vel=g.PX(self.speed))
         _inverted = 1 if istate.transform.rotation.is_inverted()[0] else -1
         rate = self.rate
 
@@ -117,18 +117,12 @@ class Spin(Element):
         return f"Spin {self.turns}, {self.pitch}"
 
     def match_intention(self, transform: g.Transformation, flown: State) -> Spin:
-        time = Element.create_time(self.length / self.speed, flown)
-
-        ipb = int(np.ceil(len(time) * abs(self.drop_turns / self.turns)))
-        irec = int(np.ceil(len(time) * abs(self.recovery_turns / self.turns)))
-
-        pitch = np.arctan2(flown.vel.z, flown.vel.x)[ipb:-irec]
-        maxpitch = np.max(pitch)
-        minpitch = np.min(pitch)
-        pitch = maxpitch if abs(maxpitch) > abs(minpitch) else minpitch
+        auto = State(flown.data.iloc[autorotation(flown, None, np.pi/2, np.pi/4)])
+        pitch = np.mean(np.arctan2(auto.vel.z, auto.vel.x))
+        
         return self.set_parms(
-            length=abs(self.length_vec(transform, flown))[0],
-            roll=np.sign(np.mean(flown.p)) * abs(self.turns),
+            height=flown.z[0] - flown.z[-1],
+            turns=-np.sign(np.mean(auto.p)) * abs(self.turns),
             speed=np.mean(abs(flown.vel)),
             pitch=pitch,
         )

@@ -16,12 +16,12 @@
         "o": "DRIVEN"
       },
       "centre_points": [
-        0,
-        9
+        1,
+        10
       ],
       "centred_els": [
         [
-          4,
+          5,
           0.5
         ]
       ]
@@ -40,6 +40,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -129,6 +130,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -139,15 +153,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -156,14 +168,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -175,15 +185,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3_pad1": {
         "name": "e_3_pad1",
@@ -192,14 +200,12 @@
           "speed": "speed",
           "length": "(0.5*((1.4142135623730951*line_length)-((abs(e_3_rolls[0])*speed)/full_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_3_0": {
         "name": "e_3_0",
@@ -209,15 +215,13 @@
           "length": "((abs(e_3_rolls[0])*speed)/full_roll_rate)",
           "roll": "e_3_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_3_pad2": {
         "name": "e_3_pad2",
@@ -226,14 +230,12 @@
           "speed": "speed",
           "length": "(0.5*((1.4142135623730951*line_length)-((abs(e_3_rolls[0])*speed)/full_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -245,15 +247,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_5": {
         "name": "e_5",
@@ -262,14 +262,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_6": {
         "name": "e_6",
@@ -281,15 +279,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -326,6 +322,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
           "e_1_pad1.speed": "e_1_pad1.speed",
@@ -408,6 +405,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -418,15 +428,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
@@ -435,14 +443,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -452,15 +458,13 @@
           "length": "((abs(e_1_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
@@ -469,14 +473,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -488,15 +490,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -517,12 +517,12 @@
         "o": "DRIVEN"
       },
       "centre_points": [
-        0,
-        13
+        1,
+        14
       ],
       "centred_els": [
         [
-          6,
+          7,
           0.5
         ]
       ]
@@ -541,6 +541,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -662,6 +663,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -672,15 +686,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -689,14 +701,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -708,15 +718,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3_pad1": {
         "name": "e_3_pad1",
@@ -725,14 +733,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_3_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_3_0": {
         "name": "e_3_0",
@@ -742,15 +748,13 @@
           "length": "((abs(e_3_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_3_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_3_pad2": {
         "name": "e_3_pad2",
@@ -759,14 +763,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_3_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -778,15 +780,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_5_pad1": {
         "name": "e_5_pad1",
@@ -795,14 +795,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_5_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_5_0": {
         "name": "e_5_0",
@@ -812,15 +810,13 @@
           "length": "((abs(e_5_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_5_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_5_pad2": {
         "name": "e_5_pad2",
@@ -829,14 +825,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_5_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_6": {
         "name": "e_6",
@@ -848,15 +842,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_7": {
         "name": "e_7",
@@ -865,14 +857,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_8": {
         "name": "e_8",
@@ -884,15 +874,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -929,6 +917,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
           "e_1_pad1.speed": "e_1_pad1.speed",
@@ -1011,6 +1000,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -1021,15 +1023,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
@@ -1038,14 +1038,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -1055,15 +1053,13 @@
           "length": "((abs(e_1_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
@@ -1072,14 +1068,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -1091,15 +1085,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -1122,7 +1114,7 @@
       "centre_points": [],
       "centred_els": [
         [
-          3,
+          4,
           0.5
         ]
       ]
@@ -1141,6 +1133,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0_0.speed": "e_0_0.speed",
           "e_0_1_pause.speed": "e_0_1_pause.speed",
           "e_0_1.speed": "e_0_1.speed",
@@ -1222,6 +1215,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0_0": {
         "name": "e_0_0",
         "Kind": "Line",
@@ -1230,15 +1236,13 @@
           "length": "((abs(e_0_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_0_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_0_1_pause": {
         "name": "e_0_1_pause",
@@ -1247,14 +1251,12 @@
           "speed": "speed",
           "length": "point_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_0_1": {
         "name": "e_0_1",
@@ -1264,15 +1266,13 @@
           "length": "((abs(e_0_rolls[1])*speed)/partial_roll_rate)",
           "roll": "e_0_rolls[1]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_0_2_pause": {
         "name": "e_0_2_pause",
@@ -1281,14 +1281,12 @@
           "speed": "speed",
           "length": "point_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_0_2": {
         "name": "e_0_2",
@@ -1298,15 +1296,13 @@
           "length": "((abs(e_0_rolls[2])*speed)/partial_roll_rate)",
           "roll": "e_0_rolls[2]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_0_3_pause": {
         "name": "e_0_3_pause",
@@ -1315,14 +1311,12 @@
           "speed": "speed",
           "length": "point_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_0_3": {
         "name": "e_0_3",
@@ -1332,15 +1326,13 @@
           "length": "((abs(e_0_rolls[3])*speed)/partial_roll_rate)",
           "roll": "e_0_rolls[3]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       }
     }
   },
@@ -1377,6 +1369,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_3_0.speed": "e_3_0.speed",
@@ -1460,6 +1453,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -1470,15 +1476,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -1487,13 +1491,13 @@
           "speed": "speed",
           "length": "50"
         },
-        "dgs": {
-          "": [
-            "track_y_decel",
-            "track_z_decel",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "track_y_before_slowdown",
+          "track_z_before_slowdown",
+          "line_roll_angle",
+          "pitch_after_slowdown",
+          "yaw_after_slowdown"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -1502,13 +1506,12 @@
           "speed": "0.0",
           "yaw_rate": "stallturn_rate"
         },
-        "dgs": {
-          "": [
-            "stallturn_width",
-            "stallturn_speed",
-            "stallturn_roll_angle"
-          ]
-        }
+        "dgs": [
+          "stallturn_width",
+          "stallturn_speed",
+          "stallturn_roll_angle",
+          "end_yaw"
+        ]
       },
       "e_3_pad1": {
         "name": "e_3_pad1",
@@ -1517,13 +1520,11 @@
           "speed": "speed",
           "length": "(0.5*(180-((abs(e_3_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "track_y_accel",
-            "track_z_accel",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "track_y_after_speedup",
+          "track_z_after_speedup",
+          "line_roll_angle"
+        ]
       },
       "e_3_0": {
         "name": "e_3_0",
@@ -1533,15 +1534,13 @@
           "length": "((abs(e_3_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_3_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_3_pad2": {
         "name": "e_3_pad2",
@@ -1550,14 +1549,12 @@
           "speed": "speed",
           "length": "(0.5*(180-((abs(e_3_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -1569,15 +1566,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -1614,6 +1609,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0_0.speed": "e_0_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2_0.speed": "e_2_0.speed",
@@ -1731,6 +1727,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0_0": {
         "name": "e_0_0",
         "Kind": "Line",
@@ -1739,15 +1748,13 @@
           "length": "((abs(e_0_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_0_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -1759,15 +1766,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_2_0": {
         "name": "e_2_0",
@@ -1777,15 +1782,13 @@
           "length": "((abs(e_2_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_2_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
@@ -1794,14 +1797,12 @@
           "speed": "speed",
           "length": "80"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -1813,15 +1814,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_5_0": {
         "name": "e_5_0",
@@ -1831,15 +1830,13 @@
           "length": "((abs(e_5_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_5_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       }
     }
   },
@@ -1876,6 +1873,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -1962,6 +1960,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -1972,15 +1983,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -1989,14 +1998,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -2008,15 +2015,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3_pad1": {
         "name": "e_3_pad1",
@@ -2025,14 +2030,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_3_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_3_0": {
         "name": "e_3_0",
@@ -2042,15 +2045,13 @@
           "length": "((abs(e_3_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_3_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_3_pad2": {
         "name": "e_3_pad2",
@@ -2059,14 +2060,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_3_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -2078,15 +2077,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -2107,8 +2104,8 @@
         "o": "DRIVEN"
       },
       "centre_points": [
-        2,
-        3
+        3,
+        4
       ],
       "centred_els": []
     },
@@ -2126,6 +2123,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0_0.speed": "e_0_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -2233,6 +2231,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0_0": {
         "name": "e_0_0",
         "Kind": "Line",
@@ -2241,15 +2252,13 @@
           "length": "((abs(e_0_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_0_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -2258,14 +2267,12 @@
           "speed": "speed",
           "length": "ee_pause"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -2277,15 +2284,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
@@ -2294,14 +2299,12 @@
           "speed": "speed",
           "length": "ee_pause"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4_0": {
         "name": "e_4_0",
@@ -2311,15 +2314,13 @@
           "length": "((abs(e_4_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_4_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       }
     }
   },
@@ -2356,6 +2357,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -2400,6 +2402,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -2410,15 +2425,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -2427,14 +2440,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -2446,15 +2457,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
@@ -2463,14 +2472,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -2482,15 +2489,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -2511,12 +2516,12 @@
         "o": "DRIVEN"
       },
       "centre_points": [
-        1,
-        5
+        2,
+        6
       ],
       "centred_els": [
         [
-          3,
+          4,
           0.5
         ]
       ]
@@ -2535,6 +2540,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -2582,6 +2588,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -2592,15 +2611,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -2609,14 +2626,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -2628,15 +2643,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
@@ -2645,14 +2658,12 @@
           "speed": "speed",
           "length": "(loop_radius*2.0)"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -2664,15 +2675,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_5": {
         "name": "e_5",
@@ -2681,14 +2690,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_6": {
         "name": "e_6",
@@ -2700,15 +2707,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -2745,6 +2750,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -2788,6 +2794,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -2798,15 +2817,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -2815,14 +2832,12 @@
           "speed": "speed",
           "length": "(line_length/0.7071067811865476)"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -2834,15 +2849,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
@@ -2851,14 +2864,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -2870,15 +2881,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -2899,7 +2908,7 @@
         "o": "DRIVEN"
       },
       "centre_points": [
-        0
+        1
       ],
       "centred_els": []
     },
@@ -2917,6 +2926,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed"
         }
@@ -2955,6 +2965,20 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "track_y_before_slowdown",
+          "line_track_z",
+          "line_roll_angle",
+          "yaw_after_slowdown"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Spin",
@@ -2966,21 +2990,14 @@
           "drop_turns": "0.7853981633974483",
           "recovery_turns": "1.5707963267948966"
         },
-        "dgs": {
-          "": [
-            "autorotation_roll_angle"
-          ],
-          "break": [
-            "break_alpha_delta"
-          ],
-          "autorotation": [
-            "autorotation_rate",
-            "autorotation_break_angle"
-          ],
-          "recovery": [
-            "recovery_alpha_delta"
-          ]
-        }
+        "dgs": [
+          "snap_spin_turns",
+          "spin_alpha",
+          "drop_pitch_rate",
+          "recovery_rate_delta",
+          "end_track_y",
+          "end_track_z"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -2989,13 +3006,11 @@
           "speed": "speed",
           "length": "165"
         },
-        "dgs": {
-          "": [
-            "track_y_accel",
-            "track_z_accel",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -3007,15 +3022,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -3052,6 +3065,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
           "e_1_pad1.speed": "e_1_pad1.speed",
@@ -3141,6 +3155,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -3151,15 +3178,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
@@ -3168,14 +3193,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -3185,15 +3208,13 @@
           "length": "((abs(e_1_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
@@ -3202,14 +3223,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -3221,15 +3240,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
@@ -3238,14 +3255,12 @@
           "speed": "speed",
           "length": "50"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -3257,15 +3272,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_5": {
         "name": "e_5",
@@ -3274,14 +3287,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_6": {
         "name": "e_6",
@@ -3293,15 +3304,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -3324,7 +3333,7 @@
       "centre_points": [],
       "centred_els": [
         [
-          2,
+          3,
           0.5000000000000001
         ]
       ]
@@ -3343,6 +3352,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1_0.speed": "e_1_0.speed",
           "e_1_pad1.speed": "e_1_pad1.speed",
@@ -3425,6 +3435,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -3435,15 +3458,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1_pad1": {
         "name": "e_1_pad1",
@@ -3452,14 +3473,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_1_0": {
         "name": "e_1_0",
@@ -3469,15 +3488,13 @@
           "length": "((abs(e_1_rolls[0])*speed)/partial_roll_rate)",
           "roll": "e_1_rolls[0]"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "roll_rate",
-            "end_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "roll_rate",
+          "end_roll_angle"
+        ]
       },
       "e_1_pad2": {
         "name": "e_1_pad2",
@@ -3486,14 +3503,12 @@
           "speed": "speed",
           "length": "(0.5*(line_length-((abs(e_1_rolls[0])*speed)/partial_roll_rate)))"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -3505,15 +3520,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -3550,6 +3563,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed",
           "e_2.speed": "e_2.speed",
@@ -3594,6 +3608,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -3604,15 +3631,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -3621,14 +3646,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_2": {
         "name": "e_2",
@@ -3640,15 +3663,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_3": {
         "name": "e_3",
@@ -3657,14 +3678,12 @@
           "speed": "speed",
           "length": "line_length"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "line_track_y",
-            "line_track_z",
-            "line_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "line_track_y",
+          "line_track_z",
+          "line_roll_angle"
+        ]
       },
       "e_4": {
         "name": "e_4",
@@ -3676,15 +3695,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   },
@@ -3705,9 +3722,9 @@
         "o": "DRIVEN"
       },
       "centre_points": [
-        0,
         1,
-        2
+        2,
+        3
       ],
       "centred_els": []
     },
@@ -3725,6 +3742,7 @@
         "defaul": 30.0,
         "unit": "m/s",
         "collectors": {
+          "entry_line.speed": "entry_line.speed",
           "e_0.speed": "e_0.speed",
           "e_1.speed": "e_1.speed"
         }
@@ -3748,6 +3766,19 @@
       }
     },
     "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "speed",
+          "length": "30"
+        },
+        "dgs": [
+          "end_track_y",
+          "end_track_z",
+          "end_roll_angle"
+        ]
+      },
       "e_0": {
         "name": "e_0",
         "Kind": "Loop",
@@ -3758,15 +3789,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       },
       "e_1": {
         "name": "e_1",
@@ -3778,15 +3807,13 @@
           "roll": "0",
           "ke": "0"
         },
-        "dgs": {
-          "": [
-            "speed",
-            "loop_curvature",
-            "loop_track_y",
-            "loop_track_z",
-            "loop_roll_angle"
-          ]
-        }
+        "dgs": [
+          "speed",
+          "loop_curvature",
+          "loop_track_y",
+          "loop_track_z",
+          "loop_roll_angle"
+        ]
       }
     }
   }

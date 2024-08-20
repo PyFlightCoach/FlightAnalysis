@@ -53,19 +53,19 @@ class Measurement:
         )
 
     @staticmethod
-    def ratio(vs, expected):
+    def ratio(vs, expected, zero_ends = True):
         avs, aex = np.abs(vs), np.abs(expected)
 
         nom = np.maximum(avs, aex)
         denom = np.minimum(avs, aex)
-        denom = np.maximum(denom, nom/10)
+        denom = np.maximum(denom, nom / 10)
 
-        sign = (avs > aex) * 2 - 1
-
-        res = sign * (nom / denom -1)
+        res = ((avs > aex) * 2 - 1) * (nom / denom - 1)
 
         res[vs * expected < 0] = -10
-        res[0] = 0
+        if zero_ends:
+            res[0] = 0
+            res[-1] = 0
         return res
 
     def _pos_vis(loc: Point):
@@ -124,7 +124,8 @@ class Measurement:
             body_direction = fl.att.inverse().transform_point(direction)
             value = Point.scalar_projection(fl.vel, body_direction)
             return Measurement(
-                value, "m/s",
+                value,
+                "m/s",
                 *Measurement._vector_vis(
                     fl.att.transform_point(direction).unit(), fl.pos
                 ),
@@ -132,15 +133,18 @@ class Measurement:
         else:
             value = abs(fl.vel)
             return Measurement(
-                value, "m/s",
+                value,
+                "m/s",
                 *Measurement._vector_vis(fl.att.transform_point(fl.vel).unit(), fl.pos),
             )
 
+
+
     @staticmethod
-    def speed_ratio(fl: State, tp: State) -> Measurement:
+    def speed(fl: State, tp: State) -> Measurement:
         return Measurement(
-            Measurement.ratio(abs(fl.vel), np.mean(abs(tp.vel))),
-            "ratio",
+            fl.vel - fl.vel[0],
+            "m/s",
             *Measurement._vector_vis(fl.att.transform_point(fl.vel).unit(), fl.pos),
         )
 
@@ -214,7 +218,8 @@ class Measurement:
         )
 
         return Measurement(
-            Point.scalar_projection(v, direction), "m",
+            Point.scalar_projection(v, direction),
+            "m",
             *Measurement._vector_vis(ref_frame.q.transform_point(distance), fl.pos),
         )
 
@@ -234,12 +239,13 @@ class Measurement:
     @staticmethod
     def autorotation_rate(fl: State, tp: State) -> Measurement:
         p = abs(fl.att.transform_point(fl.p * PX())) * np.sign(fl.p)
-        
+
         return Measurement(
-            Measurement.ratio(p, np.mean(tp.p)), 
+            Measurement.ratio(p, np.mean(tp.p)),
             "ratio",
-            fl.pos, 
-            Measurement._pos_vis(fl.pos))
+            fl.pos,
+            Measurement._pos_vis(fl.pos),
+        )
 
     @staticmethod
     def get_proj(tp: State):
@@ -276,18 +282,21 @@ class Measurement:
         ref_frame (tp[0].transform) to work on.
         """
         proj = proj if proj else Measurement.get_proj(tp)
-        ref_frame = tp[0].transform
-        tr = ref_frame.q.inverse()
 
         fwvel = fl.att.transform_point(fl.vel)
         twvel = tp.att.transform_point(tp.vel)
 
+        twvel.data[abs(twvel) == 0] = np.nan
+        twvel.data = pd.DataFrame(twvel.data).ffill().bfill().to_numpy()
+
+        tr = tp[0].att.inverse()
         fcvel = tr.transform_point(fwvel)
         tcvel = tr.transform_point(twvel)
 
         cos_angles = Point.scalar_projection(
             Point.cross(fcvel, tcvel) / (abs(fcvel) * abs(tcvel)), proj
         )
+        cos_angles = pd.Series(cos_angles).ffill().bfill().to_numpy()
         angles = np.arcsin(cos_angles)
 
         direction, vis = Measurement._vector_vis(
@@ -306,6 +315,36 @@ class Measurement:
         return Measurement.track_proj_ang(fl, tp, PY())
 
     @staticmethod
+    def pitch_attitude(fl: State, tp: State) -> Measurement:
+        fxvec = fl.att.transform_point(PX())
+        tpvec = tp.att.transform_point(PX())
+
+        xvec_tp = tp.att.inverse().transform_point(fxvec)
+
+        return Measurement(
+            np.arctan2(xvec_tp.z, xvec_tp.x),
+            "rad",
+            *Measurement._vector_vis(
+                Point.vector_rejection(fxvec, tpvec).unit(), fl.pos
+            ),
+        )
+
+    @staticmethod
+    def yaw_attitude(fl: State, tp: State) -> Measurement:
+        fxvec = fl.att.transform_point(PX())
+        tpvec = tp.att.transform_point(PX())
+
+        xvec_tp = tp.att.inverse().transform_point(fxvec)
+
+        return Measurement(
+            np.arctan2(xvec_tp.y, xvec_tp.x),
+            "rad",
+            *Measurement._vector_vis(
+                Point.vector_rejection(fxvec, tpvec).unit(), fl.pos
+            ),
+        )
+
+    @staticmethod
     def curvature(fl: State, tp: State, proj: Point) -> Measurement:
         """
         Ratio error in curvature, direction is a vector in the axial direction
@@ -321,7 +360,7 @@ class Measurement:
 
         with np.errstate(invalid="ignore"):
             c = abs(Point.vector_rejection(normal_acc, trproj)) / trfl.u**2
-        
+
         return Measurement(
             Measurement.ratio(c, np.mean(c)),
             "ratio",
@@ -356,9 +395,7 @@ class Measurement:
     @staticmethod
     def side_box(fl: State):
         return Measurement(
-            np.arctan(fl.pos.x / fl.pos.y),
-            "rad",
-            *Measurement.lateral_pos_vis(fl.pos)
+            np.arctan(fl.pos.x / fl.pos.y), "rad", *Measurement.lateral_pos_vis(fl.pos)
         )
 
     @staticmethod
@@ -376,23 +413,32 @@ class Measurement:
             np.arctan(fl.pos.x / fl.pos.y), "rad", *Measurement.lateral_pos_vis(fl.pos)
         )
 
-    def break_angle(fl: State, tp: State) -> Measurement:
+    def alpha(fl: State, tp: State) -> Measurement:
         """angle error in the velocity vector about the template Z axis"""
-
-        # get the wind vector
-        wind = fl.att[0].transform_point(Point.vector_rejection(fl.vel[0], PX()))
-
-        vnw = fl.att.inverse().transform_point(fl.att.transform_point(fl.vel) - wind)
-        pitchfl = np.arctan2(vnw.z, vnw.x)
-
-        return Measurement(pitchfl - pitchfl[0], "rad", *Measurement._roll_vis(fl, tp))
+        alpha_acc = -4.6 * fl.acc.z / (abs(fl.vel) ** 2)  # 2.6
+        return Measurement(alpha_acc, "rad", *Measurement._roll_vis(fl, tp))
 
     def delta_alpha(fl: State, tp: State) -> Measurement:
-        wind = fl.att[0].transform_point(Point.vector_rejection(fl.vel[0], PX()))
-
-        vnw = fl.att.inverse().transform_point(fl.att.transform_point(fl.vel) - wind)
-        pitchfl = np.arctan2(vnw.z, vnw.x)
-
         return Measurement(
-            np.gradient(np.abs(pitchfl)) / fl.dt, "rad/s", *Measurement._roll_vis(fl, tp)
+            np.gradient(-4.6 * fl.acc.z / (abs(fl.vel) ** 2)) / fl.dt,
+            "rad/s",
+            *Measurement._roll_vis(fl, tp),
+        )
+
+    def pitch_rate(fl: State, tp: State) -> Measurement:
+        return Measurement(fl.q, "rad/s", *Measurement._roll_vis(fl, tp))
+
+    def pitch_down_rate(fl: State, tp: State) -> Measurement:
+        return Measurement(
+            fl.q * (fl.inverted().astype(int) * 2 - 1),
+            "rad/s",
+            *Measurement._roll_vis(fl, tp),
+        )
+
+    def delta_p(fl: State, tp: State) -> Measurement:
+        roll_direction = np.sign(fl.p.mean())
+        return Measurement(
+            roll_direction * np.gradient(fl.p) / fl.dt,
+            "rad/s/s",
+            *Measurement._roll_vis(fl, tp),
         )

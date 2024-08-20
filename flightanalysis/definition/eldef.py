@@ -24,7 +24,7 @@ class ElDef:
     name: str  # the name of the Eldef, must be unique and work as an attribute
     Kind: object  # the class of the element (Loop, Line etc)
     props: dict[str, Number | Opp]  # The element property generators (Number, Opp)
-    dgs: dict[str, DownGrades]  # The groups of DownGrades applicable this element
+    dgs: DownGrades  # The DownGrades applicable this element
 
     def get_collector(self, name) -> Collector:
         return Collector(self.name, name)
@@ -34,7 +34,7 @@ class ElDef:
             name=self.name,
             Kind=self.Kind.__name__,
             props={k: str(v) for k, v in self.props.items()},
-            dgs={k: dgs.to_dict() if longdgs else dgs.to_list()  for k, dgs in self.dgs.items()}
+            dgs=self.dgs.to_dict() if longdgs else self.dgs.to_list()
         )
 
     def __repr__(self):
@@ -46,7 +46,7 @@ class ElDef:
             name=data["name"],
             Kind=Element.from_name(data["Kind"]),
             props={k: ManParm.parse(v, mps) for k, v in data["props"].items()},
-            dgs={k: f3adgs.subset(v) for k, v in data["dgs"].items()},
+            dgs=f3adgs.subset(data['dgs']),
         )
 
     def __call__(self, mps: ManParms) -> Element:
@@ -92,7 +92,10 @@ class ElDef:
 
     @property
     def id(self):
-        return int(self.name.split("_")[1])
+        try:
+            return int(self.name.split("_")[1])
+        except Exception:
+            return -1
 
 
 class ElDefs(Collection):

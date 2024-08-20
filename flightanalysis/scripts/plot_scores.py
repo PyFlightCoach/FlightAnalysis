@@ -4,19 +4,48 @@ import plotly.express as px
 import re
 from datetime import date
 import argparse
+import numpy as np
+
+
+def plot_score_csv(file: Path):
+    scoredf = pd.read_csv(file)
+    scoredf["created"] = pd.to_datetime(scoredf.created)
+
+    versions = sorted(list(scoredf.columns[5:]))
+
+    px.scatter(scoredf, x='0.2.18', y=versions, symbol='schedule', hover_data='file').show()
+
+
+    df = pd.melt(
+        scoredf,
+        id_vars=["id", "created", "schedule", "file"],
+        value_vars=scoredf.columns[5:],
+        var_name="version",
+        value_name="score",
+    )
+
+    px.scatter(
+        df,
+        x="created",
+        y="score",
+        color="version",
+        hover_data="file",
+        symbol="schedule"
+    ).show()
+
+
+    px.scatter(scoredf, x='created', y=versions[-1], color='schedule', hover_data='file').show()
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Plot scores from a csv file')
+    parser = argparse.ArgumentParser(description="Plot scores from a csv file")
 
-    parser.add_argument('-f', '--file', default='fcs_scores.csv', help='Score file')
+    parser.add_argument("-f", "--file", default="fcs_scores.csv", help="Score file")
     args = parser.parse_args()
 
-    scoredf = pd.read_csv(args.file)
-
-    for col in scoredf.columns[3:]:
-        px.scatter(scoredf, x='created', y=col, color='schedule', hover_data='file').show()
+    plot_score_csv(Path(args.file))
 
 
 if __name__ == "__main__":
     main()
+    #plot_score_csv(Path("~/projects/logs/fcs_scores.csv").expanduser())

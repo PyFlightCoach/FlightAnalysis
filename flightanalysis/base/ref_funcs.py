@@ -50,6 +50,7 @@ class RFuncBuilders:
 
     def add(self, func):
         self.funcs[func.__name__] = func
+        return func
 
 
 class RefFuncs(Collection):

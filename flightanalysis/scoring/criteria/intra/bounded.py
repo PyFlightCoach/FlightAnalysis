@@ -16,18 +16,15 @@ class Bounded(Criteria):
 
     bound: float | list[float] = 0
 
-    def prepare(self, value: npt.NDArray):
-        return self.get_errors(value)
-
     def get_errors(self, ids: npt.NDArray, data: npt.NDArray):
         raise Exception("Method not available in base class")
 
     def __call__(self, vs: npt.NDArray, limits=True):
         """each downgrade corresponds to a group of values outside the bounds, ids
         correspond to the last value in each case"""
-        sample = self.prepare(vs)
-        ids = np.linspace(0, len(sample) - 1, len(sample)).astype(int)
-        groups = np.concatenate([[0], np.diff(sample != 0).cumsum()])
+        #sample = self.prepare(vs)
+        ids = np.linspace(0, len(vs) - 1, len(vs)).astype(int)
+        groups = np.concatenate([[0], np.diff(vs != 0).cumsum()])
 
         dgids = np.array(
             [
@@ -36,10 +33,10 @@ class Bounded(Criteria):
             ]
         )
         errors = np.array([
-            np.mean(sample[groups == grp]) * len(sample[groups == grp]) / len(sample)
+            np.mean(vs[groups == grp]) * len(vs[groups == grp]) / len(vs)
             for grp in set(groups)
         ])
-        dgs = self.lookup(errors)
+        dgs = self.lookup(errors, limits)
 
         return errors, dgs, dgids
 
@@ -48,7 +45,7 @@ class Bounded(Criteria):
 class MaxBound(Bounded):
     """Downgrade values above the bound."""
 
-    def get_errors(self, data: npt.NDArray):
+    def prepare(self, data: npt.NDArray):
         oarr = np.zeros_like(data)
         oarr[data > self.bound] = data[data > self.bound] - self.bound
         return oarr
@@ -58,7 +55,7 @@ class MaxBound(Bounded):
 class MinBound(Bounded):
     """Downgrade values below the bound."""
 
-    def get_errors(self, data: npt.NDArray):
+    def prepare(self, data: npt.NDArray):
         oarr = np.zeros_like(data)
         oarr[data < self.bound] = self.bound - data[data < self.bound]
         return oarr
@@ -68,7 +65,7 @@ class MinBound(Bounded):
 class OutsideBound(Bounded):
     """Downgrade values inside the bound."""
 
-    def get_errors(self, data: npt.NDArray):
+    def prepare(self, data: npt.NDArray):
         midbound = np.mean(self.bound)
         oarr = np.zeros_like(data)
         b1fail = (data >= midbound) & (data < self.bound[1])
@@ -82,7 +79,7 @@ class OutsideBound(Bounded):
 class InsideBound(Bounded):
     """Downgrade values outside the bound."""
 
-    def get_errors(self, data: npt.NDArray):
+    def prepare(self, data: npt.NDArray):
         oarr = np.zeros_like(data)
         oarr[data > self.bound[1]] = data[data > self.bound[1]] - self.bound[1]
         oarr[data < self.bound[0]] = self.bound[0] - data[data < self.bound[0]]

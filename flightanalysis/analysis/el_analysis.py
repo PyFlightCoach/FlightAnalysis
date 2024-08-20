@@ -35,5 +35,5 @@ class ElementAnalysis:
         )
     
     def intra_score(self):
-        return [dg.apply(self.el.uid + (f'_{k}' if len(k) > 0 else ''), self.fl, self.tp) for k, dg in self.edef.dgs.items()]
+        return self.edef.dgs.apply(self.el.uid, self.fl, self.tp) #[dg.apply(self.el.uid + (f'_{k}' if len(k) > 0 else ''), self.fl, self.tp) for k, dg in self.edef.dgs.items()]
     

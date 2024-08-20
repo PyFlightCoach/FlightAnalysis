@@ -6,6 +6,8 @@ from flightanalysis.version import get_version
 from flightanalysis import enable_logging
 import pandas as pd
 from pathlib import Path
+from datetime import datetime
+
 
 enable_logging()
 
@@ -70,14 +72,21 @@ def test_old_json():
     fcj = FCJ.model_validate_json(open(Path('tests/data/old_json.json'), 'r').read())
     assert isinstance(fcj, FCJ)
 
+@fixture
+def fcjscore(fcj):
+    return FCJScore.parse_fcj(Path('tests/data/scored_fcj.json'), fcj)
 
+def test_summary(fcjscore):
+    summary = fcjscore.summary()
+    assert summary['file'] == Path('tests/data/scored_fcj.json')
+    assert summary['created'] == datetime(2024, 6, 21)
+    assert summary['schedule'].name == 'p25'
+    assert summary['0.2.15.dev0+g7dd2339.d20240624'] == approx(455.6, rel=1)
+    assert summary['id'] == '00000154'
 
-def test_fcjscore_run_analysis_done(fcj):
-    fcjscore = FCJScore.parse_fcj(Path('tests/data/scored_fcj.json'), fcj)
-    if get_version() not in fcjscore.version_totals():
-        fcjscore.fcs_scores.append(
-            FCJResult(fa_version=get_version(), manresults=[None])
-        )
+    
+
+def test_fcjscore_run_analysis_done(fcj, fcjscore):
     fcjscorenew = fcjscore.run_analysis()
     assert get_version() in fcjscorenew.version_totals()
 

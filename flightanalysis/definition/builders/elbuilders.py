@@ -12,14 +12,14 @@ def line(name: str, speed, length):
     return ElDef.build(
         Line, name, 
         [speed, length],
-        {'': DGGrps.line}, 
+        DGGrps.line,
     ), ManParms()
 
 def roll(name: str, speed, rate, rolls):
     el = ElDef.build(
         Line, name, 
         [speed, abs(rolls) * speed / rate, rolls],
-        {'': DGGrps.roll},
+        DGGrps.roll,
     )
     if isinstance(rate, ManParm):
         rate.collectors.add(el.get_collector("rate"))
@@ -29,7 +29,7 @@ def loop(name: str, speed, radius, angle, ke):
     ed = ElDef.build(
         Loop, name, 
         [speed, angle, radius, 0, ke],
-        {'': DGGrps.loop},
+        DGGrps.loop,
     )
     return ed, ManParms()
 
@@ -37,7 +37,7 @@ def rolling_loop(name, speed, radius, angle, roll, ke):
     ed = ElDef.build(
         Loop, name, 
         [speed, angle, radius, roll, ke],
-        {'': DGGrps.rolling_loop},
+        DGGrps.rolling_loop,
     )
     return ed, ManParms()
 
@@ -45,19 +45,14 @@ def stallturn(name, speed, yaw_rate):
     return ElDef.build(
         StallTurn, name, 
         [speed, yaw_rate],
-        {'': DGGrps.stallturn}, 
+        DGGrps.stallturn, 
     ), ManParms()
 
 def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll):
     ed = ElDef.build(
         Snap, name,
         [speed, speed * abs(rolls)/rate, rolls, break_angle, break_roll, recovery_roll],
-        {
-            '': DGGrps.snap,
-            'break': DGGrps.pitch_break,
-            'autorotation': DGGrps.autorotation,
-            'recovery': DGGrps.recovery,
-        }
+        DGGrps.snap
     )
     if isinstance(rate, ManParm):
         rate.collectors.add(ed.get_collector('rate'))
@@ -70,12 +65,7 @@ def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns):
     ed = ElDef.build(
         Spin, name, 
         [speed, height, turns, break_angle, nd_turns, recovery_turns],
-        {
-            '': DGGrps.spin,
-            'break': DGGrps.nose_drop,
-            'autorotation': DGGrps.autorotation,
-            'recovery': DGGrps.recovery,
-        }
+        DGGrps.spin
     )
 
     if isinstance(rate, ManParm):

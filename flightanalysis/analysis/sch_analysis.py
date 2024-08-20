@@ -22,7 +22,10 @@ class ScheduleAnalysis(Collection):
 
     @staticmethod
     def from_fcj(
-        file: Union[str | bytes, dict], info: ScheduleInfo = None, proceed=True
+        file: Union[str | bytes, dict],
+        info: ScheduleInfo | None = None,
+        proceed=True,
+        bin: str | None = None,
     ) -> ScheduleAnalysis:
         data = file if isinstance(file, dict) else load(open(file, "r"))
 

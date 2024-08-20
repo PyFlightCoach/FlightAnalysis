@@ -2,12 +2,14 @@ from __future__ import annotations
 from flightdata import Collection, State
 from .criteria import Bounded, Continuous, Single, Criteria
 from .measurement import Measurement
+from .visibility import visibility
 from .results import Results, Result
 from typing import Callable
 from geometry import Coord
 from dataclasses import dataclass
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
+
 
 
 @dataclass
@@ -51,7 +53,7 @@ class DownGrade:
     def __call__(self, fl, tp, limits=True) -> Result:
         measurement: Measurement = self.measure(fl, tp)
         
-        sample = measurement.value * measurement.visibility
+        sample = visibility(self.criteria.prepare(measurement.value), measurement.visibility, self.criteria.lookup.limit)
         
         for sm in self.smoothers:
             sample = sm(sample)
@@ -69,7 +71,8 @@ class DownGrade:
             measurement,
             sample,
             ids,
-            *self.criteria(sample, limits)
+            *self.criteria(sample, limits),
+            self.criteria
         )
 
 

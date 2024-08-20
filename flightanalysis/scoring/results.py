@@ -5,14 +5,16 @@ import pandas as pd
 from flightdata import Collection
 from flightdata.base import to_list
 from flightanalysis.scoring.measurement import Measurement
+from flightanalysis.scoring.criteria import Criteria
 from dataclasses import dataclass
 
 
 def ease(val, factor=3):
     """factor == 3 for hard / no easement"""
-    b = 1.3 - factor * 0.1
-    m = 6 / 6**b
-    return m * val**b
+    with np.errstate(invalid="raise"):
+        b = 1.3 - factor * 0.1
+        m = 6 / 6**b
+        return m * val**b
 
 
 def trunc(val):
@@ -33,6 +35,7 @@ class Result:
     errors: npt.NDArray  # the errors resulting from the comparison
     dgs: npt.NDArray  # downgrades for the errors
     keys: npt.NDArray  # links from dgs to sample index
+    criteria: Criteria
 
     @property
     def total(self):
@@ -45,13 +48,16 @@ class Result:
     def to_dict(self):
         return dict(
             name=self.name,
-            measurement=self.measurement.to_dict()  if isinstance(self.measurement, Measurement) else list(self.measurement),
+            measurement=self.measurement.to_dict()
+            if isinstance(self.measurement, Measurement)
+            else list(self.measurement),
             sample=to_list(self.sample),
             sample_keys=to_list(self.sample_keys),
             errors=to_list(self.errors),
             dgs=to_list(self.dgs),
             keys=to_list(self.keys),
             total=self.total,
+            criteria=self.criteria.to_dict(),
         )
 
     def __repr__(self):
@@ -61,25 +67,27 @@ class Result:
     def from_dict(data) -> Result:
         return Result(
             data["name"],
-            Measurement.from_dict(data["measurement"]) if isinstance(data["measurement"], dict) else np.array(data["measurement"]),
+            Measurement.from_dict(data["measurement"])
+            if isinstance(data["measurement"], dict)
+            else np.array(data["measurement"]),
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
             np.array(data["errors"]),
             np.array(data["dgs"]),
             np.array(data["keys"]),
+            Criteria.from_dict(data["criteria"]),
         )
 
     def info(self, i: int):
-        def f(x):
-            return np.degrees(x) if self.measurement.unit == "rad" else x
-
-        return "\n".join([
-            f"dg={self.dgs[i]:.3f}",
-            f"meas={f(self.measurement.value[self.keys[i]]):.2f}",
-            f"vis={self.measurement.visibility[self.keys[i]]:.2f}",
-            f"err={f(self.errors[i]):.2f}",
-            
-        ]) 
+        return "\n".join(
+            [
+                f"dg={self.dgs[i]:.3f}",
+                f"meas={self.plot_f(self.measurement.value[self.sample_keys[self.keys[i]]]):.2f}",
+                f"vis={self.measurement.visibility[self.sample_keys[self.keys[i]]]:.2f}",
+                f"sample={self.plot_f(self.sample[self.keys[i]]):.2f}",
+                f"err={self.plot_f(self.errors[i]):.2f}",
+            ]
+        )
 
     def summary_df(self):
         return pd.DataFrame(
@@ -95,11 +103,77 @@ class Result:
             columns=["collector", "visibility", "value", "error", "downgrade"],
         )
 
-    def plot(self):
+    @property
+    def plot_f(self):
+        return np.degrees if self.measurement.unit == "rad" else lambda x: x
+
+    def measurement_trace(self, **kwargs):
         import plotly.graph_objects as go
 
-        def f(x):
-            return np.degrees(x) if self.measurement.unit == "rad" else x
+        return [
+            go.Scatter(
+                x=np.arange(0, len(self.measurement), 1),
+                y=self.plot_f(self.measurement.value),
+                name="flown",
+                line=dict(color="blue", width=1, dash="dash"),
+                **kwargs,
+            ),
+            go.Scatter(
+                x=np.arange(0, len(self.measurement), 1)[self.sample_keys],
+                y=self.plot_f(self.measurement.value)[self.sample_keys],
+                name="flown",
+                line=dict(color="blue", width=1, dash="solid"),
+                showlegend=False,
+            ),
+        ]
+
+    def sample_trace(self, **kwargs):
+        import plotly.graph_objects as go
+
+        return go.Scatter(
+            x=np.arange(0, len(self.measurement), 1)[self.sample_keys],
+            y=self.plot_f(self.sample),
+            name="sample",
+            line=dict(width=1, color="black"),
+            **kwargs,
+        )
+
+    def downgrade_trace(self, **kwargs):
+        import plotly.graph_objects as go
+
+        return go.Scatter(
+            x=np.arange(0, len(self.measurement), 1)[self.sample_keys[self.keys]],
+            y=self.plot_f(self.sample[self.keys]),
+            text=np.round(self.dgs, 3),
+            hovertext=[self.info(i) for i in range(len(self.keys))],
+            mode="markers+text",
+            name="downgrades",
+            yaxis="y",
+            **kwargs,
+        )
+
+    def visibility_trace(self, **kwargs):
+        import plotly.graph_objects as go
+
+        return go.Scatter(
+            x=np.arange(0, len(self.measurement), 1),
+            y=self.measurement.visibility,
+            name="visibility",
+            yaxis="y2",
+            line=dict(width=1, color="black", dash="dot"),
+            **kwargs,
+        )
+
+    def traces(self, **kwargs):
+        return [
+            *self.measurement_trace(**kwargs),
+            self.sample_trace(**kwargs),
+            self.downgrade_trace(**kwargs),
+            self.visibility_trace(**kwargs),
+        ]
+
+    def plot(self):
+        import plotly.graph_objects as go
 
         fig = go.Figure(
             layout=dict(
@@ -107,51 +181,9 @@ class Result:
                 yaxis2=dict(
                     title="visibility", overlaying="y", range=[0, 1], side="right"
                 ),
-                title=f"{self.name}, {self.total:.2f}"
-            )
-        )
-
-        x = np.arange(0, len(self.measurement), 1)
-        fig.add_trace(
-            go.Scatter(
-                x=x,
-                y=f(self.measurement.value),
-                name="flown",
-                line=dict(color="blue", width=1, dash="dash"),
-            )
-        )
-
-        fig.add_trace(
-            go.Scatter(
-                x=x[self.sample_keys],
-                y=f(self.sample),
-                name="sample",
-                line=dict(width=1, color="black"),
-            )
-        )
-
-        hovtxt = [self.info(i) for i in range(len(self.keys))]
-
-        fig.add_trace(
-            go.Scatter(
-                x=x[self.sample_keys[self.keys]],
-                y=f(self.sample[self.keys]),
-                text=np.round(self.dgs, 3),
-                hovertext=hovtxt,
-                mode="markers+text",
-                name="downgrades",
-                yaxis="y",
-            )
-        )
-
-        fig.add_trace(
-            go.Scatter(
-                x=x,
-                y=self.measurement.visibility,
-                name="visibility",
-                yaxis="y2",
-                line=dict(width=1, color="black", dash="dot"),
-            )
+                title=f"{self.name}, {self.total:.2f}",
+            ),
+            data=self.traces(),
         )
 
         return fig
@@ -210,8 +242,43 @@ class Results(Collection):
             data["name"], [Result.from_dict(v) for v in data["data"].values()]
         )
 
+    def plot(self):
+        from plotly.subplots import make_subplots
 
-    
+        fig = make_subplots(
+            rows=len(self),
+            cols=1,
+            shared_xaxes=True,
+            specs=[[{"secondary_y": True}] for _ in self],
+            vertical_spacing=0.03,
+        )
+
+        for i, res in enumerate(self, 1):
+            fig.add_traces(res.measurement_trace(showlegend=i == 1), rows=i, cols=1)
+            fig.add_trace(res.sample_trace(showlegend=i == 1), row=i, col=1)
+            fig.add_trace(res.downgrade_trace(showlegend=i == 1), row=i, col=1)
+            fig.add_trace(
+                res.visibility_trace(showlegend=i == 1), secondary_y=True, row=i, col=1
+            )
+
+            fig.update_layout(
+                **{
+                    f"yaxis{i*2-1}": dict(
+                        title=f'{res.name}, {res.measurement.unit.replace("rad", "deg")}',
+                        rangemode='tozero',
+                    ),
+                    f"yaxis{i*2}": dict(
+                        title='visibility',
+                        range=[0, 1],
+                        showgrid=False
+                    ),
+                },
+                hovermode="x unified",
+                hoversubplots="axis",
+                title=f"{self.name}, {self.total:.2f}",
+            )
+
+        return fig
 
 
 class ElementsResults(Collection):
