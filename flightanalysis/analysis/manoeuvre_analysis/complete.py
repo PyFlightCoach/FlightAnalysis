@@ -163,7 +163,7 @@ class Complete(Alignment):
 
     def optimise_alignment(self):
         fl = self.flown.copy()
-        elns = ["entry_line"] + list(self.mdef.eds.data.keys())
+        elns = list(self.mdef.eds.data.keys())
 
         padjusted = set(elns)
         count = 0
