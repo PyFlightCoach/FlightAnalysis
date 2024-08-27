@@ -2,7 +2,8 @@ from flightdata import State
 from geometry import Point, Quaternion, Transformation, PX, PY, PZ, Euldeg, P0
 from pytest import fixture, approx
 import numpy as np
-from flightanalysis import Loop, Measurement, r
+from flightanalysis import Loop, Measurement
+from flightanalysis.definition.builders.manbuilder import r
 from flightanalysis.scoring.f3a_downgrades import dgs
 from geometry.testing import assert_almost_equal
 

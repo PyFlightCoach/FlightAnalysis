@@ -2700,6 +2700,7 @@
         "dgs": [
           "snap_spin_turns",
           "spin_alpha",
+          "peak_drop_pitch_rate",
           "drop_pitch_rate",
           "recovery_rate_delta",
           "end_track_y",

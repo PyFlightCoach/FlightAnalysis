@@ -66,7 +66,7 @@ def after_speedup(fl: State, vs: npt.NDArray, sp: float):
 def autorot_break(fl: State, vs: npt.NDArray, rot: float):
     """return all the indices before the autorotation has turned by rotation"""
     # np.cumsum(g.Point.scalar_projection(fl.rvel, fl.vel) * fl.dt)
-    return np.arange(np.argmax(np.abs(fl.get_rotation()) > rot))
+    return np.arange(np.argmax(np.abs(fl.get_rotation()) > rot)+1)
 
 
 @selectors.add
@@ -79,7 +79,7 @@ def autorot_recovery(fl: State, vs: npt.NDArray, rot: float):
 def before_recovery(fl: State, vs: npt.NDArray, rot: float):
     """return all the indices less than rotation from the end of the autorotation"""
     rots = fl.get_rotation()
-    return np.arange(0, np.where((np.abs(rots[-1]) - np.abs(rots)) > rot)[0][-1])
+    return np.arange(0, np.where((np.abs(rots[-1]) - np.abs(rots)) > rot)[0][-1] + 1)
 
 
 @selectors.add
@@ -88,7 +88,7 @@ def autorotation(fl: State, vs: npt.NDArray, brot: float, rrot: float):
     rot = fl.get_rotation()
     return np.arange(
         np.argmax(np.abs(fl.get_rotation()) > brot),
-        np.where((np.abs(rot[-1]) - np.abs(rot)) > rrot)[0][-1],
+        np.where(abs(np.abs(rot[-1]) - np.abs(rot)) > rrot)[0][-1]+1,
     )
 
 @selectors.add
@@ -100,3 +100,8 @@ def maximum(fl: State, vs: npt.NDArray):
 def minimum(fl: State, vs: npt.NDArray):
     """return the index with the lowest value"""
     return np.array([np.argmin(vs)])
+
+@selectors.add
+def absmax(fl: State, vs: npt.NDArray):
+    """return the index with the highest absolute value"""
+    return np.array([np.argmax(np.abs(vs))])

@@ -16,11 +16,22 @@ class Single(Criteria):
 
 @dataclass
 class Limit(Criteria):
-    """Downgrade the largest value above a threshold"""
+    """Downgrade based on the distance above a limit"""
     limit: float = 0
-    def __call__(self, vs: npt.NDArray, limits: bool=True) -> np.Any:
-        errors = np.maximum(np.abs(vs) - self.limit, 0)
+    def __call__(self, vs: npt.NDArray, limits: bool=True) -> npt.NDArray:
         idx = np.arange(len(vs))
-        return errors, self.lookup(errors, limits), idx 
+        return vs, self.lookup(vs, limits), idx 
 
-    
+    def prepare(self, vs):
+        return np.maximum(np.abs(vs) - self.limit, 0)
+
+@dataclass
+class Threshold(Criteria):
+    """downgrade based on the distance below the limit"""
+    limit: float = 0
+    def __call__(self, vs: npt.NDArray, limits: bool=False) -> npt.NDArray:
+        idx = np.arange(len(vs))
+        return vs, self.lookup(vs, limits), idx 
+
+    def prepare(self, vs):
+        return np.maximum(self.limit - np.abs(vs), 0)

@@ -53,14 +53,15 @@ class Measurement:
         )
 
     @staticmethod
-    def ratio(vs, expected, zero_ends = True):
+    def ratio(vs, expected, zero_ends=True):
         avs, aex = np.abs(vs), np.abs(expected)
 
         nom = np.maximum(avs, aex)
         denom = np.minimum(avs, aex)
         denom = np.maximum(denom, nom / 10)
 
-        res = ((avs > aex) * 2 - 1) * (nom / denom - 1)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            res = ((avs > aex) * 2 - 1) * (nom / denom - 1)
 
         res[vs * expected < 0] = -10
         if zero_ends:
@@ -138,7 +139,9 @@ class Measurement:
                 *Measurement._vector_vis(fl.att.transform_point(fl.vel).unit(), fl.pos),
             )
 
-
+    @staticmethod
+    def vertical_speed(fl: State, tp: State) -> Self:
+        return Measurement.speed_value(fl, tp, PZ())
 
     @staticmethod
     def speed(fl: State, tp: State) -> Measurement:
@@ -249,25 +252,28 @@ class Measurement:
 
     @staticmethod
     def get_proj(tp: State):
+        """Proj is a vector in the axial direction for the template ref_frame (tp[0].transform)*"""
         # proj = g.Point(0, np.cos(el.ke), np.sin(el.ke))
         return PX().cross(tp[0].arc_centre()).unit()
 
     @staticmethod
     def track_proj_vel(fl: State, tp: State, proj: Point = None):
         """
+        We are only interested in velocity errors in the proj vector, which is a
+        vector in the ref frame (tp[0].transform).
+        Use this for things like loop axial track, with proj being the axial direction.
         Direction is the world frame scalar rejection of the velocity difference
-        onto the template velocity vector. we are only interested in velocity errors
-        in the proj vector. (loop axial track) proj defines the axis in the
-        ref_frame (tp[0].transform) to work on.
+        onto the template velocity vector.
         """
         proj = proj if proj else Measurement.get_proj(tp)
-        ref_frame = tp[0].transform
-        tr = ref_frame.q.inverse()
-        fwvel = fl.att.transform_point(fl.vel)
-        fcvel = tr.transform_point(fwvel)
-        verr = Point.vector_projection(fcvel, proj)
-        sign = -np.ones_like(verr.x)
-        sign[Point.is_parallel(verr, proj)] = 1
+
+        verr = Point.vector_projection(
+            tp[0].att.inverse().transform_point(fl.att.transform_point(fl.vel)),
+            proj,
+        )
+
+        sign = np.where(Point.is_parallel(verr, proj), 1, -np.ones_like(verr.x))
+
         angles = sign * np.arctan(abs(verr) / abs(fl.vel))
         direction, vis = Measurement._vector_vis(verr.unit(), fl.pos)
 
@@ -276,20 +282,17 @@ class Measurement:
     @staticmethod
     def track_proj_ang(fl: State, tp: State, proj: Point = None):
         """
+        We are only interested in errors about the proj vector, which is
+        a vector in the ref_frame (tp[0].transform).
         Direction is the world frame scalar rejection of the velocity difference
-        onto the template velocity vector. We are only interested in angle errors
-        about the proj vector. (loop exit track) proj defines the axis in the
-        ref_frame (tp[0].transform) to work on.
+        onto the template velocity vector.
         """
         proj = proj if proj else Measurement.get_proj(tp)
 
         fwvel = fl.att.transform_point(fl.vel)
-        twvel = tp.att.transform_point(tp.vel)
+        twvel = tp.att.transform_point(tp.vel.fill_zeros())
 
-        twvel.data[abs(twvel) == 0] = np.nan
-        twvel.data = pd.DataFrame(twvel.data).ffill().bfill().to_numpy()
-
-        tr = tp[0].att.inverse()
+        tr = tp[0].att.inverse() # world to ref_frame
         fcvel = tr.transform_point(fwvel)
         tcvel = tr.transform_point(twvel)
 
@@ -336,8 +339,11 @@ class Measurement:
 
         xvec_tp = tp.att.inverse().transform_point(fxvec)
 
+        flturns = np.sum(fl.r * fl.dt) / (2 * np.pi)
+        tpturns = np.sum(tp.r * tp.dt) / (2 * np.pi)
+
         return Measurement(
-            np.arctan2(xvec_tp.y, xvec_tp.x),
+            int(flturns - tpturns) * 2 * np.pi + np.arctan2(xvec_tp.y, xvec_tp.x),
             "rad",
             *Measurement._vector_vis(
                 Point.vector_rejection(fxvec, tpvec).unit(), fl.pos
@@ -350,19 +356,25 @@ class Measurement:
         Ratio error in curvature, direction is a vector in the axial direction
         proj is the ref_frame(tp[0]) axial direction
         """
-        wproj = tp[0].att.transform_point(proj)
+        wproj = tp[0].att.transform_point(proj)  # world proj vector
 
         trfl = fl.to_track()
 
-        trproj = trfl.att.inverse().transform_point(wproj)
+        normal_acc = trfl.zero_g_acc() * Point(
+            0, 1, 1
+        )  # acceleration normal to velocity vector
 
-        normal_acc = trfl.zero_g_acc() * Point(0, 1, 1)
+        tp_acc = Point.vector_rejection(
+            tp.zero_g_acc(), tp.att.inverse().transform_point(wproj)
+        )  # acceleration in template axial direction
 
         with np.errstate(invalid="ignore"):
-            c = abs(Point.vector_rejection(normal_acc, trproj)) / trfl.u**2
+            c = (
+                Point.scalar_projection(normal_acc, tp_acc) / abs(trfl.u) ** 2
+            )  # acceleration in loop radial direction
 
         return Measurement(
-            Measurement.ratio(c, np.mean(c)),
+            Measurement.ratio(c, abs(tp_acc / abs(tp.vel) ** 2)),
             "ratio",
             *Measurement._rad_vis(fl.pos, tp[0].att.transform_point(wproj)),
         )
@@ -414,9 +426,21 @@ class Measurement:
         )
 
     def alpha(fl: State, tp: State) -> Measurement:
-        """angle error in the velocity vector about the template Z axis"""
+        """Estimate alpha based on Z force"""
         alpha_acc = -4.6 * fl.acc.z / (abs(fl.vel) ** 2)  # 2.6
         return Measurement(alpha_acc, "rad", *Measurement._roll_vis(fl, tp))
+
+    def spin_alpha(fl: State, tp: State) -> Measurement:
+        """Estimate alpha based on Z force, positive for correct direction (away from ground)"""
+        # 2.6
+        return Measurement(
+            4.6
+            * fl.acc.z
+            / (abs(fl.vel) ** 2)
+            * (fl[0].inverted().astype(int) * 2 - 1),
+            "rad",
+            *Measurement._roll_vis(fl, tp),
+        )
 
     def delta_alpha(fl: State, tp: State) -> Measurement:
         return Measurement(

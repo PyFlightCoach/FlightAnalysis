@@ -39,10 +39,12 @@ class Criteria:
     
     def to_py(self):
         _so = f"{self.__class__.__name__}(Exponential({self.lookup.factor},{self.lookup.exponent}, {self.lookup.limit} )"
-        if hasattr(self, 'bound'):
-            _so = f"{_so}, {self.bound}"
-        if hasattr(self, 'cutoff'):
-            _so = f"{_so}, {self.cutoff}"
+        if hasattr(self, 'min_bound'):
+            _so = f"{_so}, min_bound={self.min_bound}"
+        if hasattr(self, 'min_bound'):
+            _so = f"{_so}, max_bound={self.max_bound}"
+        if hasattr(self, 'limit'):
+            _so = f"{_so}, limit={self.limit}"
         return _so + ')'
     
         

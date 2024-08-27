@@ -48,9 +48,6 @@ class Line(Element):
             speed=abs(flown.vel).mean()
         )
 
-    @staticmethod
-    def from_roll(speed: float, rate: float, angle: float) -> Line:
-        return Line(speed, rate * angle * speed, angle )
 
     def copy_direction(self, other) -> Line:
         return self.set_parms(roll=abs(self.roll) * np.sign(other.roll))

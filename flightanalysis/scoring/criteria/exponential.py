@@ -13,6 +13,10 @@ class Exponential:
         val = self.factor * value**self.exponent
         return np.minimum(val, self.limit) if self.limit and limits else val
 
+    @property
+    def error_limit(self):
+        return (self.limit / self.factor) ** (1 / self.exponent)
+
     @staticmethod
     def linear(factor: float):
         return Exponential(factor, 1)

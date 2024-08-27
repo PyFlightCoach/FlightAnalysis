@@ -53,7 +53,7 @@ class DownGrade:
     def __call__(self, fl, tp, limits=True) -> Result:
         measurement: Measurement = self.measure(fl, tp)
         
-        sample = visibility(self.criteria.prepare(measurement.value), measurement.visibility, self.criteria.lookup.limit)
+        sample = visibility(self.criteria.prepare(measurement.value), measurement.visibility, self.criteria.lookup.error_limit)
         
         for sm in self.smoothers:
             sample = sm(sample)

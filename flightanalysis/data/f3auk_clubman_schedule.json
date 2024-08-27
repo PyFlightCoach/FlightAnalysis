@@ -1564,6 +1564,8 @@
           "length": "line_length"
         },
         "dgs": [
+          "initial_track_y_after_speedup",
+          "initial_track_z_after_speedup",
           "track_y_after_speedup",
           "track_z_after_speedup",
           "line_roll_angle"
@@ -2704,6 +2706,7 @@
         "dgs": [
           "snap_spin_turns",
           "spin_alpha",
+          "peak_drop_pitch_rate",
           "drop_pitch_rate",
           "recovery_rate_delta",
           "end_track_y",

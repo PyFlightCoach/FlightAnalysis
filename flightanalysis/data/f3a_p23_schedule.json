@@ -1510,6 +1510,7 @@
         },
         "dgs": [
           "snap_spin_turns",
+          "peak_break_pitch_rate",
           "break_pitch_rate",
           "snap_alpha",
           "recovery_rate_delta",
@@ -2245,6 +2246,7 @@
         "dgs": [
           "snap_spin_turns",
           "spin_alpha",
+          "peak_drop_pitch_rate",
           "drop_pitch_rate",
           "recovery_rate_delta",
           "end_track_y",
@@ -3395,6 +3397,8 @@
           "length": "line_length"
         },
         "dgs": [
+          "initial_track_y_after_speedup",
+          "initial_track_z_after_speedup",
           "track_y_after_speedup",
           "track_z_after_speedup",
           "line_roll_angle"
@@ -3455,6 +3459,8 @@
           "length": "(0.5*(line_length-((abs(roll_option[1])*30)/partial_roll_rate)))"
         },
         "dgs": [
+          "initial_track_y_after_speedup",
+          "initial_track_z_after_speedup",
           "track_y_after_speedup",
           "track_z_after_speedup",
           "line_roll_angle"

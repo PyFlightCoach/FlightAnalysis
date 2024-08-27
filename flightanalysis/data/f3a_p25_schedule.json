@@ -1908,6 +1908,8 @@
           "length": "(0.5*(180-((abs(e_3_rolls[0])*speed)/partial_roll_rate)))"
         },
         "dgs": [
+          "initial_track_y_after_speedup",
+          "initial_track_z_after_speedup",
           "track_y_after_speedup",
           "track_z_after_speedup",
           "line_roll_angle"
@@ -3983,6 +3985,7 @@
         "dgs": [
           "snap_spin_turns",
           "spin_alpha",
+          "peak_drop_pitch_rate",
           "drop_pitch_rate",
           "recovery_rate_delta",
           "end_track_y",
@@ -4885,6 +4888,7 @@
         },
         "dgs": [
           "snap_spin_turns",
+          "peak_break_pitch_rate",
           "break_pitch_rate",
           "snap_alpha",
           "recovery_rate_delta",

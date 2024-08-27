@@ -14,73 +14,56 @@ class Bounded(Criteria):
     of the group width to the total width and by the average visibility of the group.
     """
 
-    bound: float | list[float] = 0
-
-    def get_errors(self, ids: npt.NDArray, data: npt.NDArray):
-        raise Exception("Method not available in base class")
+    min_bound: float = None  # values below the min bound will be downgraded
+    max_bound: float = None  # values above the max bound will be downgraded
 
     def __call__(self, vs: npt.NDArray, limits=True):
         """each downgrade corresponds to a group of values outside the bounds, ids
         correspond to the last value in each case"""
-        #sample = self.prepare(vs)
-        ids = np.linspace(0, len(vs) - 1, len(vs)).astype(int)
-        groups = np.concatenate([[0], np.diff(vs != 0).cumsum()])
+        # sample = self.prepare(vs)
 
-        dgids = np.array(
+        groups = np.concatenate([[0], np.diff(vs != 0).cumsum()])
+        dgids = np.append(
+            np.arange(len(groups))[1:][np.diff(groups).astype(bool)], len(groups) - 1
+        )
+
+        errors = np.array(
             [
-                ids[groups == grp][int(len(ids[groups == grp]) / 2)]
+                np.mean(vs[groups == grp]) * len(vs[groups == grp]) / len(vs)
                 for grp in set(groups)
             ]
         )
-        errors = np.array([
-            np.mean(vs[groups == grp]) * len(vs[groups == grp]) / len(vs)
-            for grp in set(groups)
-        ])
-        dgs = self.lookup(errors, limits)
+        dgs = self.lookup(np.abs(errors), limits)
 
-        return errors, dgs, dgids
-
-
-@dataclass
-class MaxBound(Bounded):
-    """Downgrade values above the bound."""
+        return errors[dgs>0], dgs[dgs>0], dgids[dgs>0]
 
     def prepare(self, data: npt.NDArray):
+        """prepare the sample for"""
         oarr = np.zeros_like(data)
-        oarr[data > self.bound] = data[data > self.bound] - self.bound
-        return oarr
+        # below_min = np.maximum(self.min_bound - data, 0) if self.min_bound is not None else np.zeros_like(data)
+        # above_max = np.maximum(data - self.max_bound, 0) if self.max_bound is not None else np.zeros_like(data)
 
+        if self.min_bound is None and self.max_bound is None:
+            raise Exception("Bounds not set.")
+        elif (
+            self.min_bound is not None
+            and self.max_bound is not None
+            and self.min_bound >= self.max_bound
+        ):  # Downgrade values inside the bound.:
+            midbound = (self.max_bound + self.min_bound) / 2
+            b1fail = (data > midbound) & (data < self.min_bound)
+            b0fail = (data <= midbound) & (data > self.max_bound)
+            oarr[b1fail] = self.max_bound - data[b1fail]
+            oarr[b0fail] = data[b0fail] - self.max_bound
+        else:
+            if self.min_bound is not None:  # downgrade below the min bound
+                oarr[data < self.min_bound] = (
+                    self.min_bound - data[data < self.min_bound]
+                )
 
-@dataclass
-class MinBound(Bounded):
-    """Downgrade values below the bound."""
+            if self.max_bound is not None:  # downgrade above the max bound
+                oarr[data > self.max_bound] = (
+                    data[data > self.max_bound] - self.max_bound
+                )
 
-    def prepare(self, data: npt.NDArray):
-        oarr = np.zeros_like(data)
-        oarr[data < self.bound] = self.bound - data[data < self.bound]
-        return oarr
-
-
-@dataclass
-class OutsideBound(Bounded):
-    """Downgrade values inside the bound."""
-
-    def prepare(self, data: npt.NDArray):
-        midbound = np.mean(self.bound)
-        oarr = np.zeros_like(data)
-        b1fail = (data >= midbound) & (data < self.bound[1])
-        b0fail = (data < midbound) & (data > self.bound[0])
-        oarr[b1fail] = self.bound[1] - data[b1fail]
-        oarr[b0fail] = data[b0fail] - self.bound[0]
-        return oarr
-
-
-@dataclass
-class InsideBound(Bounded):
-    """Downgrade values outside the bound."""
-
-    def prepare(self, data: npt.NDArray):
-        oarr = np.zeros_like(data)
-        oarr[data > self.bound[1]] = data[data > self.bound[1]] - self.bound[1]
-        oarr[data < self.bound[0]] = self.bound[0] - data[data < self.bound[0]]
         return oarr

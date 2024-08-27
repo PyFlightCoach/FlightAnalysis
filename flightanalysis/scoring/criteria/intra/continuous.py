@@ -13,8 +13,6 @@ class Continuous(Criteria):
     treats each separate increase (peak - trough) as a new error.
     """
 
-    cutoff: int = 4
-
     @staticmethod
     def get_peak_locs(arr, rev=False):
         increasing = np.sign(np.diff(np.abs(arr))) > 0
@@ -68,7 +66,7 @@ class ContinuousValue(Continuous):
     def mistakes(data, peaks, troughs):
         '''All changes are downgraded (peaks and troughs)'''
         values = data[peaks + troughs]
-        return values[:-1] - values[1:]
+        return values[1:] - values[:-1]
     
 
     @staticmethod

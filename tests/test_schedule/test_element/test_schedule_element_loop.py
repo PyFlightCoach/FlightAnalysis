@@ -11,7 +11,7 @@ import json
 
 @fixture
 def half_loop():
-    return Loop(30, 50.0, np.pi, 0)
+    return Loop("loop", 30, np.pi, 50.0, 0, 0)
 
 @fixture
 def hl_template(half_loop):
@@ -34,15 +34,15 @@ def test_create_template_no_t(half_loop, hl_template):
 
 def test_create_template_ke_angles():
     istate = State.from_transform(Transformation(Euler(np.pi, 0, 0)))
-    tp = Loop(30, 100, np.pi/2, 0, 0).create_template(istate)
+    tp = Loop("loop", 30, np.pi/2, 100, 0, 0).create_template(istate)
     assert_almost_equal(tp.pos[-1], Point(100, 0, 100), 0)
-    tp = Loop(30, 100, np.pi/2, 0, np.pi/2).create_template(istate)
+    tp = Loop("loop", 30, np.pi/2, 100, 0, np.pi/2).create_template(istate)
     assert_almost_equal(tp.pos[-1], Point(100, -100, 0), 0)
 
 
 def test_match_intention():
 
-    el = Loop(30, 100, np.radians(180), 0, False)
+    el = Loop("loop", 30, np.radians(180), 100, 0, 0)
 
     tp = el.create_template(State.from_transform(Transformation(),vel=PX(30))) 
     
@@ -53,7 +53,7 @@ def test_match_intention():
         vel=att.inverse().transform_point(PX(30))
     ))
 
-    el_diff = Loop(20, 50, np.radians(180), -np.pi, False)
+    el_diff = Loop("loop", 20, np.radians(180), 50, -np.pi, 0)
 
 
     el2 = el_diff.match_intention(tp[0].transform, fl)
@@ -61,7 +61,7 @@ def test_match_intention():
 
 def test_match_intention_ke():
 
-    el = Loop(30, 100, np.radians(180), 0, True)
+    el = Loop("loop", 30, np.radians(180), 100, 0, 0)
 
     tp = el.create_template(State.from_transform(Transformation(),vel=PX(30))) 
 
@@ -72,14 +72,17 @@ def test_match_intention_ke():
         vel=att.inverse().transform_point(PX(30))
     ))
 
-    el_diff = Loop(20, 50, np.radians(180), -np.pi, True)
+    el_diff = Loop("loop", 20, np.radians(180), 50, -np.pi, 0)
 
 
     el2 = el_diff.match_intention(tp[0].transform, fl)
 
-    assert el == el2
+    assert el.radius == approx(el2.radius, rel=0.01)
+    assert el.roll == approx(el2.roll)
+    assert el.speed == approx(el2.speed)
+    assert el.uid == el2.uid
     
-    assert np.isclose(el2.rate, fl.p.mean(), 0.1)
+    
 
 
 @fixture
@@ -99,7 +102,7 @@ def th_e0_tp()->State:
 
 @fixture
 def ql():
-    return Loop(30, 100, np.pi/2, 0)
+    return Loop("loop", 30,np.pi/2, 100, 0, 0)
 
 @fixture
 def ql_tp(ql):
@@ -109,10 +112,11 @@ def ql_tp(ql):
 @fixture
 def ql_fl():
     return Loop(
+        "loop",
         30, 
-        100, 
         np.pi/2 - np.radians(10), 
-        0
+        100, 
+        0, 0
     ).create_template(Transformation.zero())
 
 @mark.skip
