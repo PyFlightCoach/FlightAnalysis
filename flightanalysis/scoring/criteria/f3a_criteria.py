@@ -20,7 +20,7 @@ class F3AIntra:
     track = Continuous(Exponential.fit_points(np.radians([30, 90]), [1.75, 6], 6))
     roll = Continuous(Exponential.fit_points(np.radians([30, 90]), [1.25, 6], 6))
     radius = Continuous(Exponential.fit_points([1.5, 3], [0.5, 1], 1))
-    speed = ContinuousValue(Exponential.fit_points([5, 15], [0.03, 0.09], 0.5))
+    speed = ContinuousValue(Exponential.fit_points([5, 15], [0.1, 0.3], 0.5))
     roll_rate = Continuous(Exponential.fit_points([1, 3], [0.02, 0.06], 0.5))
     autorotation_rate = Continuous(Exponential.fit_points([1, 3], [0.02, 0.06], 0.5))
     stallturn_speed = Limit(Exponential.fit_points([2, 4], [0.05, 0.1], 4), 4)

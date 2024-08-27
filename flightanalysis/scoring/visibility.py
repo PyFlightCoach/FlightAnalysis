@@ -1,11 +1,21 @@
 import numpy as np
 import pandas as pd
 
-def visibility(val, factor: float, limit: float):
+def visibility(val, factor: float, limit: float, kind: str = 'value'):
     """factor between 0 and 1"""
-    norm = np.abs(val / limit)
-    b = 2 - factor
-    return np.where(norm > 1, norm, norm**b) * limit * np.sign(val)
+
+    b = 1.8 - factor * 0.8
+    if kind == 'value':
+        norm = np.abs(val / limit)
+        return np.where(norm > 1, norm, norm**b) * limit * np.sign(val)
+    elif kind=='deviation':
+        diff = np.insert(np.diff(val), 0, 0.0, axis=0)
+        norm = np.abs(diff / limit)
+
+        res = np.where(norm > 1, norm, norm**b) * limit * np.sign(diff) 
+        return res.cumsum() + val[0]
+    else:
+        raise ValueError(f'kind {kind} not recognized')
 
 
 

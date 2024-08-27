@@ -1,6 +1,6 @@
 from __future__ import annotations
 from flightdata import Collection, State
-from .criteria import Bounded, Continuous, Single, Criteria
+from .criteria import Bounded, Continuous, Single, Criteria, ContinuousValue
 from .measurement import Measurement
 from .visibility import visibility
 from .results import Results, Result
@@ -9,7 +9,6 @@ from geometry import Coord
 from dataclasses import dataclass
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
-
 
 
 @dataclass
@@ -27,7 +26,9 @@ class DownGrade:
     ]  # gets the flown and template measurements
     smoothers: RefFuncs  # smoothes the measurement
     selectors: RefFuncs  # selects the values to downgrade
-    criteria: (Bounded | Continuous | Single)  # looks up the downgrades based on the errors
+    criteria: (
+        Bounded | Continuous | Single
+    )  # looks up the downgrades based on the errors
     display_name: str
 
     def rename(self, name: str):
@@ -52,9 +53,14 @@ class DownGrade:
 
     def __call__(self, fl, tp, limits=True) -> Result:
         measurement: Measurement = self.measure(fl, tp)
-        
-        sample = visibility(self.criteria.prepare(measurement.value), measurement.visibility, self.criteria.lookup.error_limit)
-        
+
+        sample = visibility(
+            self.criteria.prepare(measurement.value),
+            measurement.visibility,
+            self.criteria.lookup.error_limit,
+            'deviation' if isinstance(self.criteria, ContinuousValue) else 'value',
+        )
+
         for sm in self.smoothers:
             sample = sm(sample)
 
@@ -65,14 +71,14 @@ class DownGrade:
             fl = State(fl.data.iloc[ids])
             sample = sample[sub_ids]
             ids = ids[sub_ids]
-        
+
         return Result(
             self.display_name,
             measurement,
             sample,
             ids,
             *self.criteria(sample, limits),
-            self.criteria
+            self.criteria,
         )
 
 
@@ -84,7 +90,9 @@ def dg(
     selectors: RefFunc | list[RefFunc],
     criteria: Criteria,
 ):
-    return DownGrade(name, measure, RefFuncs(smoothers), RefFuncs(selectors) , criteria, display_name)
+    return DownGrade(
+        name, measure, RefFuncs(smoothers), RefFuncs(selectors), criteria, display_name
+    )
 
 
 class DownGrades(Collection):
