@@ -4,7 +4,7 @@ import pandas as pd
 def visibility(val, factor: float, limit: float):
     """factor between 0 and 1"""
     norm = np.abs(val / limit)
-    b = 1.5 - factor * 0.1
+    b = 2 - factor
     return np.where(norm > 1, norm, norm**b) * limit * np.sign(val)
 
 

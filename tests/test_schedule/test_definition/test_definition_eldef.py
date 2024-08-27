@@ -1,6 +1,7 @@
 from pytest import fixture
 import numpy as np
-from flightanalysis import ElDef, Loop, ManParms, f3amb
+from flightanalysis import ElDef, Loop, ManParms
+from flightanalysis.definition.builders.manbuilder import f3amb 
 from flightanalysis.scoring.f3a_downgrades import DGGrps
 
 @fixture

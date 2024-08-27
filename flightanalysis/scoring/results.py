@@ -112,18 +112,18 @@ class Result:
 
         return [
             go.Scatter(
-                x=np.arange(0, len(self.measurement), 1),
+                x=np.arange(len(self.measurement)) / 25,
                 y=self.plot_f(self.measurement.value),
-                name="flown",
-                line=dict(color="blue", width=1, dash="dash"),
+                name="value",
                 **kwargs,
+                line=dict(color="blue", width=1, dash="dash"),
             ),
             go.Scatter(
-                x=np.arange(0, len(self.measurement), 1)[self.sample_keys],
+                x=np.arange(len(self.measurement))[self.sample_keys] / 25,
                 y=self.plot_f(self.measurement.value)[self.sample_keys],
-                name="flown",
+                name="selected",
                 line=dict(color="blue", width=1, dash="solid"),
-                showlegend=False,
+                **kwargs,
             ),
         ]
 
@@ -131,7 +131,7 @@ class Result:
         import plotly.graph_objects as go
 
         return go.Scatter(
-            x=np.arange(0, len(self.measurement), 1)[self.sample_keys],
+            x=np.arange(len(self.measurement))[self.sample_keys] / 25,
             y=self.plot_f(self.sample),
             name="sample",
             line=dict(width=1, color="black"),
@@ -142,13 +142,15 @@ class Result:
         import plotly.graph_objects as go
 
         return go.Scatter(
-            x=np.arange(0, len(self.measurement), 1)[self.sample_keys[self.keys]],
+            x=np.arange(len(self.measurement))[self.sample_keys[self.keys]] / 25,
             y=self.plot_f(self.sample[self.keys]),
             text=np.round(self.dgs, 3),
             hovertext=[self.info(i) for i in range(len(self.keys))],
             mode="markers+text",
-            name="downgrades",
+            name="downgrade",
+            textposition="bottom right",
             yaxis="y",
+            marker=dict(size=10, color='black'),#, color=self.dgs, colorscale="Bluered"),
             **kwargs,
         )
 
@@ -156,7 +158,7 @@ class Result:
         import plotly.graph_objects as go
 
         return go.Scatter(
-            x=np.arange(0, len(self.measurement), 1),
+            x=np.arange(len(self.measurement)) / 25,
             y=self.measurement.visibility,
             name="visibility",
             yaxis="y2",
@@ -167,9 +169,9 @@ class Result:
     def traces(self, **kwargs):
         return [
             *self.measurement_trace(**kwargs),
+            self.visibility_trace(**kwargs),
             self.sample_trace(**kwargs),
             self.downgrade_trace(**kwargs),
-            self.visibility_trace(**kwargs),
         ]
 
     def plot(self):

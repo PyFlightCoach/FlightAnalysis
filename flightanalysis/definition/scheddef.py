@@ -51,7 +51,7 @@ class SchedDef(Collection):
     def load(name: Union[str,ScheduleInfo]) -> Self:
         sinfo = ScheduleInfo.from_str(name) if isinstance(name, str) else name 
             
-        return SchedDef.from_dict(get_json_resource(f"{str(sinfo).lower()}_schedule"))
+        return SchedDef.from_dict(get_json_resource(f"{str(sinfo).lower()}_schedule.json"))
     
 
     def plot(self):

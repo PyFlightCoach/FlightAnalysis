@@ -1,9 +1,10 @@
 from pytest import fixture
 
 from flightanalysis import (
-    Manoeuvre, f3amb, Position, BoxLocation, ManInfo, 
+    Manoeuvre, Position, BoxLocation, ManInfo, 
     Height, Direction, Orientation, ManDef, ElDef
 )
+from flightanalysis.definition.builders.manbuilder import f3amb
 
 import numpy as np
 from json import load
