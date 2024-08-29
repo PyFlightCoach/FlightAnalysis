@@ -93,6 +93,9 @@ class ScheduleAnalysis(Collection):
         else:
             data["fcs_scores"].append(new_results)
 
+        if 'jhash' in data:
+            del data['jhash']        
+
         if ofile:
             dump(
                 data,

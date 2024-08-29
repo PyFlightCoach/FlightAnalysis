@@ -235,7 +235,7 @@ p25_def = SchedDef([
 
 p25_def.stall.eds.e_1.dgs = DGGrps.st_line_before
 p25_def.stall.eds.e_3_pad1.dgs = DGGrps.st_line_after
-p25_def.iSpin.eds.entry_line = DGGrps.sp_line_before
+p25_def.iSpin.eds.entry_line.dgs = DGGrps.sp_line_before
 p25_def.iSpin.eds.e_1_pad1.dgs = DGGrps.sp_line_after
 
 

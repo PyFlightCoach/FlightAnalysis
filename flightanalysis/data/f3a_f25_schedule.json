@@ -431,6 +431,23 @@
           "e_1_0.roll": "e_1_0.roll",
           "e_1_1.roll": "e_1_1.roll"
         }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
       }
     },
     "eds": {
@@ -1132,6 +1149,23 @@
           "e_1_0.roll": "e_1_0.roll"
         }
       },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      },
       "e_3_rolls": {
         "name": "e_3_rolls",
         "criteria": {
@@ -1154,6 +1188,23 @@
         "unit": "rad",
         "collectors": {
           "e_3_0.roll": "e_3_0.roll"
+        }
+      },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -1432,6 +1483,23 @@
         "collectors": {
           "e_1_0.roll": "e_1_0.roll"
         }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
       }
     },
     "eds": {
@@ -1465,8 +1533,8 @@
           "peak_drop_pitch_rate",
           "drop_pitch_rate",
           "recovery_rate_delta",
-          "end_track_y",
-          "end_track_z"
+          "spin_track_y",
+          "loop_track_z"
         ]
       },
       "e_1_pad1": {
@@ -1847,6 +1915,23 @@
           "e_1_0.roll": "e_1_0.roll"
         }
       },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      },
       "e_3_rolls": {
         "name": "e_3_rolls",
         "criteria": {
@@ -1872,6 +1957,23 @@
         "collectors": {
           "e_3_0.roll": "e_3_0.roll",
           "e_3_1.roll": "e_3_1.roll"
+        }
+      },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -2272,6 +2374,23 @@
           "e_1_0.roll": "e_1_0.roll"
         }
       },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      },
       "e_3_rolls": {
         "name": "e_3_rolls",
         "criteria": {
@@ -2294,6 +2413,40 @@
         "unit": "rad",
         "collectors": {
           "e_3_0.roll": "e_3_0.roll"
+        }
+      },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
+        }
+      },
+      "e_5_pad_length": {
+        "name": "e_5_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_5_pad1.length": "e_5_pad1.length",
+          "e_5_pad2.length": "e_5_pad2.length"
         }
       },
       "e_7_rolls": {
@@ -2320,6 +2473,40 @@
           "e_7_0.roll": "e_7_0.roll"
         }
       },
+      "e_7_pad_length": {
+        "name": "e_7_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_7_pad1.length": "e_7_pad1.length",
+          "e_7_pad2.length": "e_7_pad2.length"
+        }
+      },
+      "e_9_pad_length": {
+        "name": "e_9_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_9_pad1.length": "e_9_pad1.length",
+          "e_9_pad2.length": "e_9_pad2.length"
+        }
+      },
       "e_11_rolls": {
         "name": "e_11_rolls",
         "criteria": {
@@ -2344,6 +2531,23 @@
           "e_11_0.roll": "e_11_0.roll"
         }
       },
+      "e_11_pad_length": {
+        "name": "e_11_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_11_pad1.length": "e_11_pad1.length",
+          "e_11_pad2.length": "e_11_pad2.length"
+        }
+      },
       "e_13_rolls": {
         "name": "e_13_rolls",
         "criteria": {
@@ -2366,6 +2570,23 @@
         "unit": "rad",
         "collectors": {
           "e_13_0.roll": "e_13_0.roll"
+        }
+      },
+      "e_13_pad_length": {
+        "name": "e_13_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_13_pad1.length": "e_13_pad1.length",
+          "e_13_pad2.length": "e_13_pad2.length"
         }
       }
     },
@@ -2973,6 +3194,23 @@
           "e_1_0.roll": "e_1_0.roll"
         }
       },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      },
       "e_3_rolls": {
         "name": "e_3_rolls",
         "criteria": {
@@ -2995,6 +3233,23 @@
         "unit": "rad",
         "collectors": {
           "e_3_0.roll": "e_3_0.roll"
+        }
+      },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -3339,6 +3594,23 @@
           "e_1_0.roll": "e_1_0.roll"
         }
       },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      },
       "e_3_rolls": {
         "name": "e_3_rolls",
         "criteria": {
@@ -3361,6 +3633,23 @@
         "unit": "rad",
         "collectors": {
           "e_3_0.roll": "e_3_0.roll"
+        }
+      },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
         }
       }
     },
@@ -3657,6 +3946,40 @@
           "e_2.angle": "e_2.angle",
           "e_4.angle": "e_4.angle",
           "e_5_roll.roll": "e_5_roll.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      },
+      "e_5_pad_length": {
+        "name": "e_5_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_5_pad1.length": "e_5_pad1.length",
+          "e_5_pad2.length": "e_5_pad2.length"
         }
       }
     },
@@ -3970,6 +4293,23 @@
           "e_1_0.roll": "e_1_0.roll",
           "e_1_1.roll": "e_1_1.roll"
         }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
       }
     },
     "eds": {
@@ -4216,6 +4556,23 @@
         "collectors": {
           "e_1_0.roll": "e_1_0.roll",
           "e_1_1.roll": "e_1_1.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
         }
       }
     },
@@ -4984,6 +5341,23 @@
           "e_3_2.roll": "e_3_2.roll"
         }
       },
+      "e_3_pad_length": {
+        "name": "e_3_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_3_pad1.length": "e_3_pad1.length",
+          "e_3_pad2.length": "e_3_pad2.length"
+        }
+      },
       "e_5_rolls": {
         "name": "e_5_rolls",
         "criteria": {
@@ -5006,6 +5380,23 @@
         "unit": "rad",
         "collectors": {
           "e_5_0.roll": "e_5_0.roll"
+        }
+      },
+      "e_5_pad_length": {
+        "name": "e_5_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_5_pad1.length": "e_5_pad1.length",
+          "e_5_pad2.length": "e_5_pad2.length"
         }
       },
       "e_8_rolls": {

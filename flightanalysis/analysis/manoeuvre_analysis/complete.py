@@ -56,14 +56,14 @@ class Complete(Alignment):
         return list(self.mdef.eds.data.keys())
 
     def __iter__(self):
-        for edn in ["entry_line"] + list(self.mdef.eds.data.keys()):
+        for edn in list(self.mdef.eds.data.keys()):
             yield self.get_ea(edn)
 
     def __getitem__(self, i):
-        return self.get_ea("entry_line" if i == 0 else self.mdef.eds[i + 1].name)
+        return self.get_ea(self.mdef.eds[i + 1].name)
 
     def __getattr__(self, name):
-        if name in self.mdef.eds.data.keys() or name == "entry_line":
+        if name in self.mdef.eds.data.keys():
             return self.get_ea(name)
         raise AttributeError(f"Attribute {name} not found in {self.__class__.__name__}")
 

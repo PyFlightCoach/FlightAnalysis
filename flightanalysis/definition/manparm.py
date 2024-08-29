@@ -36,7 +36,7 @@ class ManParm(Opp):
     criteria: Criteria
     defaul: Number = None
     unit: str = "m"
-    collectors: Collectors = field(default_factory=lambda: Collectors())
+    collectors: Collectors = field(default_factory=Collectors)
 
     @property
     def n(self):
