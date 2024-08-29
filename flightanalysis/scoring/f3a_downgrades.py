@@ -16,7 +16,7 @@ dgs = DownGrades([
     dg("line_track_y", "track_y", Measurement.track_y, sms.lowpass(cutoff=2, order=5), None, F3A.intra.track),
     dg("line_track_z", "track_z", Measurement.track_z, sms.lowpass(cutoff=2, order=5), None, F3A.intra.track),
     dg("line_roll_angle", "roll", Measurement.roll_angle, sms.lowpass(cutoff=1, order=5), None, F3A.intra.roll),
-    dg("roll_rate", "roll_rate", Measurement.roll_rate, sms.lowpass(cutoff=2, order=5), None, F3A.intra.roll_rate),
+    dg("roll_rate", "roll_rate", Measurement.roll_rate, sms.lowpass(cutoff=0.5, order=5), None, F3A.intra.roll_rate),
 
     dg("loop_curvature", "curvature", Measurement.curvature_proj, sms.lowpass(cutoff=0.5, order=5), None, F3A.intra.radius),
     dg("loop_track_y", "track_y", Measurement.track_proj_vel, sms.lowpass(cutoff=2, order=5), None, F3A.intra.track),
@@ -32,6 +32,7 @@ dgs = DownGrades([
     dg("spin_alpha", "alpha", Measurement.spin_alpha, None, sels.before_recovery(rot=np.pi/4), F3A.intra.pos_autorotation_alpha),#alpha > 7.5 until last 45 degrees of turn
     dg("drop_pitch_rate", "pitch", Measurement.pitch_down_rate, None, sels.autorot_break(rot=np.radians(15)), F3A.intra.drop_pitch_rate ),#pitch down rate > 0.3 until 15 degree of turn
     dg("peak_drop_pitch_rate", "peak_pitch", Measurement.pitch_down_rate, None, sels.autorot_break(rot=np.radians(15)), F3A.intra.peak_drop_pitch_rate ),#pitch down rate > 0.3 until 15 degree of turn
+    dg("spin_track_y", "track_y", Measurement.track_proj_vel, None, sels.last(), F3A.intra.end_track),
 
     dg("recovery_rate_delta", "recovery", Measurement.delta_p, None, sels.autorot_recovery(rot=np.pi/24), F3A.intra.recovery_roll_rate ),#roll rate reducing in last 45 degrees of turn
 
@@ -66,11 +67,11 @@ class DGGrps:
     snap = DownGrades([dgs.snap_spin_turns, dgs.peak_break_pitch_rate, dgs.break_pitch_rate, dgs.snap_alpha, dgs.recovery_rate_delta, dgs.end_track_y, dgs.end_track_z])
     first_snap = DownGrades([dgs.snap_spin_turns, dgs.peak_break_pitch_rate, dgs.break_pitch_rate, dgs.snap_alpha, dgs.recovery_rate_delta])
     rebound_snap = DownGrades([dgs.snap_spin_turns, dgs.snap_alpha, dgs.recovery_rate_delta, dgs.end_track_y, dgs.end_track_z])
-    spin = DownGrades([dgs.snap_spin_turns, dgs.spin_alpha, dgs.peak_drop_pitch_rate, dgs.drop_pitch_rate, dgs.recovery_rate_delta, dgs.end_track_y, dgs.end_track_z])
+    spin = DownGrades([dgs.snap_spin_turns, dgs.spin_alpha, dgs.peak_drop_pitch_rate, dgs.drop_pitch_rate, dgs.recovery_rate_delta, dgs.spin_track_y, dgs.loop_track_z])
     stallturn = DownGrades([dgs.stallturn_width, dgs.stallturn_speed, dgs.stallturn_roll_angle, dgs.end_yaw])
     st_line_before = DownGrades([dgs.track_y_before_slowdown, dgs.track_z_before_slowdown, dgs.line_roll_angle, dgs.pitch_after_slowdown, dgs.yaw_after_slowdown])
     st_line_after = DownGrades([dgs.initial_track_y_after_speedup, dgs.initial_track_z_after_speedup, dgs.track_y_after_speedup, dgs.track_z_after_speedup, dgs.line_roll_angle])  
-    sp_line_before = DownGrades([dgs.track_y_before_slowdown, dgs.line_track_z, dgs.line_roll_angle, dgs.yaw_after_slowdown])
+    sp_line_before = DownGrades([dgs.track_y_before_slowdown, dgs.track_z_before_slowdown, dgs.line_roll_angle, dgs.yaw_after_slowdown])
     sp_line_after = DownGrades([dgs.line_track_y, dgs.line_track_z, dgs.line_roll_angle])
 
 #    sp_line_after_speedup = DownGrades([dgs.line_track_y, dgs.line_track_z, dgs.line_roll_angle])
