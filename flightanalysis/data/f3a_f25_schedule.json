@@ -1511,9 +1511,10 @@
           "length": "30"
         },
         "dgs": [
-          "end_track_y",
-          "end_track_z",
-          "end_roll_angle"
+          "track_y_before_slowdown",
+          "track_z_before_slowdown",
+          "line_roll_angle",
+          "yaw_after_slowdown"
         ]
       },
       "e_0": {

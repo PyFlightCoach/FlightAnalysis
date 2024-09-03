@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def visibility(val, factor: float, limit: float, kind: str = 'value'):
     """factor between 0 and 1"""
 

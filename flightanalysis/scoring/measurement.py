@@ -104,6 +104,14 @@ class Measurement:
         return fl.att.transform_point(g.PZ()), rvis * Measurement._pos_vis(fl.pos)
 
     @staticmethod
+    def _pitch_vis(fl: State, tp: State) -> Union[g.Point, npt.NDArray]:
+        rvis = 1 - 0.9 * np.abs(
+            g.Point.cos_angle_between(fl.pos, fl.att.transform_point(g.PZ()))
+        )
+
+        return fl.att.transform_point(g.PZ()), rvis * Measurement._pos_vis(fl.pos)
+
+    @staticmethod
     def _rad_vis(loc: g.Point, axial_dir: g.Point) -> Union[g.Point, npt.NDArray]:
         # radial error more visible if axis is parallel to the view vector
         return axial_dir, (
@@ -179,7 +187,7 @@ class Measurement:
         angles = np.arctan2(fl_rf_proj.z, fl_rf_proj.y) - np.arctan2(
             tp_rf_proj.z, tp_rf_proj.y
         )
-        angles[0] = angles[0]  - 2 * np.pi * np.round(angles[0] / (2 * np.pi))
+        angles[0] = angles[0] - 2 * np.pi * np.round(angles[0] / (2 * np.pi))
 
         return Measurement(
             np.unwrap(angles),
@@ -426,7 +434,7 @@ class Measurement:
     def alpha(fl: State, tp: State) -> Measurement:
         """Estimate alpha based on Z force"""
         alpha_acc = -4.6 * fl.acc.z / (abs(fl.vel) ** 2)  # 2.6
-        return Measurement(alpha_acc, "rad", *Measurement._roll_vis(fl, tp))
+        return Measurement(alpha_acc, "rad", *Measurement._pitch_vis(fl, tp))
 
     def spin_alpha(fl: State, tp: State) -> Measurement:
         """Estimate alpha based on Z force, positive for correct direction (away from ground)"""
@@ -437,24 +445,24 @@ class Measurement:
             / (abs(fl.vel) ** 2)
             * (fl[0].inverted().astype(int) * 2 - 1),
             "rad",
-            *Measurement._roll_vis(fl, tp),
+            *Measurement._pitch_vis(fl, tp),
         )
 
     def delta_alpha(fl: State, tp: State) -> Measurement:
         return Measurement(
             np.gradient(-4.6 * fl.acc.z / (abs(fl.vel) ** 2)) / fl.dt,
             "rad/s",
-            *Measurement._roll_vis(fl, tp),
+            *Measurement._pitch_vis(fl, tp),
         )
 
     def pitch_rate(fl: State, tp: State) -> Measurement:
-        return Measurement(fl.q, "rad/s", *Measurement._roll_vis(fl, tp))
+        return Measurement(fl.q, "rad/s", *Measurement._pitch_vis(fl, tp))
 
     def pitch_down_rate(fl: State, tp: State) -> Measurement:
         return Measurement(
             fl.q * (fl.inverted().astype(int) * 2 - 1),
             "rad/s",
-            *Measurement._roll_vis(fl, tp),
+            *Measurement._pitch_vis(fl, tp),
         )
 
     def delta_p(fl: State, tp: State) -> Measurement:
@@ -462,5 +470,5 @@ class Measurement:
         return Measurement(
             roll_direction * np.gradient(fl.p) / fl.dt,
             "rad/s/s",
-            *Measurement._roll_vis(fl, tp),
+            *Measurement._pitch_vis(fl, tp),
         )
