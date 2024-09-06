@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from flightanalysis.data import list_resources
 
-
 fcj_categories = {
     'F3A FAI':'f3a',
     'F3A':'f3a',
@@ -17,7 +16,6 @@ fcj_schedules = {
     'P25': 'p25',
     'F25': 'f25',
 }
-
 
 
 @dataclass
