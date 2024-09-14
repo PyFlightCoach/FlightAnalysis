@@ -30,7 +30,7 @@ class Basic(Analysis):
 
     def proceed(self) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements have already been labelled"""
-        if "element" not in self.flown.data.columns:
+        if "element" not in self.flown.data.columns or self.flown.data.element.isna().any():
             return self
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
         elnames = self.flown.data.element.unique().astype(str)
@@ -74,8 +74,12 @@ class Basic(Analysis):
         )
 
     def create_itrans(self) -> g.Transformation:
+        if self.direction == 0:
+            irot = self.flown.direction()
+        else:
+            irot = self.mdef.info.start.initial_rotation(self.direction)
         return g.Transformation(
-            self.flown[0].pos, self.mdef.info.start.initial_rotation(self.direction)
+            self.flown[0].pos, irot
         )
 
     @staticmethod

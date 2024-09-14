@@ -17,6 +17,9 @@ fcj_schedules = {
     'F25': 'f25',
 }
 
+def lookup(val, data):
+    val = val.replace("_", " ")
+    return data[val] if val in data else val
 
 @dataclass
 class ScheduleInfo:
@@ -36,10 +39,15 @@ class ScheduleInfo:
     def __str__(self):
         return f"{self.category}_{self.name}".lower()
 
-    def fcj_to_pfc(self):
-        def lookup(val, data):
-            return data[val] if val in data else val
+    @staticmethod
+    def lookupCategory(category):
+        return lookup(category, fcj_categories)
 
+    @staticmethod
+    def lookupSchedule(schedule):
+        return lookup(schedule, fcj_schedules)
+
+    def fcj_to_pfc(self):
         return ScheduleInfo(
             lookup(self.category, fcj_categories),
             lookup(self.name, fcj_schedules)

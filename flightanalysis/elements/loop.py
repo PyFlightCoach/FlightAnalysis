@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, Point, PX, Time
+from geometry import Transformation, Point, PX
 from flightdata import State
 from flightanalysis.scoring import Measurement
 from . import Element

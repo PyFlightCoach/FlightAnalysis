@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, P0, PX, Time
+from geometry import Transformation, P0, PX
 from flightdata import State
 from .element import Element
 from dataclasses import dataclass

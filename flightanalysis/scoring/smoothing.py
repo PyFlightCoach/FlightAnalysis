@@ -1,5 +1,4 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from flightanalysis.base.ref_funcs import RFuncBuilders
 import numpy.typing as npt
 import numpy as np
@@ -24,12 +23,12 @@ def _convolve(data: npt.NDArray, width: float):
 
 
 @smoothers.add
-def none(data):
+def none(data, el):
     return data
 
 
 @smoothers.add
-def convolve(data, window_ratio, max_window):
+def convolve(data, el, window_ratio, max_window):
     window = min(len(data) // window_ratio, max_window)
     sample = _convolve(data, window)
     _mean = np.mean(sample)
@@ -38,36 +37,52 @@ def convolve(data, window_ratio, max_window):
 
 
 @smoothers.add
-def lowpass(data, cutoff, order):
+def lowpass(data, el, cutoff, order):
     return filtfilt(
         *butter(order, cutoff, fs=25, btype="low", analog=False),
         data,
         padlen=len(data) - 1,
     )
 
-def _soft_end(data, width):
+@smoothers.add
+def curvature_lowpass(data, el, order):
+    return filtfilt(
+        *butter(
+            order,
+            100 * abs(el.angle) / (np.pi * len(data)),
+            fs=25,
+            btype="low",
+            analog=False,
+        ),
+        data,
+        padlen=len(data) - 1,
+    )
+
+
+def _soft_end(data, el, width):
     outd = data.copy()
     width = int(min(np.ceil(len(data) / 4), width))
-    outd[-width:] = np.linspace(data[-width], np.mean(data[-width:]), width+1)[1:]
+    outd[-width:] = np.linspace(data[-width], np.mean(data[-width:]), width + 1)[1:]
     return outd
 
 
 @smoothers.add
-def soft_end(data, width):
+def soft_end(data, el, width):
     return _soft_end(data, width)
 
 
-def _soft_start(data, width):
+def _soft_start(data, el, width):
     outd = data.copy()
     width = int(min(np.ceil(len(data) / 4), width))
-    outd[:width] = np.linspace(np.mean(data[:width]), data[width], width+1)[:-1]
+    outd[:width] = np.linspace(np.mean(data[:width]), data[width], width + 1)[:-1]
     return outd
 
 
 @smoothers.add
-def soft_start(data, width):
-    return _soft_start(data, width)    
+def soft_start(data, el, width):
+    return _soft_start(data, width)
+
 
 @smoothers.add
-def soft_ends(data, width):
+def soft_ends(data, el, width):
     return _soft_start(_soft_end(data, width), width)
