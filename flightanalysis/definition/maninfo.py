@@ -41,6 +41,9 @@ class Direction(Enum):
             Direction.UPWIND: -wind,
             Direction.DOWNWIND: wind
         }[self]
+    
+    def infer(self, direction: int):
+        return self.get_direction(self.get_wind(direction))
 
 class CrossDirection(Enum):
     IN=0

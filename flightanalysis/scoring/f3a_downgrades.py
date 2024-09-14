@@ -18,7 +18,7 @@ dgs = DownGrades([
     dg("line_roll_angle", "roll", Measurement.roll_angle, sms.lowpass(cutoff=1, order=5), None, F3A.intra.roll),
     dg("roll_rate", "roll_rate", Measurement.roll_rate, sms.lowpass(cutoff=0.5, order=5), None, F3A.intra.roll_rate),
 
-    dg("loop_curvature", "curvature", Measurement.curvature_proj, sms.lowpass(cutoff=0.5, order=5), None, F3A.intra.radius),
+    dg("loop_curvature", "curvature", Measurement.curvature_proj, sms.curvature_lowpass(order=5), None, F3A.intra.radius),
     dg("loop_track_y", "track_y", Measurement.track_proj_vel, sms.lowpass(cutoff=2, order=5), None, F3A.intra.track),
     dg("loop_track_z", "track_z", Measurement.track_proj_ang, sms.lowpass(cutoff=2, order=5), sels.last(), F3A.intra.end_track),
     dg("loop_roll_angle", "roll", Measurement.roll_angle_p, sms.lowpass(cutoff=1, order=5), None, F3A.intra.roll),

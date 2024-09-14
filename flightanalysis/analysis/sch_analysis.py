@@ -22,21 +22,24 @@ class ScheduleAnalysis(Collection):
 
     @staticmethod
     def from_fcj(
-        file: Union[str | bytes, dict],
-        info: ScheduleInfo | None = None,
+        fcj: Union[str | bytes, dict],
+        flight: Flight | None = None,
         proceed=True,
-        bin: str | None = None,
     ) -> ScheduleAnalysis:
-        data = file if isinstance(file, dict) else load(open(file, "r"))
+        data = fcj if isinstance(fcj, dict) else load(open(fcj, "r"))
 
-        flight = Flight.from_fc_json(data)
-
-        if info is None:
-            info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
-
+        flight = Flight.from_fc_json(data) if flight is None else flight
+        
+        info = ScheduleInfo(*fcj["parameters"]["schedule"]).fcj_to_pfc()
         sdef = SchedDef.load(info)
         box = Origin.from_fcjson_parameters(data["parameters"])
-        state = State.from_flight(flight, box).splitter_labels(data["mans"], sdef.uids)
+
+        state = State.from_flight(flight, box)
+        
+        state = state.splitter_labels(
+            data["mans"], sdef.uids, t0=fcj["data"][0]["time"] / 1e6
+        )
+
         direction = -state.get_manoeuvre(sdef[0].uid)[0].direction()[0]
 
         if "fcs_scores" in data and len(data["fcs_scores"]) > 0:
@@ -93,8 +96,8 @@ class ScheduleAnalysis(Collection):
         else:
             data["fcs_scores"].append(new_results)
 
-        if 'jhash' in data:
-            del data['jhash']        
+        if "jhash" in data:
+            del data["jhash"]
 
         if ofile:
             dump(

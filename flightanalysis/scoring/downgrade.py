@@ -51,18 +51,18 @@ class DownGrade:
             display_name=self.display_name,
         )
 
-    def __call__(self, fl, tp, limits=True) -> Result:
+    def __call__(self, el, fl: State, tp: State, limits=True) -> Result:
         measurement: Measurement = self.measure(fl, tp)
 
         sample = visibility(
             self.criteria.prepare(measurement.value),
             measurement.visibility,
             self.criteria.lookup.error_limit,
-            'deviation' if isinstance(self.criteria, ContinuousValue) else 'value',
+            "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
         )
 
         for sm in self.smoothers:
-            sample = sm(sample)
+            sample = sm(sample, el)
 
         ids = np.arange(len(fl))
 
@@ -99,8 +99,8 @@ class DownGrades(Collection):
     VType = DownGrade
     uid = "name"
 
-    def apply(self, name, fl, tp, limits=True) -> Results:
-        return Results(name, [dg(fl, tp, limits) for dg in self])
+    def apply(self, el, fl, tp, limits=True) -> Results:
+        return Results(el.uid, [dg(el, fl, tp, limits) for dg in self])
 
     def to_list(self):
         return [dg.name for dg in self]
