@@ -11,7 +11,6 @@ from flightanalysis.scoring import (
     ElementsResults,
     Result,
 )
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
 from flightanalysis.definition.maninfo import Position
 from flightanalysis.elements import Element
 import geometry as g
@@ -196,95 +195,9 @@ class Complete(Alignment):
 
         return Basic(self.id, self.mdef, fl, self.direction).proceed()
 
-    def side_box(self):
-        meas = Measurement.side_box(self.flown)
-        errors, dgs, keys = F3A.intra.box(F3A.intra.box.prepare(meas.value))
-        return Result(
-            "side box",
-            meas,
-            meas.value,
-            np.arange(len(meas.value)),
-            errors,
-            dgs * meas.visibility[keys],
-            keys,
-            F3A.intra.box,
-        )
+    def box(self) -> Results:
+        pass
 
-    def top_box(self):
-        meas = Measurement.top_box(self.flown)
-        errors, dgs, keys = F3A.intra.box(F3A.intra.box.prepare(meas.value))
-        return Result(
-            "top box",
-            meas,
-            meas.value,
-            np.arange(len(meas.value)),
-            errors,
-            dgs * meas.visibility[keys],
-            keys,
-            F3A.intra.box,
-        )
-        # return F3A.intra.box("top box", Measurement.top_box(self.flown))
-
-    def create_centre_result(self, name: str, st: State) -> Result:
-        meas = Measurement.centre_box(st)
-        errors, dgs, keys = F3A.intra.angle(meas.value)
-        return Result(
-            name,
-            meas,
-            meas.value,
-            np.arange(len(meas.value)),
-            errors,
-            dgs * meas.visibility[keys],
-            keys,
-            F3A.intra.angle,
-        )
-
-    def centre(self):
-        results = Results("centres")
-        for cpid in self.mdef.info.centre_points:
-            if cpid == len(self.manoeuvre.elements):
-                st = self.manoeuvre.elements[-1].get_data(self.flown)[-1]
-            else:
-                st = self.manoeuvre.elements[cpid].get_data(self.flown)[0]
-            results.add(self.create_centre_result(f"centre point {cpid}", st))
-
-        for ceid, fac in self.mdef.info.centred_els:
-            ce = self.manoeuvre.elements[ceid].get_data(self.flown)
-            path_length = (abs(ce.vel) * ce.dt).cumsum()
-            id = np.abs(path_length - path_length[-1] * fac).argmin()
-            results.add(
-                self.create_centre_result(
-                    f"centred element {ceid}", State(ce.data.iloc[[id], :])
-                )
-            )
-
-        if len(results) == 0 and self.mdef.info.position == Position.CENTRE:
-            al = State(
-                self.flown.data.loc[
-                    (self.flown.data.element != "entry_line")
-                    & (self.flown.data.element != "exit_line")
-                ]
-            )
-            midy = (np.max(al.y) + np.min(al.y)) / 2
-            midid = np.abs(al.pos.y - midy).argmin()
-            results.add(self.create_centre_result("centred manoeuvre", al[midid]))
-
-        return results
-
-    def distance(self):
-        # TODO doesnt quite cover it, stalled manoeuvres could drift to > 170 for no downgrade
-        meas = Measurement.depth(self.flown)
-        mistakes, dgs, dgids = F3A.intra.depth(F3A.intra.depth.prepare(meas.value))
-        return Result(
-            "distance",
-            meas,
-            meas.value,
-            np.arange(len(meas.value)),
-            mistakes,
-            dgs * meas.visibility[dgids],  # should be weighted average visibility
-            dgids,
-            F3A.intra.depth,
-        )
 
     def intra(self):
         return ElementsResults([ea.intra_score() for ea in self])

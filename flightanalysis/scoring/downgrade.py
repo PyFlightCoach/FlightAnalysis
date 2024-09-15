@@ -104,3 +104,16 @@ class DownGrades(Collection):
 
     def to_list(self):
         return [dg.name for dg in self]
+
+
+
+@dataclass
+class DowgradeGroups:
+    exits: DownGrades
+    line: DownGrades
+    roll: DownGrades
+    loop: DownGrades
+    rolling_loop: DownGrades
+    snap: DownGrades
+    spin: DownGrades
+    stallturn: DownGrades

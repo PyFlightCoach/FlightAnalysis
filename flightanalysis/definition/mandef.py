@@ -15,13 +15,14 @@ from __future__ import annotations
 import numpy as np
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre
-from flightanalysis.definition.maninfo import ManInfo
+from flightanalysis.definition.maninfo import ManInfo, Heading
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightdata import State
-from geometry import Transformation, Euler, Point
+import geometry as g
 from . import ManParms, ElDefs, Position, Direction
 from dataclasses import dataclass
-
+from flightanalysis.box import Box
+from loguru import logger
 
 @dataclass
 class ManDef:
@@ -35,6 +36,7 @@ class ManDef:
     info: ManInfo
     mps: ManParms
     eds: ElDefs
+    box: Box
 
     def __repr__(self):
         return f"ManDef({self.info.name})"
@@ -71,74 +73,101 @@ class ManDef:
             eds = ElDefs.from_dict(data["eds"], mps)
             return ManDef(info, mps, eds)
 
+    def guess_ipos(self, target_depth: float, heading: Heading) -> g.Transformation:
+        gpy = g.PY(target_depth)
+        return g.Point(
+            x={
+                Position.CENTRE: {
+                    Heading.IN: 0.0,
+                    Heading.OUT: 0.0,
+                    Heading.LEFT: self.box.right(gpy)[0],
+                    Heading.RIGHT: self.box.left(gpy)[0],
+                }[heading],
+                Position.END: 0.0,
+            }[self.info.position],
+            y={
+                Heading.IN: 2 * target_depth,
+                Heading.OUT: 0,
+                Heading.LEFT: target_depth,
+                Heading.RIGHT: target_depth,
+            }[heading],
+            z=self.box.bottom(gpy)[0] * (1 - self.info.start.height.value)
+            + self.info.start.height.value * self.box.top(gpy)[0],
+        )
+
+    def initial_rotation(self, heading: Heading) -> g.Quaternion:
+        return g.Euler(self.info.start.orientation.value, 0, heading.value)
+
+    def guess_itrans(self, target_depth: float, heading: Heading) -> g.Transformation:
+        return g.Transformation(
+            self.guess_ipos(target_depth, heading), self.initial_rotation(heading)
+        )
+
     def entry_line_length(
-        self, itrans: Transformation = None, target_depth=170
+        self, itrans: g.Transformation = None, target_depth=170
     ) -> float:
-        """Calculate the length of the entry line so that the manoeuvre is centred 
+        """Calculate the length of the entry line so that the manoeuvre is centred
         or extended to box edge as required.
 
         Args:
-            itrans (Transformation): The location to draw the line from, usually the 
+            itrans (Transformation): The location to draw the line from, usually the
                                         end of the last manoeuvre.
 
         Returns:
             float: the line length
         """
 
-        heading = np.sign(
-            itrans.rotation.transform_point(Point(1, 0, 0)).x[0]
-        )  # 1 for +ve x heading, -1 for negative x
+        heading = Heading.infer(itrans.rotation.bearing())
 
         # Create a template at zero to work out how much space the manoueuvre needs
         man = Manoeuvre(
-            None,
             Elements([ed(self.mps) for ed in self.eds[1:]]),
             None,
             uid=self.info.name,
         )
 
         template = man.create_template(
-            State.from_transform(
-                Transformation(
-                    Point(0, 0, 0), Euler(self.info.start.o.roll_angle(), 0, 0)
-                )
-            )
+            State.from_transform(g.Transformation(g.Euler(self.info.start.orientation.value, 0, 0)))
         )
 
-        if self.info.start.d == Direction.CROSS:
+        if self.info.start.direction == Direction.CROSS:
             st = State.from_transform(itrans)
             man_l = template.x[-1] - template.x[0]
-            length = max(target_depth - man_l * st.cross_direction() - st.pos.y[0], 30)
+            return max(target_depth - man_l * st.cross_direction() - st.pos.y[0], 30)
         else:
             if self.info.position == Position.CENTRE:
                 if len(self.info.centre_points) > 0:
-                    man_start_x = (
-                        -man.elements[self.info.centre_points[0]]
+                    xoffset = (
+                        man.elements[self.info.centre_points[0]-1]
                         .get_data(template)
                         .pos.x[0]
                     )
                 elif len(self.info.centred_els) > 0:
                     ce, fac = self.info.centred_els[0]
-                    _x = man.elements[ce].get_data(template).pos.x
-                    man_start_x = -_x[int(len(_x) * fac)]
+                    _x = man.elements[ce-1].get_data(template).pos.x
+                    xoffset = _x[int(len(_x) * fac)]
                 else:
-                    man_start_x = -(max(template.pos.x) + min(template.pos.x)) / 2
+                    xoffset = -(max(template.pos.x) + min(template.pos.x)) / 2
+                                
+            else:
+                xoffset = max(template.pos.x) - self.box.right(g.PY(itrans.pos.y[0]))[0]
 
-            elif self.info.position == Position.END:
-                box_edge = np.tan(np.radians(60)) * (
-                    np.abs(template.pos.y) + itrans.pos.y[0]
-                )
-                man_start_x = min(box_edge - template.pos.x)
-            length = max(man_start_x - itrans.translation.x[0] * heading, 10)
+            logger.debug(f"{self.info.position} {heading}, ipos: {int(itrans.pos.x[0])}, Xoff: {int(xoffset)}, ")
 
-        return length
+            if heading == Heading.RIGHT:
+                return max(-itrans.pos.x[0] - xoffset, 10)
+            else:
+                return max(itrans.pos.x[0] - xoffset, 10)
+   
 
     def fit_box(
         self,
-        itrans: Transformation = None,
+        itrans: g.Transformation = None,
         target_depth=170,
     ):
-        self.entry_line.props["length"] = self.entry_line_length(itrans, target_depth)
+        self.eds.entry_line.props["length"] = self.entry_line_length(
+            itrans, target_depth
+        )
 
     def create(self) -> Manoeuvre:
         """Create the manoeuvre based on the default values in self.mps."""

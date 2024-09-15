@@ -16,8 +16,8 @@ from typing import Annotated
 class Basic(Analysis):
     mdef: ManDef | ManOption
     flown: State
-    entry: Annotated[Heading, "The direction the manoeuvre should start in"] = None
-    exit: Annotated[Heading, "The direction the manoeuvre should end in"] = None
+    entry: Annotated[Heading | None, "The direction the manoeuvre should start in, None for inferred"]
+    exit: Annotated[Heading | None, "The direction the manoeuvre should end in, None for inferred"]
 
     @property
     def name(self):

@@ -2,14 +2,22 @@
 UKF3A Intermediate Template
 Author Vince Beesley
 '''
-from flightanalysis import (
-    SchedDef, ManInfo, BoxLocation, Position, Orientation, 
-    Height, Direction, ManParm,
-    Combination
-)
-from flightanalysis.definition.builders.manbuilder import f3amb, MBTags, centred, r, c45
-from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
+
+from flightanalysis import (
+    BoxLocation,
+    Combination,
+    Direction,
+    Height,
+    ManInfo,
+    ManParm,
+    Orientation,
+    Position,
+    SchedDef,
+)
+from flightanalysis.builders.f3a.downgrades import dggrps
+from flightanalysis.builders.f3a.manbuilder import f3amb
+from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
 
 intermediate_def = SchedDef([  
