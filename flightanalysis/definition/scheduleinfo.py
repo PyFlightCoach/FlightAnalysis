@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-from flightanalysis.data import list_resources
+from flightanalysis.data import list_resources, get_json_resource, get_file
+from json import load
+
 
 fcj_categories = {
     'F3A FAI':'f3a',
@@ -20,6 +22,14 @@ fcj_schedules = {
 def lookup(val, data):
     val = val.replace("_", " ")
     return data[val] if val in data else val
+
+
+@dataclass
+class ManDetails:
+    name: str
+    id: int
+    k: float
+
 
 @dataclass
 class ScheduleInfo:
@@ -73,6 +83,23 @@ class ScheduleInfo:
     @staticmethod
     def build(category, name):
         return ScheduleInfo(category.lower(), name.lower())
+    
+    def file(self):
+        return get_file(f"{str(self).lower()}_schedule.json")
+
+    def json_data(self):
+        return get_json_resource(self.file())
+
+    def manoeuvre_details(self) -> list[ManDetails]:
+        mds = []
+        
+        for i, (k, v) in enumerate(self.json_data().items()):
+            mds.append(ManDetails(
+                v.info.short_name,
+                i+1,
+                v.info.k
+            ))
+        return mds
 
 
 schedule_library = [ScheduleInfo.from_str(fname) for fname in list_resources('schedule')]

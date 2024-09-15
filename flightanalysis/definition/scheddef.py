@@ -1,13 +1,15 @@
-from . import ManDef, ManInfo, ManOption, ScheduleInfo
 from flightdata import State
 from typing import Tuple, Union, Self
 from geometry import Transformation
+from flightanalysis.definition.mandef import ManDef
+from flightanalysis.definition.maninfo import ManInfo, Heading
+from flightanalysis.definition.manoption import ManOption
+from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightanalysis.schedule import Schedule
 from flightanalysis.elements import Line
 from flightdata import Collection
 from json import dump, load
 from flightdata import NumpyEncoder
-from flightanalysis.data import get_json_resource
 
 
 class SchedDef(Collection):
@@ -19,13 +21,13 @@ class SchedDef(Collection):
     def add_new_manoeuvre(self, info: ManInfo, defaults=None):
         return self.add(ManDef(info,defaults))
 
-    def create_template(self,depth:float=170, wind:int=-1) -> Tuple[Schedule, State]:
+    def create_template(self,depth:float=170, wind:Heading=Heading.RIGHT) -> Tuple[Schedule, State]:
         templates = []
-        ipos = self[0].info.initial_position(depth,wind)
+        ipos = self[0].info.guess_ipos(depth,wind)
         
         mans = []
         for md in self:
-            md = md[md.active] if isinstance(md, ManOption) else md
+            md: ManDef = md[md.active] if isinstance(md, ManOption) else md
                 
             itrans=Transformation(
                 ipos if len(templates) == 0 else templates[-1][-1].pos,
@@ -49,10 +51,8 @@ class SchedDef(Collection):
         
     @staticmethod
     def load(name: Union[str,ScheduleInfo]) -> Self:
-        sinfo = ScheduleInfo.from_str(name) if isinstance(name, str) else name 
-            
-        return SchedDef.from_dict(get_json_resource(f"{str(sinfo).lower()}_schedule.json"))
-    
+        sinfo = name if isinstance(name, ScheduleInfo) else ScheduleInfo.from_str(name)
+        return SchedDef.from_dict(sinfo.json_data())
 
     def plot(self):
         sched, template = self.create_template(170, 1)
