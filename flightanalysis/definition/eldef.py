@@ -9,7 +9,6 @@ from . import Collector, Collectors
 from uuid import uuid1
 from dataclasses import dataclass
 from flightanalysis.scoring.downgrade import DownGrades
-from flightanalysis.scoring.f3a_downgrades import dgs as f3adgs
 
 
 @dataclass
@@ -20,7 +19,6 @@ class ElDef:
     The eldef also contains a set of collectors. These are a dict of str:callable pairs
     that collect the relevant parameter for this element from an Elements collection.
     """
-
     name: str  # the name of the Eldef, must be unique and work as an attribute
     Kind: object  # the class of the element (Loop, Line etc)
     props: dict[str, Number | Opp]  # The element property generators (Number, Opp)
@@ -41,12 +39,12 @@ class ElDef:
         return f"ElDef({self.name}, {self.Kind.__name__}, {[f'{k[0]}={str(v)}' for k, v in self.props.items()]}, {[dg.name for dg in self.dgs]})"
 
     @staticmethod
-    def from_dict(data: dict, mps: ManParms):
+    def from_dict(data: dict, mps: ManParms, dgs: DownGrades):
         return ElDef(
             name=data["name"],
             Kind=Element.from_name(data["Kind"]),
             props={k: ManParm.parse(v, mps) for k, v in data["props"].items()},
-            dgs=f3adgs.subset(data['dgs']),
+            dgs=dgs.subset(data['dgs']),
         )
 
     def __call__(self, mps: ManParms) -> Element:

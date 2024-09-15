@@ -1,16 +1,18 @@
-from flightanalysis import (
-    SchedDef, ManInfo, BoxLocation, Position, Orientation, 
-    Height, Direction, ManParm,
-    Combination
-)
-from flightanalysis.definition.builders.manbuilder import f3amb, imacmb, MBTags, centred, r, c45
-from flightanalysis.scoring.f3a_downgrades import DGGrps
 import numpy as np
 
+from flightanalysis import (
+    BoxLocation,
+    Direction,
+    Height,
+    ManInfo,
+    Orientation,
+    Position,
+    SchedDef,
+)
+from flightanalysis.builders.f3a.downgrades import dggrps
+from flightanalysis.builders.imac.manbuilder import imacmb
+from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
-c45 = np.cos(np.radians(45))
-
-mps = imacmb.mps
 
 sdef = SchedDef([
     imacmb.create(ManInfo(
@@ -42,9 +44,9 @@ sdef = SchedDef([
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
             end=BoxLocation(Height.BTM)
         ),[
-            imacmb.loop(r(0.5), radius=mps.loop_radius),
+            imacmb.loop(r(0.5), radius=imacmb.mps.loop_radius),
             imacmb.snap(r(1), padded=False),
-            imacmb.loop(r(0.5), radius=mps.loop_radius),
+            imacmb.loop(r(0.5), radius=imacmb.mps.loop_radius),
         ], loop_radius=100
     ),
     imacmb.create(ManInfo(

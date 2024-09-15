@@ -1,6 +1,6 @@
 
 from flightanalysis import ManParm, Collectors, Collector, Elements, Line, Exponential
-from flightanalysis.scoring.criteria.f3a_criteria import F3A
+from flightanalysis.definition.builders.f3a_criteria import F3A
 from pytest import fixture, approx, mark
 import numpy as np
  
