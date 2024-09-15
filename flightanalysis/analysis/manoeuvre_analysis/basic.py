@@ -2,19 +2,22 @@ from __future__ import annotations
 from dataclasses import dataclass
 from flightdata import State, Flight, Origin
 from flightanalysis.definition import ManDef, SchedDef, ManOption
+from flightanalysis.definition.maninfo import Heading
 import geometry as g
 from json import load
 from .analysis import Analysis
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 import numpy as np
 import pandas as pd
+from typing import Annotated
 
 
 @dataclass
 class Basic(Analysis):
     mdef: ManDef | ManOption
     flown: State
-    direction: int
+    entry: Annotated[Heading, "The direction the manoeuvre should start in"] = None
+    exit: Annotated[Heading, "The direction the manoeuvre should end in"] = None
 
     @property
     def name(self):
@@ -30,7 +33,10 @@ class Basic(Analysis):
 
     def proceed(self) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements have already been labelled"""
-        if "element" not in self.flown.data.columns or self.flown.data.element.isna().any():
+        if (
+            "element" not in self.flown.data.columns
+            or self.flown.data.element.isna().any()
+        ):
             return self
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
         elnames = self.flown.data.element.unique().astype(str)
@@ -74,12 +80,15 @@ class Basic(Analysis):
         )
 
     def create_itrans(self) -> g.Transformation:
-        if self.direction == 0:
-            irot = self.flown.direction()
-        else:
-            irot = self.mdef.info.start.initial_rotation(self.direction)
+        entry = (
+            self.entry
+            if self.entry is not None
+            else Heading.infer(self.flown[0].att.transform_point(g.PX()).bearing()[0])
+        )
+
         return g.Transformation(
-            self.flown[0].pos, irot
+            self.flown[0].pos,
+            g.Euler(self.mdef.info.start.orientation.value, 0, entry.value),
         )
 
     @staticmethod
@@ -87,7 +96,7 @@ class Basic(Analysis):
         with open(file, "r") as f:
             data = load(f)
         flight = Flight.from_fc_json(data)
-        box = Origin.from_fcjson_parmameters(data["parameters"])
+        box = Origin.from_fcjson_parameters(data["parameters"])
 
         sdef = SchedDef.load(data["parameters"]["schedule"][1])
 

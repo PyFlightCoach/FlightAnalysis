@@ -16,6 +16,7 @@ import numpy as np
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo
+from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightdata import State
 from geometry import Transformation, Euler, Point
 from . import ManParms, ElDefs, Position, Direction
@@ -48,6 +49,12 @@ class ManDef:
         )
 
     @staticmethod
+    def load(sinfo: ScheduleInfo, name: int | str) -> ManDef:
+        sdata = sinfo.json_data()
+        data = sdata[name] if isinstance(name, str) else list(sdata.values())[name]
+        return ManDef.from_dict(data)
+
+    @staticmethod
     def from_dict(data: dict | list) -> ManDef | ManOption:
         if isinstance(data, list):
             return ManOption.from_dict(data)
@@ -65,22 +72,18 @@ class ManDef:
             return ManDef(info, mps, eds)
 
     def entry_line_length(
-        self,
-        itrans: Transformation = None,
-        depth: float = None,
-        wind: int = None,
-        target_depth=170,
+        self, itrans: Transformation = None, target_depth=170
     ) -> float:
-        """Calculate the length of the entry line so that the manoeuvre is centred or extended to box
-        edge as required.
+        """Calculate the length of the entry line so that the manoeuvre is centred 
+        or extended to box edge as required.
 
         Args:
-            itrans (Transformation): The location to draw the line from, usually the end of the last manoeuvre.
+            itrans (Transformation): The location to draw the line from, usually the 
+                                        end of the last manoeuvre.
 
         Returns:
             float: the line length
         """
-        itrans = self.info.initial_transform(depth, wind) if itrans is None else itrans
 
         heading = np.sign(
             itrans.rotation.transform_point(Point(1, 0, 0)).x[0]
@@ -133,17 +136,12 @@ class ManDef:
     def fit_box(
         self,
         itrans: Transformation = None,
-        depth: float = None,
-        wind: int = None,
         target_depth=170,
     ):
-        self.entry_line.props["length"] = self.entry_line_length(
-            itrans, depth, wind, target_depth
-        )
+        self.entry_line.props["length"] = self.entry_line_length(itrans, target_depth)
 
     def create(self) -> Manoeuvre:
         """Create the manoeuvre based on the default values in self.mps."""
-
         return Manoeuvre(
             Elements([ed(self.mps) for ed in self.eds]),
             None,
