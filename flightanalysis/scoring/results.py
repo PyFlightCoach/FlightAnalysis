@@ -4,7 +4,7 @@ import numpy.typing as npt
 import pandas as pd
 from flightdata import Collection
 from flightdata.base import to_list
-from flightanalysis.scoring.measurement import Measurement
+from flightanalysis.scoring.measurements.measurement import Measurement
 from flightanalysis.scoring.criteria import Criteria
 from dataclasses import dataclass
 

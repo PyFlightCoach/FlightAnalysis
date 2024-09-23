@@ -2,11 +2,11 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 from flightdata import State, Collection
-from flightanalysis.scoring import Measurement, Results
+from flightanalysis.scoring import Measurement
 import geometry as g
 from json import load
 import inspect
-from typing import Self, Tuple, Union, ClassVar
+from typing import Self, ClassVar
 from dataclasses import dataclass
 
 
@@ -71,9 +71,7 @@ class Element:
 
     @classmethod
     def from_name(Cls, name) -> Element:
-        for Child in Cls.__subclasses__():
-            if Child.__name__.lower() == name.lower():
-                return Child
+        return {C.__name__.lower(): C for C in Cls.__subclasses__()}[name.lower()]
 
     @classmethod
     def from_dict(Cls, data: dict):

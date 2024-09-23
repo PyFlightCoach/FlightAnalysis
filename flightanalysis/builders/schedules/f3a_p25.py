@@ -184,7 +184,7 @@ p25_def = SchedDef([
                 f3amb.loop(np.pi/2),
                 f3amb.line(),
                 f3amb.loop(np.pi/2)
-        ]),
+        ], relax_back=True),
         f3amb.create(ManInfo(
                 "Top Hat Option", "tHat", k=3, position=Position.END, 
                 start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
@@ -251,8 +251,8 @@ p25_def.iSpin.eds.e_1_pad1.dgs = dggrps.sp_line_after
 
 if __name__ == "__main__":
 
-    p25_def.plot().show()
+#    p25_def.plot().show()
     #p25_def.create_fcj('P25', 'p25_template_fcj.json')
-    #p25_def.to_json("flightanalysis/data/f3a_p25_schedule.json")
+    p25_def.to_json("flightanalysis/data/f3a_p25_schedule.json")
 #    import os
 #    p25_def.create_fcjs('p25', f'{os.environ['HOME']}/Desktop/templates/')

@@ -27,7 +27,7 @@ class ElDef:
     def get_collector(self, name) -> Collector:
         return Collector(self.name, name)
 
-    def to_dict(self, longdgs=False):
+    def to_dict(self, longdgs=True):
         return dict(
             name=self.name,
             Kind=self.Kind.__name__,
@@ -39,12 +39,12 @@ class ElDef:
         return f"ElDef({self.name}, {self.Kind.__name__}, {[f'{k[0]}={str(v)}' for k, v in self.props.items()]}, {[dg.name for dg in self.dgs]})"
 
     @staticmethod
-    def from_dict(data: dict, mps: ManParms, dgs: DownGrades):
+    def from_dict(data: dict, mps: ManParms):
         return ElDef(
             name=data["name"],
             Kind=Element.from_name(data["Kind"]),
             props={k: ManParm.parse(v, mps) for k, v in data["props"].items()},
-            dgs=dgs.subset(data['dgs']),
+            dgs=DownGrades.from_dict(data["dgs"]),
         )
 
     def __call__(self, mps: ManParms) -> Element:
@@ -108,7 +108,7 @@ class ElDefs(Collection):
     def from_dict(data: dict, mps: ManParms):
         return ElDefs([ElDef.from_dict(v, mps) for v in data.values()])
 
-    def to_dict(self, dgs=False):
+    def to_dict(self, dgs=True):
         return {v.name: v.to_dict(dgs) for v in self}
 
     def get_new_name(self):

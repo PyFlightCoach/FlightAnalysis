@@ -5,7 +5,6 @@ import numpy as np
 from scipy.signal import filtfilt
 from scipy.signal import butter
 
-
 smoothers = RFuncBuilders({})
 
 
@@ -39,7 +38,7 @@ def convolve(data, el, window_ratio, max_window):
 @smoothers.add
 def lowpass(data, el, cutoff, order):
     return filtfilt(
-        *butter(order, cutoff, fs=25, btype="low", analog=False),
+        *butter(int(order), cutoff, fs=25, btype="low", analog=False),
         data,
         padlen=len(data) - 1,
     )
@@ -48,7 +47,7 @@ def lowpass(data, el, cutoff, order):
 def curvature_lowpass(data, el, order):
     return filtfilt(
         *butter(
-            order,
+            int(order),
             100 * abs(el.angle) / (np.pi * len(data)),
             fs=25,
             btype="low",
@@ -58,6 +57,19 @@ def curvature_lowpass(data, el, order):
         padlen=len(data) - 1,
     )
 
+@smoothers.add
+def rollrate_lowpass(data, el, order):
+    return filtfilt(
+        *butter(
+            int(order),
+            100 * abs(el.roll) / (np.pi * len(data)),
+            fs=25,
+            btype="low",
+            analog=False,
+        ),
+        data,
+        padlen=len(data) - 1,
+    )
 
 def _soft_end(data, el, width):
     outd = data.copy()

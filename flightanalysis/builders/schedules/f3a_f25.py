@@ -101,6 +101,7 @@ f25_def = SchedDef([
             [np.pi/2, np.pi, -np.pi, -np.pi, np.pi/2, np.pi], 
             [-np.pi/2, -np.pi, np.pi, np.pi, -np.pi/2, -np.pi]
         ]), 1, "rad"),
+        relax_back=True
         ),
     f3amb.create(ManInfo(
             "Shark Fin", "sFin", k=4, position=Position.END, 
@@ -151,7 +152,9 @@ f25_def = SchedDef([
             f3amb.loop(-np.pi),
             f3amb.roll('3/2'),
             f3amb.loop(np.pi/2),
-        ], ),
+        ],
+        relax_back=True
+    ),
     f3amb.create(ManInfo(
             "Triangular Loop", "keTrg", k=5, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),

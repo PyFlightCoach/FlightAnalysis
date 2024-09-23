@@ -16,6 +16,13 @@ class Scored(Complete):
             self.corrected_template
         )
     
+    def to_dict(self):
+        return dict(
+            **super().to_dict(),
+            scores=self.scores.to_dict()
+        )
+
+
     @staticmethod
     def from_dict(data:dict, fallback=True):
         ca = Complete.from_dict(data, fallback)

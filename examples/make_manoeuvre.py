@@ -21,9 +21,9 @@ mdef: ManDef = f3amb.create(ManInfo(
     f3amb.loop(np.pi/2), 
 ])
 
-#data = mdef.to_dict()
-#print(dumps(data, indent=2, cls=NumpyEncoder))
-#mdef = ManDef.from_dict(data)
+data = mdef.to_dict()
+print(dumps(data, indent=2, cls=NumpyEncoder))
+mdef = ManDef.from_dict(data)
 
 it = mdef.guess_itrans(170, Heading.RIGHT)
 
