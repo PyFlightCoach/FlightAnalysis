@@ -1,0 +1,4157 @@
+{
+  "hroll": {
+    "info": {
+      "name": "Half Roll",
+      "short_name": "hroll",
+      "k": 8,
+      "position": "CENTRE",
+      "start": {
+        "height": "TOP",
+        "direction": "UPWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "TOP",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          1,
+          0.5
+        ]
+      ]
+    },
+    "mps": {
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.0000000000000002,
+            "limit": 1
+          }
+        },
+        "defaul": 1.5707963267948966,
+        "unit": "rad/s",
+        "collectors": {
+          "e_0_0.rate": "e_0_0.rate"
+        }
+      },
+      "e_0_rolls": {
+        "name": "e_0_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": null
+          },
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "defaul": 0,
+        "unit": "rad",
+        "collectors": {
+          "e_0_0.roll": "e_0_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "449.1525423728814"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0_0": {
+        "name": "e_0_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "((abs(e_0_rolls[0])*50)/partial_roll_rate)",
+          "roll": "e_0_rolls[0]"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "roll_rate": {
+            "name": "roll_rate",
+            "measure": "roll_rate()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.2,
+                "exponent": 0.9999999999999998,
+                "limit": 3
+              }
+            },
+            "display_name": "roll_rate"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "S": {
+    "info": {
+      "name": "Split S",
+      "short_name": "S",
+      "k": 6,
+      "position": "END",
+      "start": {
+        "height": "TOP",
+        "direction": "UPWIND",
+        "orientation": "INVERTED"
+      },
+      "end": {
+        "height": "BTM",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          1,
+          0.5
+        ]
+      ]
+    },
+    "mps": {},
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "320.0130832227529"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "3.141592653589793",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "Sfin": {
+    "info": {
+      "name": "Shark Fin",
+      "short_name": "Sfin",
+      "k": 21,
+      "position": "END",
+      "start": {
+        "height": "BTM",
+        "direction": "DOWNWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "BTM",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.0000000000000002,
+            "limit": 1
+          }
+        },
+        "defaul": 1.5707963267948966,
+        "unit": "rad/s",
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": null
+          },
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "defaul": 0,
+        "unit": "rad",
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      }
+    },
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "428.87304542032183"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "0.7853981633974483",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "((abs(e_1_rolls[0])*50)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "roll_rate": {
+            "name": "roll_rate",
+            "measure": "roll_rate()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.2,
+                "exponent": 0.9999999999999998,
+                "limit": 3
+              }
+            },
+            "display_name": "roll_rate"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "2.356194490192345",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_3": {
+        "name": "e_3",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "180"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "1.5707963267948966",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "roll": {
+    "info": {
+      "name": "Roll",
+      "short_name": "roll",
+      "k": 14,
+      "position": "CENTRE",
+      "start": {
+        "height": "BTM",
+        "direction": "UPWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "BTM",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          1,
+          0.5
+        ]
+      ]
+    },
+    "mps": {
+      "full_roll_rate": {
+        "name": "full_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.0000000000000002,
+            "limit": 1
+          }
+        },
+        "defaul": 1.5707963267948966,
+        "unit": "rad/s",
+        "collectors": {
+          "e_0_0.rate": "e_0_0.rate"
+        }
+      },
+      "e_0_rolls": {
+        "name": "e_0_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": null
+          },
+          "desired": [
+            [
+              6.283185307179586
+            ],
+            [
+              -6.283185307179586
+            ]
+          ]
+        },
+        "defaul": 0,
+        "unit": "rad",
+        "collectors": {
+          "e_0_0.roll": "e_0_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "269.99835945301595"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0_0": {
+        "name": "e_0_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "((abs(e_0_rolls[0])*50)/full_roll_rate)",
+          "roll": "e_0_rolls[0]"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "roll_rate": {
+            "name": "roll_rate",
+            "measure": "roll_rate()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.2,
+                "exponent": 0.9999999999999998,
+                "limit": 3
+              }
+            },
+            "display_name": "roll_rate"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "hCuban": {
+    "info": {
+      "name": "Half Cuban Eight",
+      "short_name": "hCuban",
+      "k": 16,
+      "position": "END",
+      "start": {
+        "height": "BTM",
+        "direction": "UPWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "BTM",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.0000000000000002,
+            "limit": 1
+          }
+        },
+        "defaul": 1.5707963267948966,
+        "unit": "rad/s",
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": null
+          },
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "defaul": 0,
+        "unit": "rad",
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      },
+      "e_1_pad_length": {
+        "name": "e_1_pad_length",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 1.0,
+            "exponent": 1.0,
+            "limit": 2
+          }
+        },
+        "defaul": null,
+        "unit": "m",
+        "collectors": {
+          "e_1_pad1.length": "e_1_pad1.length",
+          "e_1_pad2.length": "e_1_pad2.length"
+        }
+      }
+    },
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "270.00538637501455"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "3.9269908169872414",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1_pad1": {
+        "name": "e_1_pad1",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "((abs(e_1_rolls[0])*50)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "roll_rate": {
+            "name": "roll_rate",
+            "measure": "roll_rate()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.2,
+                "exponent": 0.9999999999999998,
+                "limit": 3
+              }
+            },
+            "display_name": "roll_rate"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1_pad2": {
+        "name": "e_1_pad2",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "0.7853981633974483",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "qloop": {
+    "info": {
+      "name": "Q Loop",
+      "short_name": "qloop",
+      "k": 11,
+      "position": "CENTRE",
+      "start": {
+        "height": "BTM",
+        "direction": "DOWNWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "MID",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          3,
+          0.5
+        ]
+      ]
+    },
+    "mps": {},
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "10"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "0.7853981633974483",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "180"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "5.497787143782138",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "st": {
+    "info": {
+      "name": "Stallturn",
+      "short_name": "st",
+      "k": 17,
+      "position": "END",
+      "start": {
+        "height": "MID",
+        "direction": "DOWNWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "BTM",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "stallturn_rate": {
+        "name": "stallturn_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.0000000000000002,
+            "limit": 1
+          }
+        },
+        "defaul": 0.7853981633974483,
+        "unit": "rad/s",
+        "collectors": {
+          "e_2.yaw_rate": "e_2.yaw_rate"
+        }
+      }
+    },
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "291.5948373315482"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "1.5707963267948966",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "180"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "StallTurn",
+        "props": {
+          "speed": "0.0",
+          "yaw_rate": "stallturn_rate"
+        },
+        "dgs": {
+          "stallturn_width": {
+            "name": "stallturn_width",
+            "measure": "stallturn_width()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Peak",
+              "lookup": {
+                "factor": 0.07399282558367505,
+                "exponent": 1.75647079736603,
+                "limit": 6
+              },
+              "limit": 2
+            },
+            "display_name": "width"
+          },
+          "stallturn_speed": {
+            "name": "stallturn_speed",
+            "measure": "vertical_speed()",
+            "smoothers": [],
+            "selectors": [
+              "first_and_last()"
+            ],
+            "criteria": {
+              "kind": "Limit",
+              "lookup": {
+                "factor": 0.25000000000000006,
+                "exponent": 0.9999999999999999,
+                "limit": 1
+              },
+              "limit": 8
+            },
+            "display_name": "speed"
+          },
+          "stallturn_roll_angle": {
+            "name": "stallturn_roll_angle",
+            "measure": "roll_angle_z()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          },
+          "end_yaw": {
+            "name": "end_yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "yaw"
+          }
+        }
+      },
+      "e_3": {
+        "name": "e_3",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "180"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "1.5707963267948966",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "hb": {
+    "info": {
+      "name": "Humpty Bump",
+      "short_name": "hb",
+      "k": 15,
+      "position": "CENTRE",
+      "start": {
+        "height": "BTM",
+        "direction": "UPWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "BTM",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": [
+        [
+          3,
+          0.5
+        ]
+      ]
+    },
+    "mps": {},
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "110.00537308491721"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "1.5707963267948966",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "180"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "-3.141592653589793",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_3": {
+        "name": "e_3",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "180"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_4": {
+        "name": "e_4",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "1.5707963267948966",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "imm": {
+    "info": {
+      "name": "Immelman",
+      "short_name": "imm",
+      "k": 12,
+      "position": "END",
+      "start": {
+        "height": "BTM",
+        "direction": "UPWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "TOP",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.0000000000000002,
+            "limit": 1
+          }
+        },
+        "defaul": 1.5707963267948966,
+        "unit": "rad/s",
+        "collectors": {
+          "e_1_0.rate": "e_1_0.rate"
+        }
+      },
+      "e_1_rolls": {
+        "name": "e_1_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": null
+          },
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "defaul": 0,
+        "unit": "rad",
+        "collectors": {
+          "e_1_0.roll": "e_1_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "110.00610245769872"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "3.141592653589793",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1_0": {
+        "name": "e_1_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "((abs(e_1_rolls[0])*50)/partial_roll_rate)",
+          "roll": "e_1_rolls[0]"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "roll_rate": {
+            "name": "roll_rate",
+            "measure": "roll_rate()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.2,
+                "exponent": 0.9999999999999998,
+                "limit": 3
+              }
+            },
+            "display_name": "roll_rate"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  },
+  "hcub2": {
+    "info": {
+      "name": "Half Cuban 2",
+      "short_name": "hcub2",
+      "k": 16,
+      "position": "END",
+      "start": {
+        "height": "TOP",
+        "direction": "DOWNWIND",
+        "orientation": "UPRIGHT"
+      },
+      "end": {
+        "height": "TOP",
+        "direction": "",
+        "orientation": ""
+      },
+      "centre_points": [],
+      "centred_els": []
+    },
+    "mps": {
+      "partial_roll_rate": {
+        "name": "partial_roll_rate",
+        "criteria": {
+          "kind": "Comparison",
+          "lookup": {
+            "factor": 0.25,
+            "exponent": 1.0000000000000002,
+            "limit": 1
+          }
+        },
+        "defaul": 1.5707963267948966,
+        "unit": "rad/s",
+        "collectors": {
+          "e_3_0.rate": "e_3_0.rate"
+        }
+      },
+      "e_3_rolls": {
+        "name": "e_3_rolls",
+        "criteria": {
+          "kind": "Combination",
+          "lookup": {
+            "factor": 0,
+            "exponent": 1,
+            "limit": null
+          },
+          "desired": [
+            [
+              3.141592653589793
+            ],
+            [
+              -3.141592653589793
+            ]
+          ]
+        },
+        "defaul": 0,
+        "unit": "rad",
+        "collectors": {
+          "e_3_0.roll": "e_3_0.roll"
+        }
+      }
+    },
+    "eds": {
+      "entry_line": {
+        "name": "entry_line",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "328.872390098513"
+        },
+        "dgs": {
+          "end_track_y": {
+            "name": "end_track_y",
+            "measure": "track_y()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "end_track_z": {
+            "name": "end_track_z",
+            "measure": "track_z()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_0": {
+        "name": "e_0",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "-0.7853981633974483",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_1": {
+        "name": "e_1",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "180"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "line_roll_angle": {
+            "name": "line_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_2": {
+        "name": "e_2",
+        "Kind": "Loop",
+        "props": {
+          "speed": "50",
+          "angle": "3.9269908169872414",
+          "radius": "130",
+          "roll": "0",
+          "ke": "0"
+        },
+        "dgs": {
+          "loop_shape": {
+            "name": "loop_shape",
+            "measure": "curvature_proj()",
+            "smoothers": [
+              "curvature_lowpass(order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.3333333333333333,
+                "exponent": 1.0,
+                "limit": 3
+              }
+            },
+            "display_name": "shape"
+          },
+          "loop_curvature": {
+            "name": "loop_curvature",
+            "measure": "absolute_curvature_proj()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [
+              "borders(tb:0.5)"
+            ],
+            "criteria": {
+              "kind": "ContinuousValue",
+              "lookup": {
+                "factor": 49.999999999999936,
+                "exponent": 0.9999999999999997,
+                "limit": 3
+              }
+            },
+            "display_name": "curvature"
+          },
+          "loop_track_y": {
+            "name": "loop_track_y",
+            "measure": "track_proj_vel()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "loop_track_z": {
+            "name": "loop_track_z",
+            "measure": "track_proj_ang()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "loop_roll_angle": {
+            "name": "loop_roll_angle",
+            "measure": "roll_angle_p()",
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      },
+      "e_3_0": {
+        "name": "e_3_0",
+        "Kind": "Line",
+        "props": {
+          "speed": "50",
+          "length": "((abs(e_3_rolls[0])*50)/partial_roll_rate)",
+          "roll": "e_3_rolls[0]"
+        },
+        "dgs": {
+          "line_track_y": {
+            "name": "line_track_y",
+            "measure": "track_y()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_y"
+          },
+          "line_track_z": {
+            "name": "line_track_z",
+            "measure": "track_z()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "track_z"
+          },
+          "roll_rate": {
+            "name": "roll_rate",
+            "measure": "roll_rate()",
+            "smoothers": [
+              "lowpass(cutoff:0.5,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 0.2,
+                "exponent": 0.9999999999999998,
+                "limit": 3
+              }
+            },
+            "display_name": "roll_rate"
+          },
+          "end_roll_angle": {
+            "name": "end_roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
+            ],
+            "criteria": {
+              "kind": "Single",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 6
+              }
+            },
+            "display_name": "roll"
+          }
+        }
+      }
+    },
+    "box": {
+      "Kind": "RectangularBox",
+      "width": 1000,
+      "height": 1000,
+      "depth": 1000,
+      "distance": 200,
+      "floor": 100,
+      "right_box": null,
+      "left_box": null,
+      "top_box": null,
+      "btm_box": null,
+      "front_box": null,
+      "back_box": null
+    }
+  }
+}

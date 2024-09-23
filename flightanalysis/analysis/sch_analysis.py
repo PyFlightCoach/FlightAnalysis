@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Self, Union
 from json import load, dump
 from flightdata import Flight, State, Origin, Collection, NumpyEncoder
-from flightanalysis.definition import SchedDef, ScheduleInfo
+from flightanalysis.definition import SchedDef, ScheduleInfo, Heading, ManDef
 from flightanalysis import __version__
 from . import manoeuvre_analysis as analysis
 from loguru import logger
@@ -16,10 +16,6 @@ class ScheduleAnalysis(Collection):
     VType = analysis.Analysis
     uid = "name"
 
-    def __init__(self, data: list[analysis.Analysis], sinfo: ScheduleInfo):
-        super().__init__(data)
-        self.sinfo = sinfo
-
     @staticmethod
     def from_fcj(
         fcj: Union[str | bytes, dict],
@@ -29,50 +25,66 @@ class ScheduleAnalysis(Collection):
         data = fcj if isinstance(fcj, dict) else load(open(fcj, "r"))
 
         flight = Flight.from_fc_json(data) if flight is None else flight
-        
+
         info = ScheduleInfo(*fcj["parameters"]["schedule"]).fcj_to_pfc()
         sdef = SchedDef.load(info)
         box = Origin.from_fcjson_parameters(data["parameters"])
 
         state = State.from_flight(flight, box)
-        
+
         state = state.splitter_labels(
             data["mans"], sdef.uids, t0=fcj["data"][0]["time"] / 1e6
         )
 
-        direction = -state.get_manoeuvre(sdef[0].uid)[0].direction()[0]
-
-        if "fcs_scores" in data and len(data["fcs_scores"]) > 0:
-            versions = [res["fa_version"] for res in data["fcs_scores"]]
-            ilatest = versions.index(max(versions))
+        heading = Heading.infer(state.get_manoeuvre(sdef[0].uid)[0].att.bearing()[0])
 
         mas = []
         for i, mdef in enumerate(sdef):
             st = state.get_manoeuvre(mdef.uid)
 
             if "fcs_scores" in data and len(data["fcs_scores"]) > 0:
-                df = pd.DataFrame(
-                    data["fcs_scores"][ilatest]["manresults"][i + 1]["els"]
+                st = st.label_els(
+                    list(data["fcs_scores"].values())[-1]["manresults"][i + 1]["els"]
                 )
-                st = st.splitter_labels(
-                    df.to_dict("records"), target_col="element"
-                ).str_replace_label(
-                    element=np.array(
-                        [
-                            ["_break", ""],
-                            ["_autorotation", ""],
-                            ["_recovery", ""],
-                            ["_nose_drop", ""],
-                        ]
-                    ),
-                )  ### This replaces the old snap and spin definition where break, autorotation and revocery were labelled seperately.
 
-            nma = analysis.Basic(i, mdef, st, direction)
+            nma = analysis.Basic(
+                i, mdef, st, mdef.info.start.direction.wind_swap_heading(heading), None
+            )
             if proceed:
                 nma = nma.proceed()
             mas.append(nma)
 
         return ScheduleAnalysis(mas, info)
+
+    @staticmethod
+    def parse_analysis_json(data: str | dict) -> ScheduleAnalysis:
+        if not isinstance(data, dict):
+            data = load(open(data, "r"))
+
+        sts = data["states"]["data"]
+        entry = Heading.infer(State(sts[data["mans"][0]["start"]]).att.bearing()[0])
+
+        mas = []
+        for man in data["mans"]:
+            mdef = ManDef.load(ScheduleInfo(**man["sinfo"]), man["name"])
+            if not data["isComp"]:
+                heading = Heading.infer(State(sts[man["start"]]).att.bearing()[0])
+            else:
+                heading = mdef.info.start.direction.wind_swap_heading(entry)
+
+            st = (
+                State.from_dict(sts[man["start"] : man["stop"]])
+                .label(manoeuvre=man["name"])
+                .label_els(list(man["history"].values())[-1]["els"])
+            )
+
+            mas.append(analysis.Basic(man["id"], mdef, st, heading, None))
+
+        return ScheduleAnalysis(mas)
+
+    def create_analysis_dict(self, **kwargs) -> dict:
+        pass
+
 
     def append_scores_to_fcj(self, file: Union[str, dict], ofile: str = None) -> dict:
         data = file if isinstance(file, dict) else load(open(file, "r"))
@@ -125,7 +137,7 @@ class ScheduleAnalysis(Collection):
         )
 
         return ScheduleAnalysis(
-            [analysis.Scored.from_dict(mad) for mad in madicts], self.sinfo
+            [analysis.Scored.from_dict(mad) for mad in madicts]
         )
 
     def optimize_alignment(self) -> Self:
@@ -139,7 +151,7 @@ class ScheduleAnalysis(Collection):
             delayed(parse_analyse_serialise)(mad) for mad in inmadicts
         )
         return ScheduleAnalysis(
-            [analysis.Scored.from_dict(mad) for mad in madicts], self.sinfo
+            [analysis.Scored.from_dict(mad) for mad in madicts]
         )
 
     def scores(self):

@@ -94,10 +94,12 @@ class ScheduleInfo:
         mds = []
         
         for i, (k, v) in enumerate(self.json_data().items()):
+            if isinstance(v, list):
+                v=v[0]
             mds.append(ManDetails(
-                v.info.short_name,
+                v['info']['short_name'],
                 i+1,
-                v.info.k
+                v['info']['k']
             ))
         return mds
 

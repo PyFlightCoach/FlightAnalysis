@@ -9,7 +9,7 @@ from flightanalysis.definition import (
 from typing import Callable
 from functools import partial
 import numpy as np
-from flightanalysis.box import Box
+from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.downgrade import DowgradeGroups
 from dataclasses import dataclass
 
@@ -81,6 +81,7 @@ class ManBuilder:
         maninfo,
         elmakers: list[Callable[[ManDef], ElDef]],
         elinedgs=None,
+        relax_back=False,
         **kwargs,
     ) -> ManDef:
         mps = self.mps.copy()
@@ -92,7 +93,13 @@ class ManBuilder:
                     mps[k].defaul = v
                 else:
                     mps.add(ManParm.parse(v, mps, k))
-        md = ManDef(maninfo, mps, ElDefs(), self.box)
+        
+        md = ManDef(
+            maninfo,
+            mps,
+            ElDefs(),
+            self.box.__class__(**dict(self.box.__dict__, relax_back=relax_back)),
+        )
 
         entry_line = self.line(force_name="entry_line", length=30)(md)
 

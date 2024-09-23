@@ -1,6 +1,4 @@
-from .positioning import Heading, Position, BoxLocation
-import numpy as np
-from geometry import Point, Transformation, Euler
+from .positioning import Position, BoxLocation
 from dataclasses import dataclass, field
 from typing import Tuple
 
@@ -19,8 +17,6 @@ class ManInfo:
     centred_els: list[Tuple[int, float]] = field(
         default_factory=lambda: []
     )  # element ids that should be centered
-
-
 
     def to_dict(self):
         return dict(

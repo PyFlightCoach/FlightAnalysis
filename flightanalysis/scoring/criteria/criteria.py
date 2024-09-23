@@ -26,6 +26,8 @@ class Criteria:
     
     @staticmethod
     def from_dict(data: dict):
+        if data is None:
+            return None
         data = data.copy()
         name = data.pop('kind')
         

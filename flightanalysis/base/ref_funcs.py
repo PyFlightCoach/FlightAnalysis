@@ -2,16 +2,17 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Callable, Any
 from flightdata.base import Collection
+import numpy as np
 
 
 @dataclass
 class RefFunc:
     """A RefFunc is a reference to a function with some predefined keyword arguments.
     It serialises to a string that can be used to recreate the reference and
-    argument presets by looking it up in an RFuncBuilders object.
+    argument presets by looking it up in an instance of RFuncBuilders.
     When the RefFunc is called it will call the referenced function with
     the argument presets. Additional arguments can be passed to the call.
-    will error if arguments are duplicated
+    will error if arguments are duplicated.
     """
 
     name: str
@@ -36,7 +37,7 @@ class RefFunc:
         return RefFunc(
             name,
             funcs[name],
-            dict([a.split(":") for a in sargs]),
+            {k: float(v) for k, v in dict([a.split(":") for a in sargs]).items()},
         )
 
 
@@ -52,6 +53,14 @@ class RFuncBuilders:
         self.funcs[func.__name__] = func
         return func
 
+    def parse(self, sfuncs: list[str] | str):
+        if isinstance(sfuncs, str):
+            return RefFunc.from_str(self.funcs, sfuncs)
+        elif np.ndim(sfuncs)>0:
+            return RefFuncs([RefFunc.from_str(self.funcs, sf) for sf in sfuncs])
+        else:
+            return None
+
 
 class RefFuncs(Collection):
     VType = RefFunc
@@ -60,6 +69,4 @@ class RefFuncs(Collection):
     def to_list(self):
         return [str(rf) for rf in self]
     
-    @staticmethod
-    def parse(builders: RFuncBuilders, funcs: list[str]):
-        return RefFuncs([RefFunc.from_str(builders.funcs, f) for f in funcs])
+    

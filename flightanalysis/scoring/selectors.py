@@ -30,6 +30,16 @@ def one(fl: State, vs: npt.NDArray, i: int):
 
 
 @selectors.add
+def borders(fl: State, vs: npt.NDArray, tb: float):
+    """return the central portion of the array"""
+    i0, i1 = fl.data.index.get_indexer([fl.data.index[0] + tb, fl.data.index[-1] - tb], 'nearest')
+    if i0 < i1:
+        return np.arange(i0, i1).astype(int)
+    else:
+        return np.array([]).astype(int)
+
+
+@selectors.add
 def after_slowdown(fl: State, vs: npt.NDArray, sp: float):
     """return all the indices after the speed has dropped below min_speed"""
     id = np.argmax(abs(fl.vel.x) < sp) 

@@ -1,14 +1,15 @@
 from __future__ import annotations
 from flightdata import Collection, State
 from .criteria import Bounded, Continuous, Single, Criteria, ContinuousValue
-from .measurement import Measurement
+from .measurements.measurement import Measurement
 from .visibility import visibility
 from .results import Results, Result
-from typing import Callable
-from geometry import Coord
 from dataclasses import dataclass
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
+from .measurements import measures
+from .smoothing import smoothers
+from .selectors import selectors
 
 
 @dataclass
@@ -21,11 +22,9 @@ class DownGrade:
     """
 
     name: str
-    measure: Callable[
-        [State, State, Coord], Measurement
-    ]  # gets the flown and template measurements
-    smoothers: RefFuncs  # smoothes the measurement
-    selectors: RefFuncs  # selects the values to downgrade
+    measure: RefFunc  # measure the flight data
+    smoothers: RefFuncs  # smooth the measurement
+    selectors: RefFuncs  # select the values to downgrade
     criteria: (
         Bounded | Continuous | Single
     )  # looks up the downgrades based on the errors
@@ -44,15 +43,35 @@ class DownGrade:
     def to_dict(self):
         return dict(
             name=self.name,
-            measure=self.measure.__name__,
+            measure=str(self.measure),
             smoothers=self.smoothers.to_list(),
             selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(),
             display_name=self.display_name,
         )
 
-    def __call__(self, el, fl: State, tp: State, limits=True) -> Result:
-        measurement: Measurement = self.measure(fl, tp)
+    @staticmethod
+    def from_dict(data):
+        return DownGrade(
+            name=data["name"],
+            measure=measures.parse(data["measure"]),
+            smoothers=smoothers.parse(data["smoothers"]),
+            selectors=selectors.parse(data["selectors"]),
+            criteria=Criteria.from_dict(data["criteria"]),
+            display_name=data["display_name"],
+        )
+
+    def __call__(
+        self,
+        el,
+        fl: State,
+        tp: State,
+        limits=True,
+        mkwargs: dict = None,
+        smkwargs: dict = None,
+        sekwargs: dict = None,
+    ) -> Result:
+        measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
 
         sample = visibility(
             self.criteria.prepare(measurement.value),
@@ -62,12 +81,12 @@ class DownGrade:
         )
 
         for sm in self.smoothers:
-            sample = sm(sample, el)
+            sample = sm(sample, el, **(smkwargs or {}))
 
         ids = np.arange(len(fl))
 
         for s in self.selectors:
-            sub_ids = s(fl, sample)
+            sub_ids = s(fl, sample, **(sekwargs or {}))
             fl = State(fl.data.iloc[ids])
             sample = sample[sub_ids]
             ids = ids[sub_ids]
@@ -85,7 +104,7 @@ class DownGrade:
 def dg(
     name: str,
     display_name: str,
-    measure: Callable,
+    measure: RefFunc,
     smoothers: RefFunc | list[RefFunc],
     selectors: RefFunc | list[RefFunc],
     criteria: Criteria,
@@ -99,12 +118,23 @@ class DownGrades(Collection):
     VType = DownGrade
     uid = "name"
 
-    def apply(self, el, fl, tp, limits=True) -> Results:
-        return Results(el.uid, [dg(el, fl, tp, limits) for dg in self])
+    def apply(
+        self,
+        el: str | any,
+        fl,
+        tp,
+        limits=True,
+        mkwargs: dict = None,
+        smkwargs: dict = None,
+        sekwargs: dict = None,
+    ) -> Results:
+        return Results(
+            el if isinstance(el, str) else el.uid,
+            [dg(el, fl, tp, limits, mkwargs, smkwargs, sekwargs) for dg in self],
+        )
 
     def to_list(self):
         return [dg.name for dg in self]
-
 
 
 @dataclass

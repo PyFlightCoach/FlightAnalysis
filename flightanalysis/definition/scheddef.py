@@ -74,7 +74,7 @@ class SchedDef(Collection):
 
         meids = [sti.data.columns.get_loc(l) for l in ["manoeuvre", "element"]]
 
-        sts = [sti.get_manoeuvre(0)]
+        sts = [sti.get_manoeuvre(mans[0])]
 
         for mo, m in zip(mans[:-1], mans[1:]):
             st = sti.get_manoeuvre(m)
@@ -90,12 +90,12 @@ class SchedDef(Collection):
 
         return State.stack(sts, 0)
 
-    def create_fcj(self, sname: str, path: str, wind=1, scale=1, kind="f3a"):
-        sched, template = self.create_template(170, 1)
+    def create_fcj(self, sname: str, path: str, wind=Heading.RIGHT, scale=1, kind="f3a"):
+        sched, template = self.create_template(170, wind)
         template = State.stack(
             [
                 template,
-                Line(30, 100, uid="entry_line")
+                Line("entry_line", 30, 100)
                 .create_template(template[-1])
                 .label(manoeuvre="landing"),
             ]
@@ -103,7 +103,7 @@ class SchedDef(Collection):
 
         if not scale == 1:
             template = template.scale(scale)
-        if wind == -1:
+        if wind == Heading.LEFT:
             template = template.mirror_zy()
 
         fcj = self.label_exit_lines(template).create_fc_json(
@@ -114,7 +114,7 @@ class SchedDef(Collection):
             dump(fcj, f)
 
     def create_fcjs(self, sname, folder, kind="F3A"):
-        winds = [-1, -1, 1, 1]
+        winds = [Heading.LEFT, Heading.LEFT, Heading.RIGHT, Heading.RIGHT]
         distances = [170, 150, 170, 150]
 
         for wind, distance in zip(winds, distances):

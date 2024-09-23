@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from typing import Annotated
 
-
+3
 @dataclass
 class Basic(Analysis):
     mdef: ManDef | ManOption
@@ -57,17 +57,26 @@ class Basic(Analysis):
             .add_lines()
             .match_intention(State.from_transform(itrans), self.flown)
         )
-        mdef = ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds)
+        mdef = ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds, mdef.box)
         corr = mdef.create().add_lines()
         return Complete(
             self.id,
             mdef,
             self.flown,
-            self.direction,
+            self.entry,
+            self.exit,
             man,
             tp,
             corr,
             corr.create_template(itrans, self.flown),
+        )
+
+    def to_dict(self) -> dict:
+        return dict(
+            mdef=self.mdef.to_dict(),
+            flown=self.flown.to_dict(),
+            entry=self.entry.name if self.entry else None,
+            exit=self.exit.name if self.exit else None,
         )
 
     @classmethod
@@ -76,7 +85,8 @@ class Basic(Analysis):
             -1,
             ManDef.from_dict(data["mdef"]),
             State.from_dict(data["flown"]),
-            data["direction"],
+            Heading[data["entry"]] if data["entry"] else None,
+            Heading[data["exit"]] if data["exit"] else None,
         )
 
     def create_itrans(self) -> g.Transformation:
@@ -118,7 +128,8 @@ class Basic(Analysis):
                     self.id,
                     mdef,
                     self.flown,
-                    self.direction,
+                    self.entry,
+                    self.exit,
                     man,
                     man.create_template(itrans),
                 )
@@ -131,7 +142,8 @@ class Basic(Analysis):
             name=self.name,
             id=self.id,
             data=self.flown._create_json_data().to_dict("records"),
-            direction=self.direction,
+            entry=self.entry.name,
+            exit=self.exit.name,
         )
         return data
 

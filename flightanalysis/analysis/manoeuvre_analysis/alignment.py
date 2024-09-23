@@ -42,6 +42,14 @@ class Alignment(Basic):
             self = new
         return new
 
+    def to_dict(self):
+        return dict(
+            **super().to_dict(),
+            manoeuvre=self.manoeuvre.to_dict(),
+            template=self.template.to_dict(),
+        )
+
+
     @staticmethod
     def from_dict(data: dict, fallback=True):
         ia = Basic.from_dict(data)
@@ -77,8 +85,8 @@ class Alignment(Basic):
 
     def update(self, aligned: State) -> Alignment:
         man, tp = self.manoeuvre.match_intention(self.template[0], aligned)
-        mdef = ManDef(self.mdef.info, self.mdef.mps.update_defaults(man), self.mdef.eds)
-        return Alignment(self.id, mdef, aligned, self.direction, man, tp)
+        mdef = ManDef(self.mdef.info, self.mdef.mps.update_defaults(man), self.mdef.eds, self.mdef.box)
+        return Alignment(self.id, mdef, aligned, self.entry, self.exit, man, tp)
 
     def _proceed(self) -> Complete:
         if "element" in self.flown.data.columns:
@@ -87,7 +95,8 @@ class Alignment(Basic):
                 self.id,
                 self.mdef,
                 self.flown,
-                self.direction,
+                self.entry,
+                self.exit,
                 self.manoeuvre,
                 self.template,
                 correction,

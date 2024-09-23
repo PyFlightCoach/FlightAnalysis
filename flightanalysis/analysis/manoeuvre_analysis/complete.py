@@ -1,29 +1,37 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from ..el_analysis import ElementAnalysis
-from flightdata import State
-from flightanalysis.definition import ManDef, ElDef
-from flightanalysis.manoeuvre import Manoeuvre
-from flightanalysis.scoring import (
-    Results,
-    ManoeuvreResults,
-    Measurement,
-    ElementsResults,
-    Result,
-)
-from flightanalysis.definition.maninfo import Position
-from flightanalysis.elements import Element
+
 import geometry as g
 import numpy as np
-from .basic import Basic
-from .alignment import Alignment
+from flightdata import State
 from loguru import logger
+
+from flightanalysis.definition import ElDef, ManDef
+from flightanalysis.elements import Element
+from flightanalysis.manoeuvre import Manoeuvre
+from flightanalysis.scoring import (
+    ElementsResults,
+    ManoeuvreResults,
+    Results,
+)
+
+from ..el_analysis import ElementAnalysis
+from .alignment import Alignment
+from .basic import Basic
 
 
 @dataclass
 class Complete(Alignment):
     corrected: Manoeuvre
     corrected_template: State
+
+    def to_dict(self):
+        return dict(
+            **super().to_dict(),
+            corrected=self.corrected.to_dict(),
+            corrected_template=self.corrected_template.to_dict(),
+        )
 
     @staticmethod
     def from_dict(data: dict, fallback=True):
@@ -193,11 +201,7 @@ class Complete(Alignment):
                 f"pass {count}, {len(padjusted)} elements adjusted:\n{padjusted}"
             )
 
-        return Basic(self.id, self.mdef, fl, self.direction).proceed()
-
-    def box(self) -> Results:
-        pass
-
+        return Basic(self.id, self.mdef, fl, self.entry, self.exit).proceed()
 
     def intra(self):
         return ElementsResults([ea.intra_score() for ea in self])
@@ -206,22 +210,10 @@ class Complete(Alignment):
         return self.mdef.mps.collect(self.manoeuvre, self.template)
 
     def positioning(self):
-        pres = Results("positioning")
-        if self.mdef.info.position == Position.CENTRE:
-            pres.add(self.centre())
-        tp_width = max(self.corrected_template.y) - min(self.corrected_template.y)
-        if tp_width < 10:
-            pres.add(self.distance())
-        tb = self.top_box()
-        if tb.total > 0:
-            pres.add(self.top_box())
-        sb = self.side_box()
-        if sb.total > 0:
-            pres.add(self.side_box())
-        return pres
+        return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
     def plot_3d(self, **kwargs):
-        from flightplotting import plotsec, plotdtw
+        from flightplotting import plotdtw, plotsec
 
         fig = plotdtw(self.flown, self.flown.data.element.unique())
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)

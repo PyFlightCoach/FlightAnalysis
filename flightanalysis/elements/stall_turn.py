@@ -5,7 +5,7 @@ from flightdata import State
 from .element import Element
 from dataclasses import dataclass
 from typing import ClassVar
-from flightanalysis.scoring.measurement import Measurement
+from flightanalysis.scoring.measurements.measurement import Measurement
 
 @dataclass
 class StallTurn(Element):

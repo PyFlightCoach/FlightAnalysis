@@ -12,7 +12,6 @@ elements collection.
 """
 
 from __future__ import annotations
-import numpy as np
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo, Heading
@@ -21,8 +20,9 @@ from flightdata import State
 import geometry as g
 from . import ManParms, ElDefs, Position, Direction
 from dataclasses import dataclass
-from flightanalysis.box import Box
+from flightanalysis.scoring.box import Box
 from loguru import logger
+
 
 @dataclass
 class ManDef:
@@ -45,9 +45,12 @@ class ManDef:
     def uid(self):
         return self.info.short_name
 
-    def to_dict(self, dgs=False) -> dict:
+    def to_dict(self, dgs=True) -> dict:
         return dict(
-            info=self.info.to_dict(), mps=self.mps.to_dict(), eds=self.eds.to_dict(dgs)
+            info=self.info.to_dict(),
+            mps=self.mps.to_dict(),
+            eds=self.eds.to_dict(dgs),
+            box=self.box.to_dict(),
         )
 
     @staticmethod
@@ -71,7 +74,8 @@ class ManDef:
             info = ManInfo.from_dict(data["info"])
             mps = ManParms.from_dict(data["mps"])
             eds = ElDefs.from_dict(data["eds"], mps)
-            return ManDef(info, mps, eds)
+            box = Box.from_dict(data["box"])
+            return ManDef(info, mps, eds, box)
 
     def guess_ipos(self, target_depth: float, heading: Heading) -> g.Transformation:
         gpy = g.PY(target_depth)
@@ -80,8 +84,8 @@ class ManDef:
                 Position.CENTRE: {
                     Heading.IN: 0.0,
                     Heading.OUT: 0.0,
-                    Heading.LEFT: self.box.right(gpy)[0],
-                    Heading.RIGHT: self.box.left(gpy)[0],
+                    Heading.LEFT: self.box.right(gpy)[1][0],
+                    Heading.RIGHT: self.box.left(gpy)[1][0],
                 }[heading],
                 Position.END: 0.0,
             }[self.info.position],
@@ -91,8 +95,8 @@ class ManDef:
                 Heading.LEFT: target_depth,
                 Heading.RIGHT: target_depth,
             }[heading],
-            z=self.box.bottom(gpy)[0] * (1 - self.info.start.height.value)
-            + self.info.start.height.value * self.box.top(gpy)[0],
+            z=-self.box.bottom(gpy)[1][0] * (1 - self.info.start.height.value)
+            - self.info.start.height.value * self.box.top(gpy)[1][0]
         )
 
     def initial_rotation(self, heading: Heading) -> g.Quaternion:
@@ -127,7 +131,9 @@ class ManDef:
         )
 
         template = man.create_template(
-            State.from_transform(g.Transformation(g.Euler(self.info.start.orientation.value, 0, 0)))
+            State.from_transform(
+                g.Transformation(g.Euler(self.info.start.orientation.value, 0, 0))
+            )
         )
 
         if self.info.start.direction == Direction.CROSS:
@@ -138,27 +144,28 @@ class ManDef:
             if self.info.position == Position.CENTRE:
                 if len(self.info.centre_points) > 0:
                     xoffset = (
-                        man.elements[self.info.centre_points[0]-1]
+                        man.elements[self.info.centre_points[0] - 1]
                         .get_data(template)
                         .pos.x[0]
                     )
                 elif len(self.info.centred_els) > 0:
                     ce, fac = self.info.centred_els[0]
-                    _x = man.elements[ce-1].get_data(template).pos.x
+                    _x = man.elements[ce - 1].get_data(template).pos.x
                     xoffset = _x[int(len(_x) * fac)]
                 else:
                     xoffset = -(max(template.pos.x) + min(template.pos.x)) / 2
-                                
+
             else:
                 xoffset = max(template.pos.x) - self.box.right(g.PY(itrans.pos.y[0]))[0]
 
-            logger.debug(f"{self.info.position} {heading}, ipos: {int(itrans.pos.x[0])}, Xoff: {int(xoffset)}, ")
+            logger.debug(
+                f"{self.info.position} {heading}, ipos: {int(itrans.pos.x[0])}, Xoff: {int(xoffset)}, "
+            )
 
             if heading == Heading.RIGHT:
                 return max(-itrans.pos.x[0] - xoffset, 10)
             else:
                 return max(itrans.pos.x[0] - xoffset, 10)
-   
 
     def fit_box(
         self,
@@ -177,9 +184,9 @@ class ManDef:
             uid=self.info.short_name,
         )
 
-    def plot(self):
-        itrans = self.info.initial_transform(170, 1)
-        man = self.create(itrans)
+    def plot(self, depth=170, heading = Heading.RIGHT):
+        itrans = self.guess_itrans(depth, heading)
+        man = self.create()
         template = man.create_template(itrans)
         from flightplotting import plotsec, plotdtw
 
