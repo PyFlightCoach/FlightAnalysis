@@ -59,6 +59,7 @@ def curvature_lowpass(data, el, order):
 
 @smoothers.add
 def rollrate_lowpass(data, el, order):
+
     return filtfilt(
         *butter(
             int(order),
@@ -70,6 +71,7 @@ def rollrate_lowpass(data, el, order):
         data,
         padlen=len(data) - 1,
     )
+
 
 def _soft_end(data, el, width):
     outd = data.copy()

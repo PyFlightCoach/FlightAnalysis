@@ -7,6 +7,7 @@ from loguru import logger
 from .basic import Basic
 from flightanalysis.definition import ManDef, ScheduleInfo
 from ..el_analysis import ElementAnalysis
+import traceback
 
 
 @dataclass
@@ -32,11 +33,14 @@ class Alignment(Basic):
             self = self.downgrade()
         new = self
         while self.__class__.__name__ != "Scored":
-            new = (
-                self.run(optimise_aligment)
-                if isinstance(self, Complete)
-                else self.run()
-            )
+            try:
+                new = (
+                    self.run(optimise_aligment)
+                    if isinstance(self, Complete)
+                    else self.run()
+                )
+            except Exception as e:
+                logger.error(traceback.format_exc())    
             if new.__class__.__name__ == self.__class__.__name__:
                 break
             self = new
