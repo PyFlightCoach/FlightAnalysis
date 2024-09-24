@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from typing import Annotated
 
-3
+
 @dataclass
 class Basic(Analysis):
     mdef: ManDef | ManOption
@@ -23,8 +23,18 @@ class Basic(Analysis):
     def name(self):
         return self.mdef.uid
 
+
+    def to_analysis_dict(self) -> dict:
+        return dict(
+            id=self.id,
+            mdef=self.mdef.to_dict(),
+            flown=self.flown.to_dict(),
+            entry=self.entry.name if self.entry else None,
+            exit=self.exit.name if self.exit else None,
+        )
+
     def run_all(self, optimise_aligment=True, force=False) -> Scored:
-        """Run the analysis to the final stage, for the case where the elements have not been labelled"""
+        """Run the analysis to the final stage"""
         drs = [r._run(True) for r in self.run()]
 
         dr = drs[np.argmin([dr[0] for dr in drs])]
