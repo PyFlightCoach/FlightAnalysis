@@ -1,26 +1,26 @@
 import numpy as np
 
 from flightanalysis.definition import ManParm, ManParms
-from flightanalysis.builders.BAeAGlid.criteria import Glider
-from flightanalysis.builders.BAeAGlid.downgrades import dggrps
-from flightanalysis.builders.BAeAGlid.box import box
+from flightanalysis.builders.IAC.criteria import IAC
+from flightanalysis.builders.IAC.downgrades import dggrps
+from flightanalysis.builders.IAC.box import unlimited_box
 from ..elbuilders import line, loopmaker, rollmaker, spin, stallturn
 from ..manbuilder import ManBuilder
 
 
-glidmb = ManBuilder(
+iacmb = ManBuilder(
     ManParms(
         [
-            ManParm("speed", Glider.inter.speed, 45.0, "m/s"),
-            ManParm("loop_radius", Glider.inter.radius, 40.0, "m"),
-            ManParm("line_length", Glider.inter.length, 200.0, "m"),
-            ManParm("point_length", Glider.inter.length, 20.0, "m"),
-            ManParm("partial_roll_rate", Glider.inter.roll_rate, np.pi / 2, "rad/s"),
-            ManParm("full_roll_rate", Glider.inter.roll_rate, np.pi / 2, "rad/s"),
-            ManParm("snap_rate", Glider.inter.roll_rate, np.pi, "rad/s"),
-            ManParm("stallturn_rate", Glider.inter.roll_rate, np.pi/4, "rad/s"),
-            ManParm("spin_rate", Glider.inter.roll_rate, 1.7 * np.pi/4, "rad/s"),
-            ManParm("ee_pause", Glider.inter.length, 20.0, "m"),
+            ManParm("speed", IAC.inter.speed, 45.0, "m/s"),
+            ManParm("loop_radius", IAC.inter.radius, 40.0, "m"),
+            ManParm("line_length", IAC.inter.length, 200.0, "m"),
+            ManParm("point_length", IAC.inter.length, 20.0, "m"),
+            ManParm("partial_roll_rate", IAC.inter.roll_rate, np.pi / 2, "rad/s"),
+            ManParm("full_roll_rate", IAC.inter.roll_rate, np.pi / 2, "rad/s"),
+            ManParm("snap_rate", IAC.inter.roll_rate, np.pi, "rad/s"),
+            ManParm("stallturn_rate", IAC.inter.roll_rate, np.pi/4, "rad/s"),
+            ManParm("spin_rate", IAC.inter.roll_rate, 1.7 * np.pi/4, "rad/s"),
+            ManParm("ee_pause", IAC.inter.length, 20.0, "m"),
         ]
     ),
     dict(
@@ -105,6 +105,6 @@ glidmb = ManBuilder(
         ),
     ),
     dggrps,
-    Glider.inter,
-    box
+    IAC.inter,
+    unlimited_box
 )

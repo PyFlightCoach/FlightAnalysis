@@ -44,7 +44,7 @@ class ScheduleAnalysis(Collection):
 
             if "fcs_scores" in data and len(data["fcs_scores"]) > 0:
                 st = st.label_els(
-                    list(data["fcs_scores"].values())[-1]["manresults"][i + 1]["els"]
+                    list(data["fcs_scores"])[-1]["manresults"][i + 1]["els"]
                 )
 
             nma = analysis.Basic(
