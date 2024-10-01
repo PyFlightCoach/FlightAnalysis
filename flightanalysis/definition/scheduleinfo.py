@@ -26,7 +26,7 @@ def lookup(val, data):
 
 @dataclass
 class ManDetails:
-    name: str
+    name: str 
     id: int
     k: float
 

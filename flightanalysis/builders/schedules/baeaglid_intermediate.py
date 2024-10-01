@@ -10,12 +10,12 @@ from flightanalysis import (
     SchedDef,
 )
 from flightanalysis.builders.BAeAGlid.downgrades import dggrps
-from flightanalysis.builders.BAeAGlid.manbuilder import f3amb
+from flightanalysis.builders.BAeAGlid.manbuilder import glidmb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
 sdef = SchedDef(
     [
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Half Roll",
                 "hroll",
@@ -25,10 +25,10 @@ sdef = SchedDef(
                 end=BoxLocation(Height.TOP),
             ),
             [
-                centred(f3amb.roll(np.pi, padded=False)),
+                centred(glidmb.roll(np.pi, padded=False)),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Split S",
                 "S",
@@ -38,10 +38,10 @@ sdef = SchedDef(
                 end=BoxLocation(Height.BTM),
             ),
             [
-                f3amb.loop(np.pi),
+                glidmb.loop(np.pi),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Shark Fin",
                 "Sfin",
@@ -51,14 +51,14 @@ sdef = SchedDef(
                 end=BoxLocation(Height.BTM),
             ),
             [
-                f3amb.loop(np.pi/4),
-                f3amb.roll(np.pi),
-                f3amb.loop(3*np.pi/4),
-                f3amb.line(),
-                f3amb.loop(np.pi/2),
+                glidmb.loop(np.pi/4),
+                glidmb.roll(np.pi),
+                glidmb.loop(3*np.pi/4),
+                glidmb.line(),
+                glidmb.loop(np.pi/2),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Roll",
                 "roll",
@@ -68,10 +68,10 @@ sdef = SchedDef(
                 end=BoxLocation(Height.BTM),
             ),
             [
-                centred(f3amb.roll(np.pi*2, padded=False)),
+                centred(glidmb.roll(np.pi*2, padded=False)),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Half Cuban Eight",
                 "hCuban",
@@ -81,12 +81,12 @@ sdef = SchedDef(
                 end=BoxLocation(Height.BTM),
             ),
             [
-                f3amb.loop(5*np.pi/4),
-                f3amb.roll(np.pi),
-                f3amb.loop(np.pi/4),
+                glidmb.loop(5*np.pi/4),
+                glidmb.roll(np.pi),
+                glidmb.loop(np.pi/4),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Q Loop",
                 "qloop",
@@ -96,12 +96,12 @@ sdef = SchedDef(
                 end=BoxLocation(Height.MID),
             ),
             [
-                f3amb.loop(np.pi/4),
-                f3amb.line(),
-                centred(f3amb.loop(7*np.pi/4)),
+                glidmb.loop(np.pi/4),
+                glidmb.line(),
+                centred(glidmb.loop(7*np.pi/4)),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Stallturn",
                 "st",
@@ -111,14 +111,14 @@ sdef = SchedDef(
                 end=BoxLocation(Height.BTM),
             ),
             [
-                f3amb.loop(np.pi/2),
-                f3amb.line(),
-                f3amb.stallturn(),  
-                f3amb.line(),
-                f3amb.loop(np.pi/2),
+                glidmb.loop(np.pi/2),
+                glidmb.line(),
+                glidmb.stallturn(),  
+                glidmb.line(),
+                glidmb.loop(np.pi/2),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Humpty Bump",
                 "hb",
@@ -128,14 +128,14 @@ sdef = SchedDef(
                 end=BoxLocation(Height.BTM),
             ),
             [
-                f3amb.loop(np.pi/2),
-                f3amb.line(),
-                centred(f3amb.loop(-np.pi)),  
-                f3amb.line(),
-                f3amb.loop(np.pi/2),
+                glidmb.loop(np.pi/2),
+                glidmb.line(),
+                centred(glidmb.loop(-np.pi)),  
+                glidmb.line(),
+                glidmb.loop(np.pi/2),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Immelman",
                 "imm",
@@ -145,11 +145,11 @@ sdef = SchedDef(
                 end=BoxLocation(Height.TOP),
             ),
             [
-                f3amb.loop(np.pi),
-                f3amb.roll(np.pi, padded=False),
+                glidmb.loop(np.pi),
+                glidmb.roll(np.pi, padded=False),
             ],
         ),
-        f3amb.create(
+        glidmb.create(
             ManInfo(
                 "Half Cuban 2",
                 "hcub2",
@@ -159,10 +159,10 @@ sdef = SchedDef(
                 end=BoxLocation(Height.TOP),
             ),
             [
-                f3amb.loop(-np.pi/4),
-                f3amb.line(),
-                f3amb.loop(5*np.pi/4),
-                f3amb.roll(np.pi, padded=False),
+                glidmb.loop(-np.pi/4),
+                glidmb.line(),
+                glidmb.loop(5*np.pi/4),
+                glidmb.roll(np.pi, padded=False),
             ],
         ),
     ]
