@@ -79,10 +79,10 @@ class Box:
         raise NotImplementedError
 
     def front(self, p: g.Point) -> T:
-        return g.PY(-1), self.distance - p.y
+        return g.PY(-1), p.y - self.distance
 
     def back(self, p: g.Point) -> T:
-        return g.PY(1), p.y - self.distance - self.depth
+        return g.PY(1), self.distance + self.depth - p.y
 
     def score(self, info: ManInfo, fl: State, tp: State):
         res = Results("positioning")

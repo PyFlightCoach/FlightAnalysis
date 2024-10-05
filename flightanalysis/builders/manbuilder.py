@@ -57,14 +57,7 @@ class ManBuilder:
         def append_el(md: ManDef, **kwargs) -> ElDefs:
             full_kwargs = {}
             for k, a in kwargs.items():
-                if isinstance(a, str) or isinstance(a, Opp):
-                    try:
-                        a = ManParm.parse(
-                            str(a), md.mps
-                        )  # serialise and parse again to make sure its coming from this mandef
-                    except Exception:
-                        pass
-                full_kwargs[k] = a
+                full_kwargs[k] = ManParm.s_parse(a, md.mps)
 
             eds, mps = self.mpmaps[kind]["func"](
                 force_name if force_name else md.eds.get_new_name(),

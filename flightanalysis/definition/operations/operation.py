@@ -4,7 +4,7 @@ from flightdata import Collection, State
 from uuid import uuid1
 from ast import literal_eval
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Any
 
 
 @dataclass
@@ -32,6 +32,9 @@ class Opp:
 
     def __abs__(self) -> FunOpp:
         return FunOpp(self.name, self, "abs")
+
+    def sign(self) -> FunOpp:
+        return FunOpp(self.name, self, "sign")
 
     def __add__(self, other) -> MathOpp:
         return MathOpp(self.name, self, other, "+")
@@ -65,6 +68,7 @@ class Opp:
 
     def __getitem__(self, i) -> ItemOpp:
         return ItemOpp(self.name, self, i)
+
 
     @staticmethod
     def parse(inp, coll:Collection | Callable, name=None):

@@ -1,7 +1,7 @@
 from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm, ManParms
 from flightanalysis.elements import Line, Loop, StallTurn, Snap, Spin
 from flightanalysis.definition.collectors import Collectors
-from flightanalysis.definition import ItemOpp
+from flightanalysis.definition import ItemOpp, Opp
 from numbers import Number
 import numpy as np
 
@@ -120,9 +120,13 @@ def roll_combo(
     and pauses between them if mode==f3a it does not create pauses when roll direction is reversed
     """
     eds = ElDefs()
-    rolltypes = parse_rolltypes(rolltypes, len(rolls.value))
 
-    for i, r in enumerate(rolls.value):
+    rvs = [r.a.value[r.item] for r in rolls] if isinstance(rolls, list) else rolls.value
+    
+
+    rolltypes = parse_rolltypes(rolltypes, len(rvs))
+
+    for i, r in enumerate(rvs):
         if rolltypes[i] == "r":
             eds.add(
                 roll(
@@ -149,8 +153,8 @@ def roll_combo(
                 )[0]
             )
 
-        if i < rolls.n - 1 and (
-            mode == "imac" or np.sign(r) == np.sign(rolls.value[i + 1])
+        if i < len(rvs) - 1 and (
+            mode == "imac" or np.sign(r) == np.sign(rvs[i + 1])
         ):
             eds.add(line(f"{name}_{i+1}_pause", speed, pause_length, dggrps, Inter))
 
@@ -275,7 +279,8 @@ def loopmaker(
     """This will create a set of ElDefs to represent a series of loops and the pads at the ends if padded==True."""
 
     ke = 0 if not ke else np.pi / 2
-    rollangle = angle if rollangle is None else rollangle
+    sign = angle.sign() if isinstance(angle, Opp) else np.sign(angle)
+    rollangle = angle if rollangle is None else rollangle * sign
 
     if rolls == 0:
         return loop(name, speed, radius, angle, ke, dggrps, Inter)
@@ -302,11 +307,11 @@ def loopmaker(
     rolltypes = parse_rolltypes(rolltypes, len(rvs))
 
     angle = ManParm.parse(angle, mps)
-
+    
     if not rollangle == angle:
         eds.add(
             loop(
-                f"{name}_pad1", speed, internal_rad, (angle - rollangle) / 2, ke, dggrps, Inter
+                f"{name}_pad1", speed, internal_rad, sign * (abs(angle) - abs(rollangle)) / 2, ke, dggrps, Inter
             )[0]
         )
 
@@ -316,12 +321,12 @@ def loopmaker(
         else:
             has_pause = np.concatenate([np.full(len(rvs) - 1, True), np.full(1, False)])
 
-        pause_angle = pause_length / internal_rad
+        pause_angle = sign * pause_length / internal_rad
 
         if np.sum(has_pause) == 0:
             remaining_rollangle = rollangle
         else:
-            remaining_rollangle = rollangle - pause_angle * np.sum(has_pause)
+            remaining_rollangle = sign * (abs(rollangle) - abs(pause_angle) * np.sum(has_pause))
 
         only_rolls = []
         for i, rt in enumerate(rolltypes):
