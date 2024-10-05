@@ -25,7 +25,7 @@ class TriangularBox(Box):
         return g.PX(-1), -self.width / 2 - np.arctan2(p.x, p.y)
 
     def left(self, p: g.Point):
-        return g.PX(-1), p.x - p.y * np.tan(self.width / 2)
+        return g.PX(-1), p.y * np.tan(self.width / 2) - p.x
 
     def bottom(self, p: g.Point):
         return g.PZ(-1), p.z - p.y * np.tan(self.floor)

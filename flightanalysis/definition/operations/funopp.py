@@ -9,13 +9,14 @@ from typing import Callable
 @dataclass
 class FunOpp(Opp):
     """This class facilitates various functions that operate on Values and their serialisation"""
-    funs = ["abs"]
+    funs = ["abs", "sign"]
     a: Opp | Number
     opp: str
 
     def __call__(self, mps, **kwargs):
         return {
-            'abs': abs(self.get_vf(self.a)(mps, **kwargs))
+            'abs': abs(self.get_vf(self.a)(mps, **kwargs)),
+            'sign': 1 if self.get_vf(self.a)(mps, **kwargs)>0 else -1
         }[self.opp]
     
     def __str__(self):

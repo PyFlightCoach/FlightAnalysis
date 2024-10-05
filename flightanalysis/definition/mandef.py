@@ -95,8 +95,8 @@ class ManDef:
                 Heading.LEFT: target_depth,
                 Heading.RIGHT: target_depth,
             }[heading],
-            z=-self.box.bottom(gpy)[1][0] * (1 - self.info.start.height.value)
-            - self.info.start.height.value * self.box.top(gpy)[1][0]
+            z=self.box.bottom(gpy)[1][0] * (self.info.start.height.value - 1)
+            + self.info.start.height.value * self.box.top(gpy)[1][0]
         )
 
     def initial_rotation(self, heading: Heading) -> g.Quaternion:
@@ -144,9 +144,9 @@ class ManDef:
             if self.info.position == Position.CENTRE:
                 if len(self.info.centre_points) > 0:
                     xoffset = (
-                        man.elements[self.info.centre_points[0] - 1]
+                        man.elements[self.info.centre_points[0] - 2]
                         .get_data(template)
-                        .pos.x[0]
+                        .pos.x[-1]
                     )
                 elif len(self.info.centred_els) > 0:
                     ce, fac = self.info.centred_els[0]
@@ -156,7 +156,7 @@ class ManDef:
                     xoffset = -(max(template.pos.x) + min(template.pos.x)) / 2
 
             else:
-                xoffset = max(template.pos.x) - self.box.right(g.PY(itrans.pos.y[0]))[0]
+                xoffset = max(template.pos.x) - self.box.right(g.PY(itrans.pos.y[0]))[1][0]
 
             logger.debug(
                 f"{self.info.position} {heading}, ipos: {int(itrans.pos.x[0])}, Xoff: {int(xoffset)}, "

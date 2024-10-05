@@ -36,7 +36,7 @@ class MathOpp(Opp):
                 bcount += 1 if l=="(" else 0
                 bcount -=1 if l==")" else 0
             
-                if bcount == 1 and l in oplu.keys():
+                if bcount == 1 and l in oplu.keys() and i>1:
                     return MathOpp(
                         name,
                         Opp.parse(inp[1:i], coll, name),

@@ -17,6 +17,7 @@ fcj_schedules = {
     'F23': 'f23',
     'P25': 'p25',
     'F25': 'f25',
+    'Unlimited 2024': 'unlimited2024',
 }
 
 def lookup(val, data):

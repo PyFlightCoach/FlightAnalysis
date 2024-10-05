@@ -41,13 +41,13 @@ class Snap(Element):
         ttot = self.length / self.speed
 
         _tpb = 2 * abs(self.break_roll) / rate
-        tpb = g.Time.uniform(_tpb, int(np.ceil(len(fl) * _tpb / ttot)) if fl else None)
+        tpb = g.Time.uniform(_tpb, int(np.ceil(len(fl) * _tpb / ttot)) if fl else None, 2)
 
         _trec = 2 * abs(self.recovery_roll) / rate
-        trec = g.Time.uniform(_trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None)
+        trec = g.Time.uniform(_trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None, 2)
 
         _tau = ttot * abs((abs(self.roll) - self.break_roll - self.recovery_roll) / self.roll)
-        tau = g.Time.uniform(_tau, len(fl) - len(tpb) - len(trec) + 2  if fl else None)
+        tau = g.Time.uniform(_tau, len(fl) - len(tpb) - len(trec) + 2  if fl else None, 2)
 
         pb = (
             istate.copy(vel=g.PX(self.speed))

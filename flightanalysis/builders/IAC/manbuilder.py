@@ -11,15 +11,15 @@ from ..manbuilder import ManBuilder
 iacmb = ManBuilder(
     ManParms(
         [
-            ManParm("speed", IAC.inter.speed, 45.0, "m/s"),
-            ManParm("loop_radius", IAC.inter.radius, 40.0, "m"),
-            ManParm("line_length", IAC.inter.length, 200.0, "m"),
+            ManParm("speed", IAC.inter.speed, 55.0, "m/s"),
+            ManParm("loop_radius", IAC.inter.radius, 70.0, "m"),
+            ManParm("line_length", IAC.inter.length, 180.0, "m"),
             ManParm("point_length", IAC.inter.length, 20.0, "m"),
-            ManParm("partial_roll_rate", IAC.inter.roll_rate, np.pi / 2, "rad/s"),
-            ManParm("full_roll_rate", IAC.inter.roll_rate, np.pi / 2, "rad/s"),
-            ManParm("snap_rate", IAC.inter.roll_rate, np.pi, "rad/s"),
+            ManParm("partial_roll_rate", IAC.inter.roll_rate, np.pi * 2, "rad/s"),
+            ManParm("full_roll_rate", IAC.inter.roll_rate, np.pi *2, "rad/s"),
+            ManParm("snap_rate", IAC.inter.roll_rate, np.pi*4, "rad/s"),
             ManParm("stallturn_rate", IAC.inter.roll_rate, np.pi/4, "rad/s"),
-            ManParm("spin_rate", IAC.inter.roll_rate, 1.7 * np.pi/4, "rad/s"),
+            ManParm("spin_rate", IAC.inter.roll_rate, np.pi/2, "rad/s"),
             ManParm("ee_pause", IAC.inter.length, 20.0, "m"),
         ]
     ),
@@ -37,7 +37,7 @@ iacmb = ManBuilder(
             args=["angle"],
             kwargs=dict(
                 speed=50,
-                radius=130,
+                radius=70,
                 rolls=0.0,
                 ke=False,
                 rollangle=None,

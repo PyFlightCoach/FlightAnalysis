@@ -14,7 +14,7 @@ from flightanalysis.scoring import (
 )
 from . import Collector, Collectors, Opp
 from dataclasses import dataclass, field
-from typing import Self
+from typing import Self, Any
 import pandas as pd
 from geometry import Point
 from numbers import Number
@@ -75,6 +75,18 @@ class ManParm(Opp):
             raise ValueError(
                 f"expected a Collector or Collectors not {collector.__class__.__name__}"
             )
+
+    @staticmethod
+    def s_parse(opp: str | Opp | list[str] | Any, mps: Collection):
+        try:
+            if isinstance(opp, Opp) or isinstance(opp, str):
+                opp = ManParm.parse(str(opp), mps)
+            elif isinstance(opp, list) and all([isinstance(o, str) for o in opp]):
+                opp = [ManParm.parse(str(op), mps) for op in opp]
+        except Exception:
+            pass
+        return opp
+
 
     def assign(self, id, collector):
         self.collectors.data[id] = collector
@@ -193,9 +205,10 @@ class ManParms(Collection):
         return ManParms([mp for mp in self if len(mp.collectors) > 0])
 
     def parse_rolls(
-        self, rolls: Union[Number, str, Opp], name: str, reversible: bool = True
+        self, rolls: Union[Number, str, Opp, list], name: str, reversible: bool = True
     ):
-        if isinstance(rolls, Opp):
+        
+        if isinstance(rolls, Opp) or (isinstance(rolls, list) and all([isinstance(r, Opp) for r in rolls])):
             return rolls
         elif isinstance(rolls, str):
             return self.add(
