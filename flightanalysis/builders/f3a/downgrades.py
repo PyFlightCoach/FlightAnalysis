@@ -33,7 +33,7 @@ dgs = DownGrades([
     dg("stallturn_roll_angle", "roll", measures.roll_angle_z(), None, None, F3A.intra.roll),
 
     dg("snap_spin_turns", "roll", measures.roll_angle_y(), None, sels.last(), F3A.intra.end_roll),# correct number of turns performed
-    dg("spin_alpha", "alpha", measures.spin_alpha(), None, sels.before_recovery(rot=np.pi/4), F3A.intra.pos_autorotation_alpha),#alpha > 7.5 until last 45 degrees of turn
+    dg("spin_alpha", "alpha", measures.spin_alpha_f3a(), None, sels.before_recovery(rot=np.pi/4), F3A.intra.pos_autorotation_alpha),#alpha > 7.5 until last 45 degrees of turn
     dg("drop_pitch_rate", "pitch", measures.pitch_down_rate(), None, sels.autorot_break(rot=np.radians(15)), F3A.intra.drop_pitch_rate ),#pitch down rate > 0.3 until 15 degree of turn
     dg("peak_drop_pitch_rate", "peak_pitch", measures.pitch_down_rate(), None, sels.autorot_break(rot=np.radians(15)), F3A.intra.peak_drop_pitch_rate ),#pitch down rate > 0.3 until 15 degree of turn
     dg("spin_track_y", "track_y", measures.track_proj_vel(), None, sels.last(), F3A.intra.end_track),
@@ -42,7 +42,7 @@ dgs = DownGrades([
 
     dg("break_pitch_rate", "break", measures.pitch_rate(), None, sels.autorot_break(rot=np.pi/4), F3A.intra.break_pitch_rate ),
     dg("peak_break_pitch_rate", "peak_break", measures.pitch_rate(), None, sels.autorot_break(rot=np.pi/4), F3A.intra.peak_break_pitch_rate ),
-    dg("snap_alpha", "alpha", measures.alpha(), None, sels.autorotation(brot=np.pi/4, rrot=np.pi/2), F3A.intra.autorotation_alpha),#alpha > 7.5
+    dg("snap_alpha", "alpha", measures.alpha_f3a(), None, sels.autorotation(brot=np.pi/4, rrot=np.pi/2), F3A.intra.autorotation_alpha),#alpha > 7.5
 
     dg("track_y_before_slowdown", "track_y", measures.track_y(), sms.lowpass(cutoff=4, order=5), sels.before_slowdown(sp=13), F3A.intra.track),
     dg("track_z_before_slowdown", "track_z", measures.track_z(), sms.lowpass(cutoff=4, order=5), sels.before_slowdown(sp=13), F3A.intra.track),

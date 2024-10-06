@@ -8,18 +8,24 @@ from ..elbuilders import line, loopmaker, rollmaker, spin, stallturn
 from ..manbuilder import ManBuilder
 
 
+_snap_rate = 3*np.pi
+_roll_rate = np.pi
+_spin_rate = np.pi / 2
+_speed = 60
+_break_angle = np.radians(20)
+
 iacmb = ManBuilder(
     ManParms(
         [
-            ManParm("speed", IAC.inter.speed, 55.0, "m/s"),
+            ManParm("speed", IAC.inter.speed, _speed, "m/s"),
             ManParm("loop_radius", IAC.inter.radius, 70.0, "m"),
             ManParm("line_length", IAC.inter.length, 180.0, "m"),
             ManParm("point_length", IAC.inter.length, 20.0, "m"),
-            ManParm("partial_roll_rate", IAC.inter.roll_rate, np.pi * 2, "rad/s"),
-            ManParm("full_roll_rate", IAC.inter.roll_rate, np.pi *2, "rad/s"),
-            ManParm("snap_rate", IAC.inter.roll_rate, np.pi*4, "rad/s"),
+            ManParm("partial_roll_rate", IAC.inter.roll_rate, _roll_rate, "rad/s"),
+            ManParm("full_roll_rate", IAC.inter.roll_rate, _roll_rate, "rad/s"),
+            ManParm("snap_rate", IAC.inter.roll_rate, _snap_rate, "rad/s"),
             ManParm("stallturn_rate", IAC.inter.roll_rate, np.pi/4, "rad/s"),
-            ManParm("spin_rate", IAC.inter.roll_rate, np.pi/2, "rad/s"),
+            ManParm("spin_rate", IAC.inter.roll_rate, _spin_rate, "rad/s"),
             ManParm("ee_pause", IAC.inter.length, 20.0, "m"),
         ]
     ),
@@ -28,7 +34,7 @@ iacmb = ManBuilder(
             func=line,
             args=[],
             kwargs=dict(
-                speed=50,
+                speed=_speed,
                 length=180,
             ),
         ),
@@ -36,7 +42,7 @@ iacmb = ManBuilder(
             func=loopmaker,
             args=["angle"],
             kwargs=dict(
-                speed=50,
+                speed=40,
                 radius=70,
                 rolls=0.0,
                 ke=False,
@@ -44,8 +50,8 @@ iacmb = ManBuilder(
                 rolltypes="roll",
                 reversible=True,
                 pause_length="point_length",
-                break_angle=np.radians(10),
-                snap_rate="snap_rate",
+                break_angle=_break_angle,
+                snap_rate=_snap_rate,
                 break_roll=np.pi / 4,
                 recovery_roll=np.pi / 2,
                 mode="imac",
@@ -57,14 +63,14 @@ iacmb = ManBuilder(
             kwargs=dict(
                 padded=True,
                 reversible=True,
-                speed=50,
+                speed=40,
                 line_length=180,
-                partial_rate="partial_roll_rate",
-                full_rate="full_roll_rate",
+                partial_rate=_roll_rate,
+                full_rate=_roll_rate,
                 pause_length="point_length",
                 mode="imac",
-                break_angle=np.radians(10),
-                snap_rate="snap_rate",
+                break_angle=_break_angle,
+                snap_rate=_snap_rate,
                 break_roll=np.pi / 4,
                 recovery_roll=np.pi / 2,
                 rolltypes="roll",
@@ -79,14 +85,14 @@ iacmb = ManBuilder(
             kwargs=dict(
                 padded=True,
                 reversible=True,
-                speed=50,
+                speed=40,
                 line_length=180,
-                partial_rate="partial_roll_rate",
-                full_rate="full_roll_rate",
+                partial_rate=_roll_rate,
+                full_rate=_roll_rate,
                 pause_length="point_length",
                 mode="imac",
-                break_angle=np.radians(10),
-                snap_rate="snap_rate",
+                break_angle=np.radians(20),
+                snap_rate=_snap_rate,
                 break_roll=np.pi / 4,
                 recovery_roll=np.pi / 2,
                 rolltypes="snap",
