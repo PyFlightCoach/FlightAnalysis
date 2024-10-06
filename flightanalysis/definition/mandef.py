@@ -18,7 +18,7 @@ from flightanalysis.definition.maninfo import ManInfo, Heading
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightdata import State
 import geometry as g
-from . import ManParms, ElDefs, Position, Direction
+from . import ManParms, ElDefs, Position, Direction, ElDef
 from dataclasses import dataclass
 from flightanalysis.scoring.box import Box
 from loguru import logger
@@ -193,6 +193,27 @@ class ManDef:
         fig = plotdtw(template, template.data.element.unique())
         fig = plotsec(template, fig=fig, nmodels=20, scale=3)
         return fig
+
+    def update_dgs(self, applicator: callable):
+        new_eds = []
+
+        
+        man = self.create()
+        tp = man.create_template(self.guess_itrans(170, Heading.RIGHT))
+
+        for i, ed in enumerate(self.eds):
+            new_eds.append(ElDef(
+                ed.name,
+                ed.Kind,
+                ed.props,
+                applicator(
+                    man.elements[i], 
+                    tp.get_element(ed.name), 
+                    self.eds[i-1].Kind if i > 0 else '', 
+                    self.eds[i+1].Kind if i < len(self.eds)-1 else ''
+                )
+            ))
+        return ManDef(self.info, self.mps, ElDefs(new_eds), self.box)
 
 
 from .manoption import ManOption  # noqa: E402

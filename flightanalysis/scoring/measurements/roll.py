@@ -44,7 +44,7 @@ def roll_angle_proj(fl: State, tp: State, proj: g.Point) -> Measurement:
 
 @m.add
 def roll_angle_p(fl: State, tp: State) -> Measurement:
-    return roll_angle_proj(fl, tp, Measurement.get_proj(tp))
+    return roll_angle_proj(fl, tp, Measurement.get_axial_direction(tp))
 
 @m.add
 def roll_angle_y(fl: State, tp: State) -> Measurement:

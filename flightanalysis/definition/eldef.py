@@ -73,9 +73,9 @@ class ElDef:
             ) from e
 
     @staticmethod
-    def build(Kind, name: str, props: list[Opp | Number], dgs: DownGrades):
+    def build(Kind, name: str, props: list[Opp | Number]):
         pnames = getfullargspec(Kind.__init__).args[2:]
-        ed = ElDef(name, Kind, {k: v for k, v in zip(pnames, props)}, dgs)
+        ed = ElDef(name, Kind, {k: v for k, v in zip(pnames, props)}, DownGrades([]))
 
         for key, value in zip(pnames, props):
             if isinstance(value, ManParm):

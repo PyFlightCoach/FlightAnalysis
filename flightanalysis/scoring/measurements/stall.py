@@ -33,7 +33,7 @@ def stallturn_width(fl: State, tp: State) -> Measurement:
 
 def estimate_alpha(mode: str, accz: float, vel: float) -> float:
     factor = dict(f3a=4.6, iac=112)
-    return -factor[mode] * accz / (np.abs(vel) ** 2)
+    return -factor[mode] * accz / (abs(vel) ** 2)
 
 
 def alpha(fl: State, tp: State, mode: str) -> Measurement:

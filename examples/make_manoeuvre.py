@@ -7,13 +7,13 @@ import numpy as np
 from flightanalysis.builders.manbuilder import r, MBTags, c45, centred
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.IAC.manbuilder import iacmb    
-from flightanalysis.builders.schedules.baeapower_unlimited2024 import sdef
+from flightanalysis.builders.schedules.baeapower_advanced2024 import sdef
 from flightdata import NumpyEncoder
 import plotly.graph_objects as go
 from json import dumps
 import geometry as g
 
-mdef: ManDef = sdef[0]
+mdef: ManDef = sdef[4]
 
 data = mdef.to_dict()
 print(dumps(data, indent=2, cls=NumpyEncoder))

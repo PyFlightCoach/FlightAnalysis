@@ -12,7 +12,8 @@ import numpy as np
 from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.downgrade import DowgradeGroups
 from dataclasses import dataclass
-
+from flightdata import State
+from flightanalysis.elements import Loop, Line, Snap, Spin, StallTurn
 
 class MBTags:
     CENTRE = 0
@@ -34,7 +35,7 @@ def r(turns):
 class ManBuilder:
     mps: ManParms
     mpmaps: dict[str, dict]
-    dggrps: DowgradeGroups
+    dg_applicator: Callable[[Loop | Line | Snap | Spin | StallTurn, State, str, str], list]
     Inter: object
     box: Box
 
@@ -61,7 +62,7 @@ class ManBuilder:
 
             eds, mps = self.mpmaps[kind]["func"](
                 force_name if force_name else md.eds.get_new_name(),
-                **dict(**full_kwargs, dggrps=self.dggrps, Inter=self.Inter),
+                **dict(**full_kwargs, Inter=self.Inter),
             )
             neds = md.eds.add(eds)
             md.mps.add(mps)
@@ -73,7 +74,6 @@ class ManBuilder:
         self,
         maninfo,
         elmakers: list[Callable[[ManDef], ElDef]],
-        elinedgs=None,
         relax_back=False,
         **kwargs,
     ) -> ManDef:
@@ -93,11 +93,8 @@ class ManBuilder:
             ElDefs(),
             self.box.__class__(**dict(self.box.__dict__, relax_back=relax_back)),
         )
-
-        entry_line = self.line(force_name="entry_line", length=30)(md)
-
-        entry_line.dgs = elinedgs if elinedgs else self.dggrps.exits
-
+        self.line(force_name="entry_line", length=30)(md)
+        
         for i, em in enumerate(elmakers, 1):
             if isinstance(em, int):
                 if em == MBTags.CENTRE:
@@ -125,4 +122,4 @@ class ManBuilder:
                             md.info.centred_els.append((ceid + c1, fac))
 
         md.mps = md.mps.remove_unused()
-        return md
+        return md.update_dgs(self.dg_applicator)

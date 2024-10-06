@@ -11,7 +11,7 @@ from flightanalysis import (
     Position,
     SchedDef,
 )
-from flightanalysis.builders.f3a.downgrades import dggrps
+
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
@@ -264,13 +264,6 @@ f25_def = SchedDef([
     )
 ])
 
-f25_def.spin.eds.entry_line.dgs = dggrps.sp_line_before
-f25_def.spin.eds.e_1_pad1.dgs = dggrps.sp_line_after
-f25_def.stall.eds.e_3_pad2.dgs = dggrps.st_line_before
-f25_def.stall.eds.e_5_pad1.dgs = dggrps.st_line_after
-
-f25_def.sFin.eds.e_3_0.dgs = dggrps.first_snap
-f25_def.sFin.eds.e_3_1.dgs = dggrps.rebound_snap
 
 
 if __name__ == "__main__":

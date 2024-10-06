@@ -28,8 +28,7 @@ class DownGrade:
     criteria: (
         Bounded | Continuous | Single
     )  # looks up the downgrades based on the errors
-    display_name: str
-
+    
     def rename(self, name: str):
         return DownGrade(
             name,
@@ -37,7 +36,6 @@ class DownGrade:
             self.smoothers,
             self.selectors,
             self.criteria,
-            self.display_name,
         )
 
     def to_dict(self):
@@ -47,7 +45,6 @@ class DownGrade:
             smoothers=self.smoothers.to_list(),
             selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(),
-            display_name=self.display_name,
         )
 
     @staticmethod
@@ -58,7 +55,6 @@ class DownGrade:
             smoothers=smoothers.parse(data["smoothers"]),
             selectors=selectors.parse(data["selectors"]),
             criteria=Criteria.from_dict(data["criteria"]),
-            display_name=data["display_name"],
         )
 
     def __call__(
@@ -86,32 +82,34 @@ class DownGrade:
         ids = np.arange(len(fl))
 
         for s in self.selectors:
-            sub_ids = s(fl, tp, sample, **(sekwargs or {}))
-            fl = State(fl.data.iloc[ids])
-            tp = State(tp.data.iloc[ids])
-            sample = sample[sub_ids]
+            sub_ids = s(
+                State(fl.data.iloc[ids]), 
+                State(tp.data.iloc[ids]), 
+                sample[ids], 
+                **(sekwargs or {})
+            )
+            
             ids = ids[sub_ids]
 
         return Result(
-            self.display_name,
+            self.name,
             measurement,
-            sample,
+            sample[ids],
             ids,
-            *self.criteria(sample, limits),
+            *self.criteria(sample[ids], limits),
             self.criteria,
         )
 
 
 def dg(
     name: str,
-    display_name: str,
     measure: RefFunc,
     smoothers: RefFunc | list[RefFunc],
     selectors: RefFunc | list[RefFunc],
     criteria: Criteria,
 ):
     return DownGrade(
-        name, measure, RefFuncs(smoothers), RefFuncs(selectors), criteria, display_name
+        name, measure, RefFuncs(smoothers), RefFuncs(selectors), criteria
     )
 
 
@@ -140,11 +138,22 @@ class DownGrades(Collection):
 
 @dataclass
 class DowgradeGroups:
-    exits: DownGrades
-    line: DownGrades
-    roll: DownGrades
-    loop: DownGrades
-    rolling_loop: DownGrades
+    entry_line: DownGrades
+    horizontal_line: DownGrades
+    inclined_line: DownGrades
+    entry_line_before_spin: DownGrades
+    line_before_spin: DownGrades
+    line_after_spin: DownGrades
+    line_before_stallturn: DownGrades
+    line_after_stallturn: DownGrades
+    horizontal_roll: DownGrades
+    inclined_roll: DownGrades
+    vplane_loop_exit_horiz: DownGrades
+    vplane_loop_exit_inclined: DownGrades
+    hplane_loop: DownGrades
+    rolling_vplane_loop_exit_horiz: DownGrades
+    rolling_vplane_loop_exit_inclined: DownGrades
+    rolling_hplane_loop: DownGrades
     snap: DownGrades
     spin: DownGrades
     stallturn: DownGrades
