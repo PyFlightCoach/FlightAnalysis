@@ -4691,7 +4691,7 @@
           },
           "snap_alpha": {
             "name": "snap_alpha",
-            "measure": "alpha()",
+            "measure": "alpha_f3a()",
             "smoothers": [],
             "selectors": [
               "autorotation(brot:0.7853981633974483,rrot:1.5707963267948966)"
@@ -5699,7 +5699,7 @@
           },
           "spin_alpha": {
             "name": "spin_alpha",
-            "measure": "spin_alpha()",
+            "measure": "spin_alpha_f3a()",
             "smoothers": [],
             "selectors": [
               "before_recovery(rot:0.7853981633974483)"
@@ -7867,7 +7867,7 @@
           },
           "snap_alpha": {
             "name": "snap_alpha",
-            "measure": "alpha()",
+            "measure": "alpha_f3a()",
             "smoothers": [],
             "selectors": [
               "autorotation(brot:0.7853981633974483,rrot:1.5707963267948966)"
@@ -7936,7 +7936,7 @@
           },
           "snap_alpha": {
             "name": "snap_alpha",
-            "measure": "alpha()",
+            "measure": "alpha_f3a()",
             "smoothers": [],
             "selectors": [
               "autorotation(brot:0.7853981633974483,rrot:1.5707963267948966)"
@@ -18024,7 +18024,7 @@
           },
           "snap_alpha": {
             "name": "snap_alpha",
-            "measure": "alpha()",
+            "measure": "alpha_f3a()",
             "smoothers": [],
             "selectors": [
               "autorotation(brot:0.7853981633974483,rrot:1.5707963267948966)"
@@ -20628,7 +20628,7 @@
           },
           "snap_alpha": {
             "name": "snap_alpha",
-            "measure": "alpha()",
+            "measure": "alpha_f3a()",
             "smoothers": [],
             "selectors": [
               "autorotation(brot:0.7853981633974483,rrot:1.5707963267948966)"

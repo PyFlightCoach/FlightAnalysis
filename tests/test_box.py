@@ -3,7 +3,7 @@ from flightanalysis.builders.f3a.box import box
 from pytest import approx
 import geometry as g
 import numpy as np
-
+from flightdata import State
 
 def test_box_top_rectangular():
     assert unlimited_box.top(g.PY(500))[1][0] == 1100
@@ -40,3 +40,10 @@ def test_box_front_rectangular():
 
 def test_box_front_triangular():
     assert box.front(g.PY(0))[1][0] == -150
+
+
+def test_leftbox_dg():
+    
+    direction, vs = unlimited_box.left(g.PX(-450))
+    
+    unlimited_box.bound_dgs.left.score(None, None, None)

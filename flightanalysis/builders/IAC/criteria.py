@@ -37,8 +37,8 @@ class IACIntra:
     drop_pitch_rate = Bounded(Exponential(10, 1, 0.1), 0.2)
     peak_drop_pitch_rate = Trough(Exponential(10, 1, 6), 0.2)
     recovery_roll_rate = Bounded(Exponential(1, 1, 0.01), np.pi * 2, -np.pi*2)
-    box = Bounded(Exponential.fit_points([50, 100], [0.5, 1], 4), None, 0)
-    btmbox = Bounded(Exponential.fit_points([50, 100], [5, 10], 4), None, 0)
+    box = Bounded(Exponential.fit_points([50, 100], [0.5, 1], 4), 0, None)
+    btmbox = Bounded(Exponential.fit_points([50, 100], [5, 10], 4), 0, None)
 
 class IACInter:
     radius = Comparison(Exponential.fit_points([1, 2], [1, 2], 2))

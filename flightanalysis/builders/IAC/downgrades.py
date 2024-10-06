@@ -7,10 +7,16 @@ import numpy as np
 
 
 dgs = DownGrades([
+    dg("end_track", "track_y", measures.track_y(), None, sels.last(), IAC.intra.end_track),
+    dg("end_track", "track_z", measures.track_z(), None, sels.last(), IAC.intra.end_track),
+
     dg("end_attitude_y", "attitude_y", measures.attitude_y(), None, sels.last(), IAC.intra.end_track),
     dg("end_attitude_z", "attitude_z", measures.attitude_z(), None, sels.last(), IAC.intra.end_track),
     dg("end_roll_angle", "roll", measures.roll_angle(), None, sels.last(), IAC.intra.end_roll),
 
+    dg("line_track_y", "track_y", measures.track_y(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track),
+    dg("line_track_z", "track_z", measures.track_z(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track),
+    
     dg("line_attitude_y", "attitude_y", measures.attitude_y(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track),
     dg("line_attitude_z", "attitude_z", measures.attitude_z(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track),
     dg("line_roll_angle", "roll", measures.roll_angle(), sms.lowpass(cutoff=1, order=5), None, IAC.intra.roll),
@@ -21,8 +27,9 @@ dgs = DownGrades([
     dg("loop_roundness", "loop_roundness", measures.curvature_proj(), sms.curvature_lowpass(order=5), None, IAC.intra.loopshape),
     dg("loop_smoothness", "loop_smoothness", measures.absolute_curvature_proj(), sms.lowpass(cutoff=2, order=5), sels.borders(tb=0.25), IAC.intra.loopsmoothness),
 
-
-
+    dg("loop_track_y", "track_y", measures.track_proj_vel(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track),
+    dg("loop_track_z", "track_z", measures.track_proj_ang(), sms.lowpass(cutoff=2, order=5), sels.last(), IAC.intra.end_track),
+    
     dg("loop_attitude_y", "attitude_y", measures.attitude_proj_vel(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track),
     dg("loop_attitude_z", "attitude_z", measures.attitude_proj_ang(), sms.lowpass(cutoff=2, order=5), sels.last(), IAC.intra.end_track),
     dg("loop_roll_angle", "roll", measures.roll_angle_p(), sms.lowpass(cutoff=1, order=5), None, IAC.intra.roll),
@@ -33,7 +40,7 @@ dgs = DownGrades([
     dg("stallturn_roll_angle", "roll", measures.roll_angle_z(), None, None, IAC.intra.roll),
 
     dg("snap_spin_turns", "roll", measures.roll_angle_y(), None, sels.last(), IAC.intra.end_roll),# correct number of turns performed
-    dg("spin_alpha", "alpha", measures.spin_alpha(), None, sels.before_recovery(rot=np.pi/4), IAC.intra.pos_autorotation_alpha),#alpha > 7.5 until last 45 degrees of turn
+    dg("spin_alpha", "alpha", measures.spin_alpha_iac(), None, sels.before_recovery(rot=np.pi/4), IAC.intra.pos_autorotation_alpha),#alpha > 7.5 until last 45 degrees of turn
     dg("drop_pitch_rate", "pitch", measures.pitch_down_rate(), None, sels.autorot_break(rot=np.radians(15)), IAC.intra.drop_pitch_rate ),#pitch down rate > 0.3 until 15 degree of turn
     dg("peak_drop_pitch_rate", "peak_pitch", measures.pitch_down_rate(), None, sels.autorot_break(rot=np.radians(15)), IAC.intra.peak_drop_pitch_rate ),#pitch down rate > 0.3 until 15 degree of turn
     dg("spin_track_y", "track_y", measures.attitude_proj_vel(), None, sels.last(), IAC.intra.end_track),
@@ -42,7 +49,7 @@ dgs = DownGrades([
 
     dg("break_pitch_rate", "break", measures.pitch_rate(), None, sels.autorot_break(rot=np.pi/4), IAC.intra.break_pitch_rate ),
     dg("peak_break_pitch_rate", "peak_break", measures.pitch_rate(), None, sels.autorot_break(rot=np.pi/4), IAC.intra.peak_break_pitch_rate ),
-    dg("snap_alpha", "alpha", measures.alpha(), None, sels.autorotation(brot=np.pi/4, rrot=np.pi/2), IAC.intra.autorotation_alpha),#alpha > 7.5
+    dg("snap_alpha", "alpha", measures.alpha_iac(), None, sels.autorotation(brot=np.pi/4, rrot=np.pi/2), IAC.intra.autorotation_alpha),#alpha > 7.5
 
     dg("track_y_before_slowdown", "track_y", measures.track_y(), sms.lowpass(cutoff=4, order=5), sels.before_slowdown(sp=13), IAC.intra.track),
     dg("track_z_before_slowdown", "track_z", measures.track_z(), sms.lowpass(cutoff=4, order=5), sels.before_slowdown(sp=13), IAC.intra.track),

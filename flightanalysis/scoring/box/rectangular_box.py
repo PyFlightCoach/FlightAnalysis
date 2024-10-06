@@ -19,7 +19,7 @@ class RectangularBox(Box):
         return g.PX(1), self.width / 2 - p.x
 
     def left(self, p: g.Point):
-        return g.PX(-1), p.x - self.width / 2 
+        return g.PX(-1), self.width / 2  + p.x
 
     def bottom(self, p: g.Point):
         return g.PZ(-1), p.z - self.floor 

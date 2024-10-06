@@ -9908,7 +9908,7 @@
           },
           "spin_alpha": {
             "name": "spin_alpha",
-            "measure": "spin_alpha()",
+            "measure": "spin_alpha_f3a()",
             "smoothers": [],
             "selectors": [
               "before_recovery(rot:0.7853981633974483)"

@@ -86,8 +86,9 @@ class DownGrade:
         ids = np.arange(len(fl))
 
         for s in self.selectors:
-            sub_ids = s(fl, sample, **(sekwargs or {}))
+            sub_ids = s(fl, tp, sample, **(sekwargs or {}))
             fl = State(fl.data.iloc[ids])
+            tp = State(tp.data.iloc[ids])
             sample = sample[sub_ids]
             ids = ids[sub_ids]
 
