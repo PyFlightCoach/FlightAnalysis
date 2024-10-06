@@ -50,7 +50,7 @@ def attitude_proj_vel(fl: State, tp: State, proj: g.Point = None):
     Direction is the world frame scalar rejection of the velocity difference
     onto the template velocity vector.
     """
-    proj = proj if proj else Measurement.get_proj(tp)
+    proj = proj if proj else Measurement.get_axial_direction(tp)
 
     verr = g.Point.vector_projection(
         tp[0].att.inverse().transform_point(fl.att.transform_point(g.PX())),
@@ -72,7 +72,7 @@ def attitude_proj_ang(fl: State, tp: State, proj: g.Point = None):
     Direction is the world frame scalar rejection of the velocity difference
     onto the template velocity vector.
     """
-    proj = proj if proj else Measurement.get_proj(tp)
+    proj = proj if proj else Measurement.get_axial_direction(tp)
 
     rot = g.Quaternion.from_rotation_matrix(
         g.Coord.from_zx(

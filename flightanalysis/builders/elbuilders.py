@@ -6,57 +6,52 @@ from numbers import Number
 import numpy as np
 
 
-def line(name: str, speed, length, dggrps, Inter):
+def line(name: str, speed, length, Inter):
     return ElDef.build(
         Line,
         name,
-        [speed, length],
-        dggrps.line,
+        [speed, length]
     ), ManParms()
 
 
-def roll(name: str, speed, rate, rolls, dggrps, Inter):
+def roll(name: str, speed, rate, rolls, Inter):
     el = ElDef.build(
         Line,
         name,
         [speed, abs(rolls) * speed / rate, rolls],
-        dggrps.roll,
     )
     if isinstance(rate, ManParm):
         rate.collectors.add(el.get_collector("rate"))
     return el, ManParms()
 
 
-def loop(name: str, speed, radius, angle, ke, dggrps, Inter):
+def loop(name: str, speed, radius, angle, ke, Inter):
     ed = ElDef.build(
         Loop,
         name,
         [speed, angle, radius, 0, ke],
-        dggrps.loop,
     )
     return ed, ManParms()
 
 
-def rolling_loop(name, speed, radius, angle, roll, ke, dggrps, Inter):
+def rolling_loop(name, speed, radius, angle, roll, ke, Inter):
     ed = ElDef.build(
         Loop,
         name,
-        [speed, angle, radius, roll, ke],
-        dggrps.rolling_loop,
+        [speed, angle, radius, roll, ke]
     )
     return ed, ManParms()
 
 
-def stallturn(name, speed, yaw_rate, dggrps, Inter):
+def stallturn(name, speed, yaw_rate, Inter):
     return ElDef.build(
         StallTurn,
         name,
-        [speed, yaw_rate],
-        dggrps.stallturn,
+        [speed, yaw_rate]
     ), ManParms()
 
 
-def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, dggrps, Inter):
+def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, Inter):
     ed = ElDef.build(
         Snap,
         name,
@@ -67,21 +62,19 @@ def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, dggrp
             break_angle,
             break_roll,
             recovery_roll,
-        ],
-        dggrps.snap,
+        ]
     )
     if isinstance(rate, ManParm):
         rate.collectors.add(ed.get_collector("rate"))
     return ed, ManParms()
 
 
-def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns, dggrps, Inter):
+def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns, Inter):
     height = Spin.get_height(speed, rate, turns, nd_turns, recovery_turns)
     ed = ElDef.build(
         Spin,
         name,
-        [speed, height, turns, break_angle, nd_turns, recovery_turns],
-        dggrps.spin,
+        [speed, height, turns, break_angle, nd_turns, recovery_turns]
     )
 
     if isinstance(rate, ManParm):
@@ -113,7 +106,6 @@ def roll_combo(
     break_roll,
     recovery_roll,
     mode,
-    dggrps,
     Inter
 ) -> ElDefs:
     """This creates a set of ElDefs to represent a list of rolls or snaps
@@ -134,7 +126,6 @@ def roll_combo(
                     speed,
                     partial_rate if abs(r) < 2 * np.pi else full_rate,
                     rolls[i],
-                    dggrps,
                     Inter
                 )[0]
             )
@@ -148,7 +139,6 @@ def roll_combo(
                     speed,
                     break_roll,
                     recovery_roll,
-                    dggrps,
                     Inter
                 )[0]
             )
@@ -156,20 +146,20 @@ def roll_combo(
         if i < len(rvs) - 1 and (
             mode == "imac" or np.sign(r) == np.sign(rvs[i + 1])
         ):
-            eds.add(line(f"{name}_{i+1}_pause", speed, pause_length, dggrps, Inter))
+            eds.add(line(f"{name}_{i+1}_pause", speed, pause_length, Inter))
 
     return eds, ManParms()
 
 
-def pad(speed, line_length, eds: ElDefs, dggrps, Inter):
+def pad(speed, line_length, eds: ElDefs, Inter):
     """This will add pads to the ends of the element definitions to
     make the total length equal to line_length"""
     eds = ElDefs([eds]) if isinstance(eds, ElDef) else eds
 
     pad_length = 0.5 * (line_length - eds.builder_sum("length"))
 
-    e1 = line(f"e_{eds[0].id}_pad1", speed, pad_length, dggrps, Inter)[0]
-    e3 = line(f"e_{eds[0].id}_pad2", speed, pad_length, dggrps, Inter)[0]
+    e1 = line(f"e_{eds[0].id}_pad1", speed, pad_length, Inter)[0]
+    e3 = line(f"e_{eds[0].id}_pad2", speed, pad_length, Inter)[0]
 
     mp = ManParm(
         f"e_{eds[0].id}_pad_length",
@@ -203,7 +193,6 @@ def rollmaker(
     recovery_roll,
     padded,
     mode,
-    dggrps,
     Inter
 ):
     """This will create a set of ElDefs to represent a series of rolls or snaps
@@ -217,7 +206,7 @@ def rollmaker(
         if rolltypes[0] == "r":
             _r = _rolls.a.value[_rolls.item]
             rate = full_rate if abs(_r) >= 2 * np.pi else partial_rate
-            eds, rcmps = roll(f"{name}_roll", speed, rate, _rolls, dggrps, Inter)
+            eds, rcmps = roll(f"{name}_roll", speed, rate, _rolls, Inter)
         else:
             eds, rcmps = snap(
                 f"{name}_snap",
@@ -227,7 +216,6 @@ def rollmaker(
                 speed,
                 break_roll,
                 recovery_roll,
-                dggrps,
                 Inter
             )
     else:
@@ -244,14 +232,13 @@ def rollmaker(
             break_roll,
             recovery_roll,
             mode,
-            dggrps,
             Inter
         )
 
     mps.add(rcmps)
 
     if padded:
-        eds, padmps = pad(speed, line_length, eds, dggrps, Inter)
+        eds, padmps = pad(speed, line_length, eds, Inter)
         mps.add(padmps)
 
     return eds, mps
@@ -273,7 +260,6 @@ def loopmaker(
     break_roll,
     recovery_roll,
     mode,
-    dggrps,
     Inter
 ):
     """This will create a set of ElDefs to represent a series of loops and the pads at the ends if padded==True."""
@@ -283,9 +269,9 @@ def loopmaker(
     rollangle = angle if rollangle is None else rollangle * sign
 
     if rolls == 0:
-        return loop(name, speed, radius, angle, ke, dggrps, Inter)
+        return loop(name, speed, radius, angle, ke, Inter)
     if (isinstance(rolls, Number) or isinstance(rolls, ItemOpp)) and rollangle == angle:
-        return rolling_loop(name, speed, radius, angle, rolls, ke, dggrps, Inter)
+        return rolling_loop(name, speed, radius, angle, rolls, ke, Inter)
 
     mps = ManParms()
     eds = ElDefs()
@@ -311,7 +297,7 @@ def loopmaker(
     if not rollangle == angle:
         eds.add(
             loop(
-                f"{name}_pad1", speed, internal_rad, sign * (abs(angle) - abs(rollangle)) / 2, ke, dggrps, Inter
+                f"{name}_pad1", speed, internal_rad, sign * (abs(angle) - abs(rollangle)) / 2, ke, Inter
             )[0]
         )
 
@@ -352,7 +338,7 @@ def loopmaker(
                         r,
                         rolls[i],
                         ke - roll_done,
-                        dggrps, Inter
+                        Inter
                     )[0]
                 )
             else:
@@ -364,7 +350,7 @@ def loopmaker(
                     speed,
                     break_roll,
                     recovery_roll,
-                    dggrps, Inter
+                    Inter
                 )
                 eds.add(ed)
                 snap_rate.collectors.add(eds[-2].get_collector("rate"))
@@ -377,7 +363,7 @@ def loopmaker(
                         internal_rad,
                         pause_angle,
                         ke - rolls[i + n],
-                        dggrps, Inter
+                        Inter
                     )[0]
                 )
 
@@ -386,7 +372,7 @@ def loopmaker(
     else:
         eds.add(
             rolling_loop(
-                f"{name}_rolls", speed, internal_rad, rollangle, rolls, ke, dggrps, Inter
+                f"{name}_rolls", speed, internal_rad, rollangle, rolls, ke, Inter
             )[0]
         )
         ke = ke - rolls
@@ -394,7 +380,7 @@ def loopmaker(
     if not rollangle == angle:
         eds.add(
             loop(
-                f"{name}_pad2", speed, internal_rad, (angle - rollangle) / 2, ke, dggrps, Inter
+                f"{name}_pad2", speed, internal_rad, (angle - rollangle) / 2, ke, Inter
             )[0]
         )
     mps.add(internal_rad)

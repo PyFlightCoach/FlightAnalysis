@@ -74,56 +74,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -136,26 +133,25 @@
           "roll": "e_0_rolls[0]"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
+          "roll_angle": {
+            "name": "roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
             ],
-            "selectors": [],
             "criteria": {
-              "kind": "Continuous",
+              "kind": "Single",
               "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -165,10 +161,25 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           },
           "roll_rate": {
             "name": "roll_rate",
@@ -184,8 +195,7 @@
                 "exponent": 0.9999999999999998,
                 "limit": 3
               }
-            },
-            "display_name": "roll_rate"
+            }
           },
           "roll_smoothness": {
             "name": "roll_smoothness",
@@ -201,25 +211,7 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "roll_smoothness"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
-            "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -344,56 +336,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -408,8 +397,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -422,11 +411,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -441,12 +429,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -456,14 +443,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -475,13 +461,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -490,12 +475,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -678,56 +662,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -742,8 +723,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -756,11 +737,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -775,12 +755,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -790,14 +769,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -809,13 +787,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -824,12 +801,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -841,42 +817,8 @@
           "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -885,12 +827,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -903,39 +872,49 @@
           "roll": "e_1_rolls[0]"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
+          "roll_angle": {
+            "name": "roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
             ],
-            "selectors": [],
             "criteria": {
-              "kind": "Continuous",
+              "kind": "Single",
               "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
             "selectors": [],
             "criteria": {
               "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           },
           "roll_rate": {
             "name": "roll_rate",
@@ -951,8 +930,7 @@
                 "exponent": 0.9999999999999998,
                 "limit": 3
               }
-            },
-            "display_name": "roll_rate"
+            }
           },
           "roll_smoothness": {
             "name": "roll_smoothness",
@@ -968,25 +946,7 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "roll_smoothness"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
-            "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -998,42 +958,8 @@
           "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -1042,12 +968,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -1062,8 +1015,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -1076,11 +1029,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -1095,12 +1047,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -1110,14 +1061,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -1129,13 +1079,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -1144,12 +1093,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -1161,42 +1109,8 @@
           "length": "180"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -1205,12 +1119,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -1225,8 +1166,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -1239,11 +1180,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -1258,12 +1198,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -1273,14 +1212,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -1292,13 +1230,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -1307,12 +1244,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -1483,56 +1419,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -1545,26 +1478,25 @@
           "roll": "e_0_rolls[0]"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
+          "roll_angle": {
+            "name": "roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
             ],
-            "selectors": [],
             "criteria": {
-              "kind": "Continuous",
+              "kind": "Single",
               "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -1574,10 +1506,25 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           },
           "roll_rate": {
             "name": "roll_rate",
@@ -1593,8 +1540,7 @@
                 "exponent": 0.9999999999999998,
                 "limit": 3
               }
-            },
-            "display_name": "roll_rate"
+            }
           },
           "roll_smoothness": {
             "name": "roll_smoothness",
@@ -1610,25 +1556,7 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "roll_smoothness"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
-            "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -1811,56 +1739,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -1875,8 +1800,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -1889,11 +1814,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -1908,12 +1832,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -1923,14 +1846,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -1942,13 +1864,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -1957,12 +1878,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -1974,42 +1894,8 @@
           "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -2018,12 +1904,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -2036,39 +1949,49 @@
           "roll": "e_1_rolls[0]"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
+          "roll_angle": {
+            "name": "roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
             ],
-            "selectors": [],
             "criteria": {
-              "kind": "Continuous",
+              "kind": "Single",
               "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
             "selectors": [],
             "criteria": {
               "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           },
           "roll_rate": {
             "name": "roll_rate",
@@ -2084,8 +2007,7 @@
                 "exponent": 0.9999999999999998,
                 "limit": 3
               }
-            },
-            "display_name": "roll_rate"
+            }
           },
           "roll_smoothness": {
             "name": "roll_smoothness",
@@ -2101,25 +2023,7 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "roll_smoothness"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
-            "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -2131,42 +2035,8 @@
           "length": "(0.5*(180-((abs(e_1_rolls[0])*50)/partial_roll_rate)))"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -2175,12 +2045,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -2195,8 +2092,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -2209,11 +2106,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -2228,12 +2124,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2243,14 +2138,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2262,13 +2156,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -2277,12 +2170,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -2412,56 +2304,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -2476,8 +2365,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -2490,11 +2379,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -2509,12 +2397,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2524,14 +2411,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2543,13 +2429,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -2558,12 +2443,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -2575,42 +2459,8 @@
           "length": "180"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -2619,12 +2469,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -2639,8 +2516,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -2653,11 +2530,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -2672,12 +2548,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2687,14 +2562,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2706,13 +2580,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -2721,12 +2594,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -2868,56 +2740,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -2932,8 +2801,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -2946,11 +2815,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -2965,12 +2833,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2980,14 +2847,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -2999,13 +2865,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3014,12 +2879,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -3031,42 +2895,8 @@
           "length": "180"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3075,12 +2905,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -3092,8 +2949,8 @@
           "yaw_rate": "stallturn_rate"
         },
         "dgs": {
-          "stallturn_width": {
-            "name": "stallturn_width",
+          "width": {
+            "name": "width",
             "measure": "stallturn_width()",
             "smoothers": [],
             "selectors": [],
@@ -3102,14 +2959,13 @@
               "lookup": {
                 "factor": 0.0012963396803682694,
                 "exponent": 1.75647079736603,
-                "limit": 6
+                "limit": 10
               },
-              "limit": 2
-            },
-            "display_name": "width"
+              "limit": 10
+            }
           },
-          "stallturn_speed": {
-            "name": "stallturn_speed",
+          "speed": {
+            "name": "speed",
             "measure": "vertical_speed()",
             "smoothers": [],
             "selectors": [
@@ -3122,24 +2978,22 @@
                 "exponent": 1.0,
                 "limit": 1
               },
-              "limit": 8
-            },
-            "display_name": "speed"
+              "limit": 15
+            }
           },
-          "stallturn_roll_angle": {
-            "name": "stallturn_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_z()",
             "smoothers": [],
             "selectors": [],
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           },
           "end_yaw": {
             "name": "end_yaw",
@@ -3153,10 +3007,9 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "yaw"
+            }
           }
         }
       },
@@ -3168,42 +3021,8 @@
           "length": "180"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3212,12 +3031,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -3232,8 +3078,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -3246,11 +3092,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -3265,12 +3110,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3280,14 +3124,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3299,13 +3142,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3314,12 +3156,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -3449,56 +3290,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -3513,8 +3351,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -3527,11 +3365,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -3546,12 +3383,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3561,14 +3397,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3580,13 +3415,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3595,12 +3429,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -3612,42 +3445,8 @@
           "length": "180"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3656,12 +3455,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -3676,8 +3502,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -3690,11 +3516,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -3709,12 +3534,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3724,14 +3548,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3743,13 +3566,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3758,12 +3580,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -3775,42 +3596,8 @@
           "length": "180"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3819,12 +3606,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -3839,8 +3653,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -3853,11 +3667,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -3872,12 +3685,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3887,14 +3699,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -3906,13 +3717,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -3921,12 +3731,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -4092,56 +3901,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -4156,8 +3962,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -4170,11 +3976,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -4189,12 +3994,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4204,14 +4008,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4223,13 +4026,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -4238,12 +4040,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -4256,26 +4057,25 @@
           "roll": "e_1_rolls[0]"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
+          "roll_angle": {
+            "name": "roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
             ],
-            "selectors": [],
             "criteria": {
-              "kind": "Continuous",
+              "kind": "Single",
               "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4285,10 +4085,25 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           },
           "roll_rate": {
             "name": "roll_rate",
@@ -4304,8 +4119,7 @@
                 "exponent": 0.9999999999999998,
                 "limit": 3
               }
-            },
-            "display_name": "roll_rate"
+            }
           },
           "roll_smoothness": {
             "name": "roll_smoothness",
@@ -4321,25 +4135,7 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "roll_smoothness"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
-            "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }
@@ -4505,56 +4301,53 @@
           "length": "30"
         },
         "dgs": {
-          "end_attitude_y": {
-            "name": "end_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "end_attitude_z": {
-            "name": "end_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
+            "smoothers": [
+              "lowpass(cutoff:1,order:5)"
             ],
+            "selectors": [],
             "criteria": {
-              "kind": "Single",
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
+              }
+            }
+          },
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -4569,8 +4362,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -4583,11 +4376,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -4602,12 +4394,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4617,14 +4408,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4636,13 +4426,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -4651,12 +4440,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -4668,42 +4456,8 @@
           "length": "180"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_y"
-          },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
-            ],
-            "selectors": [],
-            "criteria": {
-              "kind": "Continuous",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "attitude_z"
-          },
-          "line_roll_angle": {
-            "name": "line_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -4712,12 +4466,39 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
+          },
+          "pitch": {
+            "name": "pitch",
+            "measure": "pitch_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
+          },
+          "yaw": {
+            "name": "yaw",
+            "measure": "yaw_attitude()",
+            "smoothers": [],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           }
         }
       },
@@ -4732,8 +4513,8 @@
           "ke": "0"
         },
         "dgs": {
-          "loop_roundness": {
-            "name": "loop_roundness",
+          "roundness": {
+            "name": "roundness",
             "measure": "curvature_proj()",
             "smoothers": [
               "curvature_lowpass(order:5)"
@@ -4746,11 +4527,10 @@
                 "exponent": 1.0,
                 "limit": 3
               }
-            },
-            "display_name": "loop_roundness"
+            }
           },
-          "loop_smoothness": {
-            "name": "loop_smoothness",
+          "smoothness": {
+            "name": "smoothness",
             "measure": "absolute_curvature_proj()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
@@ -4765,12 +4545,11 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "loop_smoothness"
+            }
           },
-          "loop_attitude_y": {
-            "name": "loop_attitude_y",
-            "measure": "attitude_proj_vel()",
+          "axial_attitude": {
+            "name": "axial_attitude",
+            "measure": "loop_axial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4780,14 +4559,13 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "loop_attitude_z": {
-            "name": "loop_attitude_z",
-            "measure": "attitude_proj_ang()",
+          "radial_track": {
+            "name": "radial_track",
+            "measure": "loop_radial_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4799,13 +4577,12 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
           },
-          "loop_roll_angle": {
-            "name": "loop_roll_angle",
+          "roll_angle": {
+            "name": "roll_angle",
             "measure": "roll_angle_p()",
             "smoothers": [
               "lowpass(cutoff:1,order:5)"
@@ -4814,12 +4591,11 @@
             "criteria": {
               "kind": "Continuous",
               "lookup": {
-                "factor": 4.3090820805427,
-                "exponent": 1.6309297535714575,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "roll"
+            }
           }
         }
       },
@@ -4832,26 +4608,25 @@
           "roll": "e_3_rolls[0]"
         },
         "dgs": {
-          "line_attitude_y": {
-            "name": "line_attitude_y",
-            "measure": "attitude_y()",
-            "smoothers": [
-              "lowpass(cutoff:2,order:5)"
+          "roll_angle": {
+            "name": "roll_angle",
+            "measure": "roll_angle()",
+            "smoothers": [],
+            "selectors": [
+              "last()"
             ],
-            "selectors": [],
             "criteria": {
-              "kind": "Continuous",
+              "kind": "Single",
               "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
+                "factor": 4.849987519866687,
+                "exponent": 1.3690702464285425,
+                "limit": 10
               }
-            },
-            "display_name": "attitude_y"
+            }
           },
-          "line_attitude_z": {
-            "name": "line_attitude_z",
-            "measure": "attitude_z()",
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -4861,10 +4636,25 @@
               "lookup": {
                 "factor": 5.729577951308233,
                 "exponent": 0.9999999999999999,
-                "limit": 6
+                "limit": 10
               }
-            },
-            "display_name": "attitude_z"
+            }
+          },
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
+            "selectors": [],
+            "criteria": {
+              "kind": "Continuous",
+              "lookup": {
+                "factor": 5.729577951308233,
+                "exponent": 0.9999999999999999,
+                "limit": 10
+              }
+            }
           },
           "roll_rate": {
             "name": "roll_rate",
@@ -4880,8 +4670,7 @@
                 "exponent": 0.9999999999999998,
                 "limit": 3
               }
-            },
-            "display_name": "roll_rate"
+            }
           },
           "roll_smoothness": {
             "name": "roll_smoothness",
@@ -4897,25 +4686,7 @@
                 "exponent": 1.4854268271702418,
                 "limit": 3
               }
-            },
-            "display_name": "roll_smoothness"
-          },
-          "end_roll_angle": {
-            "name": "end_roll_angle",
-            "measure": "roll_angle()",
-            "smoothers": [],
-            "selectors": [
-              "last()"
-            ],
-            "criteria": {
-              "kind": "Single",
-              "lookup": {
-                "factor": 5.729577951308233,
-                "exponent": 0.9999999999999999,
-                "limit": 6
-              }
-            },
-            "display_name": "roll"
+            }
           }
         }
       }

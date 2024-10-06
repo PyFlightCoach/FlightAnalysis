@@ -2,7 +2,7 @@ import numpy as np
 
 from flightanalysis.definition import ManParm, ManParms
 from flightanalysis.builders.f3a.criteria import F3A
-from flightanalysis.builders.f3a.downgrades import dggrps
+from flightanalysis.builders.f3a.downgrades import dg_applicator
 from flightanalysis.builders.f3a.box import box
 from ..elbuilders import line, loopmaker, rollmaker, spin, stallturn
 from ..manbuilder import ManBuilder
@@ -104,7 +104,7 @@ f3amb = ManBuilder(
             ),
         ),
     ),
-    dggrps,
+    dg_applicator,
     F3A.inter,
     box
 )

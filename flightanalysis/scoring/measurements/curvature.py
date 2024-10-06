@@ -25,7 +25,7 @@ def curvature(fl: State, tp: State, proj: g.Point) -> Measurement:
 
 @m.add
 def curvature_proj(fl: State, tp: State) -> Measurement:
-    return curvature(fl, tp, Measurement.get_proj(tp))
+    return curvature(fl, tp, Measurement.get_axial_direction(tp))
 
 
 @m.add
@@ -44,4 +44,4 @@ def absolute_curvature(fl: State, tp: State, proj: g.Point) -> Measurement:
 
 @m.add
 def absolute_curvature_proj(fl: State, tp: State) -> Measurement:
-    return absolute_curvature(fl, tp, Measurement.get_proj(tp))
+    return absolute_curvature(fl, tp, Measurement.get_axial_direction(tp))

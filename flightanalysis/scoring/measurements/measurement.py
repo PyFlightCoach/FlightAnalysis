@@ -131,7 +131,7 @@ class Measurement:
 
 
     @staticmethod
-    def get_proj(tp: State):
+    def get_axial_direction(tp: State):
         """Proj is a vector in the axial direction for the template ref_frame (tp[0].transform)*"""
         # proj = g.g.Point(0, np.cos(el.ke), np.sin(el.ke))
         return g.PX().cross(tp[0].arc_centre()).unit()

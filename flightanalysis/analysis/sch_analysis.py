@@ -26,14 +26,14 @@ class ScheduleAnalysis(Collection):
 
         flight = Flight.from_fc_json(data) if flight is None else flight
 
-        info = ScheduleInfo(*fcj["parameters"]["schedule"]).fcj_to_pfc()
+        info = ScheduleInfo(*data["parameters"]["schedule"]).fcj_to_pfc()
         sdef = SchedDef.load(info)
         box = Origin.from_fcjson_parameters(data["parameters"])
 
         state = State.from_flight(flight, box)
 
         state = state.splitter_labels(
-            data["mans"], sdef.uids, t0=fcj["data"][0]["time"] / 1e6
+            data["mans"], sdef.uids, t0=data["data"][0]["time"] / 1e6
         )
 
         heading = Heading.infer(state.get_manoeuvre(sdef[0].uid)[0].att.bearing()[0])

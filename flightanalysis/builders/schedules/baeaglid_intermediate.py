@@ -9,7 +9,7 @@ from flightanalysis import (
     Position,
     SchedDef,
 )
-from flightanalysis.builders.BAeAGlid.downgrades import dggrps
+
 from flightanalysis.builders.BAeAGlid.manbuilder import glidmb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 

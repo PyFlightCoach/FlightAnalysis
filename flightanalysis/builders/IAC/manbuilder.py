@@ -2,7 +2,7 @@ import numpy as np
 
 from flightanalysis.definition import ManParm, ManParms
 from flightanalysis.builders.IAC.criteria import IAC
-from flightanalysis.builders.IAC.downgrades import dggrps
+from flightanalysis.builders.IAC.downgrades import dg_applicator
 from flightanalysis.builders.IAC.box import unlimited_box
 from ..elbuilders import line, loopmaker, rollmaker, spin, stallturn
 from ..manbuilder import ManBuilder
@@ -110,7 +110,7 @@ iacmb = ManBuilder(
             ),
         ),
     ),
-    dggrps,
+    dg_applicator,
     IAC.inter,
     unlimited_box
 )

@@ -15,7 +15,7 @@ from flightanalysis import (
     Position,
     SchedDef,
 )
-from flightanalysis.builders.f3a.downgrades import dggrps
+
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
@@ -208,10 +208,6 @@ clubman_def = SchedDef([
     ]
 )
 
-clubman_def.spin.eds.entry_line.dgs = dggrps.sp_line_before
-clubman_def.spin.eds.e_1.dgs = dggrps.sp_line_after
-clubman_def.stall.eds.e_1.dgs = dggrps.st_line_before
-clubman_def.stall.eds.e_3.dgs = dggrps.st_line_after
 
 if __name__ == "__main__":
 

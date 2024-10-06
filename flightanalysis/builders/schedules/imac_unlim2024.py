@@ -8,8 +8,9 @@ from flightanalysis import (
     Orientation,
     Position,
     SchedDef,
+    ManParm, Combination
 )
-from flightanalysis.builders.f3a.downgrades import dggrps
+
 from flightanalysis.builders.imac.manbuilder import imacmb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 

@@ -110,11 +110,11 @@ def test_roll_vis():
     assert t_rvis(90, 80, 90) == approx(1)
 
 
-def test_get_proj():
+def test_get_axial_direction():
 
     def gpt(ke):    
         assert_almost_equal(
-            Measurement.get_proj(
+            Measurement.get_axial_direction(
                 Loop('loop', 30, np.pi/2, 50, 0, ke).create_template(State.from_transform())
             ),
             Point(0, np.cos(ke), np.sin(ke))

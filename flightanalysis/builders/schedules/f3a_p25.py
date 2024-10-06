@@ -12,7 +12,6 @@ from flightanalysis import (
     SchedDef,
     ManOption
 )
-from flightanalysis.builders.f3a.downgrades import dggrps
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
@@ -243,10 +242,6 @@ p25_def = SchedDef([
         ])), 0, "rad")),
 ])
 
-p25_def.stall.eds.e_1.dgs = dggrps.st_line_before
-p25_def.stall.eds.e_3_pad1.dgs = dggrps.st_line_after
-p25_def.iSpin.eds.entry_line.dgs = dggrps.sp_line_before
-p25_def.iSpin.eds.e_1_pad1.dgs = dggrps.sp_line_after
 
 
 if __name__ == "__main__":
@@ -254,5 +249,6 @@ if __name__ == "__main__":
 #    p25_def.plot().show()
     #p25_def.create_fcj('P25', 'p25_template_fcj.json')
     p25_def.to_json("flightanalysis/data/f3a_p25_schedule.json")
+    pass
 #    import os
 #    p25_def.create_fcjs('p25', f'{os.environ['HOME']}/Desktop/templates/')

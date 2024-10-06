@@ -11,7 +11,7 @@ from flightanalysis import (
     ManParm,
     Combination,
 )
-from flightanalysis.builders.IAC.downgrades import dggrps
+
 from flightanalysis.builders.IAC.manbuilder import iacmb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
@@ -202,6 +202,6 @@ sdef = SchedDef(
 
 
 if __name__ == "__main__":
-    sdef.plot().show()
+    #sdef.plot().show()
     #sdef.create_fcj('BAeA Power Unlimited 2024', 'baea_unlim')
-    #sdef.to_json("flightanalysis/data/baeapower_unlimited2024_schedule.json")
+    sdef.to_json("flightanalysis/data/baeapower_unlimited2024_schedule.json")

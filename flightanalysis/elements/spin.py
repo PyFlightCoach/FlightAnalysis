@@ -117,7 +117,7 @@ class Spin(Element):
         return f"Spin {self.turns}, {self.pitch}"
 
     def match_intention(self, transform: g.Transformation, flown: State) -> Spin:
-        auto = State(flown.data.iloc[autorotation(flown, None, np.pi/2, np.pi/4)])
+        auto = State(flown.data.iloc[autorotation(flown, None, None, np.pi/2, np.pi/4)])
         pitch = np.mean(np.arctan2(auto.vel.z, auto.vel.x))
         
         return self.set_parms(

@@ -11,7 +11,6 @@ from flightanalysis import (
     ManParm,
     Combination,
 )
-from flightanalysis.builders.IAC.downgrades import dggrps
 from flightanalysis.builders.IAC.manbuilder import iacmb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
