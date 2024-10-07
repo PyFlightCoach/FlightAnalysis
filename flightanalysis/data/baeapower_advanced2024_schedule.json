@@ -4748,10 +4748,12 @@
               }
             }
           },
-          "pitch": {
-            "name": "pitch",
-            "measure": "pitch_attitude()",
-            "smoothers": [],
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
             "selectors": [],
             "criteria": {
               "kind": "Continuous",
@@ -4762,10 +4764,12 @@
               }
             }
           },
-          "yaw": {
-            "name": "yaw",
-            "measure": "yaw_attitude()",
-            "smoothers": [],
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
             "selectors": [],
             "criteria": {
               "kind": "Continuous",
@@ -4803,10 +4807,12 @@
               }
             }
           },
-          "pitch": {
-            "name": "pitch",
-            "measure": "pitch_attitude()",
-            "smoothers": [],
+          "heading": {
+            "name": "heading",
+            "measure": "heading_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
             "selectors": [],
             "criteria": {
               "kind": "Continuous",
@@ -4817,10 +4823,12 @@
               }
             }
           },
-          "yaw": {
-            "name": "yaw",
-            "measure": "yaw_attitude()",
-            "smoothers": [],
+          "climb": {
+            "name": "climb",
+            "measure": "climb_track()",
+            "smoothers": [
+              "lowpass(cutoff:2,order:5)"
+            ],
             "selectors": [],
             "criteria": {
               "kind": "Continuous",
@@ -5067,9 +5075,9 @@
               }
             }
           },
-          "radial_track": {
-            "name": "radial_track",
-            "measure": "loop_radial_track()",
+          "radial_attitude": {
+            "name": "radial_attitude",
+            "measure": "loop_radial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],

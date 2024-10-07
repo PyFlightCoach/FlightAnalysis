@@ -29,8 +29,6 @@ tp = man.create_template(it)
 
 fig = plot_regions(tp, 'element', span=5)
 fig = plotsec(tp, fig=fig, nmodels=10, scale=20)
-#fig.add_traces(boxtrace())
+
 fig.show()
 
-#fig = go.Figure(data=axis_rate_trace(tp))
-#fig.show()

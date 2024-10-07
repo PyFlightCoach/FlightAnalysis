@@ -36,6 +36,7 @@ class Snap(Element):
         return speed * (abs(roll) + break_roll + recovery_roll) / rate
 
     def create_template(self, istate: State, fl: State = None) -> State:
+        
         world_rot_axis = istate.att.transform_point(g.PX())
         rate = self.rate
         ttot = self.length / self.speed
@@ -50,7 +51,7 @@ class Snap(Element):
         tau = g.Time.uniform(_tau, len(fl) - len(tpb) - len(trec) + 2  if fl else None, 2)
 
         pb = (
-            istate.copy(vel=g.PX(self.speed))
+            istate.copy(vel=g.PX(self.speed), rvel=g.P0())
             .fill(tpb)
             .superimpose_rotation(g.PY(), self.pitch)
             .superimpose_angles(

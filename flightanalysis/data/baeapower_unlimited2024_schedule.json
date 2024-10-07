@@ -8896,9 +8896,9 @@
               }
             }
           },
-          "radial_track": {
-            "name": "radial_track",
-            "measure": "loop_radial_track()",
+          "radial_attitude": {
+            "name": "radial_attitude",
+            "measure": "loop_radial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -9897,9 +9897,9 @@
               }
             }
           },
-          "radial_track": {
-            "name": "radial_track",
-            "measure": "loop_radial_track()",
+          "radial_attitude": {
+            "name": "radial_attitude",
+            "measure": "loop_radial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
@@ -11004,9 +11004,9 @@
               }
             }
           },
-          "radial_track": {
-            "name": "radial_track",
-            "measure": "loop_radial_track()",
+          "radial_attitude": {
+            "name": "radial_attitude",
+            "measure": "loop_radial_attitude()",
             "smoothers": [
               "lowpass(cutoff:2,order:5)"
             ],
