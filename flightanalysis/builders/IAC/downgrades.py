@@ -35,26 +35,22 @@ def dg_applicator(el: Loop | Line | Snap | Spin | StallTurn, tp: State, last_kin
         else:
             dgs.append(dg("pitch", measures.pitch_attitude(), None, None, IAC.intra.track))
             dgs.append(dg("yaw", measures.yaw_attitude(), None, None, IAC.intra.track))
-        
     elif el.__class__ is Loop:
         dgs.append(dg("roundness", measures.curvature_proj(), sms.curvature_lowpass(order=5), None, IAC.intra.loopshape))
         dgs.append(dg("smoothness", measures.absolute_curvature_proj(), sms.lowpass(cutoff=2, order=5), sels.borders(tb=0.25), IAC.intra.loopsmoothness))
-
-        if g.point.is_parallel(Measurement.get_axial_direction(tp), g.PZ()):
+        isCircle = g.point.is_parallel(Measurement.get_axial_direction(tp), g.PZ())
+        if isCircle:
             dgs.append(dg("axial_track", measures.loop_axial_track(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track))
         else:
             dgs.append(dg("axial_attitude", measures.loop_axial_attitude(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.track))
-
-        if g.point.is_parallel(tp.vel[-1], g.PX()):
+        if g.point.is_parallel(tp.vel[-1], g.PX()) and not isCircle:
             dgs.append(dg("radial_track", measures.loop_radial_track(), sms.lowpass(cutoff=2, order=5), sels.last(), IAC.intra.end_track))
         else:
             dgs.append(dg("radial_attitude", measures.loop_radial_attitude(), sms.lowpass(cutoff=2, order=5), sels.last(), IAC.intra.end_track))
-
         if el.roll == 0:
             dgs.append(dg("roll_angle", measures.roll_angle_p(), sms.lowpass(cutoff=1, order=5), None, IAC.intra.roll))
         else:
             dgs.append(dg("roll_angle", measures.roll_angle_p(), None, sels.last(), IAC.intra.roll))
-            
     elif el.__class__ is StallTurn:
         dgs.append(dg("width", measures.stallturn_width(), None, None, IAC.intra.stallturn_width))
         dgs.append(dg("speed", measures.vertical_speed(), None, sels.first_and_last(), IAC.intra.stallturn_speed))
