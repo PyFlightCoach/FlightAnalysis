@@ -41,7 +41,7 @@ class F3AIntra:
     peak_drop_pitch_rate = Trough(Exponential(10, 1, 6), 0.2)
     recovery_roll_rate = Bounded(Exponential(1, 1, 0.01), np.pi * 2, -np.pi*2)
     box = Bounded(Exponential(10 / np.radians(7.5), 1, 2), None, 0)
-    depth = Bounded(Exponential.fit_points([20, 40], [0.5, 1], 4), None, 0)
+    depth = Bounded(Exponential.fit_points([20, 40], [0.5, 1], 4), 0, None)
 
 
 class F3AInter:

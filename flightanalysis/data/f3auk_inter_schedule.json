@@ -711,8 +711,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -1412,8 +1412,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -2388,8 +2388,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -3289,8 +3289,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -3736,8 +3736,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -5093,8 +5093,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -5540,8 +5540,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -6710,8 +6710,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -7406,8 +7406,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -7824,8 +7824,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -8569,8 +8569,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -9099,8 +9099,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -9398,8 +9398,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
@@ -9942,8 +9942,8 @@
               "exponent": 0.9999999999999999,
               "limit": 4
             },
-            "min_bound": null,
-            "max_bound": 0
+            "min_bound": 0,
+            "max_bound": null
           },
           "unit": "m"
         }
