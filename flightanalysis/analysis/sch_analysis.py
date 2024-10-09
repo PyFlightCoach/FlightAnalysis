@@ -61,28 +61,27 @@ class ScheduleAnalysis(Collection):
         if not isinstance(data, dict):
             data = load(open(data, "r"))
 
-        sts = data["states"]["data"]
-        entry = Heading.infer(State(sts[data["mans"][0]["start"]]).att.bearing()[0])
-
         mas = []
         for man in data["mans"]:
-            mdef = ManDef.load(ScheduleInfo(**man["sinfo"]), man["name"])
-            if not data["isComp"]:
-                heading = Heading.infer(State(sts[man["start"]]).att.bearing()[0])
-            else:
-                heading = mdef.info.start.direction.wind_swap_heading(entry)
+            mdef = ManDef.load(ScheduleInfo(**man["schedule"]), man["name"])
 
             st = (
-                State.from_dict(sts[man["start"] : man["stop"]])
+                State.from_dict(man["flown"]['data'])
                 .label(manoeuvre=man["name"])
                 .label_els(list(man["history"].values())[-1]["els"])
             )
+
+            if not data["isComp"] or len(mas)==0:
+                heading = Heading.infer(st[0].att.bearing()[0])
+            else:
+                heading = mdef.info.start.direction.wind_swap_heading(mas[0].entry)
+
 
             mas.append(analysis.Basic(man["id"], mdef, st, heading, None))
 
         return ScheduleAnalysis(mas)
 
-    def create_analysis_dict(self, **kwargs) -> dict:
+    def create_analysis_json(self, **kwargs) -> dict:
         pass
 
 
