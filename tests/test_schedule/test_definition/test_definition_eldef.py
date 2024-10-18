@@ -1,8 +1,8 @@
 from pytest import fixture
 import numpy as np
 from flightanalysis import ElDef, Loop, ManParms
-from flightanalysis.definition.builders.manbuilder import f3amb 
-from flightanalysis.definition.builders.f3a_downgrades import DGGrps
+from flightanalysis.builders.f3a.manbuilder import f3amb 
+from flightanalysis.builders.f3a.downgrades import dg_applicator
 
 @fixture
 def mps():
@@ -15,7 +15,6 @@ def loopdef(mps):
         Loop,
         "test", 
         [mps.speed, np.pi/2, mps.loop_radius, 0, False],
-        DGGrps.loop
 )
     
 

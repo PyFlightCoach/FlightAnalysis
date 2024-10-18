@@ -26,28 +26,31 @@ class Complete(Alignment):
     corrected: Manoeuvre
     corrected_template: State
 
-    def to_dict(self):
+    @staticmethod
+    def from_dict(ajman: dict) -> Complete | Alignment | Basic:
+        analysis = Alignment.from_dict(ajman)
+        if (
+            isinstance(analysis, Alignment)
+            and ajman["corrected"]
+            and ajman["corrected_template"]
+        ):
+            return Complete(
+                **analysis.__dict__,
+                corrected=Manoeuvre.from_dict(ajman["corrected"]),
+                corrected_template=State.from_dict(ajman["corrected_template"]),
+            )
+        else:
+            return analysis
+
+    def to_dict(self, basic: bool=False) -> dict:
+        _basic = super().to_dict(basic)
+        if basic:
+            return _basic
         return dict(
-            **super().to_dict(),
+            **_basic,
             corrected=self.corrected.to_dict(),
             corrected_template=self.corrected_template.to_dict(),
         )
-
-    @staticmethod
-    def from_dict(data: dict, fallback=True):
-        pa = Alignment.from_dict(data, fallback)
-        try:
-            pa = Complete(
-                **pa.__dict__,
-                corrected=Manoeuvre.from_dict(data["corrected"]),
-                corrected_template=State.from_dict(data["corrected_template"]),
-            )
-        except Exception as e:
-            if fallback:
-                logger.debug(f"Failed to parse Complete: {repr(e)}")
-            else:
-                raise e
-        return pa
 
     def run(self, optimise_aligment=True) -> Scored:
         if optimise_aligment:
@@ -102,9 +105,11 @@ class Complete(Alignment):
 
             return Complete(
                 self.id,
-                mdef,
+                self.schedule,
                 self.flown,
-                self.direction,
+                mdef,
+                self.entryDirection,
+                self.exitDirection,
                 manoeuvre,
                 template,
                 correction,
@@ -201,7 +206,7 @@ class Complete(Alignment):
                 f"pass {count}, {len(padjusted)} elements adjusted:\n{padjusted}"
             )
 
-        return Basic(self.id, self.mdef, fl, self.entry, self.exit).proceed()
+        return Basic(self.id, self.schedule, fl, self.mdef, self.entryDirection, self.exitDirection).proceed()
 
     def intra(self):
         return ElementsResults([ea.intra_score() for ea in self])

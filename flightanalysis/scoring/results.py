@@ -9,12 +9,11 @@ from flightanalysis.scoring.criteria import Criteria
 from dataclasses import dataclass
 
 
-def ease(val, factor=3):
-    """factor == 3 for hard / no easement"""
-    with np.errstate(invalid="raise"):
-        b = 1.3 - factor * 0.1
-        m = 6 / 6**b
-        return m * val**b
+def diff(val, factor=3):
+    """factor == 1 (easy), 2 (medium), 3 (hard)"""
+    b = 1.3 - factor * 0.1
+    m = 6 / 6**b
+    return m * val**b
 
 
 def trunc(val):
@@ -42,7 +41,7 @@ class Result:
         return float(sum(self.dgs))
 
     def score(self, difficulty=3, truncate: None | str = None):
-        res = sum(ease(self.dgs, difficulty))
+        res = sum(diff(self.dgs, difficulty))
         return trunc(res) if truncate == "result" else res
 
     def to_dict(self):

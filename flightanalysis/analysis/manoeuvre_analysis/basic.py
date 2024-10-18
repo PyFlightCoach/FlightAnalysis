@@ -1,23 +1,33 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from flightdata import State, Flight, Origin
-from flightanalysis.definition import ManDef, SchedDef, ManOption
-from flightanalysis.definition.maninfo import Heading
-import geometry as g
 from json import load
-from .analysis import Analysis
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
+from typing import Annotated
+
+import geometry as g
 import numpy as np
 import pandas as pd
-from typing import Annotated
+from flightdata import Flight, Origin, State
+
+from flightanalysis.definition import ManDef, ManOption, SchedDef
+from flightanalysis.definition.maninfo import Heading
+from flightanalysis.definition.scheduleinfo import ScheduleInfo
+
+from .analysis import Analysis
 
 
 @dataclass
 class Basic(Analysis):
-    mdef: ManDef | ManOption
+    id: int
+    schedule: ScheduleInfo
     flown: State
-    entry: Annotated[Heading | None, "The direction the manoeuvre should start in, None for inferred"]
-    exit: Annotated[Heading | None, "The direction the manoeuvre should end in, None for inferred"]
+    mdef: ManDef | ManOption
+    entryDirection: Annotated[
+        Heading | None, "The direction the manoeuvre should start in, None for inferred"
+    ]
+    exitDirection: Annotated[
+        Heading | None, "The direction the manoeuvre should end in, None for inferred"
+    ]
 
     @property
     def name(self):
@@ -36,8 +46,10 @@ class Basic(Analysis):
         if (
             "element" not in self.flown.data.columns
             or self.flown.data.element.isna().any()
+            or not isinstance(self, Basic)
         ):
             return self
+
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
         elnames = self.flown.data.element.unique().astype(str)
         for md in mopt:
@@ -61,44 +73,54 @@ class Basic(Analysis):
         corr = mdef.create().add_lines()
         return Complete(
             self.id,
-            mdef,
+            self.schedule,
             self.flown,
-            self.entry,
-            self.exit,
+            mdef,
+            self.entryDirection,
+            self.exitDirection,
             man,
             tp,
             corr,
             corr.create_template(itrans, self.flown),
         )
 
-    def to_dict(self) -> dict:
-        return dict(
-            mdef=self.mdef.to_dict(),
-            flown=self.flown.to_dict(),
-            entry=self.entry.name if self.entry else None,
-            exit=self.exit.name if self.exit else None,
+    @staticmethod
+    def from_dict(data: dict) -> Basic:
+        return Basic(
+            id=data["id"],
+            schedule=data["schedule"],
+            flown=State.from_dict(data["flown"]),
+            mdef=ManDef.from_dict(data["mdef"])
+            if data["mdef"]
+            else ManDef.load(data["schedule"], data["name"]),
+            entryDirection=Heading.parse(data["entryDirection"])
+            if data["entryDirection"]
+            else None,
+            exitDirection=Heading.parse(data["entryDirection"])
+            if data["entryDirection"]
+            else None,
         )
 
-    @classmethod
-    def from_dict(Cls, data: dict) -> Basic:
-        return Basic(
-            -1,
-            ManDef.from_dict(data["mdef"]),
-            State.from_dict(data["flown"]),
-            Heading[data["entry"]] if data["entry"] else None,
-            Heading[data["exit"]] if data["exit"] else None,
+    def to_dict(self, basic:bool=False) -> dict:
+        return dict(
+            id=self.id,
+            schedule=self.schedule.__dict__,
+            flown=self.flown.to_dict(),
+            **(dict(mdef=self.mdef.to_dict()) if not basic else {}),
+            entryDirection=self.entryDirection.name if self.entryDirection else None,
+            exitDirection=self.exitDirection.name if self.exitDirection else None,
         )
 
     def create_itrans(self) -> g.Transformation:
-        entry = (
-            self.entry
-            if self.entry is not None
+        entryDirection = (
+            self.entryDirection
+            if self.entryDirection is not None
             else Heading.infer(self.flown[0].att.transform_point(g.PX()).bearing()[0])
         )
 
         return g.Transformation(
             self.flown[0].pos,
-            g.Euler(self.mdef.info.start.orientation.value, 0, entry.value),
+            g.Euler(self.mdef.info.start.orientation.value, 0, entryDirection.value),
         )
 
     @staticmethod
@@ -126,10 +148,11 @@ class Basic(Analysis):
             als.append(
                 Alignment(
                     self.id,
-                    mdef,
+                    self.schedule,
                     self.flown,
-                    self.entry,
-                    self.exit,
+                    mdef,
+                    self.entryDirection,
+                    self.exitDirection,
                     man,
                     man.create_template(itrans),
                 )
@@ -142,8 +165,8 @@ class Basic(Analysis):
             name=self.name,
             id=self.id,
             data=self.flown._create_json_data().to_dict("records"),
-            entry=self.entry.name,
-            exit=self.exit.name,
+            entryDirection=self.entryDirection.name,
+            exitDirection=self.exitDirection.name,
         )
         return data
 
