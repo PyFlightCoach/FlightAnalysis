@@ -13,7 +13,8 @@ from flightanalysis import (
 )
 
 from flightanalysis.builders.IAC.manbuilder import iacmb
-from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
+from flightanalysis.builders.manbuilder import MBTags, centred, r
+
 
 sdef = SchedDef(
     [

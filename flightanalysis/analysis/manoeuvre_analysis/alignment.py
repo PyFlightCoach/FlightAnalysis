@@ -1,13 +1,17 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from flightdata import State
-from flightanalysis.manoeuvre import Manoeuvre
-from flightanalysis.elements import Element
-from loguru import logger
-from .basic import Basic
-from flightanalysis.definition import ManDef, ScheduleInfo
-from ..el_analysis import ElementAnalysis
+
 import traceback
+from dataclasses import dataclass
+
+from flightdata import State
+from loguru import logger
+
+from flightanalysis.definition import ManDef, ScheduleInfo
+from flightanalysis.elements import Element
+from flightanalysis.manoeuvre import Manoeuvre
+
+from ..el_analysis import ElementAnalysis
+from .basic import Basic
 
 
 @dataclass
@@ -39,36 +43,34 @@ class Alignment(Basic):
                     if isinstance(self, Complete)
                     else self.run()
                 )
-            except Exception as e:
-                logger.error(traceback.format_exc())    
+            except Exception:
+                logger.error(traceback.format_exc())
             if new.__class__.__name__ == self.__class__.__name__:
                 break
             self = new
         return new
 
-    def to_dict(self):
+    @staticmethod
+    def from_dict(ajman: dict) -> Alignment | Basic:
+        basic = Basic.from_dict(ajman)
+        if isinstance(basic, Basic) and ajman["manoeuvre"] and ajman["template"]:
+            return Alignment(
+                **basic.__dict__,
+                manoeuvre=Manoeuvre.from_dict(ajman["manoeuvre"]),
+                template=State.from_dict(ajman["template"]),
+            )
+        else:
+            return basic
+
+    def to_dict(self, basic: bool=False) -> dict:
+        _basic = super().to_dict(basic)
+        if basic:
+            return _basic
         return dict(
-            **super().to_dict(),
+            **_basic,
             manoeuvre=self.manoeuvre.to_dict(),
             template=self.template.to_dict(),
         )
-
-
-    @staticmethod
-    def from_dict(data: dict, fallback=True):
-        ia = Basic.from_dict(data)
-        try:
-            ia = Alignment(
-                manoeuvre=Manoeuvre.from_dict(data["manoeuvre"]),
-                template=State.from_dict(data["template"]),
-                **ia.__dict__,
-            )
-        except Exception as e:
-            if fallback:
-                logger.debug(f"Failed to parse Alignment {repr(e)}")
-            else:
-                raise e
-        return ia
 
     def run(self) -> Alignment | Complete:
         if "element" not in self.flown.data.columns:
@@ -89,18 +91,24 @@ class Alignment(Basic):
 
     def update(self, aligned: State) -> Alignment:
         man, tp = self.manoeuvre.match_intention(self.template[0], aligned)
-        mdef = ManDef(self.mdef.info, self.mdef.mps.update_defaults(man), self.mdef.eds, self.mdef.box)
-        return Alignment(self.id, mdef, aligned, self.entry, self.exit, man, tp)
+        mdef = ManDef(
+            self.mdef.info,
+            self.mdef.mps.update_defaults(man),
+            self.mdef.eds,
+            self.mdef.box,
+        )
+        return Alignment(self.id, self.schedule, aligned, mdef, self.entryDirection, self.exitDirection, man, tp)
 
     def _proceed(self) -> Complete:
         if "element" in self.flown.data.columns:
             correction = self.mdef.create()
             return Complete(
                 self.id,
-                self.mdef,
+                self.schedule,
                 self.flown,
-                self.entry,
-                self.exit,
+                self.mdef,
+                self.entryDirection,
+                self.exitDirection,
                 self.manoeuvre,
                 self.template,
                 correction,

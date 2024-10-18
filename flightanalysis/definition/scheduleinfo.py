@@ -1,6 +1,7 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from flightanalysis.data import list_resources, get_json_resource, get_file
-from json import load
+import pandas as pd
 
 
 fcj_categories = {
@@ -58,6 +59,10 @@ class ScheduleInfo:
     def lookupSchedule(schedule):
         return lookup(schedule, fcj_schedules)
 
+    @staticmethod
+    def mixed():    
+        return ScheduleInfo("na", "mixed")
+
     def fcj_to_pfc(self):
         return ScheduleInfo(
             lookup(self.category, fcj_categories),
@@ -104,5 +109,10 @@ class ScheduleInfo:
             ))
         return mds
 
+    def k_factors(self):
+        return pd.Series({md.name: md.k for md in self.manoeuvre_details()}, name='k')
+
+    def __eq__(self, other: ScheduleInfo):
+        return str(self.fcj_to_pfc()) == str(other.fcj_to_pfc())
 
 schedule_library = [ScheduleInfo.from_str(fname) for fname in list_resources('schedule')]

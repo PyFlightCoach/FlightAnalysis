@@ -3,8 +3,8 @@ from geometry import Point, Quaternion, Transformation, PX, PY, PZ, Euldeg, P0
 from pytest import fixture, approx
 import numpy as np
 from flightanalysis import Loop, Measurement
-from flightanalysis.definition.builders.manbuilder import r
-from flightanalysis.definition.builders.f3a_downgrades import dgs
+from flightanalysis.builders.manbuilder import r
+from flightanalysis.builders.f3a.downgrades import dg_applicator
 from geometry.testing import assert_almost_equal
 
 @fixture

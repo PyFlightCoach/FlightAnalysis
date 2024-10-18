@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import Self, Union
 from json import load, dump
-from flightdata import Flight, State, Origin, Collection, NumpyEncoder
-from flightanalysis.definition import SchedDef, ScheduleInfo, Heading, ManDef
+from flightdata import Flight, State, Origin, Collection, NumpyEncoder, fcj
+from flightanalysis.definition import SchedDef, ScheduleInfo, Heading
 from flightanalysis import __version__
-from . import manoeuvre_analysis as analysis
+from . import manoeuvre_analysis as ma
 from loguru import logger
 from joblib import Parallel, delayed
 import os
@@ -13,28 +13,24 @@ import pandas as pd
 
 
 class ScheduleAnalysis(Collection):
-    VType = analysis.Analysis
+    VType = ma.Analysis
     uid = "name"
 
     @staticmethod
     def from_fcj(
-        fcj: Union[str | bytes, dict],
+        fcj: fcj.FCJ,
         flight: Flight | None = None,
         proceed=True,
     ) -> ScheduleAnalysis:
-        data = fcj if isinstance(fcj, dict) else load(open(fcj, "r"))
+        flight = flight if flight else Flight.from_fc_json(fcj)
 
-        flight = Flight.from_fc_json(data) if flight is None else flight
-
-        info = ScheduleInfo(*data["parameters"]["schedule"]).fcj_to_pfc()
+        info = ScheduleInfo(*fcj.parameters.schedule).fcj_to_pfc()
         sdef = SchedDef.load(info)
-        box = Origin.from_fcjson_parameters(data["parameters"])
+        box = Origin.from_fcjson_parameters(fcj.parameters)
 
         state = State.from_flight(flight, box)
 
-        state = state.splitter_labels(
-            data["mans"], sdef.uids, t0=data["data"][0]["time"] / 1e6
-        )
+        state = state.splitter_labels(fcj.mans, sdef.uids, t0=fcj.data[0].time / 1e6)
 
         heading = Heading.infer(state.get_manoeuvre(sdef[0].uid)[0].att.bearing()[0])
 
@@ -42,48 +38,23 @@ class ScheduleAnalysis(Collection):
         for i, mdef in enumerate(sdef):
             st = state.get_manoeuvre(mdef.uid)
 
-            if "fcs_scores" in data and len(data["fcs_scores"]) > 0:
-                st = st.label_els(
-                    list(data["fcs_scores"])[-1]["manresults"][i + 1]["els"]
-                )
+            if fcj.fcs_scores and len(fcj.fcs_scores) > 0:
+                st = st.label_els(fcj.fcs_scores[-1].manresults[i + 1].els)
 
-            nma = analysis.Basic(
-                i, mdef, st, mdef.info.start.direction.wind_swap_heading(heading), None
+            nma = ma.Basic(
+                mdef.info.short_name,
+                i,
+                info,
+                mdef,
+                st,
+                mdef.info.start.direction.wind_swap_heading(heading),
+                None,
             )
             if proceed:
                 nma = nma.proceed()
             mas.append(nma)
 
         return ScheduleAnalysis(mas, info)
-
-    @staticmethod
-    def parse_analysis_json(data: str | dict) -> ScheduleAnalysis:
-        if not isinstance(data, dict):
-            data = load(open(data, "r"))
-
-        mas = []
-        for man in data["mans"]:
-            mdef = ManDef.load(ScheduleInfo(**man["schedule"]), man["name"])
-
-            st = (
-                State.from_dict(man["flown"]['data'])
-                .label(manoeuvre=man["name"])
-                .label_els(list(man["history"].values())[-1]["els"])
-            )
-
-            if not data["isComp"] or len(mas)==0:
-                heading = Heading.infer(st[0].att.bearing()[0])
-            else:
-                heading = mdef.info.start.direction.wind_swap_heading(mas[0].entry)
-
-
-            mas.append(analysis.Basic(man["id"], mdef, st, heading, None))
-
-        return ScheduleAnalysis(mas)
-
-    def create_analysis_json(self, **kwargs) -> dict:
-        pass
-
 
     def append_scores_to_fcj(self, file: Union[str, dict], ofile: str = None) -> dict:
         data = file if isinstance(file, dict) else load(open(file, "r"))
@@ -123,35 +94,31 @@ class ScheduleAnalysis(Collection):
     def run_all(self) -> Self:
         def parse_analyse_serialise(pad):
             try:
-                pad = analysis.parse_dict(pad)
+                pad = ma.from_dict(pad).run_all()
                 pad = pad.run_all()
                 logger.info(f"Completed {pad.name}")
             except Exception as e:
                 logger.error(f"Failed to process {pad.name}: {repr(e)}")
             return pad.to_dict()
 
-        logger.info(f"Starting {os.cpu_count()} analysis processes")
+        logger.info(f"Starting {os.cpu_count()} ma processes")
         madicts = Parallel(n_jobs=os.cpu_count())(
-            delayed(parse_analyse_serialise)(ma.to_dict()) for ma in self
+            delayed(parse_analyse_serialise)(man.to_dict()) for man in self
         )
 
-        return ScheduleAnalysis(
-            [analysis.Scored.from_dict(mad) for mad in madicts]
-        )
+        return ScheduleAnalysis([ma.Scored.from_dict(mad) for mad in madicts])
 
     def optimize_alignment(self) -> Self:
         def parse_analyse_serialise(mad):
-            an = analysis.Complete.from_dict(mad)
+            an = ma.Complete.from_dict(mad)
             return an.run_all().to_dict()
 
-        logger.info(f"Starting {os.cpu_count()} alinment optimisation processes")
-        inmadicts = [mdef.to_dict() for mdef in self]
+        logger.info(f"Starting {os.cpu_count()} alignment optimisation processes")
+
         madicts = Parallel(n_jobs=os.cpu_count())(
-            delayed(parse_analyse_serialise)(mad) for mad in inmadicts
+            delayed(parse_analyse_serialise)(man.to_dict()) for man in self
         )
-        return ScheduleAnalysis(
-            [analysis.Scored.from_dict(mad) for mad in madicts]
-        )
+        return ScheduleAnalysis([ma.from_dict(mad) for mad in madicts])
 
     def scores(self):
         scores = {}

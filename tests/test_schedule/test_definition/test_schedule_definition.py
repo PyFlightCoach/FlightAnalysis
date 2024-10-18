@@ -4,7 +4,7 @@ from flightanalysis import (
     Manoeuvre, Position, BoxLocation, ManInfo, 
     Height, Direction, Orientation, ManDef, ElDef
 )
-from flightanalysis.definition.builders.manbuilder import f3amb
+from flightanalysis.builders.f3a.manbuilder import f3amb
 
 import numpy as np
 from json import load

@@ -1,7 +1,7 @@
 from pytest import fixture
 
 from flightanalysis import ManParms, Opp, ManParm
-from flightanalysis.definition.builders.manbuilder import f3amb
+from flightanalysis.builders.f3a.manbuilder import f3amb
 
 @fixture
 def mps():
