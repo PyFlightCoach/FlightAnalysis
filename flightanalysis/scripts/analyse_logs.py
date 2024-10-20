@@ -49,8 +49,8 @@ def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
                     fcjson.data[man.start].time / 1e6 : fcjson.data[man.stop].time / 1e6
                 ].to_dict(),
                 history={
-                    res.fa_version: res.manresults[i + 1] for res in fcjson.fcs_scores
-                }
+                    res.fa_version: res.manresults[i + 1] for res in fcjson.fcs_scores if res.manresults[i+1]
+                } 
                 | (aj.mans[i].history if (aj and aj.mans[i].history) else {}),
             ).simplify_history()
             for i, man in enumerate(fcjson.mans[1:-1])
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     main()
 #    analyse_log(
 #        Path(
-#            "~/OneDrive/proj/logs/2024_09_07/manual_F3A FAI_P25_24_09_07_00000109.json"
+#            '~/OneDrive/proj/logs/2023_12_20/manual_F3A_F25_23_12_20_00000157.json'
 #        ).expanduser(),
 #        True, False
 #    )
