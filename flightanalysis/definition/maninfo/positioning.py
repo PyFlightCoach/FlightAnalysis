@@ -16,20 +16,6 @@ class Heading(Enum):
     INTOOUT = 3 * np.pi / 2
 
     @staticmethod
-    def parse(s: str):
-        match s[0].lower():
-            case "l":
-                return Heading.RTOL
-            case "r":
-                return Heading.LTOR
-            case "o":
-                return Heading.OUTTOIN
-            case "i":
-                return Heading.INTOOUT
-            case _:
-                raise ValueError(f"Invalid direction {s}")
-
-    @staticmethod
     def values():
         return np.array(list(Heading.__members__.values()))
 
