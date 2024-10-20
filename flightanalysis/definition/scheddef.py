@@ -23,7 +23,7 @@ class SchedDef(Collection):
         return self.add(ManDef(info, defaults))
 
     def create_template(
-        self, depth: float = 170, wind: Heading = Heading.RIGHT
+        self, depth: float = 170, wind: Heading = Heading.LTOR
     ) -> Tuple[Schedule, State]:
         templates = []
         ipos = self[0].guess_ipos(depth, wind)
@@ -63,7 +63,7 @@ class SchedDef(Collection):
         sinfo = name if isinstance(name, ScheduleInfo) else ScheduleInfo.from_str(name)
         return SchedDef.from_dict(sinfo.json_data())
 
-    def plot(self, depth=170, wind=Heading.RIGHT):
+    def plot(self, depth=170, wind=Heading.LTOR):
         sched, template = self.create_template(depth, wind)
         from flightplotting import plot_regions
 
@@ -90,7 +90,7 @@ class SchedDef(Collection):
 
         return State.stack(sts, 0)
 
-    def create_fcj(self, sname: str, path: str, wind=Heading.RIGHT, scale=1, kind="f3a"):
+    def create_fcj(self, sname: str, path: str, wind=Heading.LTOR, scale=1, kind="f3a"):
         sched, template = self.create_template(170, wind)
         template = State.stack(
             [
@@ -103,7 +103,7 @@ class SchedDef(Collection):
 
         if not scale == 1:
             template = template.scale(scale)
-        if wind == Heading.LEFT:
+        if wind == Heading.RTOL:
             template = template.mirror_zy()
 
         fcj = self.label_exit_lines(template).create_fc_json(
@@ -114,7 +114,7 @@ class SchedDef(Collection):
             dump(fcj, f)
 
     def create_fcjs(self, sname, folder, kind="F3A"):
-        winds = [Heading.LEFT, Heading.LEFT, Heading.RIGHT, Heading.RIGHT]
+        winds = [Heading.RTOL, Heading.RTOL, Heading.LTOR, Heading.LTOR]
         distances = [170, 150, 170, 150]
 
         for wind, distance in zip(winds, distances):

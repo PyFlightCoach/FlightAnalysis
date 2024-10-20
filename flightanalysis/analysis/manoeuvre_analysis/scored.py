@@ -16,10 +16,9 @@ class Scored(Complete):
         return Complete(
             self.id,
             self.schedule,
+            self.schedule_direction,
             self.flown,
             self.mdef,
-            self.entryDirection,
-            self.exitDirection,
             self.manoeuvre,
             self.template,
             self.corrected,
@@ -41,16 +40,6 @@ class Scored(Complete):
         if basic:
             return _basic
         return dict(**_basic, scores=self.scores.to_dict())
-
-    def to_mindict(self, sinfo: ScheduleInfo = None, full=False):
-        data = dict(
-            **super().to_mindict(sinfo, full),
-            scores=dict(
-                **self.scores.summary(), total=self.scores.score(), k=self.mdef.info.k
-            ),
-        )
-
-        return data
 
     def fcj_results(self):
         return dict(**super().fcj_results(), results=self.scores.fcj_results())

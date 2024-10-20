@@ -19,7 +19,7 @@ data = mdef.to_dict()
 print(dumps(data, indent=2, cls=NumpyEncoder))
 mdef = ManDef.from_dict(data)
 
-it = mdef.guess_itrans(600, Heading.RIGHT)
+it = mdef.guess_itrans(600, Heading.LTOR)
 
 mdef.fit_box(it)
 

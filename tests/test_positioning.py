@@ -3,13 +3,13 @@ import numpy as np
 
 def test_heading_infer():
     tbs = [
-        [Heading.RIGHT, np.radians(10)],
-        [Heading.RIGHT, np.radians(-10)],
-        [Heading.RIGHT, np.radians(350)],
-        [Heading.RIGHT, np.radians(370)],
-        [Heading.LEFT, np.radians(180)],
-        [Heading.LEFT, np.radians(-182)],
-        [Heading.LEFT, np.radians(182)],
+        [Heading.LTOR, np.radians(10)],
+        [Heading.LTOR, np.radians(-10)],
+        [Heading.LTOR, np.radians(350)],
+        [Heading.LTOR, np.radians(370)],
+        [Heading.RTOL, np.radians(180)],
+        [Heading.RTOL, np.radians(-182)],
+        [Heading.RTOL, np.radians(182)],
     ]
 
 

@@ -97,7 +97,7 @@ class Alignment(Basic):
             self.mdef.eds,
             self.mdef.box,
         )
-        return Alignment(self.id, self.schedule, aligned, mdef, self.entryDirection, self.exitDirection, man, tp)
+        return Alignment(self.id, self.schedule, self.schedule_direction, aligned, mdef, man, tp)
 
     def _proceed(self) -> Complete:
         if "element" in self.flown.data.columns:
@@ -105,10 +105,9 @@ class Alignment(Basic):
             return Complete(
                 self.id,
                 self.schedule,
+                self.schedule_direction,
                 self.flown,
                 self.mdef,
-                self.entryDirection,
-                self.exitDirection,
                 self.manoeuvre,
                 self.template,
                 correction,
@@ -116,12 +115,6 @@ class Alignment(Basic):
             )
         else:
             return self
-
-    def to_mindict(self, sinfo: ScheduleInfo = None, full=False):
-        data = dict(els=self.flown.label_ranges("element").to_dict("records"))
-        if full:
-            data = dict(**super().to_mindict(sinfo), **data)
-        return data
 
     def fcj_results(self):
         df = self.flown.label_ranges("element").iloc[:, :3]

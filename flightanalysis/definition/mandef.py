@@ -82,18 +82,18 @@ class ManDef:
         return g.Point(
             x={
                 Position.CENTRE: {
-                    Heading.IN: 0.0,
-                    Heading.OUT: 0.0,
-                    Heading.LEFT: self.box.right(gpy)[1][0],
-                    Heading.RIGHT: self.box.left(gpy)[1][0],
+                    Heading.OUTTOIN: 0.0,
+                    Heading.INTOOUT: 0.0,
+                    Heading.RTOL: self.box.right(gpy)[1][0],
+                    Heading.LTOR: self.box.left(gpy)[1][0],
                 }[heading],
                 Position.END: 0.0,
             }[self.info.position],
             y={
-                Heading.IN: 2 * target_depth,
-                Heading.OUT: 0,
-                Heading.LEFT: target_depth,
-                Heading.RIGHT: target_depth,
+                Heading.OUTTOIN: 2 * target_depth,
+                Heading.INTOOUT: 0,
+                Heading.RTOL: target_depth,
+                Heading.LTOR: target_depth,
             }[heading],
             z=self.box.bottom(gpy)[1][0] * (self.info.start.height.value - 1)
             + self.info.start.height.value * self.box.top(gpy)[1][0]
@@ -162,7 +162,7 @@ class ManDef:
                 f"{self.info.position} {heading}, ipos: {int(itrans.pos.x[0])}, Xoff: {int(xoffset)}, "
             )
 
-            if heading == Heading.RIGHT:
+            if heading == Heading.LTOR:
                 return max(-itrans.pos.x[0] - xoffset, 10)
             else:
                 return max(itrans.pos.x[0] - xoffset, 10)
@@ -184,7 +184,7 @@ class ManDef:
             uid=self.info.short_name,
         )
 
-    def plot(self, depth=170, heading = Heading.RIGHT):
+    def plot(self, depth=170, heading = Heading.LTOR):
         itrans = self.guess_itrans(depth, heading)
         man = self.create()
         template = man.create_template(itrans)
@@ -199,7 +199,7 @@ class ManDef:
 
         
         man = self.create()
-        tp = man.create_template(self.guess_itrans(170, Heading.RIGHT))
+        tp = man.create_template(self.guess_itrans(170, Heading.LTOR))
 
         for i, ed in enumerate(self.eds):
             new_eds.append(ElDef(

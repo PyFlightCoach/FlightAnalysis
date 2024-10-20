@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from flightdata import Flight, Origin, State
 
-from flightanalysis.definition import ManDef, ManOption, SchedDef
+from flightanalysis.definition import ManDef, ManOption, SchedDef, Direction
 from flightanalysis.definition.maninfo import Heading
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 
@@ -20,14 +20,11 @@ from .analysis import Analysis
 class Basic(Analysis):
     id: int
     schedule: ScheduleInfo
+    schedule_direction: Annotated[
+        Heading | None, "The direction the schedule was flown in in, None for inferred"
+    ]
     flown: State
     mdef: ManDef | ManOption
-    entryDirection: Annotated[
-        Heading | None, "The direction the manoeuvre should start in, None for inferred"
-    ]
-    exitDirection: Annotated[
-        Heading | None, "The direction the manoeuvre should end in, None for inferred"
-    ]
 
     @property
     def name(self):
@@ -74,10 +71,9 @@ class Basic(Analysis):
         return Complete(
             self.id,
             self.schedule,
+            self.schedule_direction,
             self.flown,
             mdef,
-            self.entryDirection,
-            self.exitDirection,
             man,
             tp,
             corr,
@@ -89,54 +85,58 @@ class Basic(Analysis):
         return Basic(
             id=data["id"],
             schedule=data["schedule"],
+            schedule_direction=Heading.parse(data["schedule_direction"])
+            if (data["schedule_direction"] and data['schedule_direction'] != "Infer")
+            else None,
             flown=State.from_dict(data["flown"]),
             mdef=ManDef.from_dict(data["mdef"])
             if data["mdef"]
             else ManDef.load(data["schedule"], data["name"]),
-            entryDirection=Heading.parse(data["entryDirection"])
-            if data["entryDirection"]
-            else None,
-            exitDirection=Heading.parse(data["entryDirection"])
-            if data["entryDirection"]
-            else None,
         )
 
     def to_dict(self, basic:bool=False) -> dict:
         return dict(
             id=self.id,
             schedule=self.schedule.__dict__,
+            schedule_direction=self.schedule_direction.name if self.schedule_direction else None,
             flown=self.flown.to_dict(),
             **(dict(mdef=self.mdef.to_dict()) if not basic else {}),
-            entryDirection=self.entryDirection.name if self.entryDirection else None,
-            exitDirection=self.exitDirection.name if self.exitDirection else None,
         )
 
     def create_itrans(self) -> g.Transformation:
-        entryDirection = (
-            self.entryDirection
-            if self.entryDirection is not None
-            else Heading.infer(self.flown[0].att.transform_point(g.PX()).bearing()[0])
-        )
+        if self.schedule_direction and self.mdef.info.start.direction is not Direction.CROSS:
+            entry_direction = self.mdef.info.start.direction.wind_swap_heading(self.schedule_direction)
+        else:
+            entry_direction = Heading.infer(self.flown[0].att.transform_point(g.PX()).bearing()[0])
 
         return g.Transformation(
             self.flown[0].pos,
-            g.Euler(self.mdef.info.start.orientation.value, 0, entryDirection.value),
+            g.Euler(self.mdef.info.start.orientation.value, 0, entry_direction.value),
         )
 
     @staticmethod
     def from_fcj(file: str, mid: int):
         with open(file, "r") as f:
             data = load(f)
+
         flight = Flight.from_fc_json(data)
         box = Origin.from_fcjson_parameters(data["parameters"])
 
-        sdef = SchedDef.load(data["parameters"]["schedule"][1])
+        sinfo = ScheduleInfo.build(**data["parameters"]["schedule"]).fcj_to_pfc()
+        
 
-        state = State.from_flight(flight, box).splitter_labels(
-            data["mans"], [m.info.short_name for m in sdef]
+        state: State = State.from_flight(flight[
+            data['data'][data['mans'][mid]['start']]['time'],
+            data['data'][data['mans'][mid]['stop']]['time']
+        ], box)
+
+        mdef = ManDef.load(sinfo, mid)
+
+        schedule_direction = (
+            Heading.infer(state[data['data'][data['mans'][1]['start']]['time']].bearing()[0])
         )
-        mdef = sdef[mid]
-        return Basic(mid, mdef, state.get_manoeuvre(mdef.uid))
+
+        return Basic(mid, sinfo, schedule_direction, mdef, state)
 
     def run(self) -> list[Alignment]:
         itrans = self.create_itrans()
@@ -149,46 +149,14 @@ class Basic(Analysis):
                 Alignment(
                     self.id,
                     self.schedule,
+                    self.schedule_direction,
                     self.flown,
                     mdef,
-                    self.entryDirection,
-                    self.exitDirection,
                     man,
                     man.create_template(itrans),
                 )
             )
         return als
-
-    def to_mindict(self, sinfo: ScheduleInfo):
-        data = dict(
-            **super().to_mindict(sinfo),
-            name=self.name,
-            id=self.id,
-            data=self.flown._create_json_data().to_dict("records"),
-            entryDirection=self.entryDirection.name,
-            exitDirection=self.exitDirection.name,
-        )
-        return data
-
-    @staticmethod
-    def from_mindict(data: dict):
-        info = ScheduleInfo.from_str(data["parameters"]["schedule"][1])
-
-        st = State.from_flight(
-            Flight.from_fc_json(data),
-            Origin.from_fcjson_parmameters(data["parameters"]),
-        )
-
-        mdef = SchedDef.load(info)[data["id"]]
-
-        if "els" in data:
-            df = pd.DataFrame(data["els"])
-            df.columns = ["name", "start", "stop", "length"]
-            st = st.splitter_labels(df.to_dict("records"), target_col="element").label(
-                manoeuvre=data["name"]
-            )
-
-        return Basic(data["id"], mdef, st, data["direction"])
 
 
 from .alignment import Alignment  # noqa: E402

@@ -20,18 +20,6 @@ from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
 clubman_def = SchedDef([  
-
-    f3amb.create(ManInfo
-        (
-            "Turn Round", "trnround", k=0, position=Position.END, 
-            start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
-            end=BoxLocation(Height.BTM)
-        ),[  
-            f3amb.loop(np.pi/4),
-            centred(f3amb.roll(np.pi, line_length = 2*65)),
-            f3amb.loop(5*np.pi/4),     
-        ],
-        loop_radius=65),    
     
     f3amb.create(ManInfo("Inside Loop", "inloop", k=2, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
@@ -70,9 +58,9 @@ clubman_def = SchedDef([
             start=BoxLocation(Height.BTM, Direction.DOWNWIND, Orientation.UPRIGHT),
             end=BoxLocation(Height.BTM)
         ),[  
-            f3amb.loop(np.pi/4),
+            f3amb.loop(5*np.pi/4),
             centred(f3amb.roll(np.pi, line_length = 2*45)),
-            f3amb.loop(5*np.pi/4),     
+            f3amb.loop(np.pi/4),     
         ],
         loop_radius=45),
         
