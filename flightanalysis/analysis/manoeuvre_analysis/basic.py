@@ -85,7 +85,7 @@ class Basic(Analysis):
         return Basic(
             id=data["id"],
             schedule=data["schedule"],
-            schedule_direction=Heading.parse(data["schedule_direction"])
+            schedule_direction=Heading[data["schedule_direction"]]
             if (data["schedule_direction"] and data['schedule_direction'] != "Infer")
             else None,
             flown=State.from_dict(data["flown"]),
