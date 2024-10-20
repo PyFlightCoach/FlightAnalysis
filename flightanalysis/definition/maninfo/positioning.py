@@ -2,7 +2,7 @@ import numpy as np
 from enum import Enum
 from dataclasses import dataclass
 from typing import Annotated
-from flightdata import State
+
 
 class Orientation(Enum):
     UPRIGHT = np.pi
@@ -10,22 +10,22 @@ class Orientation(Enum):
 
 
 class Heading(Enum):
-    LEFT = np.pi
-    RIGHT = 0
-    IN = np.pi / 2
-    OUT = 3 * np.pi / 2
+    RTOL = np.pi
+    LTOR = 0
+    OUTTOIN = np.pi / 2
+    INTOOUT = 3 * np.pi / 2
 
     @staticmethod
     def parse(s: str):
         match s[0].lower():
             case "l":
-                return Heading.RIGHT
+                return Heading.RTOL
             case "r":
-                return Heading.LEFT
-            case "i":
-                return Heading.IN
+                return Heading.LTOR
             case "o":
-                return Heading.OUT
+                return Heading.OUTTOIN
+            case "i":
+                return Heading.INTOOUT
             case _:
                 raise ValueError(f"Invalid direction {s}")
 
@@ -46,10 +46,10 @@ class Heading(Enum):
 
     def reverse(self):
         return {
-            Heading.LEFT: Heading.RIGHT,
-            Heading.RIGHT: Heading.LEFT,
-            Heading.IN: Heading.OUT,
-            Heading.OUT: Heading.IN,
+            Heading.RTOL: Heading.LTOR,
+            Heading.LTOR: Heading.RTOL,
+            Heading.OUTTOIN: Heading.INTOOUT,
+            Heading.INTOOUT: Heading.OUTTOIN,
         }[self]
 
 

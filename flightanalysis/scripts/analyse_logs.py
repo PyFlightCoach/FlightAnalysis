@@ -1,4 +1,4 @@
-from flightanalysis import ScheduleInfo, logger, enable_logging, __version__
+from flightanalysis import ScheduleInfo, logger, enable_logging, __version__, Heading
 from flightanalysis.analysis.analysis_json import AnalysisJson
 from flightanalysis.analysis.manoeuvre_analysis import MA
 from pathlib import Path
@@ -19,7 +19,14 @@ def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
     mdetails = sinfo.manoeuvre_details()
     origin = Origin.from_fcjson_parameters(fcjson.parameters)
     tboot, st = _create_state(fcjson, bin, origin)
-    aj = AnalysisJson.model_validate_json(ajs.open().read()) if ajs else None
+    try:
+        aj = AnalysisJson.model_validate_json(ajs.open().read()) if ajs else None
+    except Exception:
+        aj = None
+
+    schedule_direction = Heading.infer(
+        st[fcjson.data[fcjson.mans[1].start].time / 1e6].att.bearing()[0]
+    )
 
     return AnalysisJson(
         origin=FCJOrigin(
@@ -37,6 +44,7 @@ def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
                 name=mdetails[i].name,
                 id=i + 1,
                 schedule=sinfo,
+                schedule_direction=schedule_direction.name,
                 flown=st[
                     fcjson.data[man.start].time / 1e6 : fcjson.data[man.stop].time / 1e6
                 ].to_dict(),
@@ -57,23 +65,27 @@ def run_dict(mdict):
     return man
 
 
-def run_analysis(ajson: AnalysisJson):
+def run_analysis(ajson: AnalysisJson, parallel: bool = True):
     return AnalysisJson(
         **(
             ajson.__dict__
             | dict(
-                mans=[
-                    MA.model_validate(oman)
-                    for oman in Parallel(n_jobs=os.cpu_count())(
-                        delayed(run_dict)(man.model_dump()) for man in ajson.mans
-                    )
-                ]
+                mans=(
+                    [
+                        MA.model_validate(oman)
+                        for oman in Parallel(n_jobs=os.cpu_count())(
+                            delayed(run_dict)(man.model_dump()) for man in ajson.mans
+                        )
+                    ]
+                    if parallel
+                    else [man.run(True, True, False) for man in ajson.mans]
+                )
             )
         )
     )
 
 
-def analyse_log(fcjson: Path, refresh: bool = False):
+def analyse_log(fcjson: Path, refresh: bool = False, parallel: bool = True):
     bin = fcjson.parent / f"{fcjson.stem[-8:]}.BIN"
     ajs = fcjson.parent / f"{fcjson.stem[-8:]}.ajson"
     logger.info(f"Processing {fcjson}")
@@ -92,20 +104,20 @@ def analyse_log(fcjson: Path, refresh: bool = False):
 
     if not aj.check_version(__version__) or refresh:
         if not aj.check_version(__version__):
-            aj = run_analysis(aj)
+            aj = run_analysis(aj, parallel)
         with open(ajs, "w") as f:
             f.write(aj.model_dump_json(indent=2))
 
     print(aj.create_score_df(fcj.ScoreProperties(difficulty=3, truncate=False)).T)
 
 
-def analyse_logs(folder: Path, refresh: bool = False):
+def analyse_logs(folder: Path, refresh: bool = False, parallel: bool = True):
     fcjs = list(folder.rglob("*.json"))
 
     for i, fcjson in enumerate(fcjs):
         logger.info(f"Processing {i} of {len(fcjs)} {fcjson}")
         try:
-            analyse_log(fcjson, refresh)
+            analyse_log(fcjson, refresh, parallel)
         except Exception as e:
             logger.error(f"Error processing {fcjson}: {e}")
             logger.info(traceback.format_exc())
@@ -137,5 +149,5 @@ if __name__ == "__main__":
 #        Path(
 #            "~/OneDrive/proj/logs/2024_09_07/manual_F3A FAI_P25_24_09_07_00000109.json"
 #        ).expanduser(),
-#        True,
+#        True, False
 #    )

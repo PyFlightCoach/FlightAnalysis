@@ -106,10 +106,9 @@ class Complete(Alignment):
             return Complete(
                 self.id,
                 self.schedule,
+                self.schedule_direction,
                 self.flown,
                 mdef,
-                self.entryDirection,
-                self.exitDirection,
                 manoeuvre,
                 template,
                 correction,
@@ -206,7 +205,7 @@ class Complete(Alignment):
                 f"pass {count}, {len(padjusted)} elements adjusted:\n{padjusted}"
             )
 
-        return Basic(self.id, self.schedule, fl, self.mdef, self.entryDirection, self.exitDirection).proceed()
+        return Basic(self.id, self.schedule, self.schedule_direction, fl, self.mdef).proceed()
 
     def intra(self):
         return ElementsResults([ea.intra_score() for ea in self])

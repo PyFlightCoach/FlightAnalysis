@@ -52,5 +52,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    plot_score_csv(Path("~/projects/logs/fcs_scores.csv").expanduser())
+    main()
+    #plot_score_csv(Path("~/projects/logs/fcs_scores.csv").expanduser())

@@ -72,7 +72,4 @@ def main():
 
 if __name__ == "__main__":
    #collect_plot(Path("~/OneDrive/proj/logs/").expanduser())
-    pass
-
-    # AnalysisJson.
     main()

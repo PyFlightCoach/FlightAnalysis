@@ -2,7 +2,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightdata import fcj
-from . import from_dict, Basic, Alignment, Complete, Scored
+from . import from_dict
 from flightanalysis import __version__
 import numpy as np
 import pandas as pd
@@ -12,11 +12,10 @@ class MA(BaseModel):
     name: str
     id: int
     schedule: ScheduleInfo
+    schedule_direction: str | None
     flown: list[dict] | dict
 
     mdef: dict | None = None
-    entryDirection: str | None = None
-    exitDirection: str | None = None
     manoeuvre: dict | None = None
     template: list[dict] | dict | None = None
     corrected: dict | None = None
@@ -30,6 +29,7 @@ class MA(BaseModel):
             name=self.name,
             id=self.id,
             schedule=self.schedule,
+            schedule_direction=self.schedule_direction,
             flown=self.flown,
             history=self.history,
         )
@@ -47,7 +47,7 @@ class MA(BaseModel):
                 name=man.mdef.info.short_name,
                 history={
                     **(self.history if self.history else {}),
-                    version: fcj.ManResult.model_validate(man.fcj_results()),
+                    **({version: fcj.ManResult.model_validate(man.fcj_results())} if man.__class__.__name__ == 'Scored' else {}),
                 },
             )
 
