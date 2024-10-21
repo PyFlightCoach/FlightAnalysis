@@ -48,15 +48,19 @@ class SchedDef(Collection):
             mans.append(man)
         return Schedule(mans), State.stack(templates)
 
-    def to_json(self, file: str) -> str:
+    def to_json(self, file: str, sinfo: ScheduleInfo) -> str:
         with open(file, "w") as f:
-            dump(self.to_dict(), f, cls=NumpyEncoder, indent=2)
+            dump(dict(
+                category=sinfo.category if sinfo else None,
+                schedule=sinfo.name if sinfo else None,
+                mdefs=self.to_dicts()
+            ), f, cls=NumpyEncoder, indent=2)
         return file
 
     @staticmethod
     def from_json(file: str):
         with open(file, "r") as f:
-            return SchedDef.from_dict(load(f))
+            return SchedDef.from_dict(load(f)['mdefs'])
 
     @staticmethod
     def load(name: Union[str, ScheduleInfo]) -> Self:
