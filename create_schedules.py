@@ -8,6 +8,7 @@ from flightanalysis.builders.schedules.f3auk_intermediate import intermediate_de
 from flightanalysis.builders.schedules.baeaglid_intermediate import sdef as baeaglid_intermediate_def
 from flightanalysis.builders.schedules.baeapower_unlimited2024 import sdef as baeapower_unlimited2024_def
 from flightanalysis.builders.schedules.baeapower_advanced2024 import sdef as baeapower_advanced2024_def
+from flightanalysis import ScheduleInfo
 sdefs = {
     'f3a_p23_schedule': p23_def, 
     'f3a_a25_schedule': a25_def, 
@@ -23,7 +24,8 @@ sdefs = {
 
 def create_all():
     for k, sdef in sdefs.items():
-        sdef.to_json(f"flightanalysis/data/{k}.json")
+        
+        sdef.to_json(f"flightanalysis/data/{k}.json", ScheduleInfo.from_str(k))
 
 if __name__ == '__main__':
     create_all()

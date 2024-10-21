@@ -94,7 +94,7 @@ class ScheduleInfo:
         return get_file(f"{str(self).lower()}_schedule.json")
 
     def json_data(self):
-        return get_json_resource(self.file())
+        return get_json_resource(self.file())['mdefs']
 
     def manoeuvre_details(self) -> list[ManDetails]:
         mds = []
