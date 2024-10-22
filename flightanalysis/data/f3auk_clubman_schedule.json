@@ -1,8 +1,8 @@
 {
   "category": "f3auk",
   "schedule": "clubman",
-  "mdefs": [
-    {
+  "mdefs": {
+    "inloop": {
       "info": {
         "name": "Inside Loop",
         "short_name": "inloop",
@@ -288,7 +288,7 @@
         "relax_back": false
       }
     },
-    {
+    "rcuban": {
       "info": {
         "name": "Half Rev Cuban 8",
         "short_name": "rcuban",
@@ -1022,7 +1022,7 @@
         "relax_back": false
       }
     },
-    {
+    "slowroll": {
       "info": {
         "name": "slow Roll",
         "short_name": "slowroll",
@@ -1323,7 +1323,7 @@
         "relax_back": false
       }
     },
-    {
+    "hcuban": {
       "info": {
         "name": "Half Cuban 8",
         "short_name": "hcuban",
@@ -2057,7 +2057,7 @@
         "relax_back": false
       }
     },
-    {
+    "Immel": {
       "info": {
         "name": "Immelman combo",
         "short_name": "Immel",
@@ -2827,7 +2827,7 @@
         "relax_back": false
       }
     },
-    {
+    "innerhB": {
       "info": {
         "name": "Humpty",
         "short_name": "innerhB",
@@ -3763,7 +3763,7 @@
         "relax_back": false
       }
     },
-    {
+    "inverted": {
       "info": {
         "name": "Inverted Flight",
         "short_name": "inverted",
@@ -4288,7 +4288,7 @@
         "relax_back": false
       }
     },
-    {
+    "stall": {
       "info": {
         "name": "Stall Turn",
         "short_name": "stall",
@@ -5019,7 +5019,7 @@
         "relax_back": false
       }
     },
-    {
+    "outloop": {
       "info": {
         "name": "Outside Loop",
         "short_name": "outloop",
@@ -5753,7 +5753,7 @@
         "relax_back": false
       }
     },
-    {
+    "outerhB": {
       "info": {
         "name": "Outer Humpty",
         "short_name": "outerhB",
@@ -6689,7 +6689,7 @@
         "relax_back": false
       }
     },
-    {
+    "fullcuban8": {
       "info": {
         "name": "Cuban 8",
         "short_name": "fullcuban8",
@@ -7859,7 +7859,7 @@
         "relax_back": false
       }
     },
-    {
+    "hsqrloop": {
       "info": {
         "name": "Half Sqr Loop",
         "short_name": "hsqrloop",
@@ -8609,7 +8609,7 @@
         "relax_back": false
       }
     },
-    {
+    "spin": {
       "info": {
         "name": "3 Turn Spin",
         "short_name": "spin",
@@ -9153,7 +9153,7 @@
         "relax_back": false
       }
     },
-    {
+    "land": {
       "info": {
         "name": "Landing",
         "short_name": "land",
@@ -9413,5 +9413,5 @@
         "relax_back": false
       }
     }
-  ]
+  }
 }

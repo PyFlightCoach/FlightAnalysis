@@ -1,8 +1,8 @@
 {
   "category": "baeapower",
   "schedule": "unlimited2024",
-  "mdefs": [
-    {
+  "mdefs": {
+    "dHump": {
       "info": {
         "name": "Double Humpty",
         "short_name": "dHump",
@@ -1444,7 +1444,7 @@
         "relax_back": false
       }
     },
-    {
+    "sTooth": {
       "info": {
         "name": "Sharks Tooth",
         "short_name": "sTooth",
@@ -2432,7 +2432,7 @@
         "relax_back": false
       }
     },
-    {
+    "splitS": {
       "info": {
         "name": "Split S",
         "short_name": "splitS",
@@ -3067,7 +3067,7 @@
         "relax_back": false
       }
     },
-    {
+    "TS": {
       "info": {
         "name": "Tail Slide",
         "short_name": "TS",
@@ -4155,7 +4155,7 @@
         "relax_back": false
       }
     },
-    {
+    "H8": {
       "info": {
         "name": "Horizontal Eight",
         "short_name": "H8",
@@ -5709,7 +5709,7 @@
         "relax_back": false
       }
     },
-    {
+    "sk2": {
       "info": {
         "name": "Sharks Tooth 2",
         "short_name": "sk2",
@@ -7398,7 +7398,7 @@
         "relax_back": false
       }
     },
-    {
+    "fP": {
       "info": {
         "name": "Figure P",
         "short_name": "fP",
@@ -10837,7 +10837,7 @@
         "relax_back": false
       }
     },
-    {
+    "rCirc": {
       "info": {
         "name": "Rolling Circle",
         "short_name": "rCirc",
@@ -11135,7 +11135,7 @@
         "relax_back": false
       }
     },
-    {
+    "dHump2": {
       "info": {
         "name": "Double Humpty 2",
         "short_name": "dHump2",
@@ -12540,7 +12540,7 @@
         "relax_back": false
       }
     },
-    {
+    "lhump": {
       "info": {
         "name": "Lay Down Humpty",
         "short_name": "lhump",
@@ -13939,5 +13939,5 @@
         "relax_back": false
       }
     }
-  ]
+  }
 }

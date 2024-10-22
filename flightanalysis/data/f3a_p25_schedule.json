@@ -1,8 +1,8 @@
 {
   "category": "f3a",
   "schedule": "p25",
-  "mdefs": [
-    {
+  "mdefs": {
+    "trgle": {
       "info": {
         "name": "Triangle",
         "short_name": "trgle",
@@ -1992,7 +1992,7 @@
         "relax_back": false
       }
     },
-    {
+    "hSqL": {
       "info": {
         "name": "half square",
         "short_name": "hSqL",
@@ -2737,7 +2737,7 @@
         "relax_back": false
       }
     },
-    {
+    "sqL": {
       "info": {
         "name": "Square on Corner",
         "short_name": "sqL",
@@ -4738,7 +4738,7 @@
         "relax_back": false
       }
     },
-    {
+    "fig9": {
       "info": {
         "name": "Figure P",
         "short_name": "fig9",
@@ -5483,7 +5483,7 @@
         "relax_back": false
       }
     },
-    {
+    "rollC": {
       "info": {
         "name": "Roll Combo",
         "short_name": "rollC",
@@ -6585,7 +6585,7 @@
         "relax_back": false
       }
     },
-    {
+    "stall": {
       "info": {
         "name": "Stall Turn",
         "short_name": "stall",
@@ -7539,7 +7539,7 @@
         "relax_back": false
       }
     },
-    {
+    "dImm": {
       "info": {
         "name": "Double Immelman",
         "short_name": "dImm",
@@ -8542,7 +8542,7 @@
         "relax_back": false
       }
     },
-    {
+    "hB": {
       "info": {
         "name": "Humpty",
         "short_name": "hB",
@@ -9783,7 +9783,7 @@
         "relax_back": false
       }
     },
-    {
+    "loop": {
       "info": {
         "name": "Loop",
         "short_name": "loop",
@@ -10493,7 +10493,7 @@
         "relax_back": false
       }
     },
-    {
+    "hSqL2": {
       "info": {
         "name": "Half Square on Corner",
         "short_name": "hSqL2",
@@ -11654,7 +11654,7 @@
         "relax_back": false
       }
     },
-    {
+    "hClov": {
       "info": {
         "name": "Cloverleaf",
         "short_name": "hClov",
@@ -13238,7 +13238,7 @@
         "relax_back": false
       }
     },
-    {
+    "rEt": {
       "info": {
         "name": "Figure Et",
         "short_name": "rEt",
@@ -14601,7 +14601,7 @@
         "relax_back": false
       }
     },
-    {
+    "iSpin": {
       "info": {
         "name": "Spin",
         "short_name": "iSpin",
@@ -15369,7 +15369,7 @@
         "relax_back": false
       }
     },
-    [
+    "tHat": [
       {
         "info": {
           "name": "Top Hat",
@@ -17998,7 +17998,7 @@
         }
       }
     ],
-    {
+    "Z": {
       "info": {
         "name": "Figure Z",
         "short_name": "Z",
@@ -18742,7 +18742,7 @@
         "relax_back": false
       }
     },
-    {
+    "Com": {
       "info": {
         "name": "Comet",
         "short_name": "Com",
@@ -20121,7 +20121,7 @@
         "relax_back": false
       }
     },
-    {
+    "figS": {
       "info": {
         "name": "Figure S",
         "short_name": "figS",
@@ -20866,5 +20866,5 @@
         "relax_back": false
       }
     }
-  ]
+  }
 }
