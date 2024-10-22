@@ -1,8 +1,8 @@
 {
   "category": "baeapower",
   "schedule": "advanced2024",
-  "mdefs": [
-    {
+  "mdefs": {
+    "dHump": {
       "info": {
         "name": "Double Humpty",
         "short_name": "dHump",
@@ -1262,7 +1262,7 @@
         "relax_back": false
       }
     },
-    {
+    "sTooth": {
       "info": {
         "name": "Sharks Tooth",
         "short_name": "sTooth",
@@ -2501,7 +2501,7 @@
         "relax_back": false
       }
     },
-    {
+    "splitS": {
       "info": {
         "name": "Split S",
         "short_name": "splitS",
@@ -3563,7 +3563,7 @@
         "relax_back": false
       }
     },
-    {
+    "TaSi": {
       "info": {
         "name": "Tail Slide",
         "short_name": "TaSi",
@@ -4138,7 +4138,7 @@
         "relax_back": false
       }
     },
-    {
+    "Imm": {
       "info": {
         "name": "Immelman",
         "short_name": "Imm",
@@ -4936,7 +4936,7 @@
         "relax_back": false
       }
     },
-    {
+    "rtr": {
       "info": {
         "name": "Rolling Turn",
         "short_name": "rtr",
@@ -5238,7 +5238,7 @@
         "relax_back": false
       }
     },
-    {
+    "hcub": {
       "info": {
         "name": "Half Cuban",
         "short_name": "hcub",
@@ -6574,7 +6574,7 @@
         "relax_back": false
       }
     },
-    {
+    "sTrn": {
       "info": {
         "name": "Stallturn",
         "short_name": "sTrn",
@@ -7805,7 +7805,7 @@
         "relax_back": false
       }
     },
-    {
+    "fP": {
       "info": {
         "name": "Figure P",
         "short_name": "fP",
@@ -8996,7 +8996,7 @@
         "relax_back": false
       }
     },
-    {
+    "lhump": {
       "info": {
         "name": "Lay Down Humpty",
         "short_name": "lhump",
@@ -9931,5 +9931,5 @@
         "relax_back": false
       }
     }
-  ]
+  }
 }

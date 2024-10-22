@@ -53,7 +53,7 @@ class SchedDef(Collection):
             dump(dict(
                 category=sinfo.category if sinfo else None,
                 schedule=sinfo.name if sinfo else None,
-                mdefs=self.to_dicts()
+                mdefs=self.to_dict()
             ), f, cls=NumpyEncoder, indent=2)
         return file
 

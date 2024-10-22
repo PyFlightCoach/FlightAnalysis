@@ -1,8 +1,8 @@
 {
   "category": "baeaglid",
   "schedule": "intermediate",
-  "mdefs": [
-    {
+  "mdefs": {
+    "hroll": {
       "info": {
         "name": "Half Roll",
         "short_name": "hroll",
@@ -310,7 +310,7 @@
         "relax_back": false
       }
     },
-    {
+    "S": {
       "info": {
         "name": "Split S",
         "short_name": "S",
@@ -578,7 +578,7 @@
         "relax_back": false
       }
     },
-    {
+    "Sfin": {
       "info": {
         "name": "Shark Fin",
         "short_name": "Sfin",
@@ -1347,7 +1347,7 @@
         "relax_back": false
       }
     },
-    {
+    "roll": {
       "info": {
         "name": "Roll",
         "short_name": "roll",
@@ -1655,7 +1655,7 @@
         "relax_back": false
       }
     },
-    {
+    "hCuban": {
       "info": {
         "name": "Half Cuban Eight",
         "short_name": "hCuban",
@@ -2273,7 +2273,7 @@
         "relax_back": false
       }
     },
-    {
+    "qloop": {
       "info": {
         "name": "Q Loop",
         "short_name": "qloop",
@@ -2697,7 +2697,7 @@
         "relax_back": false
       }
     },
-    {
+    "st": {
       "info": {
         "name": "Stallturn",
         "short_name": "st",
@@ -3259,7 +3259,7 @@
         "relax_back": false
       }
     },
-    {
+    "hb": {
       "info": {
         "name": "Humpty Bump",
         "short_name": "hb",
@@ -3834,7 +3834,7 @@
         "relax_back": false
       }
     },
-    {
+    "imm": {
       "info": {
         "name": "Immelman",
         "short_name": "imm",
@@ -4234,7 +4234,7 @@
         "relax_back": false
       }
     },
-    {
+    "hcub2": {
       "info": {
         "name": "Half Cuban 2",
         "short_name": "hcub2",
@@ -4785,5 +4785,5 @@
         "relax_back": false
       }
     }
-  ]
+  }
 }

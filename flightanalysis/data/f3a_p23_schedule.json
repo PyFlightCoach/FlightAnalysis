@@ -1,8 +1,8 @@
 {
   "category": "f3a",
   "schedule": "p23",
-  "mdefs": [
-    {
+  "mdefs": {
+    "tHat": {
       "info": {
         "name": "Top Hat",
         "short_name": "tHat",
@@ -1974,7 +1974,7 @@
         "relax_back": false
       }
     },
-    {
+    "hSqL": {
       "info": {
         "name": "Half Square Loop",
         "short_name": "hSqL",
@@ -2719,7 +2719,7 @@
         "relax_back": false
       }
     },
-    {
+    "hB": {
       "info": {
         "name": "Humpty Bump",
         "short_name": "hB",
@@ -3903,7 +3903,7 @@
         "relax_back": false
       }
     },
-    {
+    "hSqLC": {
       "info": {
         "name": "Half Square on Corner",
         "short_name": "hSqLC",
@@ -5064,7 +5064,7 @@
         "relax_back": false
       }
     },
-    {
+    "upL": {
       "info": {
         "name": "45 Upline Snaps",
         "short_name": "upL",
@@ -5808,7 +5808,7 @@
         "relax_back": false
       }
     },
-    {
+    "h8L": {
       "info": {
         "name": "Half 8 Sided Loop",
         "short_name": "h8L",
@@ -6695,7 +6695,7 @@
         "relax_back": false
       }
     },
-    {
+    "rollC": {
       "info": {
         "name": "Roll Combo",
         "short_name": "rollC",
@@ -7453,7 +7453,7 @@
         "relax_back": false
       }
     },
-    {
+    "pImm": {
       "info": {
         "name": "Immelman Turn",
         "short_name": "pImm",
@@ -7900,7 +7900,7 @@
         "relax_back": false
       }
     },
-    {
+    "iSp": {
       "info": {
         "name": "Inverted Spin",
         "short_name": "iSp",
@@ -8443,7 +8443,7 @@
         "relax_back": false
       }
     },
-    {
+    "hB2": {
       "info": {
         "name": "Humpty Bump",
         "short_name": "hB2",
@@ -9599,7 +9599,7 @@
         "relax_back": false
       }
     },
-    {
+    "rEt": {
       "info": {
         "name": "Reverese Figure Et",
         "short_name": "rEt",
@@ -11028,7 +11028,7 @@
         "relax_back": false
       }
     },
-    {
+    "sqL": {
       "info": {
         "name": "Half Square Loop",
         "short_name": "sqL",
@@ -11773,7 +11773,7 @@
         "relax_back": false
       }
     },
-    {
+    "M": {
       "info": {
         "name": "Figure M",
         "short_name": "M",
@@ -13280,7 +13280,7 @@
         "relax_back": false
       }
     },
-    {
+    "fTrn": {
       "info": {
         "name": "Fighter Turn",
         "short_name": "fTrn",
@@ -14388,7 +14388,7 @@
         "relax_back": false
       }
     },
-    {
+    "trgle": {
       "info": {
         "name": "Triangular Loop",
         "short_name": "trgle",
@@ -16369,7 +16369,7 @@
         "relax_back": false
       }
     },
-    {
+    "sFin": {
       "info": {
         "name": "Shark Fin",
         "short_name": "sFin",
@@ -17716,7 +17716,7 @@
         "relax_back": false
       }
     },
-    {
+    "loop": {
       "info": {
         "name": "Loop",
         "short_name": "loop",
@@ -18326,5 +18326,5 @@
         "relax_back": false
       }
     }
-  ]
+  }
 }

@@ -1,8 +1,8 @@
 {
   "category": "f3auk",
   "schedule": "inter",
-  "mdefs": [
-    {
+  "mdefs": {
+    "trnround": {
       "info": {
         "name": "Turn Round",
         "short_name": "trnround",
@@ -731,7 +731,7 @@
         "relax_back": false
       }
     },
-    {
+    "trgle": {
       "info": {
         "name": "Triangle",
         "short_name": "trgle",
@@ -1432,7 +1432,7 @@
         "relax_back": false
       }
     },
-    {
+    "stall": {
       "info": {
         "name": "Stall Turn",
         "short_name": "stall",
@@ -2408,7 +2408,7 @@
         "relax_back": false
       }
     },
-    {
+    "4pRoll": {
       "info": {
         "name": "4 Point Roll",
         "short_name": "4pRoll",
@@ -3309,7 +3309,7 @@
         "relax_back": false
       }
     },
-    {
+    "immel": {
       "info": {
         "name": "Immelman Turn",
         "short_name": "immel",
@@ -3756,7 +3756,7 @@
         "relax_back": false
       }
     },
-    {
+    "sqrl": {
       "info": {
         "name": "Square Loop",
         "short_name": "sqrl",
@@ -5113,7 +5113,7 @@
         "relax_back": false
       }
     },
-    {
+    "splitS": {
       "info": {
         "name": "Split S",
         "short_name": "splitS",
@@ -5560,7 +5560,7 @@
         "relax_back": false
       }
     },
-    {
+    "cuban": {
       "info": {
         "name": "Cuban Eight",
         "short_name": "cuban",
@@ -6730,7 +6730,7 @@
         "relax_back": false
       }
     },
-    {
+    "humpty": {
       "info": {
         "name": "Humpty Bump",
         "short_name": "humpty",
@@ -7426,7 +7426,7 @@
         "relax_back": false
       }
     },
-    {
+    "figS": {
       "info": {
         "name": "Figure S",
         "short_name": "figS",
@@ -7844,7 +7844,7 @@
         "relax_back": false
       }
     },
-    {
+    "fig6": {
       "info": {
         "name": "Figure 6",
         "short_name": "fig6",
@@ -8589,7 +8589,7 @@
         "relax_back": false
       }
     },
-    {
+    "knife": {
       "info": {
         "name": "Knife Edge",
         "short_name": "knife",
@@ -9119,7 +9119,7 @@
         "relax_back": false
       }
     },
-    {
+    "outloop": {
       "info": {
         "name": " Half Outside Loop",
         "short_name": "outloop",
@@ -9418,7 +9418,7 @@
         "relax_back": false
       }
     },
-    {
+    "spin": {
       "info": {
         "name": "3 Turn Spin",
         "short_name": "spin",
@@ -9962,5 +9962,5 @@
         "relax_back": false
       }
     }
-  ]
+  }
 }
