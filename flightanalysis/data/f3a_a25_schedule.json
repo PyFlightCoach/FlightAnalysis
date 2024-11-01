@@ -1,6 +1,7 @@
 {
   "category": "f3a",
   "schedule": "a25",
+  "direction_manoeuvre": 0,
   "mdefs": {
     "trgle": {
       "info": {

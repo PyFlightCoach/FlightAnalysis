@@ -1,6 +1,7 @@
 {
   "category": "f3a",
   "schedule": "p23",
+  "direction_manoeuvre": 0,
   "mdefs": {
     "tHat": {
       "info": {

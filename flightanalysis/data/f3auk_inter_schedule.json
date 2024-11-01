@@ -1,6 +1,7 @@
 {
   "category": "f3auk",
   "schedule": "inter",
+  "direction_manoeuvre": 0,
   "mdefs": {
     "trnround": {
       "info": {

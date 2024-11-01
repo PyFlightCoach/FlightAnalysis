@@ -2,7 +2,7 @@ from flightdata import State
 from typing import Tuple, Union, Self
 import geometry as g
 from flightanalysis.definition.mandef import ManDef
-from flightanalysis.definition.maninfo import ManInfo, Heading
+from flightanalysis.definition.maninfo import ManInfo, Heading, Direction
 from flightanalysis.definition.manoption import ManOption
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightanalysis.schedule import Schedule
@@ -18,6 +18,11 @@ class SchedDef(Collection):
     def __init__(self, data: dict[str, VType] | list[VType] = None):
         super().__init__(data, check_types=False)
         assert all([v.__class__.__name__ in ["ManOption", "ManDef"] for v in self])
+
+    def wind_def_manoeuvre(self):
+        for i, man in enumerate(self):
+            if man.info.start.direction != Direction.CROSS:
+                return i
 
     def add_new_manoeuvre(self, info: ManInfo, defaults=None):
         return self.add(ManDef(info, defaults))
@@ -53,6 +58,7 @@ class SchedDef(Collection):
             dump(dict(
                 category=sinfo.category if sinfo else None,
                 schedule=sinfo.name if sinfo else None,
+                direction_manoeuvre=self.wind_def_manoeuvre(),
                 mdefs=self.to_dict()
             ), f, cls=NumpyEncoder, indent=2)
         return file

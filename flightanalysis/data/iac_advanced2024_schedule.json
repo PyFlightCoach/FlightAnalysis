@@ -1,6 +1,7 @@
 {
   "category": "iac",
-  "schedule": "advenced2024",
+  "schedule": "advanced2024",
+  "direction_manoeuvre": 2,
   "mdefs": {
     "dHump": {
       "info": {

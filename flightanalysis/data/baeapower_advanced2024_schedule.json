@@ -1,6 +1,7 @@
 {
   "category": "baeapower",
   "schedule": "advanced2024",
+  "direction_manoeuvre": 0,
   "mdefs": {
     "dHump": {
       "info": {
