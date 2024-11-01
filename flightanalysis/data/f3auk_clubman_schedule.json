@@ -1,6 +1,7 @@
 {
   "category": "f3auk",
   "schedule": "clubman",
+  "direction_manoeuvre": 0,
   "mdefs": {
     "inloop": {
       "info": {

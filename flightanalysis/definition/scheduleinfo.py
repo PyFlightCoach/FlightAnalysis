@@ -115,6 +115,11 @@ class ScheduleInfo:
     def k_factors(self):
         return pd.Series({md.name: md.k for md in self.manoeuvre_details()}, name='k')
 
+    def direction_manoeuvre(self):
+        """The id of the manoeuvre that should be used to figure out the direction the schedule is
+        flown in. Generally this will be 0 unless the schedule starts crossbox"""
+        return get_json_resource(self.file())['direction_manoeuvre']
+
     def __eq__(self, other: ScheduleInfo):
         return str(self.fcj_to_pfc()) == str(other.fcj_to_pfc())
 

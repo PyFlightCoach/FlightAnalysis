@@ -1,6 +1,7 @@
 {
   "category": "f3a",
   "schedule": "f25",
+  "direction_manoeuvre": 0,
   "mdefs": {
     "sLoop": {
       "info": {

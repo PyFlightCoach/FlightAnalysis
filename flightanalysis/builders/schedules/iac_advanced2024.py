@@ -174,6 +174,6 @@ sdef = SchedDef(
 
 
 if __name__ == "__main__":
-    sdef.plot().show()
+    #sdef.plot().show()
     #sdef.create_fcj('BAeA Power Advanced 2024', 'baea_advanced.json')
-    #sdef.to_json("flightanalysis/data/iac_advanced2024_schedule.json", ScheduleInfo('iac', 'advenced2024'))
+    sdef.to_json("flightanalysis/data/iac_advanced2024_schedule.json", ScheduleInfo('iac', 'advanced2024'))

@@ -1,6 +1,7 @@
 {
   "category": "baeaglid",
   "schedule": "intermediate",
+  "direction_manoeuvre": 0,
   "mdefs": {
     "hroll": {
       "info": {
