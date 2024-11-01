@@ -51,7 +51,7 @@ class Measurement:
             data["unit"],
             g.Point.from_dicts(data["direction"]),
             np.array(data["visibility"]),
-            np.array(data["keys"]) if data["keys"] is not None else None,
+            np.array(data["keys"]) if 'keys' in data and data["keys"] is not None else None,
         )
 
     @staticmethod

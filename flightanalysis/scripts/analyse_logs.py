@@ -23,7 +23,7 @@ def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
         aj = AnalysisJson.model_validate_json(ajs.open().read()) if ajs else None
     except Exception:
         aj = None
-
+    
     schedule_direction = Heading.infer(
         st[fcjson.data[fcjson.mans[1].start].time / 1e6].att.bearing()[0]
     )
