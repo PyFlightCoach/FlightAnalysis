@@ -43,3 +43,4 @@ class AnalysisJson(BaseModel):
     def check_version(self, version: str):
         version = version[1:] if version.startswith('v') else version
         return all([man.history is not None and version in man.history.keys() for man in self.mans])
+

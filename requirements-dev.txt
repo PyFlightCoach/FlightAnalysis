@@ -2,6 +2,7 @@ numpy
 pandas
 scipy
 fastdtw
+pydantic
 simplejson
 loguru
 joblib

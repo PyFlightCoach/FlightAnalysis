@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from flightanalysis.definition.maninfo.positioning import Direction
 from flightanalysis.data import list_resources, get_json_resource, get_file
 import pandas as pd
 
@@ -31,6 +32,7 @@ class ManDetails:
     name: str 
     id: int
     k: float
+    entry: Direction
 
 
 @dataclass
@@ -105,7 +107,8 @@ class ScheduleInfo:
             mds.append(ManDetails(
                 v['info']['short_name'],
                 i+1,
-                v['info']['k']
+                v['info']['k'],
+                Direction(v['info']['start']['direction'])
             ))
         return mds
 
