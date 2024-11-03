@@ -1,7 +1,10 @@
 {
   "category": "f3a",
   "schedule": "p25",
-  "direction_manoeuvre": 0,
+  "direction_definition": {
+    "manid": 0,
+    "direction": "UPWIND"
+  },
   "mdefs": {
     "trgle": {
       "info": {

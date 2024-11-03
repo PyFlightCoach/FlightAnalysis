@@ -1,7 +1,10 @@
 {
   "category": "iac",
   "schedule": "advanced2024",
-  "direction_manoeuvre": 2,
+  "direction_definition": {
+    "manid": 2,
+    "direction": "DOWNWIND"
+  },
   "mdefs": {
     "dHump": {
       "info": {
@@ -23,8 +26,8 @@
         "centred_els": []
       },
       "mps": {
-        "e_3_rolls": {
-          "name": "e_3_rolls",
+        "roll_option": {
+          "name": "roll_option",
           "criteria": {
             "kind": "Combination",
             "lookup": {
@@ -34,17 +37,20 @@
             },
             "desired": [
               [
-                4.71238898038469
+                4.71238898038469,
+                1.5707963267948966
               ],
               [
-                -4.71238898038469
+                -4.71238898038469,
+                -1.5707963267948966
               ]
             ]
           },
-          "defaul": 0,
+          "defaul": 1,
           "unit": "rad",
           "collectors": {
-            "e_3_0.roll": "e_3_0.roll"
+            "e_3_snap.roll": "e_3_snap.roll",
+            "e_5_roll.roll": "e_5_roll.roll"
           }
         },
         "e_3_pad_length": {
@@ -62,30 +68,6 @@
           "collectors": {
             "e_3_pad1.length": "e_3_pad1.length",
             "e_3_pad2.length": "e_3_pad2.length"
-          }
-        },
-        "e_5_rolls": {
-          "name": "e_5_rolls",
-          "criteria": {
-            "kind": "Combination",
-            "lookup": {
-              "factor": 0,
-              "exponent": 1,
-              "limit": null
-            },
-            "desired": [
-              [
-                1.5707963267948966
-              ],
-              [
-                -1.5707963267948966
-              ]
-            ]
-          },
-          "defaul": 0,
-          "unit": "rad",
-          "collectors": {
-            "e_5_0.roll": "e_5_0.roll"
           }
         },
         "e_5_pad_length": {
@@ -169,9 +151,9 @@
           "name": "e_0",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -267,7 +249,7 @@
           "Kind": "Line",
           "props": {
             "speed": "60",
-            "length": "180"
+            "length": "260"
           },
           "dgs": {
             "roll_angle": {
@@ -320,9 +302,9 @@
           "name": "e_2",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "3.141592653589793",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -417,8 +399,8 @@
           "name": "e_3_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((40*abs(e_3_rolls[0]))/9.42477796076938)))"
+            "speed": "60",
+            "length": "(0.5*(260-((60*abs(roll_option[0]))/9.42477796076938)))"
           },
           "dgs": {
             "roll_angle": {
@@ -467,13 +449,13 @@
             }
           }
         },
-        "e_3_0": {
-          "name": "e_3_0",
+        "e_3_snap": {
+          "name": "e_3_snap",
           "Kind": "Snap",
           "props": {
-            "speed": "40",
-            "length": "((40*abs(e_3_rolls[0]))/9.42477796076938)",
-            "roll": "e_3_rolls[0]",
+            "speed": "60",
+            "length": "((60*abs(roll_option[0]))/9.42477796076938)",
+            "roll": "roll_option[0]",
             "pitch": "0.3490658503988659",
             "break_roll": "0.7853981633974483",
             "recovery_roll": "1.5707963267948966"
@@ -572,8 +554,8 @@
           "name": "e_3_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((40*abs(e_3_rolls[0]))/9.42477796076938)))"
+            "speed": "60",
+            "length": "(0.5*(260-((60*abs(roll_option[0]))/9.42477796076938)))"
           },
           "dgs": {
             "roll_angle": {
@@ -626,9 +608,9 @@
           "name": "e_4",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "3.141592653589793",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -723,8 +705,8 @@
           "name": "e_5_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_5_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(roll_option[1])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -773,13 +755,13 @@
             }
           }
         },
-        "e_5_0": {
-          "name": "e_5_0",
+        "e_5_roll": {
+          "name": "e_5_roll",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_5_rolls[0])*40)/3.141592653589793)",
-            "roll": "e_5_rolls[0]"
+            "speed": "60",
+            "length": "((abs(roll_option[1])*60)/3.141592653589793)",
+            "roll": "roll_option[1]"
           },
           "dgs": {
             "roll_angle": {
@@ -864,8 +846,8 @@
           "name": "e_5_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_5_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(roll_option[1])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -918,9 +900,9 @@
           "name": "e_6",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
-            "angle": "-1.5707963267948966",
-            "radius": "70",
+            "speed": "60",
+            "angle": "1.5707963267948966",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -1254,8 +1236,8 @@
           "name": "e_0",
           "Kind": "Spin",
           "props": {
-            "speed": "10",
-            "height": "(96.39379797371932/spin_rate)",
+            "speed": "20",
+            "height": "(192.78759594743863/spin_rate)",
             "turns": "7.853981633974483",
             "pitch": "0.5235987755982988",
             "drop_turns": "0.7853981633974483",
@@ -1372,7 +1354,7 @@
           "Kind": "Line",
           "props": {
             "speed": "60",
-            "length": "70"
+            "length": "260"
           },
           "dgs": {
             "roll_angle": {
@@ -1425,9 +1407,9 @@
           "name": "e_2",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "4.71238898038469",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -1522,8 +1504,8 @@
           "name": "e_3_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_3_rolls[0])*60)/3.141592653589793)",
             "roll": "e_3_rolls[0]"
           },
           "dgs": {
@@ -1613,7 +1595,7 @@
           "name": "e_3_1_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -1671,8 +1653,8 @@
           "name": "e_3_1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[1])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_3_rolls[1])*60)/3.141592653589793)",
             "roll": "e_3_rolls[1]"
           },
           "dgs": {
@@ -1762,7 +1744,7 @@
           "name": "e_3_2_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -1820,8 +1802,8 @@
           "name": "e_3_2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[2])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_3_rolls[2])*60)/3.141592653589793)",
             "roll": "e_3_rolls[2]"
           },
           "dgs": {
@@ -1911,7 +1893,7 @@
           "name": "e_3_3_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -1969,8 +1951,8 @@
           "name": "e_3_3",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[3])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_3_rolls[3])*60)/3.141592653589793)",
             "roll": "e_3_rolls[3]"
           },
           "dgs": {
@@ -2167,7 +2149,35 @@
         "centre_points": [],
         "centred_els": []
       },
-      "mps": {},
+      "mps": {
+        "roll_option": {
+          "name": "roll_option",
+          "criteria": {
+            "kind": "Combination",
+            "lookup": {
+              "factor": 0,
+              "exponent": 1,
+              "limit": null
+            },
+            "desired": [
+              [
+                -3.141592653589793,
+                -12.566370614359172
+              ],
+              [
+                3.141592653589793,
+                12.566370614359172
+              ]
+            ]
+          },
+          "defaul": 1,
+          "unit": "rad",
+          "collectors": {
+            "e_0.angle": "e_0.angle",
+            "e_0.roll": "e_0.roll"
+          }
+        }
+      },
       "eds": {
         "entry_line": {
           "name": "entry_line",
@@ -2231,10 +2241,10 @@
           "name": "e_0",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
-            "angle": "3.141592653589793",
+            "speed": "60",
+            "angle": "roll_option[0]",
             "radius": "150",
-            "roll": "12.566370614359172",
+            "roll": "roll_option[1]",
             "ke": "1.5707963267948966"
           },
           "dgs": {
@@ -2450,7 +2460,7 @@
     },
     "hB": {
       "info": {
-        "name": "Humpty",
+        "name": "Humpty 1",
         "short_name": "hB",
         "k": 22,
         "position": "CENTRE",
@@ -2597,9 +2607,9 @@
           "name": "e_0",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "-1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -2695,7 +2705,7 @@
           "Kind": "Line",
           "props": {
             "speed": "60",
-            "length": "180"
+            "length": "260"
           },
           "dgs": {
             "roll_angle": {
@@ -2748,9 +2758,9 @@
           "name": "e_2",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "-3.141592653589793",
-            "radius": "50",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -2845,8 +2855,8 @@
           "name": "e_3_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-sum([((abs(e_3_rolls[0])*40)/3.141592653589793),point_length,((abs(e_3_rolls[1])*40)/3.141592653589793)])))"
+            "speed": "60",
+            "length": "(0.5*(260-sum([((abs(e_3_rolls[0])*60)/3.141592653589793),point_length,((abs(e_3_rolls[1])*60)/3.141592653589793)])))"
           },
           "dgs": {
             "roll_angle": {
@@ -2899,8 +2909,8 @@
           "name": "e_3_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_3_rolls[0])*60)/3.141592653589793)",
             "roll": "e_3_rolls[0]"
           },
           "dgs": {
@@ -2986,7 +2996,7 @@
           "name": "e_3_1_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -3040,8 +3050,8 @@
           "name": "e_3_1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[1])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_3_rolls[1])*60)/3.141592653589793)",
             "roll": "e_3_rolls[1]"
           },
           "dgs": {
@@ -3127,8 +3137,8 @@
           "name": "e_3_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-sum([((abs(e_3_rolls[0])*40)/3.141592653589793),point_length,((abs(e_3_rolls[1])*40)/3.141592653589793)])))"
+            "speed": "60",
+            "length": "(0.5*(260-sum([((abs(e_3_rolls[0])*60)/3.141592653589793),point_length,((abs(e_3_rolls[1])*60)/3.141592653589793)])))"
           },
           "dgs": {
             "roll_angle": {
@@ -3181,9 +3191,9 @@
           "name": "e_4",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -3413,10 +3423,10 @@
             },
             "desired": [
               [
-                4.71238898038469
+                -4.71238898038469
               ],
               [
-                -4.71238898038469
+                4.71238898038469
               ]
             ]
           },
@@ -3548,9 +3558,9 @@
           "name": "e_0",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -3645,8 +3655,8 @@
           "name": "e_1_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_1_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(e_1_rolls[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -3699,8 +3709,8 @@
           "name": "e_1_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_1_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_1_rolls[0])*60)/3.141592653589793)",
             "roll": "e_1_rolls[0]"
           },
           "dgs": {
@@ -3786,8 +3796,8 @@
           "name": "e_1_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_1_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(e_1_rolls[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -3912,8 +3922,8 @@
           "name": "e_3_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((40*abs(e_3_rolls[0]))/9.42477796076938)))"
+            "speed": "60",
+            "length": "(0.5*(260-((60*abs(e_3_rolls[0]))/9.42477796076938)))"
           },
           "dgs": {
             "roll_angle": {
@@ -3966,8 +3976,8 @@
           "name": "e_3_0",
           "Kind": "Snap",
           "props": {
-            "speed": "40",
-            "length": "((40*abs(e_3_rolls[0]))/9.42477796076938)",
+            "speed": "60",
+            "length": "((60*abs(e_3_rolls[0]))/9.42477796076938)",
             "roll": "e_3_rolls[0]",
             "pitch": "0.3490658503988659",
             "break_roll": "0.7853981633974483",
@@ -4067,8 +4077,8 @@
           "name": "e_3_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((40*abs(e_3_rolls[0]))/9.42477796076938)))"
+            "speed": "60",
+            "length": "(0.5*(260-((60*abs(e_3_rolls[0]))/9.42477796076938)))"
           },
           "dgs": {
             "roll_angle": {
@@ -4121,9 +4131,9 @@
           "name": "e_4",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -4308,7 +4318,7 @@
     },
     "hB2": {
       "info": {
-        "name": "humpty",
+        "name": "humpty 2",
         "short_name": "hB2",
         "k": 30,
         "position": "END",
@@ -4397,10 +4407,10 @@
             },
             "desired": [
               [
-                4.71238898038469
+                -4.71238898038469
               ],
               [
-                -4.71238898038469
+                4.71238898038469
               ]
             ]
           },
@@ -4491,9 +4501,9 @@
           "name": "e_0",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -4588,8 +4598,8 @@
           "name": "e_1_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-sum([((abs(e_1_rolls[0])*40)/3.141592653589793),point_length,((abs(e_1_rolls[1])*40)/3.141592653589793)])))"
+            "speed": "60",
+            "length": "(0.5*(260-sum([((abs(e_1_rolls[0])*60)/3.141592653589793),point_length,((abs(e_1_rolls[1])*60)/3.141592653589793)])))"
           },
           "dgs": {
             "roll_angle": {
@@ -4642,8 +4652,8 @@
           "name": "e_1_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_1_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_1_rolls[0])*60)/3.141592653589793)",
             "roll": "e_1_rolls[0]"
           },
           "dgs": {
@@ -4729,7 +4739,7 @@
           "name": "e_1_1_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -4783,8 +4793,8 @@
           "name": "e_1_1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_1_rolls[1])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_1_rolls[1])*60)/3.141592653589793)",
             "roll": "e_1_rolls[1]"
           },
           "dgs": {
@@ -4870,8 +4880,8 @@
           "name": "e_1_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-sum([((abs(e_1_rolls[0])*40)/3.141592653589793),point_length,((abs(e_1_rolls[1])*40)/3.141592653589793)])))"
+            "speed": "60",
+            "length": "(0.5*(260-sum([((abs(e_1_rolls[0])*60)/3.141592653589793),point_length,((abs(e_1_rolls[1])*60)/3.141592653589793)])))"
           },
           "dgs": {
             "roll_angle": {
@@ -4924,9 +4934,9 @@
           "name": "e_2",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
-            "angle": "3.141592653589793",
-            "radius": "70",
+            "speed": "60",
+            "angle": "-3.141592653589793",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -5021,8 +5031,8 @@
           "name": "e_3_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_3_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(e_3_rolls[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -5075,8 +5085,8 @@
           "name": "e_3_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_3_rolls[0])*60)/3.141592653589793)",
             "roll": "e_3_rolls[0]"
           },
           "dgs": {
@@ -5162,8 +5172,8 @@
           "name": "e_3_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_3_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(e_3_rolls[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -5216,9 +5226,9 @@
           "name": "e_4",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -5405,7 +5415,7 @@
       "info": {
         "name": "Figure N",
         "short_name": "fN",
-        "k": 30,
+        "k": 41,
         "position": "END",
         "start": {
           "height": "BTM",
@@ -5421,6 +5431,25 @@
         "centred_els": []
       },
       "mps": {
+        "loop_radius": {
+          "name": "loop_radius",
+          "criteria": {
+            "kind": "Comparison",
+            "lookup": {
+              "factor": 1.0,
+              "exponent": 1.0,
+              "limit": 2
+            }
+          },
+          "defaul": 80,
+          "unit": "m",
+          "collectors": {
+            "e_0.radius": "e_0.radius",
+            "e_2.radius": "e_2.radius",
+            "e_4.radius": "e_4.radius",
+            "e_6.radius": "e_6.radius"
+          }
+        },
         "e_1_rolls": {
           "name": "e_1_rolls",
           "criteria": {
@@ -5567,9 +5596,9 @@
           "name": "e_0",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
-            "angle": "3.141592653589793",
-            "radius": "70",
+            "speed": "60",
+            "angle": "1.5707963267948966",
+            "radius": "loop_radius",
             "roll": "0",
             "ke": "0"
           },
@@ -5664,8 +5693,8 @@
           "name": "e_1_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_1_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(200-((abs(e_1_rolls[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -5684,12 +5713,10 @@
                 }
               }
             },
-            "heading": {
-              "name": "heading",
-              "measure": "heading_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "pitch": {
+              "name": "pitch",
+              "measure": "pitch_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -5700,12 +5727,10 @@
                 }
               }
             },
-            "climb": {
-              "name": "climb",
-              "measure": "climb_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "yaw": {
+              "name": "yaw",
+              "measure": "yaw_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -5722,8 +5747,8 @@
           "name": "e_1_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_1_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_1_rolls[0])*60)/3.141592653589793)",
             "roll": "e_1_rolls[0]"
           },
           "dgs": {
@@ -5743,12 +5768,10 @@
                 }
               }
             },
-            "heading": {
-              "name": "heading",
-              "measure": "heading_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "pitch": {
+              "name": "pitch",
+              "measure": "pitch_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -5759,12 +5782,10 @@
                 }
               }
             },
-            "climb": {
-              "name": "climb",
-              "measure": "climb_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "yaw": {
+              "name": "yaw",
+              "measure": "yaw_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -5813,8 +5834,8 @@
           "name": "e_1_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_1_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(200-((abs(e_1_rolls[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -5833,12 +5854,10 @@
                 }
               }
             },
-            "heading": {
-              "name": "heading",
-              "measure": "heading_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "pitch": {
+              "name": "pitch",
+              "measure": "pitch_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -5849,12 +5868,10 @@
                 }
               }
             },
-            "climb": {
-              "name": "climb",
-              "measure": "climb_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "yaw": {
+              "name": "yaw",
+              "measure": "yaw_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -5871,9 +5888,9 @@
           "name": "e_2",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
-            "angle": "2.356194490192345",
-            "radius": "70",
+            "speed": "60",
+            "angle": "-2.356194490192345",
+            "radius": "loop_radius",
             "roll": "0",
             "ke": "0"
           },
@@ -5968,8 +5985,8 @@
           "name": "e_3_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((40*abs(e_3_rolls[0]))/9.42477796076938)))"
+            "speed": "60",
+            "length": "(0.5*(400-((60*abs(e_3_rolls[0]))/9.42477796076938)))"
           },
           "dgs": {
             "roll_angle": {
@@ -6022,8 +6039,8 @@
           "name": "e_3_0",
           "Kind": "Snap",
           "props": {
-            "speed": "40",
-            "length": "((40*abs(e_3_rolls[0]))/9.42477796076938)",
+            "speed": "60",
+            "length": "((60*abs(e_3_rolls[0]))/9.42477796076938)",
             "roll": "e_3_rolls[0]",
             "pitch": "0.3490658503988659",
             "break_roll": "0.7853981633974483",
@@ -6123,8 +6140,8 @@
           "name": "e_3_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((40*abs(e_3_rolls[0]))/9.42477796076938)))"
+            "speed": "60",
+            "length": "(0.5*(400-((60*abs(e_3_rolls[0]))/9.42477796076938)))"
           },
           "dgs": {
             "roll_angle": {
@@ -6177,9 +6194,9 @@
           "name": "e_4",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
-            "angle": "-2.356194490192345",
-            "radius": "70",
+            "speed": "60",
+            "angle": "2.356194490192345",
+            "radius": "loop_radius",
             "roll": "0",
             "ke": "0"
           },
@@ -6275,7 +6292,7 @@
           "Kind": "Line",
           "props": {
             "speed": "60",
-            "length": "180"
+            "length": "200"
           },
           "dgs": {
             "roll_angle": {
@@ -6294,12 +6311,10 @@
                 }
               }
             },
-            "heading": {
-              "name": "heading",
-              "measure": "heading_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "pitch": {
+              "name": "pitch",
+              "measure": "pitch_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -6310,12 +6325,10 @@
                 }
               }
             },
-            "climb": {
-              "name": "climb",
-              "measure": "climb_track()",
-              "smoothers": [
-                "lowpass(cutoff:2,order:5)"
-              ],
+            "yaw": {
+              "name": "yaw",
+              "measure": "yaw_attitude()",
+              "smoothers": [],
               "selectors": [],
               "criteria": {
                 "kind": "Continuous",
@@ -6332,9 +6345,9 @@
           "name": "e_6",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "-1.5707963267948966",
-            "radius": "70",
+            "radius": "loop_radius",
             "roll": "0",
             "ke": "0"
           },
@@ -6521,7 +6534,7 @@
       "info": {
         "name": "double humpty",
         "short_name": "dhump2",
-        "k": 33,
+        "k": 30,
         "position": "END",
         "start": {
           "height": "TOP",
@@ -6553,8 +6566,8 @@
             "e_3_1_pause.length": "e_3_1_pause.length"
           }
         },
-        "e_1_rolls": {
-          "name": "e_1_rolls",
+        "roll_option": {
+          "name": "roll_option",
           "criteria": {
             "kind": "Combination",
             "lookup": {
@@ -6564,17 +6577,22 @@
             },
             "desired": [
               [
-                1.5707963267948966
+                1.5707963267948966,
+                -0.7853981633974483,
+                -0.7853981633974483
               ],
               [
-                -1.5707963267948966
+                -1.5707963267948966,
+                0.7853981633974483,
+                0.7853981633974483
               ]
             ]
           },
-          "defaul": 0,
+          "defaul": 1,
           "unit": "rad",
           "collectors": {
-            "e_1_0.roll": "e_1_0.roll"
+            "e_1_roll.roll": "e_1_roll.roll",
+            "e_3_1.roll": "e_3_1.roll"
           }
         },
         "e_1_pad_length": {
@@ -6592,33 +6610,6 @@
           "collectors": {
             "e_1_pad1.length": "e_1_pad1.length",
             "e_1_pad2.length": "e_1_pad2.length"
-          }
-        },
-        "e_3_rolls": {
-          "name": "e_3_rolls",
-          "criteria": {
-            "kind": "Combination",
-            "lookup": {
-              "factor": 0,
-              "exponent": 1,
-              "limit": null
-            },
-            "desired": [
-              [
-                0.7853981633974483,
-                0.7853981633974483
-              ],
-              [
-                -0.7853981633974483,
-                -0.7853981633974483
-              ]
-            ]
-          },
-          "defaul": 0,
-          "unit": "rad",
-          "collectors": {
-            "e_3_0.roll": "e_3_0.roll",
-            "e_3_1.roll": "e_3_1.roll"
           }
         },
         "e_3_pad_length": {
@@ -6702,9 +6693,9 @@
           "name": "e_0",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "-1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -6799,8 +6790,8 @@
           "name": "e_1_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_1_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(roll_option[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -6849,13 +6840,13 @@
             }
           }
         },
-        "e_1_0": {
-          "name": "e_1_0",
+        "e_1_roll": {
+          "name": "e_1_roll",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_1_rolls[0])*40)/3.141592653589793)",
-            "roll": "e_1_rolls[0]"
+            "speed": "60",
+            "length": "((abs(roll_option[0])*60)/3.141592653589793)",
+            "roll": "roll_option[0]"
           },
           "dgs": {
             "roll_angle": {
@@ -6940,8 +6931,8 @@
           "name": "e_1_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-((abs(e_1_rolls[0])*40)/3.141592653589793)))"
+            "speed": "60",
+            "length": "(0.5*(260-((abs(roll_option[0])*60)/3.141592653589793)))"
           },
           "dgs": {
             "roll_angle": {
@@ -6994,9 +6985,9 @@
           "name": "e_2",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "3.141592653589793",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -7091,8 +7082,8 @@
           "name": "e_3_pad1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-sum([((abs(e_3_rolls[0])*40)/3.141592653589793),point_length,((abs(e_3_rolls[1])*40)/3.141592653589793)])))"
+            "speed": "60",
+            "length": "(0.5*(260-sum([((abs(roll_option[1])*60)/3.141592653589793),point_length,((abs(roll_option[1])*60)/3.141592653589793)])))"
           },
           "dgs": {
             "roll_angle": {
@@ -7145,9 +7136,9 @@
           "name": "e_3_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[0])*40)/3.141592653589793)",
-            "roll": "e_3_rolls[0]"
+            "speed": "60",
+            "length": "((abs(roll_option[1])*60)/3.141592653589793)",
+            "roll": "roll_option[1]"
           },
           "dgs": {
             "roll_angle": {
@@ -7232,7 +7223,7 @@
           "name": "e_3_1_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -7286,9 +7277,9 @@
           "name": "e_3_1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_3_rolls[1])*40)/3.141592653589793)",
-            "roll": "e_3_rolls[1]"
+            "speed": "60",
+            "length": "((abs(roll_option[1])*60)/3.141592653589793)",
+            "roll": "roll_option[1]"
           },
           "dgs": {
             "roll_angle": {
@@ -7373,8 +7364,8 @@
           "name": "e_3_pad2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "(0.5*(180-sum([((abs(e_3_rolls[0])*40)/3.141592653589793),point_length,((abs(e_3_rolls[1])*40)/3.141592653589793)])))"
+            "speed": "60",
+            "length": "(0.5*(260-sum([((abs(roll_option[1])*60)/3.141592653589793),point_length,((abs(roll_option[1])*60)/3.141592653589793)])))"
           },
           "dgs": {
             "roll_angle": {
@@ -7427,9 +7418,9 @@
           "name": "e_4",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
-            "angle": "3.141592653589793",
-            "radius": "70",
+            "speed": "60",
+            "angle": "-3.141592653589793",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -7525,7 +7516,7 @@
           "Kind": "Line",
           "props": {
             "speed": "60",
-            "length": "180"
+            "length": "260"
           },
           "dgs": {
             "roll_angle": {
@@ -7578,9 +7569,9 @@
           "name": "e_6",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "1.5707963267948966",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -7767,11 +7758,11 @@
       "info": {
         "name": "immelman",
         "short_name": "imm",
-        "k": 30,
+        "k": 34,
         "position": "END",
         "start": {
           "height": "BTM",
-          "direction": "UPWIND",
+          "direction": "DOWNWIND",
           "orientation": "UPRIGHT"
         },
         "end": {
@@ -7838,20 +7829,20 @@
             },
             "desired": [
               [
-                0.25,
-                0.25,
-                0.25,
-                0.25,
-                -0.5,
-                -0.5
+                1.5707963267948966,
+                1.5707963267948966,
+                1.5707963267948966,
+                1.5707963267948966,
+                -3.141592653589793,
+                -3.141592653589793
               ],
               [
-                -0.25,
-                -0.25,
-                -0.25,
-                -0.25,
-                0.5,
-                0.5
+                -1.5707963267948966,
+                -1.5707963267948966,
+                -1.5707963267948966,
+                -1.5707963267948966,
+                3.141592653589793,
+                3.141592653589793
               ]
             ]
           },
@@ -7930,8 +7921,8 @@
           "name": "e_0_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_0_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_0_rolls[0])*60)/3.141592653589793)",
             "roll": "e_0_rolls[0]"
           },
           "dgs": {
@@ -8021,9 +8012,9 @@
           "name": "e_1",
           "Kind": "Loop",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "angle": "3.141592653589793",
-            "radius": "70",
+            "radius": "80",
             "roll": "0",
             "ke": "0"
           },
@@ -8118,8 +8109,8 @@
           "name": "e_2_0",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_2_rolls[0])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_2_rolls[0])*60)/3.141592653589793)",
             "roll": "e_2_rolls[0]"
           },
           "dgs": {
@@ -8209,7 +8200,7 @@
           "name": "e_2_1_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -8267,8 +8258,8 @@
           "name": "e_2_1",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_2_rolls[1])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_2_rolls[1])*60)/3.141592653589793)",
             "roll": "e_2_rolls[1]"
           },
           "dgs": {
@@ -8358,7 +8349,7 @@
           "name": "e_2_2_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -8416,8 +8407,8 @@
           "name": "e_2_2",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_2_rolls[2])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_2_rolls[2])*60)/3.141592653589793)",
             "roll": "e_2_rolls[2]"
           },
           "dgs": {
@@ -8507,7 +8498,7 @@
           "name": "e_2_3_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -8565,8 +8556,8 @@
           "name": "e_2_3",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_2_rolls[3])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_2_rolls[3])*60)/3.141592653589793)",
             "roll": "e_2_rolls[3]"
           },
           "dgs": {
@@ -8656,7 +8647,7 @@
           "name": "e_2_4_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -8714,8 +8705,8 @@
           "name": "e_2_4",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_2_rolls[4])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_2_rolls[4])*60)/3.141592653589793)",
             "roll": "e_2_rolls[4]"
           },
           "dgs": {
@@ -8766,6 +8757,38 @@
                   "limit": 10
                 }
               }
+            },
+            "roll_rate": {
+              "name": "roll_rate",
+              "measure": "roll_rate()",
+              "smoothers": [
+                "rollrate_lowpass(order:5)"
+              ],
+              "selectors": [],
+              "criteria": {
+                "kind": "Continuous",
+                "lookup": {
+                  "factor": 0.2,
+                  "exponent": 0.9999999999999998,
+                  "limit": 3
+                }
+              }
+            },
+            "roll_smoothness": {
+              "name": "roll_smoothness",
+              "measure": "abs_roll_rate()",
+              "smoothers": [
+                "lowpass(cutoff:2,order:5)"
+              ],
+              "selectors": [],
+              "criteria": {
+                "kind": "ContinuousValue",
+                "lookup": {
+                  "factor": 0.25,
+                  "exponent": 1.4854268271702418,
+                  "limit": 3
+                }
+              }
             }
           }
         },
@@ -8773,7 +8796,7 @@
           "name": "e_2_5_pause",
           "Kind": "Line",
           "props": {
-            "speed": "40",
+            "speed": "60",
             "length": "point_length"
           },
           "dgs": {
@@ -8831,8 +8854,8 @@
           "name": "e_2_5",
           "Kind": "Line",
           "props": {
-            "speed": "40",
-            "length": "((abs(e_2_rolls[5])*40)/3.141592653589793)",
+            "speed": "60",
+            "length": "((abs(e_2_rolls[5])*60)/3.141592653589793)",
             "roll": "e_2_rolls[5]"
           },
           "dgs": {
@@ -8881,6 +8904,38 @@
                   "factor": 5.729577951308233,
                   "exponent": 0.9999999999999999,
                   "limit": 10
+                }
+              }
+            },
+            "roll_rate": {
+              "name": "roll_rate",
+              "measure": "roll_rate()",
+              "smoothers": [
+                "rollrate_lowpass(order:5)"
+              ],
+              "selectors": [],
+              "criteria": {
+                "kind": "Continuous",
+                "lookup": {
+                  "factor": 0.2,
+                  "exponent": 0.9999999999999998,
+                  "limit": 3
+                }
+              }
+            },
+            "roll_smoothness": {
+              "name": "roll_smoothness",
+              "measure": "abs_roll_rate()",
+              "smoothers": [
+                "lowpass(cutoff:2,order:5)"
+              ],
+              "selectors": [],
+              "criteria": {
+                "kind": "ContinuousValue",
+                "lookup": {
+                  "factor": 0.25,
+                  "exponent": 1.4854268271702418,
+                  "limit": 3
                 }
               }
             }

@@ -13,13 +13,15 @@ _roll_rate = np.pi
 _spin_rate = np.pi / 2
 _speed = 60
 _break_angle = np.radians(20)
+_line_length = 260
+_loop_radius = 80
 
 iacmb = ManBuilder(
     ManParms(
         [
             ManParm("speed", IAC.inter.speed, _speed, "m/s"),
-            ManParm("loop_radius", IAC.inter.radius, 70.0, "m"),
-            ManParm("line_length", IAC.inter.length, 180.0, "m"),
+            ManParm("loop_radius", IAC.inter.radius, _loop_radius, "m"),
+            ManParm("line_length", IAC.inter.length, _line_length, "m"),
             ManParm("point_length", IAC.inter.length, 20.0, "m"),
             ManParm("partial_roll_rate", IAC.inter.roll_rate, _roll_rate, "rad/s"),
             ManParm("full_roll_rate", IAC.inter.roll_rate, _roll_rate, "rad/s"),
@@ -35,15 +37,15 @@ iacmb = ManBuilder(
             args=[],
             kwargs=dict(
                 speed=_speed,
-                length=180,
+                length=_line_length,
             ),
         ),
         loop=dict(
             func=loopmaker,
             args=["angle"],
             kwargs=dict(
-                speed=40,
-                radius=70,
+                speed=_speed,
+                radius=_loop_radius,
                 rolls=0.0,
                 ke=False,
                 rollangle=None,
@@ -63,8 +65,8 @@ iacmb = ManBuilder(
             kwargs=dict(
                 padded=True,
                 reversible=True,
-                speed=40,
-                line_length=180,
+                speed=_speed,
+                line_length=_line_length,
                 partial_rate=_roll_rate,
                 full_rate=_roll_rate,
                 pause_length="point_length",
@@ -85,8 +87,8 @@ iacmb = ManBuilder(
             kwargs=dict(
                 padded=True,
                 reversible=True,
-                speed=40,
-                line_length=180,
+                speed=_speed,
+                line_length=_line_length,
                 partial_rate=_roll_rate,
                 full_rate=_roll_rate,
                 pause_length="point_length",
@@ -102,7 +104,7 @@ iacmb = ManBuilder(
             func=spin,
             args=["turns"],
             kwargs=dict(
-                speed=10,
+                speed=20,
                 break_angle=np.radians(30),
                 rate="spin_rate",
                 nd_turns=np.pi / 4,

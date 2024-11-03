@@ -1,5 +1,5 @@
 from flightdata import State
-from typing import Tuple, Union, Self
+from typing import Tuple, Self
 import geometry as g
 from flightanalysis.definition.mandef import ManDef
 from flightanalysis.definition.maninfo import ManInfo, Heading, Direction
@@ -19,17 +19,25 @@ class SchedDef(Collection):
         super().__init__(data, check_types=False)
         assert all([v.__class__.__name__ in ["ManOption", "ManDef"] for v in self])
 
-    def wind_def_manoeuvre(self):
+    def wind_def_manoeuvre(self) -> dict[str, int | str]:
         for i, man in enumerate(self):
             if man.info.start.direction != Direction.CROSS:
-                return i
+                return dict(
+                    manid=i,
+                    direction=man.info.start.direction.name
+                )
 
     def add_new_manoeuvre(self, info: ManInfo, defaults=None):
         return self.add(ManDef(info, defaults))
 
+    def create(self):
+        return Schedule([md.create() for md in self])
+
     def create_template(
         self, depth: float = 170, wind: Heading = Heading.LTOR
     ) -> Tuple[Schedule, State]:
+        
+        
         templates = []
         ipos = self[0].guess_ipos(depth, wind)
 
@@ -58,7 +66,7 @@ class SchedDef(Collection):
             dump(dict(
                 category=sinfo.category if sinfo else None,
                 schedule=sinfo.name if sinfo else None,
-                direction_manoeuvre=self.wind_def_manoeuvre(),
+                direction_definition=self.wind_def_manoeuvre(),
                 mdefs=self.to_dict()
             ), f, cls=NumpyEncoder, indent=2)
         return file
@@ -69,15 +77,15 @@ class SchedDef(Collection):
             return SchedDef.from_dict(load(f)['mdefs'])
 
     @staticmethod
-    def load(name: Union[str, ScheduleInfo]) -> Self:
+    def load(name: str | ScheduleInfo) -> Self:
         sinfo = name if isinstance(name, ScheduleInfo) else ScheduleInfo.from_str(name)
         return SchedDef.from_dict(sinfo.json_data())
 
-    def plot(self, depth=170, wind=Heading.LTOR):
+    def plot(self, depth=170, wind=Heading.LTOR, **kwargs):
         sched, template = self.create_template(depth, wind)
         from flightplotting import plot_regions
 
-        return plot_regions(template, 'manoeuvre')
+        return plot_regions(template, 'manoeuvre', **kwargs)
 
     def label_exit_lines(self, sti: State):
         mans = list(self.data.keys()) + ["landing"]
@@ -132,3 +140,5 @@ class SchedDef(Collection):
             fname = f"{folder}/{sname}_template_{distance}_{w}.json"
             print(fname)
             self.create_fcj(sname, fname, wind, distance / 170, kind)
+
+

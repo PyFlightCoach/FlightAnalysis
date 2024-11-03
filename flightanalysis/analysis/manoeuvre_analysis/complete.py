@@ -211,7 +211,7 @@ class Complete(Alignment):
         return ElementsResults([ea.intra_score() for ea in self])
 
     def inter(self):
-        return self.mdef.mps.collect(self.manoeuvre, self.template)
+        return self.mdef.mps.collect(self.manoeuvre, self.template, self.mdef.box)
 
     def positioning(self):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)

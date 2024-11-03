@@ -1,4 +1,11 @@
-from flightanalysis import ScheduleInfo, logger, enable_logging, __version__, Heading
+from flightanalysis import (
+    ScheduleInfo,
+    logger,
+    enable_logging,
+    __version__,
+    Heading,
+    Direction,
+)
 from flightanalysis.analysis.analysis_json import AnalysisJson
 from flightanalysis.analysis.manoeuvre_analysis import MA
 from pathlib import Path
@@ -11,10 +18,10 @@ import traceback
 
 def _create_state(fcjson: fcj.FCJ, bin: Path | None, origin: Origin):
     fl = Flight.from_log(bin) if bin else Flight.from_fc_json(fcjson)
-    return fl.boot_time() or fcjson.created(), State.from_flight(fl, origin)
+    return fl.boot_time() or fcjson.created, State.from_flight(fl, origin)
 
 
-def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
+def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None) -> AnalysisJson:
     sinfo = ScheduleInfo(*fcjson.parameters.schedule).fcj_to_pfc()
     mdetails = sinfo.manoeuvre_details()
     origin = Origin.from_fcjson_parameters(fcjson.parameters)
@@ -23,9 +30,15 @@ def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
         aj = AnalysisJson.model_validate_json(ajs.open().read()) if ajs else None
     except Exception:
         aj = None
-    
-    schedule_direction = Heading.infer(
-        st[fcjson.data[fcjson.mans[1].start].time / 1e6].att.bearing()[0]
+
+    ddef = sinfo.direction_definition()
+
+    schedule_direction = Direction.parse(ddef["direction"]).wind_swap_heading(
+        Heading.infer(
+            st[
+                fcjson.data[fcjson.mans[ddef["manid"] + 1].start].time / 1e6
+            ].att.bearing()[0]
+        )
     )
 
     return AnalysisJson(
@@ -36,7 +49,7 @@ def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
             heading=origin.heading,
         ),
         isComp=aj.isComp if aj else True,
-        sourceBin=bin.name if bin.exists() else None,
+        sourceBin=bin.name if bin and bin.exists() else None,
         sourceFCJ=fcjson.name,
         bootTime=tboot if tboot else aj.bootTime,
         mans=[
@@ -49,8 +62,10 @@ def create_ajson(fcjson: fcj.FCJ, bin: Path = None, ajs: Path = None):
                     fcjson.data[man.start].time / 1e6 : fcjson.data[man.stop].time / 1e6
                 ].to_dict(),
                 history={
-                    res.fa_version: res.manresults[i + 1] for res in fcjson.fcs_scores if res.manresults[i+1]
-                } 
+                    res.fa_version: res.manresults[i + 1]
+                    for res in fcjson.fcs_scores
+                    if res.manresults[i + 1]
+                }
                 | (aj.mans[i].history if (aj and aj.mans[i].history) else {}),
             ).simplify_history()
             for i, man in enumerate(fcjson.mans[1:-1])

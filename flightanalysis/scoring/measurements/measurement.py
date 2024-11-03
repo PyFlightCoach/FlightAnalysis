@@ -9,7 +9,6 @@ from typing import Tuple
 from flightanalysis.base.ref_funcs import RFuncBuilders
 
 
-
 @dataclass()
 class Measurement:
     value: npt.NDArray
@@ -34,7 +33,7 @@ class Measurement:
             value=list(self.value),
             unit=self.unit,
             direction=self.direction.to_dicts(),
-            visibility=list(self.visibility),
+            visibility=self.visibility.tolist(),
             keys=list(self.keys) if self.keys is not None else None,
         )
 
@@ -121,13 +120,16 @@ class Measurement:
         ) * Measurement._pos_vis(loc)
 
     @staticmethod
-    def _inter_scale_vis(fl: State):
+    def _inter_scale_vis(fl: State, box):
         # factor of 1 when it takes up 1/2 of the box height.
         # reduces to zero for zero length el
         depth = fl.pos.y.mean()
+
+        h = box.top_pos(g.PY(depth)) - box.bottom_pos(g.PY(depth))
+
         _range = fl.pos.max() - fl.pos.min()
-        length = np.sqrt(_range.x[0] ** 2 + _range.z[0] ** 2)
-        return min(1, length / (depth * 0.8660254))  # np.tan(np.radians(60)) / 2
+        length = abs(_range)[0]
+        return min(1, 2 * length / h.z[0])  # np.tan(np.radians(60)) / 2
 
 
     @staticmethod
