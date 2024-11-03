@@ -7,7 +7,7 @@ import pandas as pd
 from datetime import datetime
 
 class AnalysisJson(BaseModel):
-    origin: FCJOrigin
+    origin: FCJOrigin | None = None
     isComp: bool
     sourceBin: str | None = None
     sourceFCJ: str | None = None
@@ -27,7 +27,9 @@ class AnalysisJson(BaseModel):
             versions |= set(man.history.keys())
         return list(versions)
 
-    def get_scores(self, version: str, props: fcj.ScoreProperties, group="total"):
+    def get_scores(self, version: str, props: fcj.ScoreProperties=None, group="total"):
+        if props is None:
+            props = fcj.ScoreProperties()
         scores = {}
         for man in self.mans:
             if version in man.history:

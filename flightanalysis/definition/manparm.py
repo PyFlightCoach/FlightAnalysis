@@ -87,29 +87,32 @@ class ManParm(Opp):
             pass
         return opp
 
-
     def assign(self, id, collector):
         self.collectors.data[id] = collector
 
     def collect(self, els):
         return {str(collector): collector(els) for collector in self.collectors}
 
-    def collect_vis(self, els, state: State) -> Tuple[Point, list[float]]:
+    def collect_vis(self, els, state: State, box) -> Tuple[Point, list[float]]:
         vis = [
             [c.visibility(els, state) for c in collector.list_parms()]
             for collector in self.collectors
         ]
 
         scale_vis = [
-            Measurement._inter_scale_vis(c.extract_state(els, state))
+            Measurement._inter_scale_vis(c.extract_state(els, state), box)
             for c in self.collectors
         ]
-        return Point.concatenate(
-            [Point.concatenate([v[0] for v in vi]).mean() for vi in vis]
-        ), [np.mean([v[1] for v in vi]) * sv for vi, sv in zip(vis, scale_vis)]
+        return (
+            Point.concatenate(
+                [Point.concatenate([v[0] for v in vi]).mean() for vi in vis]
+            ),
+#            scale_vis
+            [np.mean([v[1] for v in vi]) * sv for vi, sv in zip(vis, scale_vis)],
+        )
 
-    def get_downgrades(self, els, state: State):
-        direction, vis = self.collect_vis(els, state)
+    def get_downgrades(self, els, state: State, box):
+        direction, vis = self.collect_vis(els, state, box)
 
         meas = Measurement(
             [c(els) for c in self.collectors],
@@ -127,7 +130,7 @@ class ManParm(Opp):
             mistakes,
             dgs * meas.visibility,
             ids,
-            self.criteria
+            self.criteria,
         )
 
     @property
@@ -156,21 +159,19 @@ class ManParm(Opp):
         return [self]
 
     def __repr__(self):
-        return (
-            f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul}, {self.unit})"
-        )
+        return f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul}, {self.unit})"
 
 
 class ManParms(Collection):
     VType = ManParm
     uid = "name"
 
-    def collect(self, manoeuvre: Manoeuvre, state: State = None) -> Results:
+    def collect(self, manoeuvre: Manoeuvre, state: State, box) -> Results:
         """Collect the comparison downgrades for each manparm for a given manoeuvre."""
         return Results(
             "Inter",
             [
-                mp.get_downgrades(manoeuvre.all_elements(), state)
+                mp.get_downgrades(manoeuvre.all_elements(), state, box)
                 for mp in self
                 if not isinstance(mp.criteria, Combination)
             ],
@@ -196,7 +197,9 @@ class ManParms(Collection):
                     defaul = mp.criteria.check_option(flown_parm)
                 else:
                     defaul = np.mean(np.abs(flown_parm)) * np.sign(mp.defaul)
-                mps.append(ManParm(mp.name, mp.criteria, defaul, mp.unit, mp.collectors))
+                mps.append(
+                    ManParm(mp.name, mp.criteria, defaul, mp.unit, mp.collectors)
+                )
             else:
                 mps.append(mp)
         return ManParms(mps)
@@ -207,12 +210,15 @@ class ManParms(Collection):
     def parse_rolls(
         self, rolls: Union[Number, str, Opp, list], name: str, reversible: bool = True
     ):
-        
-        if isinstance(rolls, Opp) or (isinstance(rolls, list) and all([isinstance(r, Opp) for r in rolls])):
+        if isinstance(rolls, Opp) or (
+            isinstance(rolls, list) and all([isinstance(r, Opp) for r in rolls])
+        ):
             return rolls
         elif isinstance(rolls, str):
             return self.add(
-                ManParm(f"{name}_rolls", Combination.rollcombo(rolls, reversible), 0, "rad")
+                ManParm(
+                    f"{name}_rolls", Combination.rollcombo(rolls, reversible), 0, "rad"
+                )
             )
         elif isinstance(rolls, Number) or pd.api.types.is_list_like(rolls):
             return self.add(
@@ -221,7 +227,8 @@ class ManParms(Collection):
                     Combination.rolllist(
                         [rolls] if np.isscalar(rolls) else rolls, reversible
                     ),
-                    0, "rad",
+                    0,
+                    "rad",
                 )
             )
         else:

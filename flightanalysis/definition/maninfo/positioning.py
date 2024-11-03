@@ -12,8 +12,8 @@ class Orientation(Enum):
 class Heading(Enum):
     RTOL = np.pi
     LTOR = 0
-    OUTTOIN = np.pi / 2
-    INTOOUT = 3 * np.pi / 2
+    OUTTOIN = 3 * np.pi / 2
+    INTOOUT = np.pi / 2
 
     @staticmethod
     def values():
@@ -42,7 +42,7 @@ class Heading(Enum):
 class Direction(Enum):
     UPWIND = 1
     DOWNWIND = -1
-    CROSS = 3
+    CROSS = 0
 
     def wind_swap_heading(self, d_or_w: Heading) -> int:
         match self:

@@ -4,23 +4,23 @@ from flightanalysis.definition.maninfo.positioning import Direction
 from flightanalysis.data import list_resources, get_json_resource, get_file
 import pandas as pd
 
-
 fcj_categories = {
-    'F3A FAI':'f3a',
-    'F3A':'f3a',
-    'US AMA':'nsrca',
-    'F3A UK':'f3auk',
-    'F3A US':'nsrca',
-    'IMAC':'imac',
+    "F3A FAI": "f3a",
+    "F3A": "f3a",
+    "US AMA": "nsrca",
+    "F3A UK": "f3auk",
+    "F3A US": "nsrca",
+    "IMAC": "imac",
 }
 
 fcj_schedules = {
-    'P23': 'p23',
-    'F23': 'f23',
-    'P25': 'p25',
-    'F25': 'f25',
-    'Unlimited 2024': 'unlimited2024',
+    "P23": "p23",
+    "F23": "f23",
+    "P25": "p25",
+    "F25": "f25",
+    "Unlimited 2024": "unlimited2024",
 }
+
 
 def lookup(val, data):
     val = val.replace("_", " ")
@@ -29,7 +29,7 @@ def lookup(val, data):
 
 @dataclass
 class ManDetails:
-    name: str 
+    name: str
     id: int
     k: float
     entry: Direction
@@ -62,23 +62,25 @@ class ScheduleInfo:
         return lookup(schedule, fcj_schedules)
 
     @staticmethod
-    def mixed():    
+    def mixed():
         return ScheduleInfo("na", "mixed")
 
     def fcj_to_pfc(self):
         return ScheduleInfo(
-            lookup(self.category, fcj_categories),
-            lookup(self.name, fcj_schedules)
+            lookup(self.category, fcj_categories), lookup(self.name, fcj_schedules)
         )
 
     def pfc_to_fcj(self):
-
         def rev_lookup(val, data):
-            return next(k for k, v in data.items() if v == val) if val in data.values() else val
+            return (
+                next(k for k, v in data.items() if v == val)
+                if val in data.values()
+                else val
+            )
 
         return ScheduleInfo(
             rev_lookup(self.category, fcj_categories),
-            rev_lookup(self.name, fcj_schedules)
+            rev_lookup(self.name, fcj_schedules),
         )
 
     @staticmethod
@@ -91,36 +93,42 @@ class ScheduleInfo:
     @staticmethod
     def build(category, name):
         return ScheduleInfo(category.lower(), name.lower())
-    
+
     def file(self):
         return get_file(f"{str(self).lower()}_schedule.json")
 
     def json_data(self):
-        return get_json_resource(self.file())['mdefs']
+        return get_json_resource(self.file())["mdefs"]
 
     def manoeuvre_details(self) -> list[ManDetails]:
         mds = []
-        
+
         for i, (k, v) in enumerate(self.json_data().items()):
             if isinstance(v, list):
-                v=v[0]
-            mds.append(ManDetails(
-                v['info']['short_name'],
-                i+1,
-                v['info']['k'],
-                Direction(v['info']['start']['direction'])
-            ))
+                v = v[0]
+            mds.append(
+                ManDetails(
+                    v["info"]["short_name"],
+                    i + 1,
+                    v["info"]["k"],
+                    Direction.parse(v["info"]["start"]["direction"]),
+                )
+            )
         return mds
 
     def k_factors(self):
-        return pd.Series({md.name: md.k for md in self.manoeuvre_details()}, name='k')
+        return pd.Series({md.name: md.k for md in self.manoeuvre_details()}, name="k")
 
-    def direction_manoeuvre(self):
-        """The id of the manoeuvre that should be used to figure out the direction the schedule is
-        flown in. Generally this will be 0 unless the schedule starts crossbox"""
-        return get_json_resource(self.file())['direction_manoeuvre']
+    def direction_definition(self):
+        """returns a dict containing the id of the manoeuvre that should be used to figure out the direction
+        the schedule is flown in and whether it should be upwind or downwind.
+        This will be: {manid: 0, direction:UPWIND} unless the first manoevure is crossbox"""
+        return get_json_resource(self.file())["direction_definition"]
 
     def __eq__(self, other: ScheduleInfo):
         return str(self.fcj_to_pfc()) == str(other.fcj_to_pfc())
 
-schedule_library = [ScheduleInfo.from_str(fname) for fname in list_resources('schedule')]
+
+schedule_library = [
+    ScheduleInfo.from_str(fname) for fname in list_resources("schedule")
+]

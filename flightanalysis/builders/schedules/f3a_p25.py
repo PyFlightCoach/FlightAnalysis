@@ -247,9 +247,12 @@ p25_def = SchedDef([
 
 if __name__ == "__main__":
 
-#    p25_def.plot().show()
+    fig = p25_def.plot()
+    fig.add_traces(p25_def[0].box.plot())
+    fig.show()
+    
     #p25_def.create_fcj('P25', 'p25_template_fcj.json')
-    p25_def.to_json("flightanalysis/data/f3a_p25_schedule.json", ScheduleInfo('f3a', 'p25'))
+    #p25_def.to_json("flightanalysis/data/f3a_p25_schedule.json", ScheduleInfo('f3a', 'p25'))
     pass
 #    import os
 #    p25_def.create_fcjs('p25', f'{os.environ['HOME']}/Desktop/templates/')

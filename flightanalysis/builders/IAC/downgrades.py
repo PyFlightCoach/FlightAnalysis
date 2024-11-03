@@ -71,7 +71,7 @@ def dg_applicator(el: Loop | Line | Snap | Spin | StallTurn, tp: State, last_kin
             dgs.append(dg("peak_break_pitch_rate", measures.pitch_rate(), None, sels.autorot_break(rot=np.pi/4), IAC.intra.peak_break_pitch_rate ))
             dgs.append(dg("break_pitch_rate", measures.pitch_rate(), None, sels.autorot_break(rot=np.pi/4), IAC.intra.break_pitch_rate ))
     if (el.__class__ is Line or el.__class__ is Loop ):
-        if el.roll > 0:
+        if abs(el.roll) > 0:
             dgs.append(dg("roll_rate", measures.roll_rate(), sms.rollrate_lowpass(order=5), None, IAC.intra.rollrate))
             dgs.append(dg("roll_smoothness", measures.abs_roll_rate(), sms.lowpass(cutoff=2, order=5), None, IAC.intra.rollsmoothness))
         

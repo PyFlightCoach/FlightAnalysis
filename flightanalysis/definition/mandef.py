@@ -84,8 +84,8 @@ class ManDef:
                 Position.CENTRE: {
                     Heading.OUTTOIN: 0.0,
                     Heading.INTOOUT: 0.0,
-                    Heading.RTOL: self.box.right(gpy)[1][0],
-                    Heading.LTOR: self.box.left(gpy)[1][0],
+                    Heading.RTOL: self.box.right_pos(gpy).x[0],
+                    Heading.LTOR: self.box.left_pos(gpy).x[0],
                 }[heading],
                 Position.END: 0.0,
             }[self.info.position],
@@ -103,13 +103,12 @@ class ManDef:
         return g.Euler(self.info.start.orientation.value, 0, heading.value)
 
     def guess_itrans(self, target_depth: float, heading: Heading) -> g.Transformation:
+
         return g.Transformation(
             self.guess_ipos(target_depth, heading), self.initial_rotation(heading)
         )
 
-    def entry_line_length(
-        self, itrans: g.Transformation = None, target_depth=170
-    ) -> float:
+    def entry_line_length(self, itrans: g.Transformation, target_depth=None) -> float:
         """Calculate the length of the entry line so that the manoeuvre is centred
         or extended to box edge as required.
 
@@ -120,8 +119,11 @@ class ManDef:
         Returns:
             float: the line length
         """
-
+        target_depth = target_depth or self.box.middle().y[0]
         heading = Heading.infer(itrans.rotation.bearing())
+
+        logger.debug(f"Calculating entry line length for {self.info.position.name} manoeuvre {self.info.name}")
+        logger.debug(f"Target depth: {target_depth:.0f}, heading: {heading.name}")
 
         # Create a template at zero to work out how much space the manoueuvre needs
         man = Manoeuvre(
@@ -130,48 +132,36 @@ class ManDef:
             uid=self.info.name,
         )
 
-        template = man.create_template(
-            State.from_transform(
-                g.Transformation(g.Euler(self.info.start.orientation.value, 0, 0))
-            )
-        )
+        template = man.create_template(State.from_transform(itrans))
+        
+        if self.info.position == Position.CENTRE and (heading == Heading.LTOR or heading == Heading.RTOL):
+            if len(self.info.centre_points) > 0:
+                xoffset = (
+                    man.elements[self.info.centre_points[0] - 2]
+                    .get_data(template)
+                    .pos.x[-1]
+                )
+            elif len(self.info.centred_els) > 0:
+                ce, fac = self.info.centred_els[0]
+                _x = man.elements[ce - 1].get_data(template).pos.x
+                xoffset = _x[int(len(_x) * fac)]
+            else:
+                xoffset = -(max(template.pos.x) + min(template.pos.x)) / 2
+            return - itrans.att.transform_point(g.PX(xoffset)).x[0]
 
-        if self.info.start.direction == Direction.CROSS:
-            st = State.from_transform(itrans)
-            man_l = template.x[-1] - template.x[0]
-            return max(target_depth - man_l * st.cross_direction() - st.pos.y[0], 30)
         else:
-            if self.info.position == Position.CENTRE:
-                if len(self.info.centre_points) > 0:
-                    xoffset = (
-                        man.elements[self.info.centre_points[0] - 2]
-                        .get_data(template)
-                        .pos.x[-1]
-                    )
-                elif len(self.info.centred_els) > 0:
-                    ce, fac = self.info.centred_els[0]
-                    _x = man.elements[ce - 1].get_data(template).pos.x
-                    xoffset = _x[int(len(_x) * fac)]
-                else:
-                    xoffset = -(max(template.pos.x) + min(template.pos.x)) / 2
+            bound = {
+                Heading.LTOR: 'right',
+                Heading.RTOL: 'left',
+                Heading.INTOOUT: 'back',
+                Heading.OUTTOIN: 'front'
+            }[heading]
+            logger.debug(f"Bound: {bound}")
 
-            else:
-                xoffset = max(template.pos.x) - self.box.right(g.PY(itrans.pos.y[0]))[1][0]
+            return min(getattr(self.box, bound)(template.pos)[1])
 
-            logger.debug(
-                f"{self.info.position} {heading}, ipos: {int(itrans.pos.x[0])}, Xoff: {int(xoffset)}, "
-            )
 
-            if heading == Heading.LTOR:
-                return max(-itrans.pos.x[0] - xoffset, 10)
-            else:
-                return max(itrans.pos.x[0] - xoffset, 10)
-
-    def fit_box(
-        self,
-        itrans: g.Transformation = None,
-        target_depth=170,
-    ):
+    def fit_box(self,itrans: g.Transformation,target_depth=None):
         self.eds.entry_line.props["length"] = self.entry_line_length(
             itrans, target_depth
         )

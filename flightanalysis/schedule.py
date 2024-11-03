@@ -18,9 +18,9 @@ class Schedule(Collection):
         templates = [State.from_transform(itrans, vel=PX(self[0].elements[0].speed))]
 
         for m in self:
-            templates.append(m.create_template(templates[-1][-1]),aligned)
+            templates.append(m.create_template(templates[-1][-1],aligned))
 
-        return State.stack(templates)
+        return State.stack(templates[1:])
 
     def match_intention(self, itrans:Transformation, alinged: State) -> Tuple[Schedule, State]:
         """resize every element of the schedule to best fit the corresponding element in a labelled State

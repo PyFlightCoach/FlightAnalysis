@@ -1,7 +1,10 @@
 {
   "category": "f3auk",
   "schedule": "clubman",
-  "direction_manoeuvre": 0,
+  "direction_definition": {
+    "manid": 0,
+    "direction": "UPWIND"
+  },
   "mdefs": {
     "inloop": {
       "info": {
