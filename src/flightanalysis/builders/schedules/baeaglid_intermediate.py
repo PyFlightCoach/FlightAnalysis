@@ -173,5 +173,5 @@ sdef = SchedDef(
 if __name__ == "__main__":
     sdef.plot().show()
 
-    sdef.to_json("flightanalysis/data/BAeAGlid_intermediate.json")
+#    sdef.to_json("flightanalysis/data/BAeAGlid_intermediate.json")
 

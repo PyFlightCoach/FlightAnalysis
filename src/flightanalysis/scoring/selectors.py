@@ -116,3 +116,10 @@ def minimum(fl: State, tp: State, vs: npt.NDArray):
 def absmax(fl: State, tp: State, vs: npt.NDArray):
     """return the index with the highest absolute value"""
     return np.array([np.argmax(np.abs(vs))])
+
+
+@selectors.add
+def middle(fl: State, tp: State, vs: npt.NDArray, chopt: float):
+    """the central section of the array"""
+    ich = int(np.floor(min(chopt / np.mean(fl.dt), len(fl)/2)))
+    return np.arange(len(vs))[ich:-ich-1]

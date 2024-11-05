@@ -5,6 +5,8 @@ from .manoeuvre_analysis.schema import MA
 from flightanalysis.definition.scheduleinfo import ScheduleInfo
 import pandas as pd
 from datetime import datetime
+from flightanalysis.base.utils import validate_json
+
 
 class AnalysisJson(BaseModel):
     origin: FCJOrigin | None = None
@@ -46,3 +48,6 @@ class AnalysisJson(BaseModel):
         version = version[1:] if version.startswith('v') else version
         return all([man.history is not None and version in man.history.keys() for man in self.mans])
 
+    @staticmethod
+    def parse_json(json: dict|str):
+        return AnalysisJson.model_validate(validate_json(json))

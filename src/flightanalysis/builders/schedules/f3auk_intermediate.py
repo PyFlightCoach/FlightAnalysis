@@ -19,7 +19,7 @@ from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
 
-intermediate_def = SchedDef([  
+sdef = SchedDef([  
    
     f3amb.create(ManInfo
         (
@@ -204,8 +204,5 @@ intermediate_def = SchedDef([
 
 
 if __name__ == "__main__":
-
-    #intermediate_def.plot().show()
-    #import os
-    #intermediate_def.create_fcjs('f3auk_intermediate', f'{os.environ['HOME']}/Desktop/templates/')
-    intermediate_def.to_json('flightanalysis/data/f3auk_inter_schedule.json')
+    sdef.plot().show()
+    

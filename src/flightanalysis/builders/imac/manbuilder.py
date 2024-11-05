@@ -25,7 +25,7 @@ imacmb = ManBuilder(
         ]
     ),
     dict(
-        line=dict(func=line, args=[], kwargs=dict(roll=0.0, speed=30.0, length=130)),
+        line=dict(func=line, args=[], kwargs=dict(speed=30.0, length=130)),
         loop=dict(
             func=loopmaker,
             args=["angle"],

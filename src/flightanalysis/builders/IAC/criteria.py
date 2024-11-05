@@ -19,8 +19,8 @@ class IACIntra:
     track = Continuous(Exponential.fit_points(np.radians([30, 90]), [3, 9], 10))
     roll = Continuous(Exponential.fit_points(np.radians([30, 90]), [2, 9], 10))
     
-    loopshape = Continuous(Exponential.fit_points([1.5, 3], [0.5, 1], 3))
-    loopsmoothness = ContinuousValue(Exponential.fit_points([1, 2], [0.25, 0.7], 3))
+    loopshape = Continuous(Exponential.fit_points([1.5, 3], [0.3, 6], 1.5))
+    loopsmoothness = ContinuousValue(Exponential.fit_points([0.5, 1], [0.2, 0.4], 1.5))
 
     rollrate = Continuous(Exponential.fit_points([1, 3], [0.2, 0.6], 3))
     rollsmoothness = ContinuousValue(Exponential.fit_points([1, 2], [0.25, 0.7], 3))
@@ -41,10 +41,10 @@ class IACIntra:
     btmbox = Bounded(Exponential.fit_points([50, 100], [5, 10], 10), 0, None)
 
 class IACInter:
-    radius = Comparison(Exponential.fit_points([1, 2], [1, 2], 2))
+    radius = Comparison(Exponential.fit_points([2, 4], [1, 2], 2))
     speed = Comparison(free)
-    roll_rate = Comparison(Exponential.fit_points([1, 2], [0.25, 0.5], 1))
-    length = Comparison(Exponential.fit_points([1, 2], [1, 2], 2))
+    roll_rate = Comparison(Exponential.fit_points([2, 4], [0.25, 0.5], 1))
+    length = Comparison(Exponential.fit_points([0.3, 1], [1, 2], 2))
     free = Comparison(free)
 
 

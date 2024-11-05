@@ -16,7 +16,7 @@ from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
 
-Intm24FC_def = SchedDef([
+sdef = SchedDef([
 
     f3amb.create(ManInfo("InvTriang", "trgle", 5,Position.CENTRE,
             BoxLocation(Height.TOP, Direction.UPWIND, Orientation.INVERTED),
@@ -205,15 +205,4 @@ Intm24FC_def = SchedDef([
 ])
 
 if __name__ == "__main__":
-
-    Intm24FC_def.plot().show()
-
-###    Intm24FC_def.to_json('C:/Users/coach/OneDrive/Desktop/Templates/test4/flightanalysis/data/Interm24FC.json')
-#    Intm24FC_def.to_json('Intm24FC-fcj-LR.json')
-#    Intm24FC_def.create_fcj('intermediate', 'Intm24FC-fcj-LR-template.json', 1)
-###    from flightplotting.plots import plotsec
-
-###    Intm24FC, template = Intm24FC_def.create_template(170, 1)
-###    #from plots import plotsec
-    
-###    plotsec(template).show()
+    sdef.plot().show()

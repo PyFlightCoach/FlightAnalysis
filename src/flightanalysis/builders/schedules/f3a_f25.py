@@ -15,7 +15,7 @@ from flightanalysis import (
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
-f25_def = SchedDef([
+sdef = SchedDef([
     f3amb.create(ManInfo(
             "Square on Corner", "sLoop", k=4, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
@@ -267,8 +267,8 @@ f25_def = SchedDef([
 
 
 if __name__ == "__main__":
-    fig = f25_def.plot()
-    fig.add_traces(f25_def[0].box.plot())
+    fig = sdef.plot()
+    fig.add_traces(f3amb.box.plot())
     fig.show()
  
     #f25_def.plot().show()

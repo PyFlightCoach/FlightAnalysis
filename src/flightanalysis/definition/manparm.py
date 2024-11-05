@@ -99,16 +99,16 @@ class ManParm(Opp):
             for collector in self.collectors
         ]
 
-        scale_vis = [
+        scale_vis = np.array([
             Measurement._inter_scale_vis(c.extract_state(els, state), box)
             for c in self.collectors
-        ]
+        ])
         return (
             Point.concatenate(
                 [Point.concatenate([v[0] for v in vi]).mean() for vi in vis]
             ),
-#            scale_vis
-            [np.mean([v[1] for v in vi]) * sv for vi, sv in zip(vis, scale_vis)],
+            scale_vis
+#            [np.mean([v[1] for v in vi]) * sv for vi, sv in zip(vis, scale_vis)],
         )
 
     def get_downgrades(self, els, state: State, box):
@@ -125,6 +125,7 @@ class ManParm(Opp):
         return Result(
             self.name,
             meas,
+            None,
             meas.value,
             np.arange(len(meas.value)),
             mistakes,
