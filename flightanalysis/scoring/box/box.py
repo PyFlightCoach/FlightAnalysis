@@ -151,7 +151,8 @@ class Box:
                 Result(
                     "centre_box",
                     m,
-                    sample[ovs],
+                    None,
+                    sample,
                     ovs,
                     *self.centre_criteria(sample[ovs], True),
                     self.centre_criteria,
@@ -182,6 +183,7 @@ class Box:
                 Result(
                     f"{k}_box",
                     m,
+                    None,
                     sample,
                     np.arange(len(fl)),
                     *dg.criteria(sample, True),

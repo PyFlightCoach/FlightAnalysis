@@ -6,7 +6,7 @@ from . import from_dict
 from flightanalysis import __version__
 import numpy as np
 import pandas as pd
-
+from flightanalysis.analysis.manoeuvre_analysis import from_dict, Basic, Alignment, Complete, Scored
 
 class MA(BaseModel):
     name: str
@@ -33,6 +33,9 @@ class MA(BaseModel):
             flown=self.flown,
             history=self.history,
         )
+
+    def create_ma(self):
+        return from_dict(self.__dict__)
 
     def run(
         self, basic: bool = True, optimise_aligment: bool = True, force: bool = False

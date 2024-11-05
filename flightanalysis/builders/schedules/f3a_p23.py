@@ -15,7 +15,7 @@ from flightanalysis import (
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
-p23_def = SchedDef([
+sdef = SchedDef([
     f3amb.create(ManInfo(
             "Top Hat", "tHat", k=4, position=Position.CENTRE, 
             start=BoxLocation(Height.BTM, Direction.UPWIND, Orientation.UPRIGHT),
@@ -230,10 +230,7 @@ p23_def = SchedDef([
 ])
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
+    sdef.plot().show()
+
     
- #   p23_def.plot().show()
-#    p23_def.create_fcj('P23', 'p23_template_fcj.json')
-    p23_def.to_json("flightanalysis/data/f3a_p23_schedule.json")
-   # import os
-   # p23_def.create_fcjs('p23', f'{os.environ['HOME']}/Desktop/templates/')

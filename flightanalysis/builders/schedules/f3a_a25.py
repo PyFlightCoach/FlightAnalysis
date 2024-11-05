@@ -14,7 +14,7 @@ from flightanalysis import (
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
-a25_def = SchedDef([
+sdef = SchedDef([
      f3amb.create(ManInfo
         (
             "Triangle", "trgle", k=3, position=Position.CENTRE, 
@@ -252,5 +252,5 @@ if __name__ == "__main__":
  #   import os
  #   a25_def.create_fcjs('a25', f'{os.environ['HOME']}/Desktop/templates/')
 
-    a25_def.to_json("flightanalysis/data/f3a_a25_schedule.json")
+    sdef.to_json("flightanalysis/data/f3a_a25_schedule.json")
 

@@ -18,4 +18,5 @@ def enable_logging(level: str = 'INFO'):
         sys.stderr,
         level=level
     )
+    return logger
 

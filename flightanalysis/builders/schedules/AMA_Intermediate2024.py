@@ -12,7 +12,7 @@ from flightanalysis import (
     Position,
     SchedDef,
 )
-from flightanalysis.builders.f3a.downgrades import dggrps
+
 from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
@@ -202,8 +202,7 @@ sdef = SchedDef([
 ])
 
 if __name__ == "__main__":
-    import os
-    #Intm24FC_def.plot().show()
+    sdef.plot().show()
 
-    sdef.create_fcjs('AMA_Intermediate2024', f'{os.environ['HOME']}/Desktop/templates/')
+#    sdef.create_fcjs('AMA_Intermediate2024', f'{os.environ['HOME']}/Desktop/templates/')
 

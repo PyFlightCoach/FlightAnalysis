@@ -4,7 +4,7 @@ import numpy.typing as npt
 import numpy as np
 from scipy.signal import filtfilt
 from scipy.signal import butter
-
+from loguru import logger
 smoothers = RFuncBuilders({})
 
 
@@ -22,12 +22,12 @@ def _convolve(data: npt.NDArray, width: float):
 
 
 @smoothers.add
-def none(data, el):
+def none(freq, data, el):
     return data
 
 
 @smoothers.add
-def convolve(data, el, window_ratio, max_window):
+def convolve(freq, data, el, window_ratio, max_window):
     window = min(len(data) // window_ratio, max_window)
     sample = _convolve(data, window)
     _mean = np.mean(sample)
@@ -36,20 +36,32 @@ def convolve(data, el, window_ratio, max_window):
 
 
 @smoothers.add
-def lowpass(data, el, cutoff, order):
+def lowpass(freq, data, el, cutoff, order):
     return filtfilt(
-        *butter(int(order), cutoff, fs=25, btype="low", analog=False),
+        *butter(int(order), cutoff, fs=freq, btype="low", analog=False),
         data,
         padlen=len(data) - 1,
     )
 
 @smoothers.add
-def curvature_lowpass(data, el, order):
+def bandpass(freq, data, el, low_cut, high_cut, order):
+    return filtfilt(
+        *butter(int(order), [low_cut, high_cut], fs=freq, btype="band", analog=False),
+        data,
+        padlen=len(data) - 1,
+    )
+
+
+@smoothers.add
+def curvature_lowpass(freq, data, el, cut, order):    
+    cutoff_freq =  freq*abs(el.angle)*cut / (2 * np.pi * len(data))
+    logger.debug(f"curvature lowpass cutoff ={cutoff_freq } Hz")
+    
     return filtfilt(
         *butter(
             int(order),
-            100 * abs(el.angle) / (np.pi * len(data)),
-            fs=25,
+            cutoff_freq,
+            fs=freq,
             btype="low",
             analog=False,
         ),
@@ -58,13 +70,13 @@ def curvature_lowpass(data, el, order):
     )
 
 @smoothers.add
-def rollrate_lowpass(data, el, order):
+def rollrate_lowpass(freq, data, el, order):
 
     return filtfilt(
         *butter(
             int(order),
             100 * abs(el.roll) / (np.pi * len(data)),
-            fs=25,
+            fs=freq,
             btype="low",
             analog=False,
         ),
@@ -73,7 +85,7 @@ def rollrate_lowpass(data, el, order):
     )
 
 
-def _soft_end(data, el, width):
+def _soft_end(data, width):
     outd = data.copy()
     width = int(min(np.ceil(len(data) / 4), width))
     outd[-width:] = np.linspace(data[-width], np.mean(data[-width:]), width + 1)[1:]
@@ -81,11 +93,11 @@ def _soft_end(data, el, width):
 
 
 @smoothers.add
-def soft_end(data, el, width):
-    return _soft_end(data, width)
+def soft_end(freq, data, el, width):
+    return _soft_end(data, freq*width)
 
 
-def _soft_start(data, el, width):
+def _soft_start(data, width):
     outd = data.copy()
     width = int(min(np.ceil(len(data) / 4), width))
     outd[:width] = np.linspace(np.mean(data[:width]), data[width], width + 1)[:-1]
@@ -93,10 +105,10 @@ def _soft_start(data, el, width):
 
 
 @smoothers.add
-def soft_start(data, el, width):
-    return _soft_start(data, width)
+def soft_start(freq, data, el, width):
+    return _soft_start(data, freq*width)
 
 
 @smoothers.add
-def soft_ends(data, el, width):
-    return _soft_start(_soft_end(data, width), width)
+def soft_ends(freq, data, el, width):
+    return _soft_start(_soft_end(data, freq*width), freq*width)

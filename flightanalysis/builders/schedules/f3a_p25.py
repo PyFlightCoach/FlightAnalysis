@@ -17,7 +17,7 @@ from flightanalysis.builders.f3a.manbuilder import f3amb
 from flightanalysis.builders.manbuilder import MBTags, c45, centred, r
 
 
-p25_def = SchedDef([
+sdef = SchedDef([
     f3amb.create(ManInfo(
             "Triangle", "trgle", k=3, position=Position.CENTRE, 
             start=BoxLocation(Height.TOP, Direction.UPWIND, Orientation.INVERTED),
@@ -247,12 +247,7 @@ p25_def = SchedDef([
 
 if __name__ == "__main__":
 
-    fig = p25_def.plot()
-    fig.add_traces(p25_def[0].box.plot())
+    fig = sdef.plot()
+    fig.add_traces(sdef[0].box.plot())
     fig.show()
     
-    #p25_def.create_fcj('P25', 'p25_template_fcj.json')
-    #p25_def.to_json("flightanalysis/data/f3a_p25_schedule.json", ScheduleInfo('f3a', 'p25'))
-    pass
-#    import os
-#    p25_def.create_fcjs('p25', f'{os.environ['HOME']}/Desktop/templates/')

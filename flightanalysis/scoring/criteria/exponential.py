@@ -32,10 +32,20 @@ class Exponential:
     def trace(self, **kwargs):
         import plotly.graph_objects as go
 
-        x = np.linspace(0, 10, 30)
+        x = np.linspace(0, self.error_limit*1.2, 30)
         return go.Scatter(
-            x=x, y=self(x), name=f"{self.factor} * x^{self.exponent}" ** kwargs
+            x=x, y=self(x), name=f"{self.factor} * x^{self.exponent}", **kwargs
         )
+
+    def plot(self):
+        import plotly.graph_objects as go
+
+        fig = go.Figure(
+            [self.trace()], 
+            layout=dict(xaxis=dict(title="error"), yaxis=dict(title="downgrade"))
+        )
+
+        return fig
 
 
 free = Exponential(0, 1)

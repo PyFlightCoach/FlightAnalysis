@@ -37,7 +37,7 @@ def absolute_curvature(fl: State, tp: State, proj: g.Point) -> Measurement:
 
     return Measurement(
         rat,
-        "1",
+        "1/m",
         *Measurement._rad_vis(fl.pos, wproj),
     )
 
@@ -45,3 +45,23 @@ def absolute_curvature(fl: State, tp: State, proj: g.Point) -> Measurement:
 @m.add
 def absolute_curvature_proj(fl: State, tp: State) -> Measurement:
     return absolute_curvature(fl, tp, Measurement.get_axial_direction(tp))
+
+
+
+
+@m.add
+def loop_smoothness(fl: State, tp: State, proj: g.Point) -> Measurement:
+    wproj = tp[0].att.transform_point(proj)
+    with np.errstate(invalid="ignore"):
+        flc, tpc = fl.curvature(wproj), tp.curvature(wproj)
+        rat = g.point.scalar_projection(flc, tpc) / abs(tpc)
+    return Measurement(
+        np.gradient(rat) / fl.dt,
+        "1/m/s",
+        *Measurement._roll_vis(fl, tp),
+    )
+    
+
+@m.add
+def loop_smoothness_proj(fl: State, tp: State) -> Measurement:
+    return loop_smoothness(fl, tp, Measurement.get_axial_direction(tp))

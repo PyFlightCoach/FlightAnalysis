@@ -69,17 +69,18 @@ class DownGrade:
     ) -> Result:
         measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
 
-        sample = visibility(
+        raw_sample = visibility(
             self.criteria.prepare(measurement.value),
             measurement.visibility,
             self.criteria.lookup.error_limit,
             "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
         )
-
+        sample = raw_sample.copy()
+        freq = 1 / fl.dt.mean()
         for sm in self.smoothers:
-            sample = sm(sample, el, **(smkwargs or {}))
+            sample = sm(freq, sample, el, **(smkwargs or {}))
 
-        ids = np.arange(len(fl))
+        ids = np.arange(len(sample))
 
         for s in self.selectors:
             sub_ids = s(
@@ -94,6 +95,7 @@ class DownGrade:
         return Result(
             self.name,
             measurement,
+            raw_sample,
             sample[ids],
             ids,
             *self.criteria(sample[ids], limits),

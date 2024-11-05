@@ -408,7 +408,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -416,25 +416,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -734,7 +734,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -742,25 +742,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -1026,7 +1026,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -1034,25 +1034,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -1177,7 +1177,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -1185,25 +1185,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -1811,7 +1811,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -1819,25 +1819,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -2103,7 +2103,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -2111,25 +2111,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -2376,7 +2376,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -2384,25 +2384,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -2527,7 +2527,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -2535,25 +2535,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -2812,7 +2812,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -2820,25 +2820,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -3089,7 +3089,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -3097,25 +3097,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -3362,7 +3362,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -3370,25 +3370,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -3513,7 +3513,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -3521,25 +3521,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -3664,7 +3664,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -3672,25 +3672,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -3973,7 +3973,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -3981,25 +3981,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -4373,7 +4373,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -4381,25 +4381,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },
@@ -4524,7 +4524,7 @@
               "name": "roundness",
               "measure": "curvature_proj()",
               "smoothers": [
-                "curvature_lowpass(order:5)"
+                "curvature_lowpass(order:5,cut:4)"
               ],
               "selectors": [],
               "criteria": {
@@ -4532,25 +4532,25 @@
                 "lookup": {
                   "factor": 0.3333333333333333,
                   "exponent": 1.0,
-                  "limit": 3
+                  "limit": 1.5
                 }
               }
             },
             "smoothness": {
               "name": "smoothness",
-              "measure": "absolute_curvature_proj()",
+              "measure": "loop_smoothness_proj()",
               "smoothers": [
-                "lowpass(cutoff:2,order:5)"
+                "lowpass(cutoff:1,order:5)"
               ],
               "selectors": [
-                "borders(tb:0.25)"
+                "middle(chopt:0.5)"
               ],
               "criteria": {
                 "kind": "ContinuousValue",
                 "lookup": {
-                  "factor": 0.25,
-                  "exponent": 1.4854268271702418,
-                  "limit": 3
+                  "factor": 1.0,
+                  "exponent": 1.0,
+                  "limit": 1.5
                 }
               }
             },

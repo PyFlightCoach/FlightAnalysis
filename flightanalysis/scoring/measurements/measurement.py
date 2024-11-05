@@ -129,7 +129,7 @@ class Measurement:
 
         _range = fl.pos.max() - fl.pos.min()
         length = abs(_range)[0]
-        return min(1, 2 * length / h.z[0])  # np.tan(np.radians(60)) / 2
+        return min(1, 4 * length / h.z[0])  # np.tan(np.radians(60)) / 2
 
 
     @staticmethod
