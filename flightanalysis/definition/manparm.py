@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Dict, Callable, Union, Tuple
 import numpy as np
 from flightdata import Collection
@@ -18,6 +19,7 @@ from typing import Self, Any
 import pandas as pd
 from geometry import Point
 from numbers import Number
+import geometry as g
 
 
 @dataclass
@@ -100,7 +102,7 @@ class ManParm(Opp):
         ]
 
         scale_vis = np.array([
-            Measurement._inter_scale_vis(c.extract_state(els, state), box)
+            scale_vis(c.extract_state(els, state), box)
             for c in self.collectors
         ])
         return (
@@ -254,3 +256,17 @@ class ManParms(Collection):
 class DummyMPs:
     def __getattr__(self, name):
         return ManParm(name, Single(), 0)
+
+
+
+
+def scale_vis(fl: State, box):
+    # factor of 1 when it takes up 1/2 of the box height.
+    # reduces to zero for zero length el
+    depth = fl.pos.y.mean()
+
+    h = box.top_pos(g.PY(depth)) - box.bottom_pos(g.PY(depth))
+
+    _range = fl.pos.max() - fl.pos.min()
+    length = abs(_range)[0]
+    return min(1, 4 * length / h.z[0])  # np.tan(np.radians(60)) / 2
