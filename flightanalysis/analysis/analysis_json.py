@@ -1,10 +1,10 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from flightdata import FCJOrigin, fcj
-from .manoeuvre_analysis.schema import MA
 import pandas as pd
 from datetime import datetime
 from flightanalysis.base.utils import validate_json
+from fatuning.schema.ma import MA
 
 
 class AnalysisJson(BaseModel):
@@ -50,3 +50,4 @@ class AnalysisJson(BaseModel):
     @staticmethod
     def parse_json(json: dict|str):
         return AnalysisJson.model_validate(validate_json(json))
+    
