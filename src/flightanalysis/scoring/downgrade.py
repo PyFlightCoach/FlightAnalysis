@@ -1,16 +1,17 @@
 from __future__ import annotations
 from flightdata import Collection, State
 from .criteria import Bounded, Continuous, Single, Criteria, ContinuousValue
-from .measurements.measurement import Measurement
+from .measurement import Measurement
 from .visibility import visibility
 from .results import Results, Result
 from dataclasses import dataclass
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
-from .measurements import measures
-from .smoothing import smoothers
-from .selectors import selectors
+from flightanalysis.base.ref_funcs import RFuncBuilders
 
+measures = RFuncBuilders({})
+smoothers = RFuncBuilders({})
+selectors = RFuncBuilders({})
 
 @dataclass
 class DownGrade:

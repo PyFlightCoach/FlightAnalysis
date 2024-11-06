@@ -4,7 +4,6 @@ import geometry as g
 from flightanalysis.definition.mandef import ManDef
 from flightanalysis.definition.maninfo import ManInfo, Heading, Direction
 from flightanalysis.definition.manoption import ManOption
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightanalysis.schedule import Schedule
 from flightanalysis.elements import Line
 from flightdata import Collection
@@ -61,7 +60,7 @@ class SchedDef(Collection):
             mans.append(man)
         return Schedule(mans), State.stack(templates)
 
-    def to_json(self, file: str, sinfo: ScheduleInfo) -> str:
+    def to_ajson(self, file: str, sinfo) -> str:
         with open(file, "w") as f:
             dump(dict(
                 category=sinfo.category if sinfo else None,
@@ -75,11 +74,6 @@ class SchedDef(Collection):
     def from_json(file: str):
         with open(file, "r") as f:
             return SchedDef.from_dict(load(f)['mdefs'])
-
-    @staticmethod
-    def load(name: str | ScheduleInfo) -> Self:
-        sinfo = name if isinstance(name, ScheduleInfo) else ScheduleInfo.from_str(name)
-        return SchedDef.from_dict(sinfo.json_data())
 
     def plot(self, depth=170, wind=Heading.LTOR, **kwargs):
         sched, template = self.create_template(depth, wind)

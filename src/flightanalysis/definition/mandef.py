@@ -15,7 +15,6 @@ from __future__ import annotations
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo, Heading
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightdata import State
 import geometry as g
 from . import ManParms, ElDefs, Position, Direction, ElDef
@@ -53,11 +52,11 @@ class ManDef:
             box=self.box.to_dict(),
         )
 
-    @staticmethod
-    def load(sinfo: ScheduleInfo, name: int | str) -> ManDef:
-        sdata = sinfo.json_data()
-        data = sdata[name] if isinstance(name, str) else list(sdata.values())[name]
-        return ManDef.from_dict(data)
+#    @staticmethod
+#    def load(sinfo: ScheduleInfo, name: int | str) -> ManDef:
+#        sdata = sinfo.json_data()
+#        data = sdata[name] if isinstance(name, str) else list(sdata.values())[name]
+#        return ManDef.from_dict(data)
 
     @staticmethod
     def from_dict(data: dict | list) -> ManDef | ManOption:
