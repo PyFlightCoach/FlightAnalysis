@@ -2,7 +2,6 @@ from __future__ import annotations
 from pydantic import BaseModel
 from flightdata import FCJOrigin, fcj
 from .manoeuvre_analysis.schema import MA
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
 import pandas as pd
 from datetime import datetime
 from flightanalysis.base.utils import validate_json
@@ -16,12 +15,12 @@ class AnalysisJson(BaseModel):
     bootTime: datetime | None = None
     mans: list[MA]
 
-    def schedule(self):
-        schedules = [man.schedule for man in self.mans]
-        if all([s == schedules[0] for s in schedules[1:]]):
-            return schedules[0].fcj_to_pfc()
-        else:
-            return ScheduleInfo.mixed()
+#    def schedule(self):
+#        schedules = [man.schedule for man in self.mans]
+#        if all([s == schedules[0] for s in schedules[1:]]):
+#            return schedules[0].fcj_to_pfc()
+#        else:
+#            return ScheduleInfo.mixed()
 
     def all_versions(self):
         versions = set()

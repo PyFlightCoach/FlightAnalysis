@@ -1,10 +1,6 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
-
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightanalysis.scoring import ManoeuvreResults
-
 from .complete import Complete
 
 
@@ -15,7 +11,6 @@ class Scored(Complete):
     def downgrade(self) -> Complete:
         return Complete(
             self.id,
-            self.schedule,
             self.schedule_direction,
             self.flown,
             self.mdef,

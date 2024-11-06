@@ -1,8 +1,7 @@
 from __future__ import annotations
 from typing import Self, Union
 from json import load, dump
-from flightdata import Flight, State, Origin, Collection, NumpyEncoder, fcj
-from flightanalysis.definition import SchedDef, ScheduleInfo, Heading
+from flightdata import Collection, NumpyEncoder
 from flightanalysis import __version__
 from . import manoeuvre_analysis as ma
 from loguru import logger
@@ -15,46 +14,6 @@ import pandas as pd
 class ScheduleAnalysis(Collection):
     VType = ma.Analysis
     uid = "name"
-
-    @staticmethod
-    def from_fcj(
-        fcj: fcj.FCJ,
-        flight: Flight | None = None,
-        proceed=True,
-    ) -> ScheduleAnalysis:
-        flight = flight if flight else Flight.from_fc_json(fcj)
-
-        info = ScheduleInfo(*fcj.parameters.schedule).fcj_to_pfc()
-        sdef = SchedDef.load(info)
-        box = Origin.from_fcjson_parameters(fcj.parameters)
-
-        state = State.from_flight(flight, box)
-
-        state = state.splitter_labels(fcj.mans, sdef.uids, t0=fcj.data[0].time / 1e6)
-
-        heading = Heading.infer(state.get_manoeuvre(sdef[0].uid)[0].att.bearing()[0])
-
-        mas = []
-        for i, mdef in enumerate(sdef):
-            st = state.get_manoeuvre(mdef.uid)
-
-            if fcj.fcs_scores and len(fcj.fcs_scores) > 0:
-                st = st.label_els(fcj.fcs_scores[-1].manresults[i + 1].els)
-
-            nma = ma.Basic(
-                mdef.info.short_name,
-                i,
-                info,
-                mdef,
-                st,
-                mdef.info.start.direction.wind_swap_heading(heading),
-                None,
-            )
-            if proceed:
-                nma = nma.proceed()
-            mas.append(nma)
-
-        return ScheduleAnalysis(mas, info)
 
     def append_scores_to_fcj(self, file: Union[str, dict], ofile: str = None) -> dict:
         data = file if isinstance(file, dict) else load(open(file, "r"))

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from flightdata import State
 from loguru import logger
 
-from flightanalysis.definition import ManDef, ScheduleInfo
+from flightanalysis.definition import ManDef
 from flightanalysis.elements import Element
 from flightanalysis.manoeuvre import Manoeuvre
 
@@ -97,14 +97,13 @@ class Alignment(Basic):
             self.mdef.eds,
             self.mdef.box,
         )
-        return Alignment(self.id, self.schedule, self.schedule_direction, aligned, mdef, man, tp)
+        return Alignment(self.id, self.schedule_direction, aligned, mdef, man, tp)
 
     def _proceed(self) -> Complete:
         if "element" in self.flown.data.columns:
             correction = self.mdef.create()
             return Complete(
                 self.id,
-                self.schedule,
                 self.schedule_direction,
                 self.flown,
                 self.mdef,
