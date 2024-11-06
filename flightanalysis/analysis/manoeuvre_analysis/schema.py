@@ -1,17 +1,16 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightdata import fcj
 from . import from_dict
-from flightanalysis import __version__
+from flightanalysis import __version__, ManDef
 import numpy as np
 import pandas as pd
-from flightanalysis.analysis.manoeuvre_analysis import from_dict, Basic, Alignment, Complete, Scored
+
 
 class MA(BaseModel):
     name: str
     id: int
-    schedule: ScheduleInfo
+    mdef: dict
     schedule_direction: str | None
     flown: list[dict] | dict
 
@@ -28,7 +27,7 @@ class MA(BaseModel):
         return MA(
             name=self.name,
             id=self.id,
-            schedule=self.schedule,
+            mdef=ManDef.from_dict(self.mdef),
             schedule_direction=self.schedule_direction,
             flown=self.flown,
             history=self.history,

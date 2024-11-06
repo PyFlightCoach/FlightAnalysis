@@ -1,7 +1,7 @@
 from __future__ import annotations
 from flightdata import State
 from typing import Self
-from flightanalysis import ElDef, Element, ManParms, DownGrades
+from flightanalysis import ElDef, Element, ManParms
 from dataclasses import dataclass
 import geometry as g
 

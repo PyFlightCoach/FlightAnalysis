@@ -105,7 +105,6 @@ class Complete(Alignment):
 
             return Complete(
                 self.id,
-                self.schedule,
                 self.schedule_direction,
                 self.flown,
                 mdef,
