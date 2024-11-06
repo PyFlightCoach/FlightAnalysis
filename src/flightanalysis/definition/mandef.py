@@ -17,7 +17,7 @@ from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo, Heading
 from flightdata import State
 import geometry as g
-from . import ManParms, ElDefs, Position, Direction, ElDef
+from . import ManParms, ElDefs, Position, ElDef
 from dataclasses import dataclass
 from flightanalysis.scoring.box import Box
 from loguru import logger
@@ -51,12 +51,6 @@ class ManDef:
             eds=self.eds.to_dict(dgs),
             box=self.box.to_dict(),
         )
-
-#    @staticmethod
-#    def load(sinfo: ScheduleInfo, name: int | str) -> ManDef:
-#        sdata = sinfo.json_data()
-#        data = sdata[name] if isinstance(name, str) else list(sdata.values())[name]
-#        return ManDef.from_dict(data)
 
     @staticmethod
     def from_dict(data: dict | list) -> ManDef | ManOption:
@@ -205,10 +199,6 @@ class ManDef:
                 )
             ))
         return ManDef(self.info, self.mps, ElDefs(new_eds), self.box)
-
-
-    def plot(self, heading: Heading):
-        pass
 
 
 from .manoption import ManOption  # noqa: E402

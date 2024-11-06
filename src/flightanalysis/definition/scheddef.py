@@ -1,5 +1,5 @@
 from flightdata import State
-from typing import Tuple, Self
+from typing import Tuple
 import geometry as g
 from flightanalysis.definition.mandef import ManDef
 from flightanalysis.definition.maninfo import ManInfo, Heading, Direction
@@ -7,7 +7,7 @@ from flightanalysis.definition.manoption import ManOption
 from flightanalysis.schedule import Schedule
 from flightanalysis.elements import Line
 from flightdata import Collection
-from json import dump, load
+from json import dump
 from flightdata import NumpyEncoder
 
 
@@ -19,12 +19,13 @@ class SchedDef(Collection):
         assert all([v.__class__.__name__ in ["ManOption", "ManDef"] for v in self])
 
     def wind_def_manoeuvre(self) -> dict[str, int | str]:
-        for i, man in enumerate(self):
+        for man in enumerate(self):
             if man.info.start.direction != Direction.CROSS:
-                return dict(
-                    manid=i,
-                    direction=man.info.start.direction.name
-                )
+                return man.info.short_name
+#                return dict(
+#                    manid=i,
+#                    direction=man.info.start.direction.name
+#                )
 
     def add_new_manoeuvre(self, info: ManInfo, defaults=None):
         return self.add(ManDef(info, defaults))
@@ -60,7 +61,7 @@ class SchedDef(Collection):
             mans.append(man)
         return Schedule(mans), State.stack(templates)
 
-    def to_ajson(self, file: str, sinfo) -> str:
+    def dump(self, file: str, sinfo) -> str:
         with open(file, "w") as f:
             dump(dict(
                 category=sinfo.category if sinfo else None,
@@ -69,11 +70,6 @@ class SchedDef(Collection):
                 mdefs=self.to_dict()
             ), f, cls=NumpyEncoder, indent=2)
         return file
-
-    @staticmethod
-    def from_json(file: str):
-        with open(file, "r") as f:
-            return SchedDef.from_dict(load(f)['mdefs'])
 
     def plot(self, depth=170, wind=Heading.LTOR, **kwargs):
         sched, template = self.create_template(depth, wind)
