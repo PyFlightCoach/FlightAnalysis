@@ -5,6 +5,12 @@ from flightdata.base import Collection
 import numpy as np
 
 
+def tryval(val):
+    try:
+        return float(val)
+    except Exception:
+        return val
+
 @dataclass
 class RefFunc:
     """A RefFunc is a reference to a function with some predefined keyword arguments.
@@ -31,13 +37,15 @@ class RefFunc:
 
     @staticmethod
     def from_str(funcs: dict[str, Callable], data: str) -> RefFunc:
+        if "(" not in data:
+            return None
         name = data.split("(")[0]
         sargs = data.split("(")[1][:-1]
         sargs = sargs.split(",") if len(sargs) > 0 else []
         return RefFunc(
             name,
             funcs[name],
-            {k: float(v) for k, v in dict([a.split(":") for a in sargs]).items()},
+            {k: tryval(v) for k, v in dict([a.split(":") for a in sargs]).items()},
         )
 
 

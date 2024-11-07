@@ -98,11 +98,11 @@ class Loop(Element):
             angle=abs(self.angle) * np.sign(other.angle),
         )
 
-    def radius_visibility(self, st: State):
-        axial_dir = st[0].att.transform_point(
-            Point(0, np.cos(self.ke), np.sin(self.ke))
-        )
-        return Measurement._rad_vis(st.pos.mean(), axial_dir)
+#    def radius_visibility(self, st: State):
+#        axial_dir = st[0].att.transform_point(
+#            Point(0, np.cos(self.ke), np.sin(self.ke))
+#        )
+#        return Measurement._rad_vis(st.pos.mean(), axial_dir)
 
 
 def KELoop(*args, **kwargs):
