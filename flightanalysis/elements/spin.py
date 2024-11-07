@@ -5,7 +5,7 @@ from flightdata import State
 from .element import Element
 from dataclasses import dataclass
 from typing import ClassVar
-from flightanalysis.scoring.selectors import autorotation
+
 
 @dataclass
 class Spin(Element):
@@ -78,10 +78,7 @@ class Spin(Element):
             .fill(tnd)
             .superimpose_rotation(g.PY(), -abs(self.pitch) * _inverted)
             .superimpose_angles(
-                g.PZ(np.sign(self.turns))
-                * rate
-                * tnd.t**2
-                / (2 * _td),
+                g.PZ(np.sign(self.turns)) * rate * tnd.t**2 / (2 * _td),
                 reference="world",
             )
         )
@@ -93,7 +90,8 @@ class Spin(Element):
             .label(element=self.uid + "_autorotation")
             .superimpose_rotation(
                 g.PZ(),
-                np.sign(self.turns) * (abs(self.turns) - self.drop_turns - self.recovery_turns),
+                np.sign(self.turns)
+                * (abs(self.turns) - self.drop_turns - self.recovery_turns),
                 "world",
             )
         )
@@ -104,9 +102,7 @@ class Spin(Element):
             .fill(trec)
             .superimpose_rotation(g.PY(), abs(self.pitch) * _inverted)
             .superimpose_angles(
-                g.PZ(np.sign(self.turns))
-                * rate
-                * (trec.t - 0.5 * trec.t**2 / _trec),
+                g.PZ(np.sign(self.turns)) * rate * (trec.t - 0.5 * trec.t**2 / _trec),
                 "world",
             )
         )
@@ -117,9 +113,19 @@ class Spin(Element):
         return f"Spin {self.turns}, {self.pitch}"
 
     def match_intention(self, transform: g.Transformation, flown: State) -> Spin:
-        auto = State(flown.data.iloc[autorotation(flown, None, None, np.pi/2, np.pi/4)])
+        rot = flown.get_rotation()
+
+        auto = State(
+            flown.data.iloc[
+                np.arange(
+                    np.argmax(np.abs(flown.get_rotation()) > np.pi / 2),
+                    np.where(abs(np.abs(rot[-1]) - np.abs(rot)) > np.pi / 2)[0][-1] + 1,
+                )
+            ]
+        )
+
         pitch = np.mean(np.arctan2(auto.vel.z, auto.vel.x))
-        
+
         return self.set_parms(
             height=flown.z[0] - flown.z[-1],
             turns=-np.sign(np.mean(auto.p)) * abs(self.turns),

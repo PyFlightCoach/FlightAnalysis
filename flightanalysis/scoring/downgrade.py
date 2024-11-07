@@ -7,11 +7,9 @@ from .results import Results, Result
 from dataclasses import dataclass
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
-from flightanalysis.base.ref_funcs import RFuncBuilders
 
-measures = RFuncBuilders({})
-smoothers = RFuncBuilders({})
-selectors = RFuncBuilders({})
+from .reffuncs import measures, smoothers, selectors
+
 
 @dataclass
 class DownGrade:
@@ -138,25 +136,3 @@ class DownGrades(Collection):
     def to_list(self):
         return [dg.name for dg in self]
 
-
-@dataclass
-class DowgradeGroups:
-    entry_line: DownGrades
-    horizontal_line: DownGrades
-    inclined_line: DownGrades
-    entry_line_before_spin: DownGrades
-    line_before_spin: DownGrades
-    line_after_spin: DownGrades
-    line_before_stallturn: DownGrades
-    line_after_stallturn: DownGrades
-    horizontal_roll: DownGrades
-    inclined_roll: DownGrades
-    vplane_loop_exit_horiz: DownGrades
-    vplane_loop_exit_inclined: DownGrades
-    hplane_loop: DownGrades
-    rolling_vplane_loop_exit_horiz: DownGrades
-    rolling_vplane_loop_exit_inclined: DownGrades
-    rolling_hplane_loop: DownGrades
-    snap: DownGrades
-    spin: DownGrades
-    stallturn: DownGrades

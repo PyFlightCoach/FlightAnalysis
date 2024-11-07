@@ -93,16 +93,8 @@ class Element:
             **{p: getattr(self, p) for p in inspect.getfullargspec(self.__init__).args[1:]}
         )
     
-    def length_visibility(self, st: State):
-        pos = st.pos
-        return Measurement._vector_vis(pos[-1] - pos[0], pos.mean())
-    
-    def rate_visibility(self, st: State):
-        return Measurement._vector_vis(st.vel.mean(), st.pos.mean())
 
-    def speed_visibility(self, st: State):
-        return self.length_visibility(st)
-
+    #
     def length_vec(self, itrans, fl):
         return fl.pos[-1] - fl.pos[0]
     
