@@ -7,6 +7,9 @@ class ManOption:
         self.options = options
         self.active=active
     
+    def __repr__(self) -> str:
+        return f'ManOption({[md.info.name for md in self.options]})'
+
     @property
     def uid(self):
         return self.options[0].uid
