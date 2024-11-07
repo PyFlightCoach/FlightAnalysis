@@ -19,9 +19,9 @@ class SchedDef(Collection):
         assert all([v.__class__.__name__ in ["ManOption", "ManDef"] for v in self])
 
     def wind_def_manoeuvre(self) -> dict[str, int | str]:
-        for man in enumerate(self):
+        for i, man in enumerate(self):
             if man.info.start.direction != Direction.CROSS:
-                return man.info.short_name
+                return i
 #                return dict(
 #                    manid=i,
 #                    direction=man.info.start.direction.name

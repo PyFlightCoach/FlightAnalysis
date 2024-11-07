@@ -3,6 +3,7 @@ import numpy as np
 import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass, field
+from flightdata.base import to_list
 
 
 @dataclass
@@ -28,6 +29,16 @@ class Combination(Criteria):
     def check_option(self, values) -> int:
         """Given a set of values, return the option id which gives the least error"""
         return int(np.sum(np.abs(self.get_errors(values)), axis=1).argmin())
+
+    def to_dict(self):
+        data = self.__dict__.copy()
+        lookup = data.pop('lookup')
+        return dict(
+            kind=self.__class__.__name__,
+            lookup=lookup.__dict__,
+            desired=to_list(self.desired),
+        )
+    
 
     @staticmethod
     def rolllist(rolls, reversable=True) -> Combination:
