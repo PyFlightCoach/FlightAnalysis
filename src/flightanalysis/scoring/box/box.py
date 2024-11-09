@@ -12,7 +12,7 @@ from flightanalysis.scoring import (
     Results,
     measures,
 )
-from flightanalysis.definition.maninfo import ManInfo
+from pfcschemas.maninfo import ManInfo
 from flightdata import State
 from typing import Literal, Tuple
 import numpy.typing as npt

@@ -1,14 +1,16 @@
-from typing import List, Callable, Union, Tuple
-import numpy as np
-from flightanalysis.elements import Element
-from inspect import getfullargspec
-from . import ManParm, ManParms, Opp, ItemOpp, SumOpp
-from flightdata import Collection
-from numbers import Number
-from . import Collector, Collectors
-from uuid import uuid1
 from dataclasses import dataclass
+from inspect import getfullargspec
+from numbers import Number
+from typing import Callable, List, Tuple, Union
+from uuid import uuid1
+
+import numpy as np
+from flightdata import Collection
+
+from flightanalysis.elements import Element
 from flightanalysis.scoring.downgrade import DownGrades
+
+from . import Collector, Collectors, ItemOpp, ManParm, ManParms, Opp, SumOpp
 
 
 @dataclass
@@ -19,6 +21,7 @@ class ElDef:
     The eldef also contains a set of collectors. These are a dict of str:callable pairs
     that collect the relevant parameter for this element from an Elements collection.
     """
+
     name: str  # the name of the Eldef, must be unique and work as an attribute
     Kind: object  # the class of the element (Loop, Line etc)
     props: dict[str, Number | Opp]  # The element property generators (Number, Opp)
@@ -32,7 +35,7 @@ class ElDef:
             name=self.name,
             Kind=self.Kind.__name__,
             props={k: str(v) for k, v in self.props.items()},
-            dgs=self.dgs.to_dict() if longdgs else self.dgs.to_list()
+            dgs=self.dgs.to_dict() if longdgs else self.dgs.to_list(),
         )
 
     def __repr__(self):

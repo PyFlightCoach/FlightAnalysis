@@ -9,8 +9,8 @@ import numpy as np
 import pandas as pd
 from flightdata import Flight, Origin, State
 
-from flightanalysis.definition import ManDef, ManOption, SchedDef, Direction
-from flightanalysis.definition.maninfo import Heading
+from flightanalysis.definition import ManDef, ManOption, SchedDef
+from pfcschemas.positioning import Heading, Direction
 
 from .analysis import Analysis
 
