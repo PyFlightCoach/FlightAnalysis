@@ -10,7 +10,6 @@ from typing import Callable
 from functools import partial
 import numpy as np
 from flightanalysis.scoring.box import Box
-from flightanalysis.scoring.downgrade import DowgradeGroups
 from dataclasses import dataclass
 from flightdata import State
 from flightanalysis.elements import Loop, Line, Snap, Spin, StallTurn

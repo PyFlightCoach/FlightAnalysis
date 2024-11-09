@@ -1,15 +1,14 @@
 from __future__ import annotations
 from flightdata import Collection, State
 from .criteria import Bounded, Continuous, Single, Criteria, ContinuousValue
-from .measurements.measurement import Measurement
+from .measurement import Measurement
 from .visibility import visibility
 from .results import Results, Result
 from dataclasses import dataclass
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
-from .measurements import measures
-from .smoothing import smoothers
-from .selectors import selectors
+
+from .reffuncs import measures, smoothers, selectors
 
 
 @dataclass
@@ -69,17 +68,18 @@ class DownGrade:
     ) -> Result:
         measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
 
-        sample = visibility(
+        raw_sample = visibility(
             self.criteria.prepare(measurement.value),
             measurement.visibility,
             self.criteria.lookup.error_limit,
             "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
         )
-
+        sample = raw_sample.copy()
+        freq = 1 / fl.dt.mean()
         for sm in self.smoothers:
-            sample = sm(sample, el, **(smkwargs or {}))
+            sample = sm(freq, sample, el, **(smkwargs or {}))
 
-        ids = np.arange(len(fl))
+        ids = np.arange(len(sample))
 
         for s in self.selectors:
             sub_ids = s(
@@ -94,6 +94,7 @@ class DownGrade:
         return Result(
             self.name,
             measurement,
+            raw_sample,
             sample[ids],
             ids,
             *self.criteria(sample[ids], limits),
@@ -135,25 +136,3 @@ class DownGrades(Collection):
     def to_list(self):
         return [dg.name for dg in self]
 
-
-@dataclass
-class DowgradeGroups:
-    entry_line: DownGrades
-    horizontal_line: DownGrades
-    inclined_line: DownGrades
-    entry_line_before_spin: DownGrades
-    line_before_spin: DownGrades
-    line_after_spin: DownGrades
-    line_before_stallturn: DownGrades
-    line_after_stallturn: DownGrades
-    horizontal_roll: DownGrades
-    inclined_roll: DownGrades
-    vplane_loop_exit_horiz: DownGrades
-    vplane_loop_exit_inclined: DownGrades
-    hplane_loop: DownGrades
-    rolling_vplane_loop_exit_horiz: DownGrades
-    rolling_vplane_loop_exit_inclined: DownGrades
-    rolling_hplane_loop: DownGrades
-    snap: DownGrades
-    spin: DownGrades
-    stallturn: DownGrades

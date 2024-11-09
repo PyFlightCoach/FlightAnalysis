@@ -4,7 +4,7 @@ import numpy.typing as npt
 import pandas as pd
 from flightdata import Collection
 from flightdata.base import to_list
-from flightanalysis.scoring.measurements.measurement import Measurement
+from flightanalysis.scoring.measurement import Measurement
 from flightanalysis.scoring.criteria import Criteria
 from dataclasses import dataclass
 
@@ -29,7 +29,8 @@ class Result:
 
     name: str
     measurement: Measurement  # the raw measured data
-    sample: npt.NDArray  # the smoothed & downselected data
+    raw_sample: npt.NDArray | None  # the visibility factored data
+    sample: npt.NDArray  # the smoothed data
     sample_keys: npt.NDArray  # the keys to link the sample to the measurement
     errors: npt.NDArray  # the errors resulting from the comparison
     dgs: npt.NDArray  # downgrades for the errors
@@ -47,9 +48,8 @@ class Result:
     def to_dict(self):
         return dict(
             name=self.name,
-            measurement=self.measurement.to_dict()
-            if isinstance(self.measurement, Measurement)
-            else list(self.measurement),
+            measurement=self.measurement.to_dict(),
+            raw_sample=to_list(self.raw_sample),
             sample=to_list(self.sample),
             sample_keys=to_list(self.sample_keys),
             errors=to_list(self.errors),
@@ -69,6 +69,9 @@ class Result:
             Measurement.from_dict(data["measurement"])
             if isinstance(data["measurement"], dict)
             else np.array(data["measurement"]),
+            np.array(data["raw_sample"])
+            if "raw_sample" in data
+            else None,
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
             np.array(data["errors"]),
@@ -94,31 +97,43 @@ class Result:
                 [
                     self.keys,
                     self.measurement.visibility,
+                    self.measurement.value,
+                    self.raw_sample,
                     self.sample,
                     self.errors,
                     self.dgs,
                 ]
             ),
-            columns=["collector", "visibility", "value", "error", "downgrade"],
+            columns=[
+                "collector",
+                "visibility",
+                "measurement",
+                "raw_sample",
+                "sample",
+                "error",
+                "downgrade",
+            ],
         )
 
     @property
     def plot_f(self):
         return np.degrees if self.measurement.unit == "rad" else lambda x: x
 
-    def measurement_trace(self, **kwargs):
+    def measurement_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
+
+        xvs = np.arange(len(self.measurement)) / 25 if xvals is None else xvals
 
         return [
             go.Scatter(
-                x=np.arange(len(self.measurement)) / 25,
+                x=xvs,
                 y=self.plot_f(self.measurement.value),
                 name="value",
                 **kwargs,
                 line=dict(color="blue", width=1, dash="dash"),
             ),
             go.Scatter(
-                x=np.arange(len(self.measurement))[self.sample_keys] / 25,
+                x=xvs[self.sample_keys],
                 y=self.plot_f(self.measurement.value)[self.sample_keys],
                 name="selected",
                 line=dict(color="blue", width=1, dash="solid"),
@@ -126,22 +141,35 @@ class Result:
             ),
         ]
 
-    def sample_trace(self, **kwargs):
+    def sample_trace(self, xvals=None, **kwargs):
+        import plotly.graph_objects as go
+
+        return [
+            *([go.Scatter(
+                x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals),
+                y=self.plot_f(self.raw_sample),
+                name="visible sample",
+                line=dict(width=1, color="black", dash="dot"),
+                **kwargs,
+            )] if self.raw_sample is not None else []),
+            go.Scatter(
+                x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals)[
+                    self.sample_keys
+                ],
+                y=self.plot_f(self.sample),
+                name="smooth sample",
+                line=dict(width=1, color="black"),
+                **kwargs,
+            ),
+        ]
+
+    def downgrade_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
 
         return go.Scatter(
-            x=np.arange(len(self.measurement))[self.sample_keys] / 25,
-            y=self.plot_f(self.sample),
-            name="sample",
-            line=dict(width=1, color="black"),
-            **kwargs,
-        )
-
-    def downgrade_trace(self, **kwargs):
-        import plotly.graph_objects as go
-
-        return go.Scatter(
-            x=np.arange(len(self.measurement))[self.sample_keys[self.keys]] / 25,
+            x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals)[
+                self.sample_keys[self.keys]
+            ],
             y=self.plot_f(self.sample[self.keys]),
             text=np.round(self.dgs, 3),
             hovertext=[self.info(i) for i in range(len(self.keys))],
@@ -149,15 +177,17 @@ class Result:
             name="downgrade",
             textposition="bottom right",
             yaxis="y",
-            marker=dict(size=10, color='black'),#, color=self.dgs, colorscale="Bluered"),
+            marker=dict(
+                size=10, color="black"
+            ),  # , color=self.dgs, colorscale="Bluered"),
             **kwargs,
         )
 
-    def visibility_trace(self, **kwargs):
+    def visibility_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
 
         return go.Scatter(
-            x=np.arange(len(self.measurement)) / 25,
+            x=np.arange(len(self.measurement)) / 25 if xvals is None else xvals,
             y=self.measurement.visibility,
             name="visibility",
             yaxis="y2",
@@ -165,15 +195,15 @@ class Result:
             **kwargs,
         )
 
-    def traces(self, **kwargs):
+    def traces(self, xvals: np.ndarray = None, **kwargs):
         return [
-            *self.measurement_trace(**kwargs),
-            self.visibility_trace(**kwargs),
-            self.sample_trace(**kwargs),
-            self.downgrade_trace(**kwargs),
+            *self.measurement_trace(xvals, **kwargs),
+            self.visibility_trace(xvals, **kwargs),
+            *self.sample_trace(xvals, **kwargs),
+            self.downgrade_trace(xvals, **kwargs),
         ]
 
-    def plot(self):
+    def plot(self, xvals: np.ndarray = None):
         import plotly.graph_objects as go
 
         fig = go.Figure(
@@ -184,7 +214,7 @@ class Result:
                 ),
                 title=f"{self.name}, {self.total:.2f}",
             ),
-            data=self.traces(),
+            data=self.traces(xvals),
         )
 
         return fig
@@ -224,7 +254,7 @@ class Results(Collection):
         max_len = max([len(v) for v in dgs.values()])
 
         def extend(vals):
-            return [vals[i] if i < len(vals) else np.NaN for i in range(max_len)]
+            return [vals[i] if i < len(vals) else np.nan for i in range(max_len)]
 
         df = pd.DataFrame.from_dict({k: extend(v) for k, v in dgs.items()})
 
@@ -266,12 +296,10 @@ class Results(Collection):
                 **{
                     f"yaxis{i*2-1}": dict(
                         title=f'{res.name}, {res.measurement.unit.replace("rad", "deg")}',
-                        rangemode='tozero',
+                        rangemode="tozero",
                     ),
                     f"yaxis{i*2}": dict(
-                        title='visibility',
-                        range=[0, 1],
-                        showgrid=False
+                        title="visibility", range=[0, 1], showgrid=False
                     ),
                 },
                 hovermode="x unified",

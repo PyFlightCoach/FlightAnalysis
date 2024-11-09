@@ -15,10 +15,9 @@ from __future__ import annotations
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.definition.maninfo import ManInfo, Heading
-from flightanalysis.definition.scheduleinfo import ScheduleInfo
 from flightdata import State
 import geometry as g
-from . import ManParms, ElDefs, Position, Direction, ElDef
+from . import ManParms, ElDefs, Position, ElDef
 from dataclasses import dataclass
 from flightanalysis.scoring.box import Box
 from loguru import logger
@@ -52,12 +51,6 @@ class ManDef:
             eds=self.eds.to_dict(dgs),
             box=self.box.to_dict(),
         )
-
-    @staticmethod
-    def load(sinfo: ScheduleInfo, name: int | str) -> ManDef:
-        sdata = sinfo.json_data()
-        data = sdata[name] if isinstance(name, str) else list(sdata.values())[name]
-        return ManDef.from_dict(data)
 
     @staticmethod
     def from_dict(data: dict | list) -> ManDef | ManOption:
@@ -136,17 +129,18 @@ class ManDef:
         
         if self.info.position == Position.CENTRE and (heading == Heading.LTOR or heading == Heading.RTOL):
             if len(self.info.centre_points) > 0:
+
                 xoffset = (
-                    man.elements[self.info.centre_points[0] - 2]
+                    man.elements[self.info.centre_points[0] - 1]
                     .get_data(template)
-                    .pos.x[-1]
+                    .pos.x[0]
                 )
             elif len(self.info.centred_els) > 0:
                 ce, fac = self.info.centred_els[0]
                 _x = man.elements[ce - 1].get_data(template).pos.x
                 xoffset = _x[int(len(_x) * fac)]
             else:
-                xoffset = -(max(template.pos.x) + min(template.pos.x)) / 2
+                xoffset = (max(template.pos.x) + min(template.pos.x)) / 2
             return - itrans.att.transform_point(g.PX(xoffset)).x[0]
 
         else:
@@ -165,6 +159,7 @@ class ManDef:
         self.eds.entry_line.props["length"] = self.entry_line_length(
             itrans, target_depth
         )
+        return self
 
     def create(self) -> Manoeuvre:
         """Create the manoeuvre based on the default values in self.mps."""

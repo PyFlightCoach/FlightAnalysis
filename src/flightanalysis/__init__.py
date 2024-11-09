@@ -4,7 +4,7 @@ from .manoeuvre import Manoeuvre  # noqa: F401
 from .schedule import Schedule  # noqa: F401
 from .definition import *  # noqa: F403
 from .scoring import *  # noqa: F403
-from .analysis import ScheduleAnalysis, ElementAnalysis, manoeuvre_analysis as ma, AnalysisJson  # noqa: F401
+from .analysis import ScheduleAnalysis, ElementAnalysis, manoeuvre_analysis as ma  # noqa: F401
 
 import sys
 from loguru import logger
@@ -18,4 +18,5 @@ def enable_logging(level: str = 'INFO'):
         sys.stderr,
         level=level
     )
+    return logger
 

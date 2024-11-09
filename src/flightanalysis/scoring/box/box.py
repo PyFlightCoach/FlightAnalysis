@@ -2,6 +2,7 @@ from __future__ import annotations
 import numpy as np
 from dataclasses import dataclass
 import geometry as g
+from flightanalysis.base.ref_funcs import RefFunc
 from flightanalysis.scoring import (
     Bounded,
     Single,
@@ -9,6 +10,7 @@ from flightanalysis.scoring import (
     Measurement,
     Criteria,
     Results,
+    measures,
 )
 from flightanalysis.definition.maninfo import ManInfo
 from flightdata import State
@@ -22,11 +24,22 @@ T = Tuple[g.Point, npt.NDArray]
 @dataclass
 class BoxDG:
     criteria: Bounded
-    unit: Literal["m", "rad"]
+    measure: RefFunc = None
 
     def to_dict(self):
-        return dict(criteria=self.criteria.to_dict(), unit=self.unit)
+        return dict(
+            criteria=self.criteria.to_dict(), measure=str(self.measure)
+        )
 
+    @staticmethod
+    def from_dict(data):
+        try:
+            return BoxDG(
+                criteria=Criteria.from_dict(data["criteria"]),
+                measure=measures.parse(data["measure"]),
+            )
+        except Exception:
+            return None
 
 box_sides = [
     "top",
@@ -36,8 +49,6 @@ box_sides = [
     "front",
     "back",
 ]
-
-box_edges = []
 
 
 @dataclass
@@ -49,7 +60,7 @@ class Box:
     distance: float
     floor: float
     bound_dgs: dict[str, BoxDG]
-    centre_criteria: Single = None
+    centre_dg: BoxDG | None = None
     relax_back: bool = False
 
     def to_dict(self):
@@ -61,20 +72,15 @@ class Box:
             distance=self.distance,
             floor=self.floor,
             bound_dgs={k: v.to_dict() for k, v in self.bound_dgs.items()},
-            centre_criteria=self.centre_criteria.to_dict()
-            if self.centre_criteria
-            else None,
+            centre_dg=self.centre_dg.to_dict() if self.centre_dg else None,
             relax_back=self.relax_back,
         )
 
     @classmethod
     def from_dict(Cls, data):
         return {C.__name__: C for C in Cls.__subclasses__()}[data.pop("Kind")](
-            bound_dgs={
-                k: BoxDG(Criteria.from_dict(v["criteria"]), v["unit"])
-                for k, v in data.pop("bound_dgs").items()
-            },
-            centre_criteria=Criteria.from_dict(data.pop("centre_criteria")),
+            bound_dgs={k: BoxDG.from_dict(v) for k, v in data.pop("bound_dgs").items()},
+            centre_dg=BoxDG.from_dict(data.pop("centre_dg")) if "centre_dg" in data else None,
             relax_back=data.pop("relax_back"),
             **data,
         )
@@ -126,14 +132,11 @@ class Box:
     def score(self, info: ManInfo, fl: State, tp: State):
         res = Results("positioning")
 
-        if self.centre_criteria:
-            m = Measurement(
-                self.centre_angle(fl.pos)[1],
-                "rad",
-                *Measurement.lateral_pos_vis(fl.pos),
-            )
+        if self.centre_dg:
+            m = self.centre_dg.measure(fl, tp, self)
+
             sample = visibility(
-                m.value, m.visibility, self.centre_criteria.lookup.error_limit
+                m.value, m.visibility, self.centre_dg.criteria.lookup.error_limit
             )
             els = fl.label_ranges(["element"])
 
@@ -151,10 +154,11 @@ class Box:
                 Result(
                     "centre_box",
                     m,
-                    sample[ovs],
+                    None,
+                    sample,
                     ovs,
-                    *self.centre_criteria(sample[ovs], True),
-                    self.centre_criteria,
+                    *self.centre_dg.criteria(sample[ovs], True),
+                    self.centre_dg,
                 )
             )
 
@@ -162,17 +166,9 @@ class Box:
             if self.relax_back and k == "back":
                 if (tp.pos.y.max() - tp.pos.y.min()) > 20:
                     continue
-            direction, vs = getattr(self, f'{k}{"_angle" if dg.unit=='rad' else ""}')(
-                fl.pos
-            )
 
-            m = Measurement(
-                vs,
-                dg.unit,
-                *Measurement.lateral_pos_vis(fl.pos)
-                if dg.unit == "rad"
-                else Measurement._vector_vis(g.Point.full(direction, len(fl)), fl.pos),
-            )
+            m: Measurement = dg.measure(fl, tp, self)
+
             sample = visibility(
                 dg.criteria.prepare(m.value),
                 m.visibility,
@@ -182,6 +178,7 @@ class Box:
                 Result(
                     f"{k}_box",
                     m,
+                    None,
                     sample,
                     np.arange(len(fl)),
                     *dg.criteria(sample, True),
@@ -230,29 +227,38 @@ class Box:
         from flightplotting import pointtrace
 
         corners = self.corners()
-        meshopts = dict(
-            opacity=0.2, showlegend=False
-        )
+        meshopts = dict(opacity=0.2, showlegend=False)
 
         return [
             pointtrace(
                 corners,
                 text=np.arange(len(corners)),
                 mode="markers",
-                marker=dict(size=1,color="black"),
+                marker=dict(size=1, color="black"),
                 hoverinfo="skip",
             ),
             pointtrace(
                 g.P0(),
-                text="pilot" if self.__class__.__name__=='TriangularBox' else "judge",
+                text="pilot" if self.__class__.__name__ == "TriangularBox" else "judge",
                 mode="markers+text",
-                marker=dict(size=2,color="black"),
+                marker=dict(size=2, color="black"),
             ),
-            go.Mesh3d(**corners.to_dict(), **self.face_front(), color="aliceblue", **meshopts),
-            go.Mesh3d(**corners.to_dict(), **self.face_back(), color="aliceblue", **meshopts),
-            go.Mesh3d(**corners.to_dict(), **self.face_left(), color="azure", **meshopts),
-            go.Mesh3d(**corners.to_dict(), **self.face_right(), color="azure", **meshopts),
-            go.Mesh3d(**corners.to_dict(), **self.face_top(), color="cornsilk", **meshopts),
-            go.Mesh3d(**corners.to_dict(), **self.face_bottom(), color="grey", **meshopts),
+            go.Mesh3d(
+                **corners.to_dict(), **self.face_front(), color="aliceblue", **meshopts
+            ),
+            go.Mesh3d(
+                **corners.to_dict(), **self.face_back(), color="aliceblue", **meshopts
+            ),
+            go.Mesh3d(
+                **corners.to_dict(), **self.face_left(), color="azure", **meshopts
+            ),
+            go.Mesh3d(
+                **corners.to_dict(), **self.face_right(), color="azure", **meshopts
+            ),
+            go.Mesh3d(
+                **corners.to_dict(), **self.face_top(), color="cornsilk", **meshopts
+            ),
+            go.Mesh3d(
+                **corners.to_dict(), **self.face_bottom(), color="grey", **meshopts
+            ),
         ]
-
