@@ -85,7 +85,7 @@ class Basic(Analysis):
             if (data["schedule_direction"] and data['schedule_direction'] != "Infer")
             else None,
             flown=State.from_dict(data["flown"]),
-            mdef=ManDef.from_dict(data["mdef"])
+            mdef=ManDef.from_dict(data["mdef"]) 
         )
 
     def to_dict(self, basic:bool=False) -> dict:

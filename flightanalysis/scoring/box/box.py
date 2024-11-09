@@ -33,11 +33,13 @@ class BoxDG:
 
     @staticmethod
     def from_dict(data):
-        return BoxDG(
-            criteria=Criteria.from_dict(data["criteria"]),
-            measure=measures.parse(data["measure"]),
-        )
-
+        try:
+            return BoxDG(
+                criteria=Criteria.from_dict(data["criteria"]),
+                measure=measures.parse(data["measure"]),
+            )
+        except Exception:
+            return None
 
 box_sides = [
     "top",
@@ -78,7 +80,7 @@ class Box:
     def from_dict(Cls, data):
         return {C.__name__: C for C in Cls.__subclasses__()}[data.pop("Kind")](
             bound_dgs={k: BoxDG.from_dict(v) for k, v in data.pop("bound_dgs").items()},
-            centre_dg=BoxDG.from_dict(data.pop("centre_dg")),
+            centre_dg=BoxDG.from_dict(data.pop("centre_dg")) if "centre_dg" in data else None,
             relax_back=data.pop("relax_back"),
             **data,
         )
