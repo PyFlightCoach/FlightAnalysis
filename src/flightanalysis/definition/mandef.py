@@ -12,15 +12,20 @@ elements collection.
 """
 
 from __future__ import annotations
+
+from dataclasses import dataclass
+
+import geometry as g
+from flightdata import State
+from loguru import logger
+from pfcschemas.maninfo import ManInfo, Position
+from pfcschemas.positioning import Heading
+
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre
-from flightanalysis.definition.maninfo import ManInfo, Heading
-from flightdata import State
-import geometry as g
-from . import ManParms, ElDefs, Position, ElDef
-from dataclasses import dataclass
 from flightanalysis.scoring.box import Box
-from loguru import logger
+
+from . import ElDef, ElDefs, ManParms
 
 
 @dataclass
@@ -89,14 +94,13 @@ class ManDef:
                 Heading.LTOR: target_depth,
             }[heading],
             z=self.box.bottom(gpy)[1][0] * (self.info.start.height.value - 1)
-            + self.info.start.height.value * self.box.top(gpy)[1][0]
+            + self.info.start.height.value * self.box.top(gpy)[1][0],
         )
 
     def initial_rotation(self, heading: Heading) -> g.Quaternion:
         return g.Euler(self.info.start.orientation.value, 0, heading.value)
 
     def guess_itrans(self, target_depth: float, heading: Heading) -> g.Transformation:
-
         return g.Transformation(
             self.guess_ipos(target_depth, heading), self.initial_rotation(heading)
         )
@@ -115,7 +119,9 @@ class ManDef:
         target_depth = target_depth or self.box.middle().y[0]
         heading = Heading.infer(itrans.rotation.bearing())
 
-        logger.debug(f"Calculating entry line length for {self.info.position.name} manoeuvre {self.info.name}")
+        logger.debug(
+            f"Calculating entry line length for {self.info.position.name} manoeuvre {self.info.name}"
+        )
         logger.debug(f"Target depth: {target_depth:.0f}, heading: {heading.name}")
 
         # Create a template at zero to work out how much space the manoueuvre needs
@@ -126,10 +132,11 @@ class ManDef:
         )
 
         template = man.create_template(State.from_transform(itrans))
-        
-        if self.info.position == Position.CENTRE and (heading == Heading.LTOR or heading == Heading.RTOL):
-            if len(self.info.centre_points) > 0:
 
+        if self.info.position == Position.CENTRE and (
+            heading == Heading.LTOR or heading == Heading.RTOL
+        ):
+            if len(self.info.centre_points) > 0:
                 xoffset = (
                     man.elements[self.info.centre_points[0] - 1]
                     .get_data(template)
@@ -141,21 +148,20 @@ class ManDef:
                 xoffset = _x[int(len(_x) * fac)]
             else:
                 xoffset = (max(template.pos.x) + min(template.pos.x)) / 2
-            return - itrans.att.transform_point(g.PX(xoffset)).x[0]
+            return -itrans.att.transform_point(g.PX(xoffset)).x[0]
 
         else:
             bound = {
-                Heading.LTOR: 'right',
-                Heading.RTOL: 'left',
-                Heading.INTOOUT: 'back',
-                Heading.OUTTOIN: 'front'
+                Heading.LTOR: "right",
+                Heading.RTOL: "left",
+                Heading.INTOOUT: "back",
+                Heading.OUTTOIN: "front",
             }[heading]
             logger.debug(f"Bound: {bound}")
 
             return min(getattr(self.box, bound)(template.pos)[1])
 
-
-    def fit_box(self,itrans: g.Transformation,target_depth=None):
+    def fit_box(self, itrans: g.Transformation, target_depth=None):
         self.eds.entry_line.props["length"] = self.entry_line_length(
             itrans, target_depth
         )
@@ -169,11 +175,11 @@ class ManDef:
             uid=self.info.short_name,
         )
 
-    def plot(self, depth=170, heading = Heading.LTOR):
+    def plot(self, depth=170, heading=Heading.LTOR):
         itrans = self.guess_itrans(depth, heading)
         man = self.create()
         template = man.create_template(itrans)
-        from flightplotting import plotsec, plotdtw
+        from flightplotting import plotdtw, plotsec
 
         fig = plotdtw(template, template.data.element.unique())
         fig = plotsec(template, fig=fig, nmodels=20, scale=3)
@@ -182,22 +188,23 @@ class ManDef:
     def update_dgs(self, applicator: callable):
         new_eds = []
 
-        
         man = self.create()
         tp = man.create_template(self.guess_itrans(170, Heading.LTOR))
 
         for i, ed in enumerate(self.eds):
-            new_eds.append(ElDef(
-                ed.name,
-                ed.Kind,
-                ed.props,
-                applicator(
-                    man.elements[i], 
-                    tp.get_element(ed.name), 
-                    self.eds[i-1].Kind if i > 0 else '', 
-                    self.eds[i+1].Kind if i < len(self.eds)-1 else ''
+            new_eds.append(
+                ElDef(
+                    ed.name,
+                    ed.Kind,
+                    ed.props,
+                    applicator(
+                        man.elements[i],
+                        tp.get_element(ed.name),
+                        self.eds[i - 1].Kind if i > 0 else "",
+                        self.eds[i + 1].Kind if i < len(self.eds) - 1 else "",
+                    ),
                 )
-            ))
+            )
         return ManDef(self.info, self.mps, ElDefs(new_eds), self.box)
 
 

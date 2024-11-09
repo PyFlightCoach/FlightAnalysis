@@ -1,15 +1,11 @@
 
-from numbers import Number
-
-from .operations import *
-from .maninfo import ManInfo, BoxLocation, Orientation, Direction, Height, Position, Heading
+from .operations import FunOpp, ItemOpp, MathOpp, Opp, SumOpp
 from .collectors import Collector, Collectors
-
-from .manparm import ManParm, ManParms, DummyMPs
-
-   
-
+from .manparm import DummyMPs, ManParm, ManParms
 from .eldef import ElDef, ElDefs
+
 from .mandef import ManDef
 from .manoption import ManOption
+
+
 from .scheddef import SchedDef
