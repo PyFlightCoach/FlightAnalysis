@@ -157,6 +157,7 @@ class ManParm(Opp):
             defaul=self.defaul,
             unit=self.unit,
             collectors=self.collectors.copy(),
+            visibility=self.visibility
         )
 
     def list_parms(self):
