@@ -1,18 +1,29 @@
+from dataclasses import dataclass
+from functools import partial
+from re import M
+from typing import Callable
+
+from flightanalysis import Combination
+from flightanalysis.definition.scheddef import SchedDef
+from pfcschemas import ManInfo
+
+from flightanalysis.definition.manoption import ManOption
+from flightdata.schemas.fcj import Man
+import numpy as np
+import pandas as pd
+from flightdata import State
+
 from flightanalysis.definition import (
+    ElDef,
+    ElDefs,
     ManDef,
     ManParm,
     ManParms,
-    ElDef,
-    ElDefs,
-    Opp,
 )
-from typing import Callable
-from functools import partial
-import numpy as np
+from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn
 from flightanalysis.scoring.box import Box
-from dataclasses import dataclass
-from flightdata import State
-from flightanalysis.elements import Loop, Line, Snap, Spin, StallTurn
+
+
 
 class MBTags:
     CENTRE = 0
@@ -27,14 +38,16 @@ c45 = np.cos(np.radians(45))
 
 
 def r(turns):
-    return 2 * np.pi * np.array(turns)
+    return (2 * np.pi * np.array(turns)).tolist()
 
 
 @dataclass
 class ManBuilder:
     mps: ManParms
     mpmaps: dict[str, dict]
-    dg_applicator: Callable[[Loop | Line | Snap | Spin | StallTurn, State, str, str], list]
+    dg_applicator: Callable[
+        [Loop | Line | Snap | Spin | StallTurn, State, str, str], list
+    ]
     Inter: object
     box: Box
 
@@ -45,7 +58,7 @@ class ManBuilder:
 
     def el(self, kind, *args, force_name=None, **kwargs):
         """Setup kwargs to pull defaults from mpmaps
-        returns a function that appends the created elements to a ManDef"""
+        returns a function that takes a ManDef, creats the eldefs and appends them to it"""
 
         all_kwargs = self.mpmaps[kind]["kwargs"].copy()  # take the defaults
 
@@ -78,14 +91,17 @@ class ManBuilder:
     ) -> ManDef:
         mps = self.mps.copy()
         for k, v in kwargs.items():
-            if isinstance(v, ManParm):
-                mps.add(v)
-            elif isinstance(k, str):
-                if k in mps.data:
-                    mps[k].defaul = v
-                else:
-                    mps.add(ManParm.parse(v, mps, k))
-        
+            if isinstance(v, ManParm): # add a new manparm
+                mps.add(v) 
+            else:
+                if k in mps.data: # update the default value
+                    mps[k].defaul = v 
+                else: # create and add a manparm
+                    if pd.api.types.is_list_like(v):
+                        mps.add(ManParm(k, Combination(desired=v), 0, "rad"))
+                    else:
+                        mps.add(ManParm.parse(v, mps, k))
+
         md = ManDef(
             maninfo,
             mps,
@@ -93,7 +109,7 @@ class ManBuilder:
             self.box.__class__(**dict(self.box.__dict__, relax_back=relax_back)),
         )
         self.line(force_name="entry_line", length=30)(md)
-        
+
         for i, em in enumerate(elmakers, 1):
             if isinstance(em, int):
                 if em == MBTags.CENTRE:
@@ -122,3 +138,7 @@ class ManBuilder:
 
         md.mps = md.mps.remove_unused()
         return md.update_dgs(self.dg_applicator)
+
+
+
+

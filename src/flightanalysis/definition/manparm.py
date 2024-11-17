@@ -174,7 +174,7 @@ class ManParm(Opp):
         return [self]
 
     def __repr__(self):
-        return f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul}, {self.unit})"
+        return f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul}, {self.unit}, {str(self.visibility) if self.visibility else 'None'})"
 
 
 class ManParms(Collection):
@@ -213,7 +213,7 @@ class ManParms(Collection):
                 else:
                     defaul = np.mean(np.abs(flown_parm)) * np.sign(mp.defaul)
                 mps.append(
-                    ManParm(mp.name, mp.criteria, defaul, mp.unit, mp.collectors)
+                    ManParm(mp.name, mp.criteria, defaul, mp.unit, mp.collectors, mp.visibility)
                 )
             else:
                 mps.append(mp)

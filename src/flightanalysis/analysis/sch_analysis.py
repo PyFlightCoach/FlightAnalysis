@@ -1,8 +1,11 @@
 from __future__ import annotations
+from flightdata import State
 from typing import Self, Union
 from json import load, dump
+from flightanalysis.definition.scheddef import SchedDef
 from flightdata import Collection, NumpyEncoder
 from flightanalysis import __version__
+from pfcschemas import AJson, MDef
 from . import manoeuvre_analysis as ma
 from loguru import logger
 from joblib import Parallel, delayed
@@ -14,6 +17,37 @@ import pandas as pd
 class ScheduleAnalysis(Collection):
     VType = ma.Analysis
     uid = "name"
+
+    @property
+    def flown(self):
+        return State.stack([m.flown for m in self])
+
+    @property
+    def template(self):
+        return State.stack([m.template for m in self])
+
+    def proceed(self):
+        return ScheduleAnalysis([m.proceed() for m in self])
+
+    @staticmethod
+    def parse_ajson(ajson: AJson, sdef: SchedDef = None) -> ScheduleAnalysis:
+        if not all([ajson.mdef for ajson in ajson.mans]) and sdef is None:
+            raise ValueError("All manoeuvres must have a definition")
+        return ScheduleAnalysis(
+            [
+                ma.from_dict(
+                    man.model_dump()
+                    | (
+                        dict(
+                            mdef=sdef[i]
+                        )
+                        if sdef
+                        else {}
+                    )
+                )
+                for i, man in enumerate(ajson.mans)
+            ]
+        )
 
     def append_scores_to_fcj(self, file: Union[str, dict], ofile: str = None) -> dict:
         data = file if isinstance(file, dict) else load(open(file, "r"))
@@ -50,11 +84,11 @@ class ScheduleAnalysis(Collection):
 
         return data
 
-    def run_all(self) -> Self:
+    def run_all(self, optimise: bool = False) -> Self:
         def parse_analyse_serialise(pad):
             try:
                 pad = ma.from_dict(pad).run_all()
-                pad = pad.run_all()
+                pad = pad.run_all(optimise)
                 logger.info(f"Completed {pad.name}")
             except Exception as e:
                 logger.error(f"Failed to process {pad.name}: {repr(e)}")
@@ -66,6 +100,9 @@ class ScheduleAnalysis(Collection):
         )
 
         return ScheduleAnalysis([ma.Scored.from_dict(mad) for mad in madicts])
+
+    def run_all_sync(self, optimise: bool = False, force: bool = False) -> Self:
+        return ScheduleAnalysis([ma.run_all(optimise, force) for ma in self])
 
     def optimize_alignment(self) -> Self:
         def parse_analyse_serialise(mad):

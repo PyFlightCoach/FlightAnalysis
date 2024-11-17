@@ -4,7 +4,7 @@ from .criteria import Bounded, Continuous, Single, Criteria, ContinuousValue
 from .measurement import Measurement
 from .visibility import visibility
 from .results import Results, Result
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
 
@@ -28,14 +28,11 @@ class DownGrade:
         Bounded | Continuous | Single
     )  # looks up the downgrades based on the errors
     
+    def __repr__(self):
+        return f"DownGrade({self.name}, {str(self.measure)}, {str(self.smoothers)}, {str(self.selectors)}, {str(self.criteria)})"
+
     def rename(self, name: str):
-        return DownGrade(
-            name,
-            self.measure,
-            self.smoothers,
-            self.selectors,
-            self.criteria,
-        )
+        return replace(self, name=name) 
 
     def to_dict(self):
         return dict(

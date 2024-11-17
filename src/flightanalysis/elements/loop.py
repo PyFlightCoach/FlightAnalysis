@@ -1,8 +1,7 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, Point, PX
+import geometry as g
 from flightdata import State
-from flightanalysis.scoring import Measurement
 from . import Element
 from dataclasses import dataclass
 from typing import ClassVar
@@ -49,33 +48,34 @@ class Loop(Element):
         if self.angle == 0:
             raise NotImplementedError()
 
-        v = PX(self.speed) if istate.vel == 0 else istate.vel.scale(self.speed)
+        v = g.PX(self.speed) if istate.vel == 0 else istate.vel.scale(self.speed)
 
         return self._add_rolls(
             istate.copy(
                 vel=v,
-                rvel=Point(0, np.cos(self.ke), np.sin(self.ke)) * self.angle / duration,
+                rvel=g.Point(0, np.cos(self.ke), np.sin(self.ke)) * self.angle / duration,
             ).fill(Element.create_time(duration, fl)),
             self.roll,
         )
 
-    def measure_radius(self, itrans: Transformation, flown: State):
+    def measure_radius(self, itrans: g.Transformation, flown: State):
         """The radius vector in m given a state in the loop coordinate frame"""
         centre = flown.arc_centre()
 
-        wvec = itrans.att.transform_point(Point(0, np.cos(self.ke), np.sin(self.ke)))
+        wvec = itrans.att.transform_point(g.Point(0, np.cos(self.ke), np.sin(self.ke)))
         bvec = flown.att.inverse().transform_point(wvec)
-        return abs(Point.vector_rejection(centre, bvec))
+        return abs(g.point.vector_rejection(centre, bvec))
 
-    def weighted_average_radius(self, itrans: Transformation, flown: State) -> float:
+    def weighted_average_radius(self, itrans: g.Transformation, flown: State) -> float:
         rads = self.measure_radius(itrans, flown)
         angles = np.arctan(abs(flown.vel) * flown.dt / rads)
         keep = ~np.isnan(rads * angles)
 
         return np.sum((rads * angles)[keep]) / np.sum(angles[keep])
+        #return np.mean(rads)
 
-    def match_intention(self, itrans: Transformation, flown: State) -> Loop:
-        wrv = flown.att.transform_point(Point.vector_rejection(flown.rvel, PX()))
+    def match_intention(self, itrans: g.Transformation, flown: State) -> Loop:
+        wrv = flown.att.transform_point(g.point.vector_rejection(flown.rvel, g.PX()))
         itrv = itrans.att.inverse().transform_point(wrv)
         itr = itrv.z * np.sin(self.ke) + itrv.y * np.cos(self.ke)
 
@@ -86,7 +86,7 @@ class Loop(Element):
             speed=abs(flown.vel).mean(),
         )
 
-    def segment(self, transform: Transformation, flown: State, partitions=10):
+    def segment(self, transform: g.Transformation, flown: State, partitions=10):
         subsections = flown.segment(partitions)
         elms = [self.match_intention(transform, sec) for sec in subsections]
 

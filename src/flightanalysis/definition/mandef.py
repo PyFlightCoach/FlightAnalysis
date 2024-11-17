@@ -48,7 +48,7 @@ class ManDef:
     @property
     def uid(self):
         return self.info.short_name
-
+    
     def to_dict(self, dgs=True) -> dict:
         return dict(
             info=self.info.to_dict(),

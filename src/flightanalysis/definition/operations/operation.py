@@ -5,7 +5,19 @@ from uuid import uuid1
 from ast import literal_eval
 from dataclasses import dataclass
 from typing import Callable, Any
+import numpy as np
 
+
+constants = dict(
+    pi=np.pi,
+    c45=np.cos(np.radians(45)),
+)
+
+def check_constant(inp:str):
+    if inp in constants:
+        return constants[inp]
+    else:
+        raise ValueError(f"Unknown constant {inp}")
 
 @dataclass
 class Opp:
@@ -78,6 +90,7 @@ class Opp:
         inp = inp.strip(" ")
         for test in [
             lambda inp : float(inp),
+            lambda inp : check_constant(inp),
             lambda inp : FunOpp.parse(inp, coll, name),
             lambda inp : MathOpp.parse(inp, coll, name),
             lambda inp : ItemOpp.parse(inp, coll, name),

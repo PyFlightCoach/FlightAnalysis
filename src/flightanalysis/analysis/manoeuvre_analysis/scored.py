@@ -20,6 +20,7 @@ class Scored(Complete):
             self.corrected_template,
         )
 
+
     @staticmethod
     def from_dict(ajman: dict) -> Scored:
         analysis = Complete.from_dict(ajman)
@@ -38,3 +39,5 @@ class Scored(Complete):
 
     def fcj_results(self):
         return dict(**super().fcj_results(), results=self.scores.fcj_results())
+
+    
