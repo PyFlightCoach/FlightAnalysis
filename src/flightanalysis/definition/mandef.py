@@ -179,7 +179,7 @@ class ManDef:
         itrans = self.guess_itrans(depth, heading)
         man = self.create()
         template = man.create_template(itrans)
-        from flightplotting import plotdtw, plotsec
+        from plotting import plotdtw, plotsec
 
         fig = plotdtw(template, template.data.element.unique())
         fig = plotsec(template, fig=fig, nmodels=20, scale=3)

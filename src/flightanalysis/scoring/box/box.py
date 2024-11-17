@@ -224,7 +224,7 @@ class Box:
 
     def plot(self):
         import plotly.graph_objects as go
-        from flightplotting import pointtrace
+        from plotting import pointtrace
 
         corners = self.corners()
         meshopts = dict(opacity=0.2, showlegend=False)

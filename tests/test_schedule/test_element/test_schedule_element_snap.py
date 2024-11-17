@@ -3,7 +3,7 @@ import geometry as g
 import numpy as np
 from flightdata import State
 from pytest import fixture, approx
-from flightplotting import plotsec
+from plotting import plotsec
 
 
 @fixture

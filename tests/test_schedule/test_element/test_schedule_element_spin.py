@@ -3,7 +3,7 @@ from geometry import Transformation, Euler, P0, PX, PY, PZ, Point, Quaternion
 import numpy as np
 from flightdata import State
 from pytest import fixture, approx
-from flightplotting import plotsec
+from plotting import plotsec
 import plotly.express as px
 
 @fixture

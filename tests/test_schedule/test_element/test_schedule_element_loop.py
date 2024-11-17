@@ -140,7 +140,7 @@ def test_create_template_new_time(half_loop: Loop):
         State.from_transform(Transformation(), vel=PX(30)), 
         Time.from_t(np.linspace(0,3, 20))
     )
-    from flightplotting import plotsec
+    from plotting import plotsec
     plotsec(tp, nmodels=10).show()
     assert sum((tp.q * tp.dt)[:-1]) == approx(np.pi, abs=1e-3)
     
