@@ -1,12 +1,16 @@
 from __future__ import annotations
+from random import sample
+
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from flightdata import Collection
+from flightdata import Collection, State
 from flightdata.base import to_list
 from flightanalysis.scoring.measurement import Measurement
 from flightanalysis.scoring.criteria import Criteria
 from dataclasses import dataclass
+import geometry as g
+from itertools import chain
 
 
 def diff(val, factor=3):
@@ -69,9 +73,7 @@ class Result:
             Measurement.from_dict(data["measurement"])
             if isinstance(data["measurement"], dict)
             else np.array(data["measurement"]),
-            np.array(data["raw_sample"])
-            if "raw_sample" in data
-            else None,
+            np.array(data["raw_sample"]) if "raw_sample" in data else None,
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
             np.array(data["errors"]),
@@ -123,77 +125,84 @@ class Result:
         import plotly.graph_objects as go
 
         xvs = np.arange(len(self.measurement)) / 25 if xvals is None else xvals
-
+        
         return [
-            go.Scatter(
+            go.Scatter(**(dict(
                 x=xvs,
                 y=self.plot_f(self.measurement.value),
-                name="value",
+                name="Measurement",
                 **kwargs,
-                line=dict(color="blue", width=1, dash="dash"),
-            ),
-            go.Scatter(
+                line=dict(color="blue", width=1, dash="dash")
+            ) | kwargs)),
+            *([go.Scatter(**(dict(
                 x=xvs[self.sample_keys],
                 y=self.plot_f(self.measurement.value)[self.sample_keys],
-                name="selected",
+                name="Selected",
                 line=dict(color="blue", width=1, dash="solid"),
-                **kwargs,
-            ),
+            ) | kwargs))] if not len(self.sample)==len(self.measurement) else []
+            )
+            
         ]
 
     def sample_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
 
         return [
-            *([go.Scatter(
-                x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals),
-                y=self.plot_f(self.raw_sample),
-                name="visible sample",
-                line=dict(width=1, color="black", dash="dot"),
-                **kwargs,
-            )] if self.raw_sample is not None else []),
-            go.Scatter(
+            *(
+                [
+                    go.Scatter(**(dict(
+                        x=(
+                            np.arange(len(self.measurement)) / 25
+                            if xvals is None
+                            else xvals
+                        ),
+                        y=self.plot_f(self.raw_sample),
+                        name="Visible Sample",
+                        line=dict(width=1, color="black", dash="dash"),
+                    ) | kwargs))
+                ]
+                if self.raw_sample is not None
+                else []
+            ),
+            go.Scatter(**(dict(
                 x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals)[
                     self.sample_keys
                 ],
                 y=self.plot_f(self.sample),
-                name="smooth sample",
+                name="Smooth Sample",
                 line=dict(width=1, color="black"),
-                **kwargs,
-            ),
+            ) | kwargs))
         ]
 
     def downgrade_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
 
-        return go.Scatter(
-            x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals)[
-                self.sample_keys[self.keys]
-            ],
+        return go.Scatter(**(dict(
+            x=(
+                np.arange(len(self.measurement)) / 25
+                if xvals is None
+                else xvals
+            )[self.sample_keys[self.keys]],
             y=self.plot_f(self.sample[self.keys]),
             text=np.round(self.dgs, 3),
             hovertext=[self.info(i) for i in range(len(self.keys))],
             mode="markers+text",
-            name="downgrade",
+            name="Downgrades",
             textposition="bottom right",
             yaxis="y",
-            marker=dict(
-                size=10, color="black"
-            ),  # , color=self.dgs, colorscale="Bluered"),
-            **kwargs,
-        )
+            marker=dict(size=10, color="black"),
+        )| kwargs))
 
     def visibility_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
 
-        return go.Scatter(
+        return go.Scatter(**(dict(
             x=np.arange(len(self.measurement)) / 25 if xvals is None else xvals,
             y=self.measurement.visibility,
-            name="visibility",
+            name="Visibility",
             yaxis="y2",
             line=dict(width=1, color="black", dash="dot"),
-            **kwargs,
-        )
+        ) | kwargs))
 
     def traces(self, xvals: np.ndarray = None, **kwargs):
         return [
@@ -309,6 +318,15 @@ class Results(Collection):
 
         return fig
 
+    def inter_dg_list(self, cutoff=0.05):
+        inter_dgs = {}
+        for res in self:
+            for i, dg in enumerate(res.dgs):
+                inter_dgs[tuple(res.measurement.keys[i].split("."))] = float(dg)
+        inter_dgs = pd.Series(inter_dgs).sort_values(ascending=False)
+
+        return inter_dgs.loc[inter_dgs > cutoff]
+
 
 class ElementsResults(Collection):
     """Intra Only
@@ -352,6 +370,41 @@ class ElementsResults(Collection):
             {k: Results.from_dict(v) for k, v in data["data"].items()}
         )
 
+    def intra_dg_list(self, cutoff=0.05):
+        intra_dgs = self.downgrade_df().iloc[:-1].stack().sort_values(ascending=False)
+        intra_dgs.columns = ["element", "name", "value"]
+        return intra_dgs[intra_dgs > cutoff]
+
+
+def split_on_spaces(line, maxlen):
+    outlines = []
+    icount = 0
+    while len(line[icount:]) > maxlen:
+        nsplit = icount + line[icount : icount + maxlen].rfind(" ")
+        outlines.append(line[icount:nsplit])
+        icount = nsplit
+    else:
+        outlines.append(line[icount:].strip(" "))
+
+    return outlines
+
+
+@dataclass
+class DGPlot:
+    ename: str
+    dgs: dict[str, float]
+    location: g.Point
+
+    def total(self):
+        return sum(self.dgs.values())
+
+    def total_str(self):
+        return f"-{self.total():.2f}: {self.ename}"
+
+    def summary(self, maxlen=30):
+        lines = [split_on_spaces(f"-{v:.2f}: {k}", maxlen) for k, v in self.dgs.items()]
+        return "<br>".join(list(chain(*lines)))
+
 
 @dataclass
 class ManoeuvreResults:
@@ -367,10 +420,10 @@ class ManoeuvreResults:
         inter = self.inter.score(difficulty, "result" if truncate else None)
         positioning = self.positioning.score(difficulty, "result" if truncate else None)
         return dict(
-            intra=intra,
-            inter=inter,
-            positioning=positioning,
-            total=max(10 - intra - inter - positioning, 0),
+            intra=float(intra),
+            inter=float(float(inter)),
+            positioning=float(float(positioning)),
+            total=float(max(10 - intra - inter - positioning, 0)),
         )
 
     def score(self, difficulty=3, truncate: bool = False):
@@ -404,3 +457,20 @@ class ManoeuvreResults:
                     )
                 )
         return res
+
+    def el_dg_list(self, man, cutoff=0.05):
+        intra_dgs = self.intra.intra_dg_list(cutoff)
+        inter_dgs = self.inter.inter_dg_list(cutoff)
+
+        dgs = pd.concat([inter_dgs, intra_dgs])  # , keys=['inter', 'intra'])
+
+        grps = []
+        for grp in dgs.groupby(level=0).groups.items():
+            grps.append(
+                DGPlot(
+                    grp[0],
+                    {g[1]: float(dgs.loc[grp[0], g[1]]) for g in grp[1]},
+                    getattr(man, grp[0]).fl.pos.mean(),
+                )
+            )
+        return grps

@@ -239,26 +239,26 @@ class Box:
             ),
             pointtrace(
                 g.P0(),
-                text="pilot" if self.__class__.__name__ == "TriangularBox" else "judge",
+                text="Pilot" if self.__class__.__name__ == "TriangularBox" else "Judge",
                 mode="markers+text",
                 marker=dict(size=2, color="black"),
             ),
             go.Mesh3d(
-                **corners.to_dict(), **self.face_front(), color="aliceblue", **meshopts
+                **corners.to_dict(), **self.face_front(), color="mediumaquamarine", **meshopts
             ),
             go.Mesh3d(
-                **corners.to_dict(), **self.face_back(), color="aliceblue", **meshopts
+                **corners.to_dict(), **self.face_back(), color="mediumaquamarine", **meshopts
             ),
             go.Mesh3d(
-                **corners.to_dict(), **self.face_left(), color="azure", **meshopts
+                **corners.to_dict(), **self.face_left(), color="mediumturquoise", **meshopts
             ),
             go.Mesh3d(
-                **corners.to_dict(), **self.face_right(), color="azure", **meshopts
+                **corners.to_dict(), **self.face_right(), color="mediumturquoise", **meshopts
             ),
             go.Mesh3d(
-                **corners.to_dict(), **self.face_top(), color="cornsilk", **meshopts
+                **corners.to_dict(), **self.face_top(), color="dimgray", **meshopts
             ),
-            go.Mesh3d(
-                **corners.to_dict(), **self.face_bottom(), color="grey", **meshopts
-            ),
+        #    go.Mesh3d(
+        #        **corners.to_dict(), **self.face_bottom(), color="grey", **meshopts
+        #    ),
         ]

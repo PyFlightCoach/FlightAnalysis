@@ -7,9 +7,9 @@ from typing import Annotated
 import geometry as g
 import numpy as np
 import pandas as pd
-from flightdata import Flight, Origin, State
+from flightdata import State
 
-from flightanalysis.definition import ManDef, ManOption, SchedDef
+from flightanalysis.definition import ManDef, ManOption
 from pfcschemas.positioning import Heading, Direction
 
 from .analysis import Analysis
@@ -19,7 +19,7 @@ from .analysis import Analysis
 class Basic(Analysis):
     id: int
     schedule_direction: Annotated[
-        Heading | None, "The direction the schedule was flown in in, None for inferred"
+        Heading | None, "The direction the schedule was flown in, None for inferred"
     ]
     flown: State
     mdef: ManDef | ManOption
@@ -85,7 +85,7 @@ class Basic(Analysis):
             if (data["schedule_direction"] and data['schedule_direction'] != "Infer")
             else None,
             flown=State.from_dict(data["flown"]),
-            mdef=ManDef.from_dict(data["mdef"]) 
+            mdef=ManDef.from_dict(data["mdef"]) if isinstance(data["mdef"], dict) else data["mdef"],
         )
 
     def to_dict(self, basic:bool=False) -> dict:

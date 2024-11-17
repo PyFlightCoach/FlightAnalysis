@@ -2,9 +2,8 @@ from json import dump
 from typing import Tuple
 
 import geometry as g
-from flightdata import Collection, NumpyEncoder, State
-from pfcschemas.maninfo import ManInfo
-from pfcschemas.positioning import Direction, Heading
+from flightdata import Collection, State
+from pfcschemas import ManInfo, Direction, Heading, DirectionDefinition
 
 from flightanalysis.definition.mandef import ManDef
 from flightanalysis.definition.manoption import ManOption
@@ -19,15 +18,13 @@ class SchedDef(Collection):
         super().__init__(data, check_types=False)
         assert all([v.__class__.__name__ in ["ManOption", "ManDef"] for v in self])
 
-    def wind_def_manoeuvre(self) -> dict[str, int | str]:
+    def wind_def_manoeuvre(self) -> DirectionDefinition:
         for i, man in enumerate(self):
             if man.info.start.direction != Direction.CROSS:
-                return i
-
-    #                return dict(
-    #                    manid=i,
-    #                    direction=man.info.start.direction.name
-    #                )
+                return DirectionDefinition(
+                    manid=i,
+                    direction=man.info.start.direction
+                )
 
     def add_new_manoeuvre(self, info: ManInfo, defaults=None):
         return self.add(ManDef(info, defaults))
@@ -60,21 +57,6 @@ class SchedDef(Collection):
             templates.append(man.create_template(itrans))
             mans.append(man)
         return Schedule(mans), State.stack(templates)
-
-    def dump(self, file: str, sinfo) -> str:
-        with open(file, "w") as f:
-            dump(
-                dict(
-                    category=sinfo.category if sinfo else None,
-                    schedule=sinfo.name if sinfo else None,
-                    direction_definition=self.wind_def_manoeuvre(),
-                    mdefs=self.to_dict(),
-                ),
-                f,
-                cls=NumpyEncoder,
-                indent=2,
-            )
-        return file
 
     def plot(self, depth=170, wind=Heading.LTOR, **kwargs):
         sched, template = self.create_template(depth, wind)

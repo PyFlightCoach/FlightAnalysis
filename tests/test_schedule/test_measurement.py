@@ -4,7 +4,7 @@ from pytest import fixture, approx
 import numpy as np
 from flightanalysis import Loop, Measurement
 from flightanalysis.builders.manbuilder import r
-from flightanalysis.builders.f3a.downgrades import dg_applicator
+from example.downgrades import dg_applicator
 from geometry.testing import assert_almost_equal
 
 @fixture
