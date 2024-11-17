@@ -2,7 +2,7 @@ from flightanalysis import Loop, Line, Snap, Elements, Manoeuvre
 import numpy as np
 from flightdata import State
 import geometry as g
-from flightplotting import plotsec
+from plotting import plotsec
 
 
 man = Manoeuvre(Elements([

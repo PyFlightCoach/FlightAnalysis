@@ -60,7 +60,7 @@ class SchedDef(Collection):
 
     def plot(self, depth=170, wind=Heading.LTOR, **kwargs):
         sched, template = self.create_template(depth, wind)
-        from flightplotting import plot_regions
+        from plotting import plot_regions
 
         return plot_regions(template, "manoeuvre", **kwargs)
 

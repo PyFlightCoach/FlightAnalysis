@@ -216,7 +216,7 @@ class Complete(Alignment):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
     def plot_3d(self, **kwargs):
-        from flightplotting import plotdtw, plotsec
+        from plotting import plotdtw, plotsec
 
         fig = plotdtw(self.flown, self.flown.data.element.unique())
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
