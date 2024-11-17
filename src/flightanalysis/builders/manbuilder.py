@@ -1,14 +1,9 @@
 from dataclasses import dataclass
 from functools import partial
-from re import M
 from typing import Callable
 
-from flightanalysis import Combination
-from flightanalysis.definition.scheddef import SchedDef
-from pfcschemas import ManInfo
+from pfcschemas import ManInfo, Figure, PE, Option, Sequence
 
-from flightanalysis.definition.manoption import ManOption
-from flightdata.schemas.fcj import Man
 import numpy as np
 import pandas as pd
 from flightdata import State
@@ -19,10 +14,12 @@ from flightanalysis.definition import (
     ManDef,
     ManParm,
     ManParms,
+    ManOption,
+    SchedDef
 )
 from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn
 from flightanalysis.scoring.box import Box
-
+from flightanalysis.scoring.criteria import Combination
 
 
 class MBTags:
@@ -50,6 +47,25 @@ class ManBuilder:
     ]
     Inter: object
     box: Box
+
+    def create_edef(self, pe: PE) -> ElDef:
+        el = getattr(self, pe.kind)(*pe.args, **pe.kwargs)
+        if pe.centred:
+            el.centred = True
+        return el
+
+    def create_mdef(self, fig: Figure | Option) -> ManDef | ManOption:
+        if isinstance(fig, Option):
+            return ManOption([self.create_mdef(op) for op in fig.figures])
+        else:
+            return self.create(
+                fig.info,
+                [self.create_edef(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
+                **fig.ndmps,
+            )
+
+    def create_scheddef(self, seq: Sequence) -> SchedDef:
+        return SchedDef([self.create_mdef(f) for f in seq.figures])
 
     def __getattr__(self, name):
         if name in self.mpmaps:
@@ -84,7 +100,7 @@ class ManBuilder:
 
     def create(
         self,
-        maninfo,
+        maninfo: ManInfo,
         elmakers: list[Callable[[ManDef], ElDef]],
         relax_back=False,
         **kwargs,
