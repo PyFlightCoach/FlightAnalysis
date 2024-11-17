@@ -1,5 +1,5 @@
 from pytest import fixture
-from pfcschemas import Position, BoxLocation, ManInfo, Height, Direction, Orientation
+from schemas import Position, BoxLocation, ManInfo, Height, Direction, Orientation
 from flightanalysis import Manoeuvre,  ManDef
 from tests.example.builder.manbuilder import f3amb
 

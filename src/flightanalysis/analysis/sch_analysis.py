@@ -5,7 +5,7 @@ from json import load, dump
 from flightanalysis.definition.scheddef import SchedDef
 from flightdata import Collection, NumpyEncoder
 from flightanalysis import __version__
-from pfcschemas import AJson, MDef
+from schemas import AJson, MDef
 from . import manoeuvre_analysis as ma
 from loguru import logger
 from joblib import Parallel, delayed

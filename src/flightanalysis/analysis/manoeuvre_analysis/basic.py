@@ -10,7 +10,7 @@ import pandas as pd
 from flightdata import State
 
 from flightanalysis.definition import ManDef, ManOption
-from pfcschemas.positioning import Heading, Direction
+from schemas.positioning import Heading, Direction
 
 from .analysis import Analysis
 

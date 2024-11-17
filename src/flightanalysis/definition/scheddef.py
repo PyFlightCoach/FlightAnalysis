@@ -3,7 +3,7 @@ from typing import Tuple
 
 import geometry as g
 from flightdata import Collection, State
-from pfcschemas import ManInfo, Direction, Heading, DirectionDefinition
+from schemas import ManInfo, Direction, Heading, DirectionDefinition
 
 from flightanalysis.definition.mandef import ManDef
 from flightanalysis.definition.manoption import ManOption

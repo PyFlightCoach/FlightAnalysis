@@ -6,7 +6,7 @@ from .alignment import Alignment
 from .complete import Complete
 from .scored import Scored
 
-from pfcschemas import MA
+from schemas import MA
 
 
 def from_dict(data: dict | MA) -> Basic | Alignment | Complete | Scored:
