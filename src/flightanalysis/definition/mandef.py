@@ -18,8 +18,8 @@ from dataclasses import dataclass
 import geometry as g
 from flightdata import State
 from loguru import logger
-from pfcschemas.maninfo import ManInfo, Position
-from pfcschemas.positioning import Heading
+from schemas.maninfo import ManInfo, Position
+from schemas.positioning import Heading
 
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre

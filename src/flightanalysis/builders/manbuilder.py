@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from functools import partial
 from typing import Callable
 
-from pfcschemas import ManInfo, Figure, PE, Option, Sequence
+from schemas import ManInfo, Figure, PE, Option, Sequence
 
 import numpy as np
 import pandas as pd

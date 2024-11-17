@@ -1,6 +1,6 @@
 from flightanalysis import ScheduleAnalysis, ManDef
-from pfcschemas import AJson
-from pfcschemas import MA
+from schemas import AJson
+from schemas import MA
 from pytest import fixture
 
 

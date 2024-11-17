@@ -30,7 +30,7 @@ source = "vcs"
 pfc-geometry = { path="../geometry" , editable = true }
 ardupilot_log_reader = { path="../ArdupilotLogReader" , editable = true }
 flightdata = { path="../FlightData" , editable = true }
-pfcschemas = { path = "../PFCSchemas", editable = true }
+pfcschemas = { path = "../Schemas", editable = true }
 
 [dependency-groups]
 dev = ["ardupilot_log_reader", "pymavlink>=2.4.42", "pytest>=8.3.3"]
