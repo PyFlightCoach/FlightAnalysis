@@ -72,7 +72,7 @@ class ManParm(Opp):
             defaul=data["defaul"],
             unit=data["unit"],
             collectors=Collectors.from_dict(data["collectors"]),
-            visibility=visor.parse(data["visibility"]),
+            visibility=visor.parse(data["visibility"]) if "visibility" in data else None,
         )
 
     def append(self, collector: Union[Opp, Collector, Collectors]):
