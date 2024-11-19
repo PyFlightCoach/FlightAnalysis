@@ -1,5 +1,6 @@
 [project]
 name = "flightanalysis"
+version="0.3.13"
 description = "Python tools for Analysis of Flight Data"
 readme = "README.md"
 authors = [{ name = "Thomas David", email = "thomasdavid0@gmail.com" }]
@@ -17,14 +18,10 @@ dependencies = [
     "scipy>=1.14.1",
     "simplejson>=3.19.3",
 ]
-dynamic = ["version"]
 
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.version]
-source = "vcs"
 
 [tool.uv.sources]
 pfc-geometry = { path="../geometry" , editable = true }
