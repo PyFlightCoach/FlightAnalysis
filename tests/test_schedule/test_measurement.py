@@ -5,7 +5,7 @@ import numpy as np
 from flightanalysis import Loop, Measurement
 from flightanalysis.builders.manbuilder import r
 from example.downgrades import dg_applicator
-from geometry.testing import assert_almost_equal
+from geometry.checks import assert_almost_equal
 
 @fixture
 def line_tp():

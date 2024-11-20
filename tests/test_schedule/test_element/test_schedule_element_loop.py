@@ -5,7 +5,7 @@ from pytest import approx, fixture, mark
 from flightdata import State
 from geometry import Transformation, Point, PX, Euler, P0, Time
 import numpy as np
-from geometry.testing import assert_almost_equal
+from geometry.checks import assert_almost_equal
 import json 
 
 
