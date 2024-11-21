@@ -16,7 +16,7 @@ wheels = [
 
 [[package]]
 name = "ardupilot-log-reader"
-version = "0.3.4.dev0+gf252c32.d20241109"
+version = "0.3.5"
 source = { editable = "../ArdupilotLogReader" }
 dependencies = [
     { name = "numpy" },
@@ -55,7 +55,7 @@ sdist = { url = "https://files.pythonhosted.org/packages/99/43/30f2d8db076f216b1
 
 [[package]]
 name = "flightanalysis"
-version = "0.3.13.dev13+g0332000.d20241117"
+version = "0.3.13"
 source = { editable = "." }
 dependencies = [
     { name = "fastdtw" },
@@ -102,7 +102,7 @@ dev = [
 
 [[package]]
 name = "flightdata"
-version = "0.2.24.dev2+g04931a7.d20241111"
+version = "0.2.24"
 source = { editable = "../FlightData" }
 dependencies = [
     { name = "numpy" },
@@ -317,7 +317,7 @@ wheels = [
 
 [[package]]
 name = "pfc-geometry"
-version = "0.2.13.dev1+g4261759.d20241109"
+version = "0.2.13"
 source = { editable = "../geometry" }
 dependencies = [
     { name = "numpy" },
@@ -338,7 +338,7 @@ dev = [
 
 [[package]]
 name = "pfcschemas"
-version = "0.1.3.dev0+g23ce7c2.d20241117"
+version = "0.1.3"
 source = { editable = "../Schemas" }
 dependencies = [
     { name = "numpy" },
