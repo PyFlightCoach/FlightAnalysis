@@ -3,8 +3,8 @@ from functools import partial
 from typing import Callable
 
 from schemas import ManInfo, Figure, PE, Option, Sequence
+from schemas.positioning import MBTags
 
-import numpy as np
 import pandas as pd
 from flightdata import State
 
@@ -21,21 +21,6 @@ from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn
 from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.criteria import Combination
 
-
-class MBTags:
-    CENTRE = 0
-
-
-def centred(elb):
-    setattr(elb, "centred", True)
-    return elb
-
-
-c45 = np.cos(np.radians(45))
-
-
-def r(turns):
-    return (2 * np.pi * np.array(turns)).tolist()
 
 
 @dataclass

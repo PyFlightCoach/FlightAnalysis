@@ -1,5 +1,6 @@
 from flightanalysis.definition.mandef import ManDef
 
+
 class ManOption:
     def __init__(self, options: list[ManDef], active=0) -> None:
         assert all(o.uid==options[0].uid for o in options), 'all options must have the same short name'
