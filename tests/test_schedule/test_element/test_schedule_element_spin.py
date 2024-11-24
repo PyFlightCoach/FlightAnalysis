@@ -1,10 +1,8 @@
-from flightanalysis.elements import Spin
+from flightanalysis.elements import Spin, Snap
 from geometry import Transformation, Euler, P0, PX, PY, PZ, Point, Quaternion
 import numpy as np
 from flightdata import State
 from pytest import fixture, approx
-from plotting import plotsec
-import plotly.express as px
 
 @fixture
 def el():
@@ -18,10 +16,7 @@ def tp(el: Spin):
 
 
 
-def test_create_template(el: Spin, tp: State):
-    plotsec(tp, nmodels=5, scale=1).show()
-    
-    px.line(tp.rvel).show()
+def test_create_template(el: Spin, tp: State):    
     np.testing.assert_array_almost_equal(
         tp[-1].att.transform_point(PY()).data,
         tp[0].att.transform_point(PY()).data

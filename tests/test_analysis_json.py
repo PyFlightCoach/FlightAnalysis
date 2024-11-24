@@ -1,4 +1,3 @@
-from flightanalysis import ScheduleAnalysis, ManDef
 from schemas import AJson
 from schemas import MA
 from pytest import fixture
