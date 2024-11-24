@@ -27,7 +27,3 @@ dataflash = ["flightdata[dataflash]"]
 
 [dependency-groups]
 dev = ["pytest>=8.3.3"]
-
-[tool.uv.sources]
-flightdata = { path = "../FlightData", editable = true }
-pfcschemas = { path = "../Schemas", editable = true }
