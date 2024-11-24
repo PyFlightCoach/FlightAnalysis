@@ -1,13 +1,10 @@
 from flightanalysis.scoring.box import RectangularBox, TriangularBox
-
 from pytest import approx
 import geometry as g
 import numpy as np
-from flightdata import State
 
-
-rbox = RectangularBox(1000, 1000, 1000, 1000, 0)
-tbox =TriangularBox(np.radians(60), np.radians(60), 170, 150, 0)
+rbox = RectangularBox(1000, 1000, 1000, 1000, 0, {})
+tbox =TriangularBox(np.radians(60), np.radians(60), 170, 150, 0, {})
 def test_box_top_rectangular():
     assert rbox.top(g.PY(500))[1][0] == 1100
 
