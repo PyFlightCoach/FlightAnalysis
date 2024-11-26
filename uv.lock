@@ -17,23 +17,16 @@ wheels = [
 [[package]]
 name = "ardupilot-log-reader"
 version = "0.3.5"
-source = { editable = "../ArdupilotLogReader" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pymavlink" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "numpy", specifier = ">=2.1.3" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pymavlink", specifier = ">=2.4.42" },
+sdist = { url = "https://files.pythonhosted.org/packages/d4/81/f2f4b0d24cfee5b9bda0aa454cb6aaacc92f5cba2afc281be6fc9c466b4c/ardupilot_log_reader-0.3.5.tar.gz", hash = "sha256:8523a963e3c89254b6c7a72b5adedfe152ed1aec256e9fc2c1bbd7dd5c3033a9", size = 76674282 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/00/1f/1f49ca2e43e1e9abce1ff42d22409ccff3321c9dd4cd378d335b945966c3/ardupilot_log_reader-0.3.5-py3-none-any.whl", hash = "sha256:8f4aaae17a81fd6296ff883bc1d924b16ab4aa3783cc68131c10c222f6a87d91", size = 3756 },
 ]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.3.3" }]
-lint = [{ name = "ruff", specifier = ">=0.7.3" }]
 
 [[package]]
 name = "colorama"
@@ -83,14 +76,14 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastdtw", specifier = ">=0.3.4" },
-    { name = "flightdata", editable = "../FlightData" },
-    { name = "flightdata", extras = ["dataflash"], marker = "extra == 'dataflash'", editable = "../FlightData" },
+    { name = "flightdata", specifier = ">=0.2.25" },
+    { name = "flightdata", extras = ["dataflash"], marker = "extra == 'dataflash'" },
     { name = "joblib", specifier = ">=1.4.2" },
     { name = "json-stream", specifier = ">=2.3.2" },
     { name = "loguru", specifier = ">=0.7.2" },
     { name = "numpy", specifier = ">=2.1.3" },
     { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pfcschemas", editable = "../Schemas" },
+    { name = "pfcschemas", specifier = ">=0.1.4" },
     { name = "scipy", specifier = ">=1.14.1" },
     { name = "simplejson", specifier = ">=3.19.3" },
 ]
@@ -100,29 +93,22 @@ dev = [{ name = "pytest", specifier = ">=8.3.3" }]
 
 [[package]]
 name = "flightdata"
-version = "0.2.24"
-source = { editable = "../FlightData" }
+version = "0.2.25"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pfc-geometry" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f5/5b/dd6b34a5b4c50eb541d393ea90f3ead9a58a10f0df4976f03d84e7b9390e/flightdata-0.2.25.tar.gz", hash = "sha256:dd0fb47383d3e9ade940b8b25683b38b65082c869f500bececdabf3b8cfcab06", size = 71868855 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b1/34/6f572e5a10a4a08c1243e3598fc895b07cb57cf1984b5d89982a70aa4ca2/flightdata-0.2.25-py3-none-any.whl", hash = "sha256:3d59bfd579d4f7e7d8b65877c2a7ef2175df28b4acd9d58a120b3c8fa156ce2a", size = 40005 },
 ]
 
 [package.optional-dependencies]
 dataflash = [
     { name = "ardupilot-log-reader" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "ardupilot-log-reader", marker = "extra == 'dataflash'", editable = "../ArdupilotLogReader" },
-    { name = "numpy", specifier = ">=2.1.3" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pfc-geometry", editable = "../geometry" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.3.3" }]
 
 [[package]]
 name = "future"
@@ -318,44 +304,29 @@ wheels = [
 [[package]]
 name = "pfc-geometry"
 version = "0.2.13"
-source = { editable = "../geometry" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "numpy", specifier = ">=2.1.3" },
-    { name = "pandas", specifier = ">=2.2.3" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "numpy-quaternion", specifier = ">=2023.0.3" },
-    { name = "pytest", specifier = ">=8.3.3" },
+sdist = { url = "https://files.pythonhosted.org/packages/32/fb/496a3e54f846b296d3e52a7b7249e21469ac00209688687378c1ce55e35b/pfc_geometry-0.2.13.tar.gz", hash = "sha256:86fa4966d5e95f28dde75c7f39594ca14e4f3146d53bd9a8ccfbc0db3f5e424d", size = 28602 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/2b/38166979e43c98b7b72c7c16d86e6994087a0e924a8f11f772aa2d1f09e6/pfc_geometry-0.2.13-py3-none-any.whl", hash = "sha256:29747fa647b4d72b67bf5d0a90fb0eac2bc973013da329518df1a554a293c2ea", size = 19823 },
 ]
 
 [[package]]
 name = "pfcschemas"
-version = "0.1.3"
-source = { editable = "../Schemas" }
+version = "0.1.4"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy" },
     { name = "pandas" },
     { name = "pydantic" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "numpy", specifier = ">=2.1.3" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pydantic", specifier = ">=2.9.2" },
+sdist = { url = "https://files.pythonhosted.org/packages/13/68/8c5fa5ee4fc7ea423d116a74c759774e1fe6d29bf305dcc8e5ecdb2922cb/pfcschemas-0.1.4.tar.gz", hash = "sha256:549e9dd01c9ee3b59adc1feef7ca1163b3461920a9e1c9bafa11daf9fd1064f0", size = 3098799 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/95/8a/7072dc34ed7e0397de584e8c453fc2c3c01571b71b37948d95af52445571/pfcschemas-0.1.4-py3-none-any.whl", hash = "sha256:da62cee733ddbf48f0c16c93863064b5ee46595267988c7303fe41f6755abad2", size = 9881 },
 ]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.3.3" }]
-lint = [{ name = "ruff", specifier = ">=0.7.3" }]
 
 [[package]]
 name = "pluggy"
