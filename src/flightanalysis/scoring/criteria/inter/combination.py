@@ -3,7 +3,23 @@ import numpy as np
 import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass, field
-from flightdata.base import to_list
+from flightdata.base import to_list   
+import re
+
+
+_rollstr_re = re.compile(r"((\d+)([Xx*/])(\d+)|(\d+))")
+def parse_roll_string(data: str):
+    res = _rollstr_re.search(data)
+
+    if res is None:
+        raise ValueError(f"Cannot parse roll string {data}")
+    match res.group(3):
+        case "/":
+            return [float(res.group(2))/float(res.group(4))]
+        case "X" | "x" | "*":
+            return [1/int(res.group(4)) for _ in range(int(res.group(2)))]
+        case _:
+            return [int(res.group(0))]
 
 
 @dataclass
@@ -50,11 +66,7 @@ class Combination(Criteria):
     def rollcombo(rollstring, reversable=True) -> Combination:
         """Convenience constructor to allow Combinations to be built from strings such as 2X4 or 
         1/2"""
-        if rollstring[1] == "/":
-            rolls = [float(rollstring[0])/float(rollstring[2])]
-        elif rollstring[1] in ["X", "x", "*"]:
-            rolls = [1/int(rollstring[2]) for _ in range(int(rollstring[0]))]        
-        return Combination.rolllist([2 * np.pi * r for r in rolls], reversable)
+        return Combination.rolllist([2 * np.pi * r for r in parse_roll_string(rollstring)], reversable)
     
     def append_roll_sum(self, inplace=False) -> Combination:
         """Add a roll sum to the end of the desired list"""

@@ -113,7 +113,7 @@ class SchedDef(Collection):
         distances = [170, 150, 170, 150]
 
         for wind, distance in zip(winds, distances):
-            w = "A" if wind == 1 else "B"
+            w = "A" if wind == Heading.RTOL else "B"
             fname = f"{folder}/{sname}_template_{distance}_{w}.json"
             print(fname)
             self.create_fcj(sname, fname, wind, distance / 170, kind)

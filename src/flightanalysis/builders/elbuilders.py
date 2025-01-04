@@ -1,10 +1,6 @@
-from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm, ManParms
+from flightanalysis.definition.eldef import ElDef, ManParm, ManParms
 from flightanalysis.elements import Line, Loop, StallTurn, Snap, Spin
-from flightanalysis.definition.collectors import Collectors
-from flightanalysis.definition import ItemOpp, Opp
-from numbers import Number
-import numpy as np
-
+            
 
 def line(name: str, speed, length, Inter):
     return ElDef.build(

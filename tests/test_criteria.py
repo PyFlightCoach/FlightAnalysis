@@ -3,6 +3,9 @@ from flightanalysis.scoring.criteria import Single, Exponential, Criteria, Combi
 from numpy.testing import assert_array_almost_equal
 import numpy as np
 import geometry as g
+from flightanalysis.scoring.criteria.inter.combination import parse_roll_string
+from pytest import raises
+
 
 @fixture
 def single():
@@ -191,3 +194,14 @@ def test_continuousvalue_mistakes():
 @fixture
 def ndbound():
     return Bounded(Exponential(20,1), -np.radians(15), np.radians(15))
+
+
+
+def test_parse_roll_string():
+    assert parse_roll_string("2X4") == [0.25, 0.25]
+    assert parse_roll_string("1/2") == [0.5]
+    assert parse_roll_string("2x2") == [0.5, 0.5]
+    assert parse_roll_string("1") == [1]
+
+    with raises(ValueError):
+        parse_roll_string("sdv")
