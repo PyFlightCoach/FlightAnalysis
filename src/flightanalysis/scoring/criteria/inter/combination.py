@@ -19,7 +19,7 @@ def parse_roll_string(data: str):
         case "X" | "x" | "*":
             return [1/int(res.group(4)) for _ in range(int(res.group(2)))]
         case _:
-            return [int(res.group(0))]
+            return [float(data)]
 
 
 @dataclass
