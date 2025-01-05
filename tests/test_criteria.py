@@ -202,6 +202,8 @@ def test_parse_roll_string():
     assert parse_roll_string("1/2") == [0.5]
     assert parse_roll_string("2x2") == [0.5, 0.5]
     assert parse_roll_string("1") == [1]
+    assert parse_roll_string("1.5") == [1.5]
+
 
     with raises(ValueError):
         parse_roll_string("sdv")
