@@ -34,7 +34,7 @@ class ItemOpp(Opp):
         )
 
     def __abs__(self):
-        return FunOpp(self.name, self, "abs")
+        return FunOpp(self.name, "abs", self)
 
     def list_parms(self):
         if isinstance(self.a, Opp):
