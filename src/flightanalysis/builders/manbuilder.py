@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from functools import partial
-from typing import Callable
+from typing import Callable, Tuple
 
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from schemas.positioning import MBTags
@@ -33,7 +33,7 @@ class ManBuilder:
     Inter: object
     box: Box
 
-    def create_edef(self, pe: PE) -> ElDef:
+    def create_eb(self, pe: PE) -> ElDef:
         el = getattr(self, pe.kind)(*pe.args, **pe.kwargs)
         if pe.centred:
             el.centred = True
@@ -45,7 +45,7 @@ class ManBuilder:
         else:
             return self.create(
                 fig.info,
-                [self.create_edef(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
+                [self.create_eb(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
                 **fig.ndmps,
             )
 
@@ -59,7 +59,7 @@ class ManBuilder:
 
     def el(self, kind, *args, force_name=None, **kwargs):
         """Setup kwargs to pull defaults from mpmaps
-        returns a function that takes a ManDef, creats the eldefs and appends them to it"""
+        returns a function that creats a new eldef and updates the mps"""
 
         all_kwargs = self.mpmaps[kind]["kwargs"].copy()  # take the defaults
 
@@ -68,17 +68,17 @@ class ManBuilder:
 
         all_kwargs.update(dict(zip(self.mpmaps[kind]["args"], args)))  # take the *args
 
-        def append_el(md: ManDef, **kwargs) -> ElDefs:
+        def append_el(eds: ElDefs, mps: ManParms, **kwargs) -> Tuple[ElDefs, ManParms]:
             full_kwargs = {}
             for k, a in kwargs.items():
-                full_kwargs[k] = ManParm.s_parse(a, md.mps)
+                full_kwargs[k] = ManParm.s_parse(a, mps)
 
-            eds, mps = self.mpmaps[kind]["func"](
-                force_name if force_name else md.eds.get_new_name(),
+            neds, nmps = self.mpmaps[kind]["func"](
+                force_name if force_name else eds.get_new_name(),
                 **dict(**full_kwargs, Inter=self.Inter),
             )
-            neds = md.eds.add(eds)
-            md.mps.add(mps)
+            #neds = eds.add(eds)
+            mps.add(nmps)
             return neds
 
         return partial(append_el, **all_kwargs)
@@ -109,7 +109,7 @@ class ManBuilder:
             ElDefs(),
             self.box.__class__(**dict(self.box.__dict__, relax_back=relax_back)),
         )
-        self.line(force_name="entry_line", length=30)(md)
+        md.eds.add(self.line(force_name="entry_line", length=30)(md.eds, md.mps))
 
         for i, em in enumerate(elmakers, 1):
             if isinstance(em, int):
@@ -118,7 +118,7 @@ class ManBuilder:
             else:
                 c1 = len(md.eds.data)
                 try:
-                    new_eds = em(md)
+                    new_eds = md.eds.add(em(md.eds, md.mps))
                 except Exception as ex:
                     raise Exception(
                         f"Error running elmaker {i} of {md.info.name}"

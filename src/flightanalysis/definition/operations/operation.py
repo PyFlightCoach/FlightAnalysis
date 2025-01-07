@@ -43,10 +43,10 @@ class Opp:
 
 
     def __abs__(self) -> FunOpp:
-        return FunOpp(self.name, self, "abs")
+        return FunOpp(self.name, "abs", self)
 
     def sign(self) -> FunOpp:
-        return FunOpp(self.name, self, "sign")
+        return FunOpp(self.name, "abs", self)
 
     def __add__(self, other) -> MathOpp:
         return MathOpp(self.name, self, other, "+")
@@ -114,6 +114,6 @@ class Opp:
 
 
 from .mathopp import MathOpp  # noqa: E402
-from .funopp import FunOpp  # noqa: E402
+from .funopp import FunOpp, maxopp, minopp  # noqa: E402
 from .itemopp import ItemOpp  # noqa: E402
 from .sumopp import SumOpp  # noqa: E402

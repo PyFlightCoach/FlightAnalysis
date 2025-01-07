@@ -1,1 +1,1 @@
-from .operation import FunOpp, ItemOpp, MathOpp, Opp, SumOpp
+from .operation import FunOpp, ItemOpp, MathOpp, Opp, SumOpp, maxopp, minopp

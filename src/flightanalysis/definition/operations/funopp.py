@@ -3,33 +3,42 @@ from flightdata import Collection
 from dataclasses import dataclass
 from .operation import Opp
 from numbers import Number
-from typing import Callable
+from typing import Callable, Literal
 
+
+funs = ["abs", "sign", "max", "min"]
 
 @dataclass
 class FunOpp(Opp):
     """This class facilitates various functions that operate on Values and their serialisation"""
-    funs = ["abs", "sign"]
+    opp: Literal["abs", "sign", "max", "min"]
     a: Opp | Number
-    opp: str
-
+    b: Opp | Number | None = None
+    
     def __call__(self, mps, **kwargs):
-        return {
-            'abs': abs(self.get_vf(self.a)(mps, **kwargs)),
-            'sign': 1 if self.get_vf(self.a)(mps, **kwargs)>0 else -1
-        }[self.opp]
+        match self.opp:
+            case 'abs':
+                return abs(self.get_vf(self.a)(mps, **kwargs))
+            case 'sign':
+                return 1 if self.get_vf(self.a)(mps, **kwargs)>0 else -1
+            case 'max':
+                return max(self.get_vf(self.a)(mps, **kwargs), self.get_vf(self.b)(mps, **kwargs))
+            case 'min':
+                return min(self.get_vf(self.a)(mps, **kwargs), self.get_vf(self.b)(mps, **kwargs))
     
     def __str__(self):
-        return f"{self.opp}({str(self.a)})"
+        return f"{self.opp}({str(self.a)}{',' + str(self.b) if self.b else ''})"
 
     @staticmethod 
     def parse(inp: str, coll: Collection | Callable, name=None):
-        for fun in FunOpp.funs:
+        for fun in funs:
             if inp.startswith(fun):
+                args = inp[len(fun)+1:-1].split(',')
                 return FunOpp(
                     name,
-                    Opp.parse(inp[len(fun)+1:-1], coll, name), 
-                    fun
+                    fun,
+                    Opp.parse(args[0], coll, name),
+                    Opp.parse(args[1], coll, name) if len(args)>1 else None,
                 )
         raise ValueError(f"cannot read a FunOpp from the outside of {inp}")
 
@@ -38,3 +47,9 @@ class FunOpp(Opp):
             return self.a.list_parms()
         else:
             return []
+
+def maxopp(name: str, a: Opp | Number, b: Opp | Number) -> FunOpp:
+    return FunOpp(name, "max", a, b)
+
+def minopp(name: str, a: Opp | Number, b: Opp | Number) -> FunOpp:
+    return FunOpp(name, "min", a, b)
