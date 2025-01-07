@@ -29,11 +29,11 @@ class Manoeuvre:
         )
 
     @staticmethod
-    def from_all_elements(uid: str, els: List[Element]) -> Manoeuvre:
+    def from_all_elements(uid: str, els: list[Element]) -> Manoeuvre:
         hasexit = -1 if els[-1].uid.startswith("exit_") else None
 
         return Manoeuvre(
-            els[0:hasexit],
+            Elements(els[0:hasexit]),
             els[-1] if hasexit else None,
             uid,
         )
