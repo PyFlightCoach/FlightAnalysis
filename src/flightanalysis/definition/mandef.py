@@ -66,8 +66,7 @@ class ManDef:
             and data["options"] is not None
             and len(data["options"]) > 0
         ):
-            opts = data.pop("options")
-            return ManOption.from_dict([data] + opts)
+            return ManOption.from_dict(data["options"])
         else:
             info = ManInfo.from_dict(data["info"])
             mps = ManParms.from_dict(data["mps"])
@@ -189,7 +188,7 @@ class ManDef:
         new_eds = []
 
         man = self.create()
-        tp = man.create_template(self.guess_itrans(170, Heading.LTOR))
+        tp = man.create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
 
         for i, ed in enumerate(self.eds):
             new_eds.append(
