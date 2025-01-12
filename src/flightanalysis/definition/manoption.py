@@ -21,7 +21,7 @@ class ManOption:
     def from_dict(data:list[dict]):
         return ManOption([ManDef.from_dict(d) for d in data])
     
-    def __getitem__(self, i):
+    def __getitem__(self, i) -> ManDef:
         return self.options[i]
     
     @property
@@ -36,6 +36,10 @@ class ManOption:
     def eds(self):
         return self[self.active].eds
     
+    @property
+    def box(self):
+        return self[self.active].box
+
     def __iter__(self):
         for mdef in self.options:
             yield mdef
