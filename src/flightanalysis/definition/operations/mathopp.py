@@ -19,10 +19,10 @@ class MathOpp(Opp):
     b: Opp | Number
     opp: str
 
-    def __call__(self, mps, **kwargs):
+    def __call__(self, *args, **kwargs):
         return oplu[self.opp](
-            self.get_vf(self.a)(mps, **kwargs), 
-            self.get_vf(self.b)(mps, **kwargs)
+            self.get_vf(self.a)(*args, **kwargs), 
+            self.get_vf(self.b)(*args, **kwargs)
         )
 
     def __str__(self):

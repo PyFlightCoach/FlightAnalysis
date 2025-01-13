@@ -40,7 +40,7 @@ class ManParm(Opp):
 
     """
 
-    criteria: Criteria
+    criteria: Comparison | Combination
     defaul: Number = None
     unit: str = "m"
     collectors: Collectors = field(default_factory=Collectors)
@@ -155,6 +155,9 @@ class ManParm(Opp):
             return self.criteria[self.defaul]
         else:
             raise AttributeError("This type of ManParm has no value")
+
+    def __call__(self, *args, **kwargs):    
+        return self.value
 
     @property
     def kind(self):
