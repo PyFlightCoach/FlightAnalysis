@@ -12,7 +12,7 @@ class Collector(Opp):
 
     def __call__(self, els):
         """return the value"""        
-        return getattr(els.data[self.elname], self.pname)#(tp[0].transform, fl))[0]
+        return getattr(els[self.elname], self.pname)#(tp[0].transform, fl))[0]
     
     def visibility(self, els, state):
         st = els.data[self.elname].get_data(state)

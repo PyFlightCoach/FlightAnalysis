@@ -1,7 +1,7 @@
 from __future__ import annotations
 from flightdata import Collection
 from dataclasses import dataclass
-from .operation import Opp
+from .operation import Opp, bracksplit
 from numbers import Number
 from itertools import chain
 from typing import Callable
@@ -23,7 +23,7 @@ class SumOpp(Opp):
         if inp.startswith("sum"):
             return SumOpp(
                 name,
-                [Opp.parse(val, coll, name) for val in inp[5:-2].split(',')]
+                [Opp.parse(val, coll, name) for val in bracksplit(inp[5:-2])]
             )
         raise ValueError(f"cannot read a SumOpp from the outside of {inp}")
     
