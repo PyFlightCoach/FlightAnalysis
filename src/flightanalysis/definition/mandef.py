@@ -15,9 +15,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from loguru import logger
+
 import geometry as g
 from flightdata import State
-from loguru import logger
 from schemas.maninfo import ManInfo, Position
 from schemas.positioning import Heading
 

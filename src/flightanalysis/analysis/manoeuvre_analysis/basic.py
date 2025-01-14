@@ -1,16 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from json import load
 from typing import Annotated
 
-import geometry as g
 import numpy as np
-import pandas as pd
-from flightdata import State
 
+import geometry as g
+from flightdata import State
+from schemas.positioning import Direction, Heading
 from flightanalysis.definition import ManDef, ManOption
-from schemas.positioning import Heading, Direction
 
 from .analysis import Analysis
 
@@ -27,6 +25,15 @@ class Basic(Analysis):
     @property
     def name(self):
         return self.mdef.uid
+
+    def __str__(self):
+        res = f"{self.__class__.__name__}({self.id}, {self.mdef.info.short_name})"
+        if hasattr(self, "scores"):
+            res = res[:-1] + f", {', '.join([f'{k}={v:.2f}' for k, v in self.scores.score_summary(3, False).items()])})"
+        return res
+    
+    def __repr__(self):
+        return str(self)
 
     def run_all(self, optimise_aligment=True, force=False) -> Scored:
         """Run the analysis to the final stage"""
@@ -85,7 +92,7 @@ class Basic(Analysis):
             if (data["schedule_direction"] and data['schedule_direction'] != "Infer")
             else None,
             flown=State.from_dict(data["flown"]),
-            mdef=ManDef.from_dict(data["mdef"]) if isinstance(data["mdef"], dict) else data["mdef"],
+            mdef=ManDef.from_dict(data["mdef"]),
         )
 
     def to_dict(self, basic:bool=False) -> dict:
