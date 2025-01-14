@@ -3,7 +3,7 @@ from typing import Tuple
 
 import geometry as g
 from flightdata import Collection, State
-from schemas import ManInfo, Direction, Heading, DirectionDefinition
+from schemas import ManInfo, Direction, Heading, DirectionDefinition, SDefFile
 
 from flightanalysis.definition.mandef import ManDef
 from flightanalysis.definition.manoption import ManOption
@@ -17,6 +17,10 @@ class SchedDef(Collection):
     def __init__(self, data: dict[str, VType] | list[VType] = None):
         super().__init__(data, check_types=False)
         assert all([v.__class__.__name__ in ["ManOption", "ManDef"] for v in self])
+    
+    @staticmethod
+    def parse(data: SDefFile):
+        return SchedDef([ManDef.from_dict(v) for v in data.mdefs.values()])
 
     def wind_def_manoeuvre(self) -> DirectionDefinition:
         for i, man in enumerate(self):

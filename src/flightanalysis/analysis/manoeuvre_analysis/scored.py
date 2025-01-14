@@ -20,7 +20,6 @@ class Scored(Complete):
             self.corrected_template,
         )
 
-
     @staticmethod
     def from_dict(ajman: dict) -> Scored:
         analysis = Complete.from_dict(ajman)
@@ -31,13 +30,13 @@ class Scored(Complete):
         else:
             return analysis
 
-    def to_dict(self, basic: bool=False) -> dict:
-        _basic = super().to_dict(basic)  # , sinfo, dict(**history, **self.fcj_results()))
+    def to_dict(self, basic: bool = False) -> dict:
+        _basic = super().to_dict(
+            basic
+        )  # , sinfo, dict(**history, **self.fcj_results()))
         if basic:
             return _basic
         return dict(**_basic, scores=self.scores.to_dict())
 
     def fcj_results(self):
         return dict(**super().fcj_results(), results=self.scores.fcj_results())
-
-    
