@@ -78,11 +78,15 @@ class Box:
 
     @classmethod
     def from_dict(Cls, data):
-        return {C.__name__: C for C in Cls.__subclasses__()}[data.pop("Kind")](
-            bound_dgs={k: BoxDG.from_dict(v) for k, v in data.pop("bound_dgs").items()},
-            centre_dg=BoxDG.from_dict(data.pop("centre_dg")) if "centre_dg" in data else None,
-            relax_back=data.pop("relax_back"),
-            **data,
+        return {C.__name__: C for C in Cls.__subclasses__()}[data["Kind"]](
+            data["width"],
+            data["height"],
+            data["depth"],
+            data["distance"],
+            data["floor"],
+            {k: BoxDG.from_dict(v) for k, v in data["bound_dgs"].items()},
+            BoxDG.from_dict(data["centre_dg"]) if "centre_dg" in data else None,
+            data["relax_back"],
         )
 
     def __getattr__(self, name: str):
@@ -158,7 +162,7 @@ class Box:
                     sample,
                     ovs,
                     *self.centre_dg.criteria(sample[ovs], True),
-                    self.centre_dg,
+                    self.centre_dg.criteria,
                 )
             )
 
