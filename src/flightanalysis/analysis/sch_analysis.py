@@ -2,10 +2,9 @@ from __future__ import annotations
 from flightdata import State
 from typing import Self, Union
 from json import load, dump
-from flightanalysis.definition.scheddef import SchedDef
 from flightdata import Collection, NumpyEncoder
-from flightanalysis import __version__
-from schemas import AJson, MDef
+from flightanalysis import ManDef, SchedDef
+from schemas import AJson
 from . import manoeuvre_analysis as ma
 from loguru import logger
 from joblib import Parallel, delayed
@@ -33,56 +32,17 @@ class ScheduleAnalysis(Collection):
     def parse_ajson(ajson: AJson, sdef: SchedDef = None) -> ScheduleAnalysis:
         if not all([ajson.mdef for ajson in ajson.mans]) and sdef is None:
             raise ValueError("All manoeuvres must have a definition")
-        return ScheduleAnalysis(
-            [
-                ma.from_dict(
-                    man.model_dump()
-                    | (
-                        dict(
-                            mdef=sdef[i]
-                        )
-                        if sdef
-                        else {}
-                    )
-                )
-                for i, man in enumerate(ajson.mans)
-            ]
-        )
+        analyses = []
+        if sdef is None:
+            sdef = [ManDef.from_dict(man.mdef) for man in ajson.mans]
+        for man, mdef in zip(ajson.mans, sdef):
+            try:
+                analyses.append(ma.from_dict(man.model_dump() | dict(mdef=mdef.to_dict())))
+            except Exception as e:
+                logger.error(f"Failed to parse manoeuvre {mdef.info.short_name}: {repr(e)}")
+                raise e
+        return ScheduleAnalysis(analyses)
 
-    def append_scores_to_fcj(self, file: Union[str, dict], ofile: str = None) -> dict:
-        data = file if isinstance(file, dict) else load(open(file, "r"))
-
-        new_results = dict(
-            fa_version=__version__,
-            manresults=[None]
-            + [
-                man.fcj_results() if hasattr(man, "fcj_results") else None
-                for man in self
-            ],
-        )
-
-        if "fcs_scores" not in data:
-            data["fcs_scores"] = []
-
-        for res in data["fcs_scores"]:
-            if res["fa_version"] == new_results["fa_version"]:
-                res["manresults"] = new_results["manresults"]
-                break
-        else:
-            data["fcs_scores"].append(new_results)
-
-        if "jhash" in data:
-            del data["jhash"]
-
-        if ofile:
-            dump(
-                data,
-                open(file if ofile == "same" else ofile, "w"),
-                cls=NumpyEncoder,
-                indent=2,
-            )
-
-        return data
 
     def run_all(self, optimise: bool = False) -> Self:
         def parse_analyse_serialise(pad):
