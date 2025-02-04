@@ -191,7 +191,7 @@ class ManParms(Collection):
             [
                 mp.get_downgrades(manoeuvre.all_elements(), state, box)
                 for mp in self
-                if not isinstance(mp.criteria, Combination)
+                if isinstance(mp.criteria, Comparison) and len(mp.collectors)
             ],
         )
 
@@ -226,7 +226,7 @@ class ManParms(Collection):
         return ManParms([mp for mp in self if len(mp.collectors) > 0])
 
     def parse_rolls(
-        self, rolls: Union[Number, str, Opp, list], name: str, reversible: bool = True
+        self, rolls: Number | str | Opp | list[Number] | list[Opp], name: str, reversible: bool = True
     ):
         if isinstance(rolls, Opp) or (
             isinstance(rolls, list) and all([isinstance(r, Opp) for r in rolls])

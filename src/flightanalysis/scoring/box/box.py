@@ -168,7 +168,7 @@ class Box:
 
         for k, dg in self.bound_dgs.items():
             if self.relax_back and k == "back":
-                if (tp.pos.y.max() - tp.pos.y.min()) > 20:
+                if abs(tp.pos.y.max() - tp.pos.y.min()) > 20:
                     continue
 
             m: Measurement = dg.measure(fl, tp, self)

@@ -415,7 +415,7 @@ class ManoeuvreResults:
     def summary(self):
         return {k: v.total for k, v in self.__dict__.items() if v is not None}
 
-    def score_summary(self, difficulty, truncate):
+    def score_summary(self, difficulty=3, truncate=False):
         intra = self.intra.score(difficulty, "results" if truncate else None)
         inter = self.inter.score(difficulty, "result" if truncate else None)
         positioning = self.positioning.score(difficulty, "result" if truncate else None)
