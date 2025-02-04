@@ -98,6 +98,15 @@ class ElDef:
         except Exception:
             return -1
 
+    def list_parms(self):
+        parms = []
+        for prop in self.props.values():
+            if isinstance(prop, Opp):
+                for p in prop.list_parms():
+                    if isinstance(p, ManParm):
+                        parms.append(p.name)
+        return list(set(parms))
+
 
 class ElDefs(Collection):
     """This class wraps a dict of ElDefs, which would generally be used sequentially to build a manoeuvre.
@@ -174,3 +183,6 @@ class ElDefs(Collection):
                 return i, (mid_point - cumlength[i - 1]) / lengths[i]
         else:
             raise Exception("should not happen")
+
+    def list_props(self):
+        return list(set([p for ed in self.data.values() for p in ed.list_parms()]))

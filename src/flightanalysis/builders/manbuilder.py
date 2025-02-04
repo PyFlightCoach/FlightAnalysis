@@ -46,6 +46,7 @@ class ManBuilder:
             return self.create(
                 fig.info,
                 [self.create_eb(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
+                fig.relax_back,
                 **fig.ndmps,
             )
 
@@ -136,8 +137,9 @@ class ManBuilder:
                             md.info.centre_points.append(c1 + ceid + int(fac))
                         else:
                             md.info.centred_els.append((ceid + c1, fac))
-
-        md.mps = md.mps.remove_unused()
+        collmps = md.mps.remove_unused()
+        propmps = md.mps.subset(md.eds.list_props())
+        md.mps = ManParms.merge([collmps, propmps])
         return md.update_dgs(self.dg_applicator)
 
 
