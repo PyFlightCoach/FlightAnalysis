@@ -1,10 +1,8 @@
 from __future__ import annotations
-from random import sample
-
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from flightdata import Collection, State
+from flightdata import Collection
 from flightdata.base import to_list
 from flightanalysis.scoring.measurement import Measurement
 from flightanalysis.scoring.criteria import Criteria

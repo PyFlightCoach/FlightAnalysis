@@ -80,7 +80,7 @@ class Manoeuvre:
             )
             istate = templates[-1][-1]
 
-        return State.stack(templates).label(manoeuvre=self.uid)
+        return State.stack(templates, 1).label(manoeuvre=self.uid)
 
     def get_data(self, st: State) -> State:
         return st.get_manoeuvre(self.uid)
