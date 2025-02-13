@@ -125,23 +125,37 @@ class Result:
         import plotly.graph_objects as go
 
         xvs = np.arange(len(self.measurement)) / 25 if xvals is None else xvals
-        
+        issubset = not len(self.sample) == len(self.measurement)
         return [
-            go.Scatter(**(dict(
-                x=xvs,
-                y=self.plot_f(self.measurement.value),
-                name="Measurement",
-                **kwargs,
-                line=dict(color="blue", width=1, dash="dash")
-            ) | kwargs)),
-            *([go.Scatter(**(dict(
-                x=xvs[self.sample_keys],
-                y=self.plot_f(self.measurement.value)[self.sample_keys],
-                name="Selected",
-                line=dict(color="blue", width=1, dash="solid"),
-            ) | kwargs))] if not len(self.sample)==len(self.measurement) else []
-            )
-            
+            go.Scatter(
+                **(
+                    dict(
+                        x=xvs,
+                        y=self.plot_f(self.measurement.value),
+                        name="Measurement",
+                        **kwargs,
+                        line=dict(color="blue", width=1, dash="dash" if issubset else "solid"),
+                    )
+                    | kwargs
+                )
+            ),
+            *(
+                [
+                    go.Scatter(
+                        **(
+                            dict(
+                                x=xvs[self.sample_keys],
+                                y=self.plot_f(self.measurement.value)[self.sample_keys],
+                                name="Selected",
+                                line=dict(color="blue", width=1, dash="solid"),
+                            )
+                            | kwargs
+                        )
+                    )
+                ]
+                if issubset
+                else []
+            ),
         ]
 
     def sample_trace(self, xvals=None, **kwargs):
@@ -150,59 +164,81 @@ class Result:
         return [
             *(
                 [
-                    go.Scatter(**(dict(
-                        x=(
-                            np.arange(len(self.measurement)) / 25
-                            if xvals is None
-                            else xvals
-                        ),
-                        y=self.plot_f(self.raw_sample),
-                        name="Visible Sample",
-                        line=dict(width=1, color="black", dash="dash"),
-                    ) | kwargs))
+                    go.Scatter(
+                        **(
+                            dict(
+                                x=(
+                                    np.arange(len(self.measurement)) / 25
+                                    if xvals is None
+                                    else xvals
+                                ),
+                                y=self.plot_f(self.raw_sample),
+                                name="Visible Sample",
+                                line=dict(width=1, color="black", dash="dash"),
+                            )
+                            | kwargs
+                        )
+                    )
                 ]
                 if self.raw_sample is not None
                 else []
             ),
-            go.Scatter(**(dict(
-                x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals)[
-                    self.sample_keys
-                ],
-                y=self.plot_f(self.sample),
-                name="Smooth Sample",
-                line=dict(width=1, color="black"),
-            ) | kwargs))
+            go.Scatter(
+                **(
+                    dict(
+                        x=(
+                            np.arange(len(self.measurement)) / 25
+                            if xvals is None
+                            else xvals
+                        )[self.sample_keys],
+                        y=self.plot_f(self.sample),
+                        name="Smooth Sample",
+                        line=dict(width=1, color="black"),
+                    )
+                    | kwargs
+                )
+            ),
         ]
 
     def downgrade_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
 
-        return go.Scatter(**(dict(
-            x=(
-                np.arange(len(self.measurement)) / 25
-                if xvals is None
-                else xvals
-            )[self.sample_keys[self.keys]],
-            y=self.plot_f(self.sample[self.keys]),
-            text=np.round(self.dgs, 3),
-            hovertext=[self.info(i) for i in range(len(self.keys))],
-            mode="markers+text",
-            name="Downgrades",
-            textposition="bottom right",
-            yaxis="y",
-            marker=dict(size=10, color="black"),
-        )| kwargs))
+        return go.Scatter(
+            **(
+                dict(
+                    x=(
+                        np.arange(len(self.measurement)) / 25
+                        if xvals is None
+                        else xvals
+                    )[self.sample_keys[self.keys]],
+                    y=self.plot_f(self.sample[self.keys]),
+                    text=np.round(self.dgs, 3),
+                    hovertext=[self.info(i) for i in range(len(self.keys))],
+                    mode="markers+text",
+                    name="Downgrades",
+                    textposition="bottom right",
+                    yaxis="y",
+                    marker=dict(size=10, color="black"),
+                )
+                | kwargs
+            )
+        )
 
     def visibility_trace(self, xvals=None, **kwargs):
         import plotly.graph_objects as go
 
-        return go.Scatter(**(dict(
-            x=np.arange(len(self.measurement)) / 25 if xvals is None else xvals,
-            y=self.measurement.visibility,
-            name="Visibility",
-            yaxis="y2",
-            line=dict(width=1, color="black", dash="dot"),
-        ) | kwargs))
+        return go.Scatter(
+            **(
+                dict(
+                    x=np.arange(len(self.measurement)) / 25 if xvals is None else xvals,
+                    y=self.measurement.visibility,
+                    name="Visibility",
+                    yaxis="y2",
+                    line=dict(width=1, color="black", dash="dot"),
+                )
+                | kwargs
+            )
+        )
 
     def traces(self, xvals: np.ndarray = None, **kwargs):
         return [
@@ -247,7 +283,7 @@ class Results(Collection):
         self.name = name
 
     def __repr__(self):
-        return f'Results({self.name}, {self.total:.2f}, ({",".join([f"{res.total:.2f}" for res in self])}))'
+        return f"Results({self.name}, {self.total:.2f}, ({','.join([f'{res.total:.2f}' for res in self])}))"
 
     @property
     def total(self):
@@ -303,11 +339,11 @@ class Results(Collection):
 
             fig.update_layout(
                 **{
-                    f"yaxis{i*2-1}": dict(
-                        title=f'{res.name}, {res.measurement.unit.replace("rad", "deg")}',
+                    f"yaxis{i * 2 - 1}": dict(
+                        title=f"{res.name}, {res.measurement.unit.replace('rad', 'deg')}",
                         rangemode="tozero",
                     ),
-                    f"yaxis{i*2}": dict(
+                    f"yaxis{i * 2}": dict(
                         title="visibility", range=[0, 1], showgrid=False
                     ),
                 },
