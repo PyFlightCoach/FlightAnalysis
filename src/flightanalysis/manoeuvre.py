@@ -1,7 +1,6 @@
 from __future__ import annotations
 from geometry import Transformation, PX
-from typing import List, Union, Tuple, Self
-import numpy as np
+from typing import  Tuple, Self
 from dataclasses import dataclass
 from flightdata.state import State
 from flightanalysis.elements import Elements, Element, Line
@@ -70,20 +69,16 @@ class Manoeuvre:
             if isinstance(initial, Transformation)
             else initial
         )
-        aligned = self.get_data(aligned) if aligned else None
         templates = []
         for i, element in enumerate(self.all_elements()):
             templates.append(
                 element.create_template(
-                    istate, element.get_data(aligned) if aligned else None
+                    istate, aligned.element[element.uid] if aligned else None
                 )
             )
             istate = templates[-1][-1]
 
-        return State.stack(templates, 1).label(manoeuvre=self.uid)
-
-    def get_data(self, st: State) -> State:
-        return st.get_manoeuvre(self.uid)
+        return State.stack(templates, "element", [el.uid for el in self.all_elements()])
 
     def match_intention(self, istate: State, aligned: State) -> Tuple[Self, State]:
         """Create a new manoeuvre with all the elements scaled to match the corresponding
@@ -91,7 +86,6 @@ class Manoeuvre:
 
         elms = Elements()
         templates = [istate]
-        aligned = self.get_data(aligned)
         
         for elm in self.all_elements():
             st = elm.get_data(aligned)
@@ -100,8 +94,8 @@ class Manoeuvre:
             templates.append(elms[-1].create_template(templates[-1][-1], st))
 
         return Manoeuvre.from_all_elements(self.uid, elms), State.stack(
-            templates[1:]
-        ).label(manoeuvre=self.uid)
+            templates[1:], "element", [el.uid for el in elms]
+        )
 
     def el_matched_tp(self, istate: State, aligned: State) -> State:
         aligned = self.get_data(aligned)
@@ -109,7 +103,7 @@ class Manoeuvre:
         for el in self.all_elements():
             st = el.get_data(aligned)
             templates.append(el.create_template(templates[-1][-1], st))
-        return State.stack(templates[1:])
+        return State.stack(templates[1:], "element", [el.uid for el in self.all_elements()])
 
     def copy(self):
         return Manoeuvre.from_all_elements(

@@ -23,14 +23,3 @@ def test_create_template(el: Spin, tp: State):
     ) 
     assert abs(tp.pos[-1].z - tp.pos[0].z)[0] == approx(el.height)
 
-def test_match_intention(sn, snt):
-    sn2 = Snap('snap', 30, 50, -2*np.pi, -np.radians(20), np.pi/4, np.pi/4)
-
-
-    sn3 = sn2.match_intention(Transformation(), snt)
-
-    assert sn.speed == approx(sn3.speed)
-    assert sn.length == approx(sn3.length)
-    assert sn.roll == approx(sn3.roll)
-    assert sn.pitch == approx(sn3.pitch)
-

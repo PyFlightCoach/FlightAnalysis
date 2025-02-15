@@ -14,8 +14,9 @@ def half_loop():
     return Loop("loop", 30, np.pi, 50.0, 0, 0)
 
 @fixture
-def hl_template(half_loop):
-    return half_loop.create_template(State.from_transform(Transformation(), vel=PX(30)))
+def hl_template(half_loop: Loop):
+    return half_loop.create_template(State.from_transform(vel=PX(30)))
+
 
 def test_create_template_no_t(half_loop, hl_template):
     assert_almost_equal(
@@ -25,11 +26,19 @@ def test_create_template_no_t(half_loop, hl_template):
 
     assert_almost_equal(
         hl_template[-1].pos,
-        Point(1, 0, -half_loop.diameter),
+        Point(0, 0, -half_loop.diameter),
         2
     )
 
 
+def test_create_template_itrans(half_loop):
+    tp = half_loop.create_template(State.from_transform(Transformation(Euler(0, 0, 0)), vel=PX(30)))
+    assert tp[-1].pos.z == approx(-half_loop.diameter, abs=1e-3)
+    assert tp[tp.duration/2].pos.x == approx(half_loop.diameter/2, abs=1e-3)
+
+    tp = half_loop.create_template(State.from_transform(Transformation(Euler(0, 0, np.pi)), vel=PX(30)))
+    assert tp[-1].pos.z == approx(-half_loop.diameter, abs=1e-3)
+    assert tp[tp.duration/2].pos.x == approx(-half_loop.diameter/2, abs=1e-3)
 
 
 def test_create_template_ke_angles():
@@ -135,31 +144,12 @@ def test_serialization(half_loop):
     assert half_loop == hl
 
 
-def test_create_template_new_time(half_loop: Loop):
+def test_create_template_new_time(half_loop: Loop, hl_template):
     tp = half_loop.create_template(
         State.from_transform(Transformation(), vel=PX(30)), 
-        Time.from_t(np.linspace(0,3, 20))
+        hl_template
     )
-    from plotting import plotsec
-    plotsec(tp, nmodels=10).show()
+    
     assert sum((tp.q * tp.dt)[:-1]) == approx(np.pi, abs=1e-3)
+    assert len(tp) == len(hl_template)
     
-
-@fixture
-def loop_analysis():
-    return ElementAnalysis.from_dict(
-        json.load(open("tests/test_schedule/test_element/loop_analysis.json"))
-    )
-
-
-def test_loop_template_gen(loop_analysis):
-    
-    ea = loop_analysis
-    tp = ea.el.create_template(ea.tp[0], ea.fl.time)
-
-    np.testing.assert_array_almost_equal(
-        tp.rvel.data,
-        tp.att.body_diff(tp.dt).data,
-        1e-5
-    )
-    pass

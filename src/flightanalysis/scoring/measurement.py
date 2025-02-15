@@ -70,8 +70,6 @@ class Measurement:
 
 
 
-
-
     @staticmethod
     def get_axial_direction(tp: State):
         """Proj is a vector in the axial direction for the template ref_frame (tp[0].transform)*"""

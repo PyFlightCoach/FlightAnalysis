@@ -87,9 +87,6 @@ class Snap(Element):
         )
 
         return State.stack([pb, au, rec]).label(element=self.uid)
-        # .superimpose_rotation(
-        #    istate.att.transform_point(g.PX()), self.roll, reference="world"
-        # )
 
     def describe(self):
         return f"Snap {self.roll}, {self.pitch}"

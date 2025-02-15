@@ -49,7 +49,7 @@ class ManDef:
     @property
     def uid(self):
         return self.info.short_name
-    
+
     def to_dict(self, dgs=True) -> dict:
         return dict(
             info=self.info.to_dict(),
@@ -137,14 +137,13 @@ class ManDef:
             heading == Heading.LTOR or heading == Heading.RTOL
         ):
             if len(self.info.centre_points) > 0:
-                xoffset = (
-                    man.elements[self.info.centre_points[0] - 1]
-                    .get_data(template)
-                    .pos.x[0]
-                )
+                xoffset = template.element[
+                    man.elements[self.info.centre_points[0] - 1].uid
+                ].pos.x[0]
+
             elif len(self.info.centred_els) > 0:
                 ce, fac = self.info.centred_els[0]
-                _x = man.elements[ce - 1].get_data(template).pos.x
+                _x = template.element[man.elements[ce - 1].uid].pos.x
                 xoffset = _x[int(len(_x) * fac)]
             else:
                 xoffset = (max(template.pos.x) + min(template.pos.x)) / 2
@@ -199,7 +198,7 @@ class ManDef:
                     ed.props,
                     applicator(
                         man.elements[i],
-                        tp.get_element(ed.name),
+                        tp.element[ed.name],
                         self.eds[i - 1].Kind if i > 0 else "",
                         self.eds[i + 1].Kind if i < len(self.eds) - 1 else "",
                     ),

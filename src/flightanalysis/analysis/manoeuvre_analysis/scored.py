@@ -4,7 +4,7 @@ from flightanalysis.scoring import ManoeuvreResults
 from .complete import Complete
 
 
-@dataclass
+@dataclass(repr=False)
 class Scored(Complete):
     scores: ManoeuvreResults
 
