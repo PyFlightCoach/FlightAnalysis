@@ -3,7 +3,7 @@ from __future__ import annotations
 import traceback
 from dataclasses import dataclass
 
-from flightdata import State
+from flightdata import State, align
 from loguru import logger
 
 from flightanalysis.definition import ManDef
@@ -14,7 +14,7 @@ from ..el_analysis import ElementAnalysis
 from .basic import Basic
 
 
-@dataclass
+@dataclass(repr=False)
 class Alignment(Basic):
     manoeuvre: Manoeuvre | None
     template: State | None
@@ -86,8 +86,8 @@ class Alignment(Basic):
             return self
 
     def _run(self, mirror=False, radius=10) -> Alignment:
-        dist, aligned = State.align(self.flown, self.template, radius, mirror)
-        return dist, self.update(aligned)
+        res = align(self.flown, self.template, radius, mirror)
+        return res.dist, self.update(res.aligned)
 
     def update(self, aligned: State) -> Alignment:
         man, tp = self.manoeuvre.match_intention(self.template[0], aligned)
@@ -100,7 +100,7 @@ class Alignment(Basic):
         return Alignment(self.id, self.schedule_direction, aligned, mdef, man, tp)
 
     def _proceed(self) -> Complete:
-        if "element" in self.flown.data.columns:
+        if "element" in self.flown.labels.keys():
             correction = self.mdef.create()
             return Complete(
                 self.id,

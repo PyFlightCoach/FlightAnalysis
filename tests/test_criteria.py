@@ -35,6 +35,8 @@ def test_single_to_dict(single: Single):
     res = single.to_dict()
     
     assert res['kind'] == 'Single'
+    crit = Criteria.from_dict(res)
+    assert isinstance(crit, Single) 
 
 def test_single_from_dict(single):
     res = Criteria.from_dict(single.to_dict())

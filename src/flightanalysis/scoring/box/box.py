@@ -14,7 +14,7 @@ from flightanalysis.scoring import (
 )
 from schemas.maninfo import ManInfo
 from flightdata import State
-from typing import Literal, Tuple
+from typing import Tuple
 import numpy.typing as npt
 from ..visibility import visibility
 
@@ -142,17 +142,16 @@ class Box:
             sample = visibility(
                 m.value, m.visibility, self.centre_dg.criteria.lookup.error_limit
             )
-            els = fl.label_ranges(["element"])
-
+            
             ovs = []
             for cpid in info.centre_points:
-                ovs.append(int(els.start.iloc[cpid]))
+                ovs.append(int(fl.labels.element[cpid].start))
 
             for ceid, fac in info.centred_els:
-                ce = fl.get_element(els.iloc[ceid, 0])
+                ce = fl.element[ceid]
                 path_length = (abs(ce.vel) * ce.dt).cumsum()
                 id = np.abs(path_length - path_length[-1] * fac).argmin()
-                ovs.append(int(id + els.iloc[ceid].start))
+                ovs.append(int(id + fl.labels.element[ceid].start))
 
             res.add(
                 Result(
@@ -162,7 +161,7 @@ class Box:
                     sample,
                     ovs,
                     *self.centre_dg.criteria(sample[ovs], True),
-                    self.centre_dg.criteria,
+                    self.centre_dg.criteria
                 )
             )
 

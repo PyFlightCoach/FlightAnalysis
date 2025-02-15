@@ -50,12 +50,15 @@ class Loop(Element):
 
         v = g.PX(self.speed) if istate.vel == 0 else istate.vel.scale(self.speed)
 
-        return self._add_rolls(
+        return (
             istate.copy(
                 vel=v,
-                rvel=g.Point(0, np.cos(self.ke), np.sin(self.ke)) * self.angle / duration,
-            ).fill(Element.create_time(duration, fl)),
-            self.roll,
+                rvel=g.Point(0, np.cos(self.ke), np.sin(self.ke))
+                * self.angle
+                / duration,
+            )
+            .fill(Element.create_time(duration, fl))
+            .superimpose_rotation(g.PX(), self.roll)
         )
 
     def measure_radius(self, itrans: g.Transformation, flown: State):
@@ -72,7 +75,7 @@ class Loop(Element):
         keep = ~np.isnan(rads * angles)
 
         return np.sum((rads * angles)[keep]) / np.sum(angles[keep])
-        #return np.mean(rads)
+        # return np.mean(rads)
 
     def match_intention(self, itrans: g.Transformation, flown: State) -> Loop:
         wrv = flown.att.transform_point(g.point.vector_rejection(flown.rvel, g.PX()))
@@ -97,6 +100,7 @@ class Loop(Element):
             roll=abs(self.roll) * np.sign(other.roll),
             angle=abs(self.angle) * np.sign(other.angle),
         )
+
 
 #    def radius_visibility(self, st: State):
 #        axial_dir = st[0].att.transform_point(

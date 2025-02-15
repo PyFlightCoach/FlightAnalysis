@@ -60,7 +60,7 @@ class SchedDef(Collection):
             man = md.create()
             templates.append(man.create_template(itrans))
             mans.append(man)
-        return Schedule(mans), State.stack(templates)
+        return Schedule(mans), State.stack(templates, "manoeuvre", [md.info.short_name for md in self] )
 
     def plot(self, depth=170, wind=Heading.LTOR, **kwargs):
         sched, template = self.create_template(depth, wind)

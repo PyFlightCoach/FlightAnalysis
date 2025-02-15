@@ -21,7 +21,7 @@ from .alignment import Alignment
 from .basic import Basic
 
 
-@dataclass
+@dataclass(repr=False)
 class Complete(Alignment):
     corrected: Manoeuvre
     corrected_template: State
@@ -100,6 +100,7 @@ class Complete(Alignment):
                 self.mdef.info,
                 self.mdef.mps.update_defaults(self.manoeuvre),
                 self.mdef.eds,
+                self.mdef.box,
             )
             correction = mdef.create().add_lines()
 

@@ -22,6 +22,9 @@ class Basic(Analysis):
     flown: State
     mdef: ManDef | ManOption
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.mdef.info.short_name})"
+
     @property
     def name(self):
         return self.mdef.uid
