@@ -40,15 +40,18 @@ class ManBuilder:
         return el
 
     def create_mdef(self, fig: Figure | Option) -> ManDef | ManOption:
-        if isinstance(fig, Option):
-            return ManOption([self.create_mdef(op) for op in fig.figures])
-        else:
-            return self.create(
-                fig.info,
-                [self.create_eb(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
-                fig.relax_back,
-                **fig.ndmps,
-            )
+        try:
+            if isinstance(fig, Option):
+                return ManOption([self.create_mdef(op) for op in fig.figures])
+            else:
+                return self.create(
+                    fig.info,
+                    [self.create_eb(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
+                    fig.relax_back,
+                    **fig.ndmps,
+                )
+        except Exception as ex:
+            raise Exception(f"Error creating ManDef for {fig.info.name}") from ex
 
     def create_scheddef(self, seq: Sequence) -> SchedDef:
         return SchedDef([self.create_mdef(f) for f in seq.figures])
