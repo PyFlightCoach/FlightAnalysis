@@ -49,17 +49,17 @@ class Basic(Analysis):
     def proceed(self) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements have already been labelled"""
         if (
-            "element" not in self.flown.data.columns
-            or self.flown.data.element.isna().any()
+            "element" not in self.flown.labels.keys()
             or not isinstance(self, Basic)
         ):
             return self
 
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
-        elnames = self.flown.data.element.unique().astype(str)
+
+        elnames = list(self.flown.labels.element.keys())
         for md in mopt:
             if np.all(
-                [np.any(np.char.startswith(elnames, k)) for k in md.eds.data.keys()]
+                [elnames[i] == k for i, k in enumerate(md.eds.data.keys())]
             ):
                 mdef = md
                 break

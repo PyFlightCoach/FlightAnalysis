@@ -132,7 +132,7 @@ class Complete(Alignment):
         el2: Element = self.manoeuvre.all_elements()[eln2]
 
         def score_split(steps: int) -> float:
-            new_fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
+            new_fl = fl.shift_label("element", eln1, steps, fl.t, 2)
             res1, new_iatt = self.get_score(eln1, itrans, el1.get_data(new_fl))
 
             el2fl = el2.get_data(new_fl)
