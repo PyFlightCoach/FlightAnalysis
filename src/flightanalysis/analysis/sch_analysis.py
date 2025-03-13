@@ -1,8 +1,10 @@
 from __future__ import annotations
+from re import sub
+import traceback
+from xmlrpc.client import boolean
 from flightdata import State
-from typing import Self, Union
-from json import load, dump
-from flightdata import Collection, NumpyEncoder
+from typing import Self
+from flightdata import Collection
 from flightanalysis import ManDef, SchedDef
 from schemas import AJson
 from . import manoeuvre_analysis as ma
@@ -37,29 +39,60 @@ class ScheduleAnalysis(Collection):
             sdef = [ManDef.from_dict(man.mdef) for man in ajson.mans]
         for man, mdef in zip(ajson.mans, sdef):
             try:
-                analyses.append(ma.from_dict(man.model_dump() | dict(mdef=mdef.to_dict())))
+                analyses.append(
+                    ma.from_dict(man.model_dump() | dict(mdef=mdef.to_dict()))
+                )
             except Exception as e:
-                logger.error(f"Failed to parse manoeuvre {mdef.info.short_name}: {repr(e)}")
+                logger.error(
+                    f"Failed to parse manoeuvre {mdef.info.short_name}: {repr(e)}"
+                )
                 raise e
         return ScheduleAnalysis(analyses)
 
+    def run_all(
+        self, optimise: bool = False, sync: boolean = False, subset: list = None
+    ) -> Self:
+        if subset is None:
+            subset = range(len(self))
 
-    def run_all(self, optimise: bool = False) -> Self:
         def parse_analyse_serialise(pad):
+            import tuning
             try:
-                pad = ma.from_dict(pad).run_all()
+                pad = ma.from_dict(pad)
+            except Exception as e:
+                logger.exception(f"Failed to parse {pad['id']}")
+                return pad
+
+            try:
                 pad = pad.run_all(optimise)
                 logger.info(f"Completed {pad.name}")
+                return pad.to_dict()
             except Exception as e:
-                logger.error(f"Failed to process {pad.name}: {repr(e)}")
-            return pad.to_dict()
+                logger.exception(f"Failed to process {pad.name}")
+                return pad.to_dict()
 
         logger.info(f"Starting {os.cpu_count()} ma processes")
-        madicts = Parallel(n_jobs=os.cpu_count())(
-            delayed(parse_analyse_serialise)(man.to_dict()) for man in self
-        )
+        if sync:
+            madicts = [
+                parse_analyse_serialise(man.to_dict())
+                for i, man in enumerate(self)
+                if i in subset
+            ]
+        else:
+            madicts = Parallel(n_jobs=os.cpu_count() * 2 - 1)(
+                delayed(parse_analyse_serialise)(man.to_dict())
+                for i, man in enumerate(self)
+                if i in subset
+            )
 
-        return ScheduleAnalysis([ma.Scored.from_dict(mad) for mad in madicts])
+        return ScheduleAnalysis(
+            [
+                ma.Scored.from_dict(madicts[subset.index(i)])
+                if i in subset
+                else self[i]
+                for i in range(len(self))
+            ]
+        )
 
     def run_all_sync(self, optimise: bool = False, force: bool = False) -> Self:
         return ScheduleAnalysis([ma.run_all(optimise, force) for ma in self])

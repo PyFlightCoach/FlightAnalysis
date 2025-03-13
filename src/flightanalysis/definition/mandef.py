@@ -198,7 +198,7 @@ class ManDef:
                     ed.props,
                     applicator(
                         man.elements[i],
-                        tp.element[ed.name],
+                        tp[ed.name],
                         self.eds[i - 1].Kind if i > 0 else "",
                         self.eds[i + 1].Kind if i < len(self.eds) - 1 else "",
                     ),

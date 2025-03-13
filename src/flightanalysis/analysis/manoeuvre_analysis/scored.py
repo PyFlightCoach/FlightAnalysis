@@ -15,15 +15,13 @@ class Scored(Complete):
             self.flown,
             self.mdef,
             self.manoeuvre,
-            self.template,
-            self.corrected,
-            self.corrected_template,
+            self.template
         )
 
     @staticmethod
     def from_dict(ajman: dict) -> Scored:
         analysis = Complete.from_dict(ajman)
-        if isinstance(analysis, Complete) and ajman["scores"]:
+        if isinstance(analysis, Complete) and "scores" in ajman and ajman["scores"] is not None:
             return Scored(
                 **analysis.__dict__, scores=ManoeuvreResults.from_dict(ajman["scores"])
             )

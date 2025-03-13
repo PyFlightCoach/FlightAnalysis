@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from numbers import Number
 
 import geometry as g
 import numpy as np
@@ -23,34 +24,34 @@ from .basic import Basic
 
 @dataclass(repr=False)
 class Complete(Alignment):
-    corrected: Manoeuvre
-    corrected_template: State
+    #corrected: Manoeuvre
+    #corrected_templates: dict[str, State]
 
     @staticmethod
     def from_dict(ajman: dict) -> Complete | Alignment | Basic:
-        analysis = Alignment.from_dict(ajman)
-        if (
-            isinstance(analysis, Alignment)
-            and ajman["corrected"]
-            and ajman["corrected_template"]
-        ):
-            return Complete(
-                **analysis.__dict__,
-                corrected=Manoeuvre.from_dict(ajman["corrected"]),
-                corrected_template=State.from_dict(ajman["corrected_template"]),
-            )
-        else:
-            return analysis
+        return Alignment.from_dict(ajman).proceed()
+        #if (
+        #    isinstance(analysis, Alignment)
+        #    and ajman["corrected"]
+        #    and ajman["corrected_template"]
+        #):
+        #    return Complete(
+        #        **analysis.__dict__,
+        #        #corrected=Manoeuvre.from_dict(ajman["corrected"]),
+        #        #corrected_templates={k: State.from_dict(v) for k,v in ajman["corrected_templates"].items()} if ajman["corrected_templates"] else None,
+        #    )
+        #else:
+        #    return analysis
 
     def to_dict(self, basic: bool=False) -> dict:
-        _basic = super().to_dict(basic)
-        if basic:
-            return _basic
-        return dict(
-            **_basic,
-            corrected=self.corrected.to_dict(),
-            corrected_template=self.corrected_template.to_dict(),
-        )
+        return super().to_dict(basic)
+        #if basic:
+        #    return _basic
+        #return dict(
+        #    **_basic,
+        #    corrected=self.corrected.to_dict(),
+        #    corrected_template=self.corrected_template.to_dict(),
+        #)
 
     def run(self, optimise_aligment=True) -> Scored:
         if optimise_aligment:
@@ -70,7 +71,10 @@ class Complete(Alignment):
             yield self.get_ea(edn)
 
     def __getitem__(self, i):
-        return self.get_ea(self.mdef.eds[i + 1].name)
+        if isinstance(i, Number):
+            return self.get_ea(self.mdef.eds[i + 1].name)
+        else:
+            return self.get_ea(i)
 
     def __getattr__(self, name):
         if name in self.mdef.eds.data.keys():
@@ -83,7 +87,7 @@ class Complete(Alignment):
     def get_ea(self, name):
         el: Element = getattr(self.manoeuvre.all_elements(), name)
         st = el.get_data(self.flown)
-        tp = el.get_data(self.template).relocate(st.pos[0])
+        tp = self.templates[el.uid].relocate(st.pos[0])
 
         return ElementAnalysis(
             self.get_edef(name), self.mdef.mps, el, st, tp, el.ref_frame(tp)
@@ -102,7 +106,6 @@ class Complete(Alignment):
                 self.mdef.eds,
                 self.mdef.box,
             )
-            correction = mdef.create().add_lines()
 
             return Complete(
                 self.id,
@@ -111,8 +114,6 @@ class Complete(Alignment):
                 mdef,
                 manoeuvre,
                 template,
-                correction,
-                correction.create_template(template[0], self.flown),
             )
         else:
             return self
@@ -132,7 +133,7 @@ class Complete(Alignment):
         el2: Element = self.manoeuvre.all_elements()[eln2]
 
         def score_split(steps: int) -> float:
-            new_fl = fl.shift_label("element", eln1, steps, fl.t, 2)
+            new_fl = fl.step_label("element", eln1, steps, fl.t, 2)
             res1, new_iatt = self.get_score(eln1, itrans, el1.get_data(new_fl))
 
             el2fl = el2.get_data(new_fl)
@@ -161,7 +162,10 @@ class Complete(Alignment):
                 steps < 0 and len(el1.get_data(fl)) <= -steps + 3
             ):
                 break
-            new_dg = score_split(steps)
+            try:
+                new_dg = score_split(steps)
+            except ValueError:
+                break
 
             if new_dg < list(dgs.values())[-1]:
                 dgs[steps] = new_dg
@@ -195,8 +199,8 @@ class Complete(Alignment):
                             f"Adjusting split between {eln1} and {eln2} by {steps} steps"
                         )
 
-                        fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
-
+                        #fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
+                        fl = fl.step_label("element", eln1, steps, fl.t, 2)
                         adjusted.update([eln1, eln2])
 
             padjusted = adjusted
@@ -206,6 +210,9 @@ class Complete(Alignment):
             )
 
         return Basic(self.id, self.schedule_direction, fl, self.mdef).proceed()
+    
+    def optimise_alignment_v2(self):
+        pass
 
     def intra(self):
         return ElementsResults([ea.intra_score() for ea in self])

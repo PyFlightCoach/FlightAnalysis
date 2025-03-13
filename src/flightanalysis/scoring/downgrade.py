@@ -63,7 +63,15 @@ class DownGrade:
         smkwargs: dict = None,
         sekwargs: dict = None,
     ) -> Result:
+
+        slis = []
+        for s in self.selectors:
+            slis.append(s(fl, **sekwargs or {}))
+            fl = fl.iloc[slis[-1]]
+            tp = tp.iloc[slis[-1]]
+
         measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
+
 
         raw_sample = visibility(
             self.criteria.prepare(measurement.value),
@@ -71,43 +79,37 @@ class DownGrade:
             self.criteria.lookup.error_limit,
             "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
         )
+
         sample = raw_sample.copy()
-        freq = 1 / fl.dt.mean()
         for sm in self.smoothers:
-            sample = sm(freq, sample, el, **(smkwargs or {}))
+            sample = sm(sample, fl.dt, el, **(smkwargs or {}))
 
-        ids = np.arange(len(sample))
-
-        for s in self.selectors:
-            sub_ids = s(
-                State(fl.data.iloc[ids]), 
-                State(tp.data.iloc[ids]), 
-                sample[ids], 
-                **(sekwargs or {})
-            )
-            
-            ids = ids[sub_ids]
 
         return Result(
             self.name,
             measurement,
             raw_sample,
-            sample[ids],
-            ids,
-            *self.criteria(sample[ids], limits),
+            sample,
+            slis,
+            *self.criteria(sample, limits),
             self.criteria,
         )
 
 
 def dg(
     name: str,
-    measure: RefFunc,
-    smoothers: RefFunc | list[RefFunc],
-    selectors: RefFunc | list[RefFunc],
+    meas: RefFunc,
+    sms: RefFunc | list[RefFunc],
+    sels: RefFunc | list[RefFunc],
     criteria: Criteria,
 ):
+    if sms is None:
+        sms = []
+    elif isinstance(sms, RefFunc):
+        sms = [sms]
+    sms.append(smoothers.final())
     return DownGrade(
-        name, measure, RefFuncs(smoothers), RefFuncs(selectors), criteria
+        name, meas, RefFuncs(sms), RefFuncs(sels), criteria
     )
 
 
