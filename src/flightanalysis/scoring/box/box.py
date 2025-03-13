@@ -2,6 +2,7 @@ from __future__ import annotations
 import numpy as np
 from dataclasses import dataclass
 import geometry as g
+from geometry.utils import get_index
 from flightanalysis.base.ref_funcs import RefFunc
 from flightanalysis.scoring import (
     Bounded,
@@ -151,7 +152,7 @@ class Box:
                 ce = fl.element[ceid]
                 path_length = (abs(ce.vel) * ce.dt).cumsum()
                 id = np.abs(path_length - path_length[-1] * fac).argmin()
-                ovs.append(int(id + fl.labels.element[ceid].start))
+                ovs.append(get_index(fl.t, ce.iloc[id].t[0]))
 
             res.add(
                 Result(

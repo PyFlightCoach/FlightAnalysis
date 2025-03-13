@@ -34,6 +34,9 @@ class ElementAnalysis:
             g.Transformation.from_dict(data['ref_frame'])
         )
     
+    def score_dg(self, dg: str):
+        return self.edef.dgs[dg](self.el, self.fl, self.tp)
+
     def intra_score(self):
         return self.edef.dgs.apply(self.el, self.fl, self.tp) #[dg.apply(self.el.uid + (f'_{k}' if len(k) > 0 else ''), self.fl, self.tp) for k, dg in self.edef.dgs.items()]
     

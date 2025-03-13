@@ -9,8 +9,11 @@ import geometry as g
 from flightdata import State
 from schemas.positioning import Direction, Heading
 from flightanalysis.definition import ManDef, ManOption
+from schemas.sinfo import ScheduleInfo
 
 from .analysis import Analysis
+from schemas import MA, fcj
+from importlib.metadata import version
 
 
 @dataclass
@@ -28,7 +31,7 @@ class Basic(Analysis):
 
     def __str__(self):
         res = f"{self.__class__.__name__}({self.id}, {self.mdef.info.short_name})"
-        if hasattr(self, "scores"):
+        if isinstance(self, Scored):
             res = res[:-1] + f", {', '.join([f'{k}={v:.2f}' for k, v in self.scores.score_summary(3, False).items()])})"
         return res
     
@@ -39,9 +42,9 @@ class Basic(Analysis):
         """Run the analysis to the final stage"""
         drs = [r._run(True) for r in self.run()]
 
-        dr = drs[np.argmin([dr[0] for dr in drs])]
+        dr: Alignment = drs[np.argmin([dr[0] for dr in drs])][1]
 
-        return dr[1].run_all(optimise_aligment, force)
+        return dr.run_all(optimise_aligment, force)
 
     def proceed(self) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements have already been labelled"""
@@ -66,22 +69,19 @@ class Basic(Analysis):
             )
 
         itrans = self.create_itrans()
-        man, tp = (
+        man, tps = (
             mdef.create()
             .add_lines()
             .match_intention(State.from_transform(itrans), self.flown)
         )
         mdef = ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds, mdef.box)
-        corr = mdef.create().add_lines()
         return Complete(
             self.id,
             self.schedule_direction,
             self.flown,
             mdef,
             man,
-            tp,
-            corr,
-            corr.create_template(itrans, self.flown),
+            tps,
         )
 
     @staticmethod
@@ -133,6 +133,20 @@ class Basic(Analysis):
             )
         return als
 
+    def export_ma(self, schedule: ScheduleInfo, history: dict=None) -> MA:
+        return MA(
+            **self.to_dict(),
+            name=self.mdef.info.short_name,
+            schedule=schedule,
+            history={
+                **(history if history else {}),
+                **(
+                    {version("fatuning"): fcj.ManResult.model_validate(self.fcj_results())}
+                    if self.__class__.__name__ == "Scored"
+                    else {}
+                ),
+            },
+        )
 
 from .alignment import Alignment  # noqa: E402
 from .complete import Complete  # noqa: E402

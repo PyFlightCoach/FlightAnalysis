@@ -122,7 +122,7 @@ class ManParm(Opp):
             _vis,
         )
 
-    def get_downgrades(self, els: Elements, state: State, box):
+    def get_downgrades(self, els: Elements, state: State, box) -> Result:
         direction, visor = self.collect_vis(els, state, box)
 
         meas = Measurement(
