@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import traceback
 from dataclasses import dataclass
 
 from flightdata import State, align
-from loguru import logger
 
 from flightanalysis.definition import ManDef
 from flightanalysis.elements import Element
@@ -51,16 +49,11 @@ class Alignment(Basic):
         if self.__class__.__name__ == "Scored" and force:
             self = self.downgrade()
         while self.__class__.__name__ != "Scored":
-            #try:
             self = (
                 self.run(optimise_aligment)
                 if isinstance(self, Complete)
                 else self.run()
             )
-            #except Exception as ex:
-            #    logger.error(traceback.format_exc())
-            #    if throw:
-            #        raise Exception(f"Alignment error, {self.name}") from ex
         return self
 
     @staticmethod
@@ -89,22 +82,14 @@ class Alignment(Basic):
         return dict(
             **_basic,
             manoeuvre=self.manoeuvre.to_dict(),
-            template={k: tp.to_dict() for k, tp in self.templates.items()},
+            template={k: tp.to_dict(True) for k, tp in self.templates.items()},
         )
 
     def run(self) -> Alignment | Complete:
         if "element" not in self.flown.labels.lgs:
-            #try:
-                return self._run(True)[1]
-            #except Exception as e:
-            #    logger.error(f"Failed to run alignment stage 1: {repr(e)}")
-            #    return self
-        #try:
+            return self._run(True)[1]
         return self._run(False)[1].proceed()
-        #except Exception as e:
-        #    logger.error(f"Failed to run alignment stage 2: {repr(e)}")
-        #    return self
-
+        
     def _run(self, mirror=False, radius=10) -> Alignment:
         res = align(self.flown, self.template, radius, mirror)
         return res.dist, self.update(res.aligned)
@@ -135,13 +120,6 @@ class Alignment(Basic):
         else:
             return self
 
-    def fcj_results(self):
-        return self.flown.labels.element.to_iloc(self.flown.t).to_dict()
-
-
-#        df = self.flown.label_ranges("element").iloc[:, :3]
-#        df.columns = ["name", "start", "stop"]
-#        return dict(els=df.to_dict("records"))
 
 
 from .complete import Complete  # noqa: E402

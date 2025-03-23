@@ -33,6 +33,9 @@ class Results(Collection):
     def downgrade_summary(self):
         return {r.name: r.dgs for r in self if len(r.dgs) > 0}
 
+    def dg_dict(self):
+        return {k: v.total for k, v in self.items()}
+
     def downgrade_df(self) -> pd.DataFrame:
         dgs = self.downgrade_summary()
         if len(dgs) == 0:

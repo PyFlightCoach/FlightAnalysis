@@ -146,13 +146,13 @@ class Box:
             
             ovs = []
             for cpid in info.centre_points:
-                ovs.append(int(fl.labels.element[cpid].start))
+                ovs.append(int(get_index(fl.t, fl.labels.element[cpid].start)))
 
             for ceid, fac in info.centred_els:
                 ce = fl.element[ceid]
                 path_length = (abs(ce.vel) * ce.dt).cumsum()
                 id = np.abs(path_length - path_length[-1] * fac).argmin()
-                ovs.append(get_index(fl.t, ce.iloc[id].t[0]))
+                ovs.append(int(get_index(fl.t, ce.iloc[id].t[0])))
 
             res.add(
                 Result(

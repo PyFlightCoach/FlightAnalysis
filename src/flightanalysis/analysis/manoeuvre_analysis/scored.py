@@ -15,13 +15,17 @@ class Scored(Complete):
             self.flown,
             self.mdef,
             self.manoeuvre,
-            self.template
+            self.template,
         )
 
     @staticmethod
     def from_dict(ajman: dict) -> Scored:
         analysis = Complete.from_dict(ajman)
-        if isinstance(analysis, Complete) and "scores" in ajman and ajman["scores"] is not None:
+        if (
+            isinstance(analysis, Complete)
+            and "scores" in ajman
+            and ajman["scores"] is not None
+        ):
             return Scored(
                 **analysis.__dict__, scores=ManoeuvreResults.from_dict(ajman["scores"])
             )
@@ -37,4 +41,10 @@ class Scored(Complete):
         return dict(**_basic, scores=self.scores.to_dict())
 
     def fcj_results(self):
-        return dict(**super().fcj_results(), results=self.scores.fcj_results())
+        return dict(
+            els=[
+                dict(name=k, start=v.start, stop=v.stop)
+                for k, v in self.flown.labels.element.labels.items()
+            ],
+            results=self.scores.fcj_results(),
+        )

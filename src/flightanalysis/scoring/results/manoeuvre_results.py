@@ -12,6 +12,13 @@ class ManoeuvreResults:
     intra: ElementsResults
     positioning: Results
 
+    def dg_dict(self):
+        return dict(
+            **self.intra.dg_dict(),
+            **self.inter.dg_dict(),
+            **self.positioning.dg_dict(),
+        )
+
     def summary(self):
         return {k: v.total for k, v in self.__dict__.items() if v is not None}
 

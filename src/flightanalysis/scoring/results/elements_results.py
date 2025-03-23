@@ -11,6 +11,7 @@ import geometry as g
 from itertools import chain
 from .results import Results
 
+
 class ElementsResults(Collection):
     """Intra Only
     Elements Results covers all the elements in a manoeuvre
@@ -32,6 +33,13 @@ class ElementsResults(Collection):
     @property
     def downgrade_list(self):
         return [r.total for r in self]
+
+    def dg_dict(self):
+        return {
+            f"{k_el}_{k_crit}": result.total
+            for k_el, results in self.data.items()
+            for k_crit, result in results.data.items()
+        }
 
     def downgrade_df(self):
         df = pd.concat([idg.downgrade_df().sum() for idg in self], axis=1).T
