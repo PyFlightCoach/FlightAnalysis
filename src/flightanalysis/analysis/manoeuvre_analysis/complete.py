@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import partial
 from numbers import Number
 
 import geometry as g
 import numpy as np
+import pandas as pd
 from flightdata import State
 from loguru import logger
+from joblib import Parallel, delayed
 
 from flightanalysis.definition import ElDef, ManDef
 from flightanalysis.elements import Element
@@ -16,7 +19,7 @@ from flightanalysis.scoring import (
     ManoeuvreResults,
     Results,
 )
-
+import os
 from ..el_analysis import ElementAnalysis
 from .alignment import Alignment
 from .basic import Basic
@@ -24,34 +27,15 @@ from .basic import Basic
 
 @dataclass(repr=False)
 class Complete(Alignment):
-    #corrected: Manoeuvre
-    #corrected_templates: dict[str, State]
+    # corrected: Manoeuvre
+    # corrected_templates: dict[str, State]
 
     @staticmethod
     def from_dict(ajman: dict) -> Complete | Alignment | Basic:
         return Alignment.from_dict(ajman).proceed()
-        #if (
-        #    isinstance(analysis, Alignment)
-        #    and ajman["corrected"]
-        #    and ajman["corrected_template"]
-        #):
-        #    return Complete(
-        #        **analysis.__dict__,
-        #        #corrected=Manoeuvre.from_dict(ajman["corrected"]),
-        #        #corrected_templates={k: State.from_dict(v) for k,v in ajman["corrected_templates"].items()} if ajman["corrected_templates"] else None,
-        #    )
-        #else:
-        #    return analysis
 
-    def to_dict(self, basic: bool=False) -> dict:
+    def to_dict(self, basic: bool = False) -> dict:
         return super().to_dict(basic)
-        #if basic:
-        #    return _basic
-        #return dict(
-        #    **_basic,
-        #    corrected=self.corrected.to_dict(),
-        #    corrected_template=self.corrected_template.to_dict(),
-        #)
 
     def run(self, optimise_aligment=True) -> Scored:
         if optimise_aligment:
@@ -199,7 +183,7 @@ class Complete(Alignment):
                             f"Adjusting split between {eln1} and {eln2} by {steps} steps"
                         )
 
-                        #fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
+                        # fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
                         fl = fl.step_label("element", eln1, steps, fl.t, 2)
                         adjusted.update([eln1, eln2])
 
@@ -210,7 +194,7 @@ class Complete(Alignment):
             )
 
         return Basic(self.id, self.schedule_direction, fl, self.mdef).proceed()
-    
+
     def optimise_alignment_v2(self):
         pass
 
@@ -228,6 +212,51 @@ class Complete(Alignment):
 
         fig = plotdtw(self.flown, self.flown.data.element.unique())
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
+
+    def set_boundaries(self, boundaries: list[float]):
+        new_man = Basic(
+            self.id,
+            self.schedule_direction,
+            self.flown.set_boundaries("element", boundaries),#.resample(),
+            self.mdef,
+        ).proceed()
+
+        return new_man.run_all(False) if isinstance(self, Scored) else new_man
+
+    def set_boundary(self, el: str | int, boundary: float):
+        # TODO check if boundary is within bounds
+        boundaries = self.flown.labels.element.boundaries
+        elid = el if isinstance(el, int) else self.elnames.index(el)
+        boundaries[elid] = boundary
+        return self.set_boundaries(boundaries)
+
+    def boundary_sweep(self, el: str | int, width: float, substeps: int = 5):
+        """Sweep an element boundary through a width and return a set of results
+        width is in seconds,
+        substeps is the number of steps to take within each timestep
+        TODO make sure range doesn't cross adjacent boundary
+        """
+        elid = el if isinstance(el, int) else self.elnames.index(el)
+        bopt = self.flown.labels.element.boundaries[elid]
+        tstart = bopt - width
+        tstop = bopt + width
+        ts = self.flown.data.t[tstart:tstop].to_numpy()
+        splits = np.array(
+            [
+                t0 + (t1 - t0) * i / substeps
+                for t0, t1 in zip(ts[:-1], ts[1:])
+                for i in range(substeps)
+            ]
+        )
+        logger.info(f"Starting {os.cpu_count() * 2 - 1} processes to run {len(splits)} manoeuvres")
+        madicts = Parallel(n_jobs=os.cpu_count() * 2 - 1)(
+            delayed(partial(Basic.parse_analyse_serialise, optimise=False, name=i))(self.set_boundary(el, ic).to_dict())
+            for i, ic in enumerate(splits)
+        )
+        outdata = {ic: Scored.from_dict(mad).scores.dg_dict() for ic, mad in zip(splits, madicts) }
+
+        return pd.DataFrame(outdata).T
+
 
 
 from .scored import Scored  # noqa: E402

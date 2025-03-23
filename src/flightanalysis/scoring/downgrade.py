@@ -1,5 +1,6 @@
 from __future__ import annotations
 from flightdata import Collection, State
+from geometry.utils import apply_index_slice
 from .criteria import Bounded, Continuous, Single, Criteria, ContinuousValue
 from .measurement import Measurement
 from .visibility import visibility
@@ -64,21 +65,21 @@ class DownGrade:
         sekwargs: dict = None,
     ) -> Result:
 
-        slis = []
+        oids = np.arange(len(fl))
         for s in self.selectors:
-            slis.append(s(fl, **sekwargs or {}))
-            fl = fl.iloc[slis[-1]]
-            tp = tp.iloc[slis[-1]]
+            sli = s(fl, **sekwargs or {})
+            oids = apply_index_slice(oids, sli)
+            fl = fl.iloc[sli]
+            tp = tp.iloc[sli]
 
         measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
-
 
         raw_sample = visibility(
             self.criteria.prepare(measurement.value),
             measurement.visibility,
             self.criteria.lookup.error_limit,
             "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
-        )
+        )            
 
         sample = raw_sample.copy()
         for sm in self.smoothers:
@@ -90,7 +91,7 @@ class DownGrade:
             measurement,
             raw_sample,
             sample,
-            slis,
+            oids,
             *self.criteria(sample, limits),
             self.criteria,
         )
