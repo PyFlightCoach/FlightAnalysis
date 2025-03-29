@@ -59,7 +59,7 @@ class Alignment(Basic):
     @staticmethod
     def from_dict(ajman: dict) -> Alignment | Basic:
         basic = Basic.from_dict(ajman)
-        if isinstance(basic, Basic) and ajman["manoeuvre"]:
+        if isinstance(basic, Basic) and "manoeuvre" in ajman and ajman["manoeuvre"]:
             if "template" in ajman:
                 if set(ajman["template"].keys()) == set(
                     [el["uid"] for el in ajman["manoeuvre"]["elements"]] + ["exit_line"]
