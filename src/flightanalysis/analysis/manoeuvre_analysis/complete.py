@@ -13,7 +13,6 @@ from joblib import Parallel, delayed
 
 from flightanalysis.definition import ElDef, ManDef
 from flightanalysis.elements import Element
-from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring import (
     ElementsResults,
     ManoeuvreResults,
@@ -115,9 +114,9 @@ class Complete(Alignment):
     ) -> int:
         el1: Element = self.manoeuvre.all_elements()[eln1]
         el2: Element = self.manoeuvre.all_elements()[eln2]
-
+        min_len = 3
         def score_split(steps: int) -> float:
-            new_fl = fl.step_label("element", eln1, steps, fl.t, 2)
+            new_fl = fl.step_label("element", eln1, steps, fl.t, min_len)
             res1, new_iatt = self.get_score(eln1, itrans, el1.get_data(new_fl))
 
             el2fl = el2.get_data(new_fl)
@@ -131,9 +130,17 @@ class Complete(Alignment):
             return res1.total + res2.total
 
         dgs = {0: score_split(0)}
+        
+        def check_steps(stps: int):
+            return not ((stps > 0 and len(el2.get_data(fl)) <= stps + min_len) or (
+                stps < 0 and len(el1.get_data(fl)) <= -stps + min_len
+            ))
 
         steps = int(len(el1.get_data(fl)) > len(el2.get_data(fl))) * 2 - 1
-
+        
+        if not check_steps(steps):
+            return 0
+        
         new_dg = score_split(steps)
         if new_dg > dgs[0]:
             steps = -steps
@@ -141,11 +148,7 @@ class Complete(Alignment):
             steps += np.sign(steps)
             dgs[steps] = new_dg
 
-        while True:
-            if (steps > 0 and len(el2.get_data(fl)) <= steps + 3) or (
-                steps < 0 and len(el1.get_data(fl)) <= -steps + 3
-            ):
-                break
+        while check_steps(steps):
             try:
                 new_dg = score_split(steps)
             except ValueError:
@@ -184,7 +187,7 @@ class Complete(Alignment):
                         )
 
                         # fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
-                        fl = fl.step_label("element", eln1, steps, fl.t, 2)
+                        fl = fl.step_label("element", eln1, steps, fl.t, 3)
                         adjusted.update([eln1, eln2])
 
             padjusted = adjusted

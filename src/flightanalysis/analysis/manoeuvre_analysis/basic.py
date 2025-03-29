@@ -61,7 +61,7 @@ class Basic(Analysis):
 
         elnames = list(self.flown.labels.element.keys())
         for md in mopt:
-            if np.all([elnames[i] == k for i, k in enumerate(md.eds.data.keys())]):
+            if len(elnames) != len(md.eds) or np.all([elnames[i] == k for i, k in enumerate(md.eds.data.keys())]):
                 mdef = md
                 break
         else:

@@ -58,7 +58,7 @@ class SchedDef(Collection):
             )
             md.fit_box(itrans)
             man = md.create()
-            templates.append(man.create_template(itrans))
+            templates.append(State.stack(man.create_template(itrans), "element"))
             mans.append(man)
         return Schedule(mans), State.stack(templates, "manoeuvre", [md.info.short_name for md in self] )
 

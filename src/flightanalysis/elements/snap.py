@@ -92,7 +92,7 @@ class Snap(Element):
         return f"Snap {self.roll}, {self.pitch}"
 
     def match_intention(self, transform: g.Transformation, flown: State) -> Snap:
-        snap_rate = g.Point.scalar_projection(flown.rvel, flown.vel)
+        snap_rate = g.point.scalar_projection(flown.rvel, flown.vel)
 
         snap_angle = np.cumsum(snap_rate * flown.dt)
 

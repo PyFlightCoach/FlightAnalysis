@@ -38,19 +38,7 @@ class ScheduleAnalysis(Collection):
         if sdef is None:
             sdef = [ManDef.from_dict(man.mdef) for man in ajson.mans]
         for man, mdef in zip(ajson.mans, sdef):
-            try:
-<<<<<<< HEAD
-                analyses.append(ma.from_dict(man.basic().model_dump() | dict(mdef=mdef.to_dict())))
-=======
-                analyses.append(
-                    ma.from_dict(man.model_dump() | dict(mdef=mdef.to_dict()))
-                )
->>>>>>> d3003fc8 (wip)
-            except Exception as e:
-                logger.error(
-                    f"Failed to parse manoeuvre {mdef.info.short_name}: {repr(e)}"
-                )
-                raise e
+            analyses.append(ma.from_dict(man.model_dump() | dict(mdef=mdef.to_dict())))
         return ScheduleAnalysis(analyses)
 
     def run_all(

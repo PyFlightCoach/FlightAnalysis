@@ -1,5 +1,6 @@
+from sqlalchemy import over
 from flightanalysis.definition.eldef import ElDef, ManParm, ManParms
-from flightanalysis.elements import Line, Loop, StallTurn, Snap, Spin
+from flightanalysis.elements import Line, Loop, StallTurn, Snap, Spin, TailSlide
             
 
 def line(name: str, speed, length, Inter):
@@ -44,6 +45,15 @@ def stallturn(name, speed, yaw_rate, Inter):
         StallTurn,
         name,
         [speed, yaw_rate]
+    ), ManParms()
+
+
+
+def tailslide(name, speed, direction, rate, over_flop, reset_rate):
+    return ElDef.build(
+        TailSlide,
+        name,
+        [speed, abs(rate) * direction, over_flop, reset_rate]
     ), ManParms()
 
 
