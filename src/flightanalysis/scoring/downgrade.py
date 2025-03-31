@@ -8,7 +8,7 @@ from .results import Results, Result
 from dataclasses import dataclass, replace
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
-
+from typing import ClassVar
 from .reffuncs import measures, smoothers, selectors
 
 
@@ -28,7 +28,8 @@ class DownGrade:
     criteria: (
         Bounded | Continuous | Single
     )  # looks up the downgrades based on the errors
-    
+    ENABLE_VISIBILITY: ClassVar[bool] = True
+
     def __repr__(self):
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.smoothers)}, {str(self.selectors)}, {str(self.criteria)})"
 
@@ -74,17 +75,19 @@ class DownGrade:
 
         measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
 
-        raw_sample = visibility(
-            self.criteria.prepare(measurement.value),
-            measurement.visibility,
-            self.criteria.lookup.error_limit,
-            "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
-        )            
+        if DownGrade.ENABLE_VISIBILITY:
+            raw_sample = visibility(
+                self.criteria.prepare(measurement.value),
+                measurement.visibility,
+                self.criteria.lookup.error_limit,
+                "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
+            )            
+        else:
+            raw_sample = self.criteria.prepare(measurement.value)
 
         sample = raw_sample.copy()
         for sm in self.smoothers:
             sample = sm(sample, fl.dt, el, **(smkwargs or {}))
-
 
         return Result(
             self.name,
