@@ -49,7 +49,7 @@ def stallturn(name, speed, yaw_rate, Inter):
 
 
 
-def tailslide(name, speed, direction, rate, over_flop, reset_rate):
+def tailslide(name, speed, direction, rate, over_flop, reset_rate, Inter):
     return ElDef.build(
         TailSlide,
         name,

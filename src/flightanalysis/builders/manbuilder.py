@@ -17,7 +17,7 @@ from flightanalysis.definition import (
     ManOption,
     SchedDef
 )
-from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn
+from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn, TailSlide
 from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.criteria import Combination
 
@@ -28,7 +28,7 @@ class ManBuilder:
     mps: ManParms
     mpmaps: dict[str, dict]
     dg_applicator: Callable[
-        [Loop | Line | Snap | Spin | StallTurn, State, str, str], list
+        [Loop | Line | Snap | Spin | StallTurn, TailSlide, State, str, str], list
     ]
     Inter: object
     box: Box

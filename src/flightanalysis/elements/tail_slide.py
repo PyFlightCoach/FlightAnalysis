@@ -25,6 +25,10 @@ class TailSlide(Element):
     over_flop: float
     reset_rate: float
 
+    @property
+    def height(self):
+        return self.speed * ((np.pi + abs(self.over_flop)) / abs(self.pitch_rate) + abs(self.over_flop) / abs(self.reset_rate))
+
     def describe(self):
         return f"tailslide, pitch rate = {self.pitch_rate}"
 
