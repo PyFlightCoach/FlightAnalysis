@@ -5,20 +5,23 @@ from flightanalysis.definition import ItemOpp, Opp
 from numbers import Number
 import numpy as np
 
+from pudb import set_trace
 
-def line(name: str, speed, length, Inter):
-    return ElDef.build(
+
+def line(name: str, speed, length, Inter, roll=0, exit_speed=30):
+    ed = ElDef.build(
         Line,
         name,
-        [speed, length]
-    ), ManParms()
+        [speed, length, roll, exit_speed]
+    )
+    return ed, ManParms()
 
-
-def roll(name: str, speed, rate, rolls, Inter):
+        
+def roll(name: str, speed, rate, rolls, Inter, exit_speed=30):
     el = ElDef.build(
         Line,
         name,
-        [speed, abs(rolls) * speed / rate, rolls],
+        [speed, abs(rolls) * speed / rate, rolls, exit_speed],
     )
     if isinstance(rate, ManParm):
         rate.collectors.add(el.get_collector("rate"))
@@ -69,12 +72,12 @@ def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, Inter
     return ed, ManParms()
 
 
-def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns, Inter):
-    height = Spin.get_height(speed, rate, turns, nd_turns, recovery_turns)
+def spin(name, turns, rturns, rate, break_angle, speed, nd_turns, recovery_turns, reversal_turns, Inter):
+    height = Spin.get_height(speed, rate, turns, rturns, nd_turns, recovery_turns, reversal_turns)
     ed = ElDef.build(
         Spin,
         name,
-        [speed, height, turns, break_angle, nd_turns, recovery_turns]
+        [speed, height, turns, rturns, break_angle, nd_turns, recovery_turns, reversal_turns]
     )
 
     if isinstance(rate, ManParm):

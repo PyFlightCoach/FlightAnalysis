@@ -10,7 +10,6 @@ from flightanalysis.definition.manoption import ManOption
 from flightanalysis.elements import Line
 from flightanalysis.schedule import Schedule
 
-
 class SchedDef(Collection):
     VType = ManDef
 
@@ -65,7 +64,7 @@ class SchedDef(Collection):
         return plot_regions(template, "manoeuvre", **kwargs)
 
     def label_exit_lines(self, sti: State):
-        mans = list(self.data.keys()) + ["landing"]
+        mans = list(self.data.keys()) + ["lnd"]
 
         meids = [sti.data.columns.get_loc(l) for l in ["manoeuvre", "element"]]
 
@@ -84,15 +83,15 @@ class SchedDef(Collection):
         ] = ["tkoff", "exit_line"]
 
         return State.stack(sts, 0)
-
-    def create_fcj(self, sname: str, path: str, wind=Heading.LTOR, scale=1, kind="f3a"):
+       
+    def create_fcj(self, sname: str, path: str, wind=Heading.LTOR, scale=1, kind="FAI F3A"):
         sched, template = self.create_template(170, wind)
-        template = State.stack(
+        template = State.stack(        
             [
                 template,
-                Line("entry_line", 30, 100)
+                Line("exit_line", 30, 100, 0, 30)
                 .create_template(template[-1])
-                .label(manoeuvre="landing"),
+                .label(manoeuvre="lnd"),
             ]
         )
 
@@ -102,18 +101,18 @@ class SchedDef(Collection):
             template = template.mirror_zy()
 
         fcj = self.label_exit_lines(template).create_fc_json(
-            [0] + [man.info.k for man in self] + [0], sname, kind.lower()
+            [0] + [man.info.k for man in self] + [0], sname, kind
         )
-
         with open(path, "w") as f:
             dump(fcj, f)
 
-    def create_fcjs(self, sname, folder, kind="F3A"):
-        winds = [Heading.RTOL, Heading.RTOL, Heading.LTOR, Heading.LTOR]
+    # sdef.create_fcjs(s.name, '.', kind=s.rules)
+    def create_fcjs(self, sname, folder, kind="FAI F3A"):
+        winds = [Heading.RTOL, Heading.RTOL, Heading.LTOR, Heading.LTOR,]
         distances = [170, 150, 170, 150]
 
         for wind, distance in zip(winds, distances):
-            w = "A" if wind == 1 else "B"
+            w = "B" if wind == Heading.LTOR else "A"
             fname = f"{folder}/{sname}_template_{distance}_{w}.json"
-            print(fname)
             self.create_fcj(sname, fname, wind, distance / 170, kind)
+            print(fname)

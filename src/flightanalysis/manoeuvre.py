@@ -46,7 +46,7 @@ class Manoeuvre:
         if self.exit_line:
             els.add(self.exit_line)
         elif create_exit:
-            els.add(Line("exit_line", self.elements[0].speed, 30, 0))
+            els.add(Line("exit_line", self.elements[0].speed, 100, self.elements[0].speed))
 
         return els
 

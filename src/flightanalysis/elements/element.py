@@ -8,6 +8,7 @@ from json import load
 import inspect
 from typing import Self, ClassVar
 from dataclasses import dataclass
+from pudb import set_trace
 
 
 class ElementError(Exception):
@@ -59,13 +60,35 @@ class Element:
         return template[0].transform
 
     @staticmethod
-    def create_time(duration: float, fl: State=None):
+    def create_time(duration: float, length: float = 100, speed: float = 30, exit_speed = 30, fl: State=None):
         
         if not fl:
+            set_trace()
             n = max(int(np.ceil(duration * State._construct_freq)), 3)
-            return g.Time.from_t(
-                np.linspace(0, duration, n)
-            )
+            
+            if speed == exit_speed:
+                time_space = np.linspace(0, duration, n)
+                timeObj = g.Time.from_t(time_space)
+            else:
+                #set_trace()
+                acceleration = (exit_speed - speed)/duration
+                time_space = np.linspace(0, duration, n)
+                sqrt_space = np.linspace(exit_speed, speed, n)
+                distance_space = np.linspace(0, length, n)
+                
+                # time calculations apear OK, need to pass the speed_space to the fill function that currently assumes flat 30
+                for k in range(1, len(time_space)):
+                    # time_space[k] = (speed_space[k]-speed)/acceleration
+                    sqrt = np.sqrt(speed**2+2*acceleration*distance_space[k])
+                    sqrt_space[k] = sqrt
+                    time_space[k] = (-speed + sqrt)/acceleration
+                    
+                # print("*** n {} unit {} speed_space: {}".format(n, distance_unit, speed_space[:3]) )
+                # print("*** time_space: {}".format(time_space[:3]))
+                # print("*** time_space tail: {}".format(time_space[-3:]))
+                timeObj = g.Time.from_t(time_space)
+                
+            return timeObj
         else:
             return fl.time.reset_zero().scale(duration)
 

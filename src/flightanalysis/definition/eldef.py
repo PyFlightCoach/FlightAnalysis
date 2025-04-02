@@ -12,6 +12,8 @@ from flightanalysis.scoring.downgrade import DownGrades
 
 from . import Collector, Collectors, ItemOpp, ManParm, ManParms, Opp, SumOpp
 
+from pudb import set_trace
+
 
 @dataclass
 class ElDef:

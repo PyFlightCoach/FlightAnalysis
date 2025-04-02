@@ -26,7 +26,7 @@ from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
 
 from . import ElDef, ElDefs, ManParms
-
+from pudb import set_trace
 
 @dataclass
 class ManDef:
@@ -77,6 +77,13 @@ class ManDef:
 
     def guess_ipos(self, target_depth: float, heading: Heading) -> g.Transformation:
         gpy = g.PY(target_depth)
+        # modified to control the generated template base height
+        bottom = self.box.bottom(gpy)[1][0]
+        bottom *= (self.info.start.height.value - 1)
+        height = self.info.start.height.value
+        height *= self.box.top(gpy)[1][0]
+        zz = bottom  # + height
+
         return g.Point(
             x={
                 Position.CENTRE: {
@@ -93,8 +100,7 @@ class ManDef:
                 Heading.RTOL: target_depth,
                 Heading.LTOR: target_depth,
             }[heading],
-            z=self.box.bottom(gpy)[1][0] * (self.info.start.height.value - 1)
-            + self.info.start.height.value * self.box.top(gpy)[1][0],
+            z=zz,
         )
 
     def initial_rotation(self, heading: Heading) -> g.Quaternion:

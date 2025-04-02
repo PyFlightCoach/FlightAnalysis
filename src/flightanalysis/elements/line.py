@@ -6,13 +6,18 @@ from .element import Element
 from dataclasses import dataclass
 from typing import ClassVar
 
+import pandas as pd
+
+from pudb import set_trace
+import csv
 
 @dataclass
 class Line(Element):
-    parameters: ClassVar[list[str]] = Element.parameters + "length,roll,rate".split(",")
+    parameters: ClassVar[list[str]] = Element.parameters + "length,rate,roll,exit_speed".split(",")
     length: float
-    roll: float = 0   
-
+    roll: float = 0
+    exit_speed: float = 30
+    
     def describe(self):
         d1 = "line" if self.roll==0 else f"{self.roll} roll"
         return f"{d1}, length = {self.length} m"
@@ -20,7 +25,7 @@ class Line(Element):
     @property
     def rate(self):
         return self.roll * self.speed / self.length
-
+        
     def create_template(self, istate: State, fl: State=None) -> State:
         """construct a State representing the judging frame for this line element
 
@@ -33,14 +38,31 @@ class Line(Element):
             State: [description]
         """
         v = PX(self.speed) if istate.vel == 0 else istate.vel.scale(self.speed)
-             
-        return self._add_rolls(
-            istate.copy(vel=v, rvel=P0()).fill(
-                Element.create_time(self.length / self.speed, fl)
-            ), 
-            self.roll
-        )
+                
+        average_speed = (self.speed + self.exit_speed)/2
+        duration = self.length / average_speed
+        spacing = Element.create_time(duration, self.length, self.speed, self.exit_speed, fl)
+                
+        new_state = istate.copy(vel=v, rvel=P0()).fill(spacing).set_velocity(self.speed, self.exit_speed, len(spacing))
+        new_state = self._add_rolls(new_state, self.roll)
+        #set_trace()
 
+        '''                
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+            for state in new_state:
+                # print(state.data)
+                pass
+                '''
+        
+        with open('file.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['x', new_state.x])
+            writer.writerow(new_state.u)
+            writer.writerow(new_state.dt)
+            writer.writerow(new_state.t)
+                
+        return new_state        
+                       
     def match_intention(self, itrans: Transformation, flown: State) -> Line:
         return self.set_parms(
             length=abs(self.length_vec(itrans, flown))[0],

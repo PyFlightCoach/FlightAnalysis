@@ -21,6 +21,7 @@ from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn
 from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.criteria import Combination
 
+from pudb import set_trace
 
 
 @dataclass
@@ -102,21 +103,24 @@ class ManBuilder:
                         mps.add(ManParm(k, Combination(desired=v), 0, "rad"))
                     else:
                         mps.add(ManParm.parse(v, mps, k))
-
+        # maneuver definition
         md = ManDef(
             maninfo,
             mps,
             ElDefs(),
             self.box.__class__(**dict(self.box.__dict__, relax_back=relax_back)),
         )
-        self.line(force_name="entry_line", length=30)(md)
+        
+        # create entry line first
+        self.line(force_name="entry_line", length=30, roll=0, exit_speed=30)(md)
 
+        # go through element makers
         for i, em in enumerate(elmakers, 1):
             if isinstance(em, int):
                 if em == MBTags.CENTRE:
                     md.info.centre_points.append(len(md.eds.data))
-            else:
-                c1 = len(md.eds.data)
+            else:                
+                c1 = len(md.eds.data)                
                 try:
                     new_eds = em(md)
                 except Exception as ex:
