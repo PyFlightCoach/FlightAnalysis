@@ -1,5 +1,6 @@
 from __future__ import annotations
 from flightdata import Collection, State
+from geometry.utils import apply_index_slice
 from .criteria import Bounded, Continuous, Single, Criteria, ContinuousValue
 from .measurement import Measurement
 from .visibility import visibility
@@ -7,7 +8,7 @@ from .results import Results, Result
 from dataclasses import dataclass, replace
 from flightanalysis.base.ref_funcs import RefFuncs, RefFunc
 import numpy as np
-
+from typing import ClassVar
 from .reffuncs import measures, smoothers, selectors
 
 
@@ -27,7 +28,8 @@ class DownGrade:
     criteria: (
         Bounded | Continuous | Single
     )  # looks up the downgrades based on the errors
-    
+    ENABLE_VISIBILITY: ClassVar[bool] = True
+
     def __repr__(self):
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.smoothers)}, {str(self.selectors)}, {str(self.criteria)})"
 
@@ -63,51 +65,55 @@ class DownGrade:
         smkwargs: dict = None,
         sekwargs: dict = None,
     ) -> Result:
+
+        oids = np.arange(len(fl))
+        for s in self.selectors:
+            sli = s(fl, **sekwargs or {})
+            oids = apply_index_slice(oids, sli)
+            fl = fl.iloc[sli]
+            tp = tp.iloc[sli]
+
         measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
 
-        raw_sample = visibility(
-            self.criteria.prepare(measurement.value),
-            measurement.visibility,
-            self.criteria.lookup.error_limit,
-            "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
-        )
+        if DownGrade.ENABLE_VISIBILITY:
+            raw_sample = visibility(
+                self.criteria.prepare(measurement.value),
+                measurement.visibility,
+                self.criteria.lookup.error_limit,
+                "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
+            )            
+        else:
+            raw_sample = self.criteria.prepare(measurement.value)
+
         sample = raw_sample.copy()
-        freq = 1 / fl.dt.mean()
         for sm in self.smoothers:
-            sample = sm(freq, sample, el, **(smkwargs or {}))
-
-        ids = np.arange(len(sample))
-
-        for s in self.selectors:
-            sub_ids = s(
-                State(fl.data.iloc[ids]), 
-                State(tp.data.iloc[ids]), 
-                sample[ids], 
-                **(sekwargs or {})
-            )
-            
-            ids = ids[sub_ids]
+            sample = sm(sample, fl.dt, el, **(smkwargs or {}))
 
         return Result(
             self.name,
             measurement,
             raw_sample,
-            sample[ids],
-            ids,
-            *self.criteria(sample[ids], limits),
+            sample,
+            oids,
+            *self.criteria(sample, limits),
             self.criteria,
         )
 
 
 def dg(
     name: str,
-    measure: RefFunc,
-    smoothers: RefFunc | list[RefFunc],
-    selectors: RefFunc | list[RefFunc],
+    meas: RefFunc,
+    sms: RefFunc | list[RefFunc],
+    sels: RefFunc | list[RefFunc],
     criteria: Criteria,
 ):
+    if sms is None:
+        sms = []
+    elif isinstance(sms, RefFunc):
+        sms = [sms]
+    sms.append(smoothers.final())
     return DownGrade(
-        name, measure, RefFuncs(smoothers), RefFuncs(selectors), criteria
+        name, meas, RefFuncs(sms), RefFuncs(sels), criteria
     )
 
 

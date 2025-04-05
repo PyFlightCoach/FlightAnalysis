@@ -1,56 +1,40 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import partial
+from numbers import Number
 
 import geometry as g
 import numpy as np
+import pandas as pd
 from flightdata import State
 from loguru import logger
+from joblib import Parallel, delayed
 
 from flightanalysis.definition import ElDef, ManDef
 from flightanalysis.elements import Element
-from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring import (
     ElementsResults,
     ManoeuvreResults,
     Results,
 )
-
+import os
 from ..el_analysis import ElementAnalysis
 from .alignment import Alignment
 from .basic import Basic
 
 
-@dataclass
+@dataclass(repr=False)
 class Complete(Alignment):
-    corrected: Manoeuvre
-    corrected_template: State
+    # corrected: Manoeuvre
+    # corrected_templates: dict[str, State]
 
     @staticmethod
     def from_dict(ajman: dict) -> Complete | Alignment | Basic:
-        analysis = Alignment.from_dict(ajman)
-        if (
-            isinstance(analysis, Alignment)
-            and ajman["corrected"]
-            and ajman["corrected_template"]
-        ):
-            return Complete(
-                **analysis.__dict__,
-                corrected=Manoeuvre.from_dict(ajman["corrected"]),
-                corrected_template=State.from_dict(ajman["corrected_template"]),
-            )
-        else:
-            return analysis
+        return Alignment.from_dict(ajman).proceed()
 
-    def to_dict(self, basic: bool=False) -> dict:
-        _basic = super().to_dict(basic)
-        if basic:
-            return _basic
-        return dict(
-            **_basic,
-            corrected=self.corrected.to_dict(),
-            corrected_template=self.corrected_template.to_dict(),
-        )
+    def to_dict(self, basic: bool = False) -> dict:
+        return super().to_dict(basic)
 
     def run(self, optimise_aligment=True) -> Scored:
         if optimise_aligment:
@@ -70,7 +54,10 @@ class Complete(Alignment):
             yield self.get_ea(edn)
 
     def __getitem__(self, i):
-        return self.get_ea(self.mdef.eds[i + 1].name)
+        if isinstance(i, Number):
+            return self.get_ea(self.mdef.eds[i + 1].name)
+        else:
+            return self.get_ea(i)
 
     def __getattr__(self, name):
         if name in self.mdef.eds.data.keys():
@@ -83,7 +70,7 @@ class Complete(Alignment):
     def get_ea(self, name):
         el: Element = getattr(self.manoeuvre.all_elements(), name)
         st = el.get_data(self.flown)
-        tp = el.get_data(self.template).relocate(st.pos[0])
+        tp = self.templates[el.uid].relocate(st.pos[0])
 
         return ElementAnalysis(
             self.get_edef(name), self.mdef.mps, el, st, tp, el.ref_frame(tp)
@@ -100,8 +87,8 @@ class Complete(Alignment):
                 self.mdef.info,
                 self.mdef.mps.update_defaults(self.manoeuvre),
                 self.mdef.eds,
+                self.mdef.box,
             )
-            correction = mdef.create().add_lines()
 
             return Complete(
                 self.id,
@@ -110,8 +97,6 @@ class Complete(Alignment):
                 mdef,
                 manoeuvre,
                 template,
-                correction,
-                correction.create_template(template[0], self.flown),
             )
         else:
             return self
@@ -129,9 +114,9 @@ class Complete(Alignment):
     ) -> int:
         el1: Element = self.manoeuvre.all_elements()[eln1]
         el2: Element = self.manoeuvre.all_elements()[eln2]
-
+        min_len = 3
         def score_split(steps: int) -> float:
-            new_fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
+            new_fl = fl.step_label("element", eln1, steps, fl.t, min_len)
             res1, new_iatt = self.get_score(eln1, itrans, el1.get_data(new_fl))
 
             el2fl = el2.get_data(new_fl)
@@ -145,9 +130,17 @@ class Complete(Alignment):
             return res1.total + res2.total
 
         dgs = {0: score_split(0)}
+        
+        def check_steps(stps: int):
+            return not ((stps > 0 and len(el2.get_data(fl)) <= stps + min_len) or (
+                stps < 0 and len(el1.get_data(fl)) <= -stps + min_len
+            ))
 
         steps = int(len(el1.get_data(fl)) > len(el2.get_data(fl))) * 2 - 1
-
+        
+        if not check_steps(steps):
+            return 0
+        
         new_dg = score_split(steps)
         if new_dg > dgs[0]:
             steps = -steps
@@ -155,12 +148,11 @@ class Complete(Alignment):
             steps += np.sign(steps)
             dgs[steps] = new_dg
 
-        while True:
-            if (steps > 0 and len(el2.get_data(fl)) <= steps + 3) or (
-                steps < 0 and len(el1.get_data(fl)) <= -steps + 3
-            ):
+        while check_steps(steps):
+            try:
+                new_dg = score_split(steps)
+            except ValueError:
                 break
-            new_dg = score_split(steps)
 
             if new_dg < list(dgs.values())[-1]:
                 dgs[steps] = new_dg
@@ -194,8 +186,8 @@ class Complete(Alignment):
                             f"Adjusting split between {eln1} and {eln2} by {steps} steps"
                         )
 
-                        fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
-
+                        # fl = fl.shift_label(steps, 2, manoeuvre=self.name, element=eln1)
+                        fl = fl.step_label("element", eln1, steps, fl.t, 3)
                         adjusted.update([eln1, eln2])
 
             padjusted = adjusted
@@ -205,6 +197,9 @@ class Complete(Alignment):
             )
 
         return Basic(self.id, self.schedule_direction, fl, self.mdef).proceed()
+
+    def optimise_alignment_v2(self):
+        pass
 
     def intra(self):
         return ElementsResults([ea.intra_score() for ea in self])
@@ -216,10 +211,55 @@ class Complete(Alignment):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
     def plot_3d(self, **kwargs):
-        from plotting import plotdtw, plotsec
+        from plotting import plotsec
 
-        fig = plotdtw(self.flown, self.flown.data.element.unique())
+        fig = self.flown.plotlabels("element")
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
+
+    def set_boundaries(self, boundaries: list[float]):
+        new_man = Basic(
+            self.id,
+            self.schedule_direction,
+            self.flown.set_boundaries("element", boundaries),#.resample(),
+            self.mdef,
+        ).proceed()
+
+        return new_man.run_all(False) if isinstance(self, Scored) else new_man
+
+    def set_boundary(self, el: str | int, boundary: float):
+        # TODO check if boundary is within bounds
+        boundaries = self.flown.labels.element.boundaries
+        elid = el if isinstance(el, int) else self.elnames.index(el)
+        boundaries[elid] = boundary
+        return self.set_boundaries(boundaries)
+
+    def boundary_sweep(self, el: str | int, width: float, substeps: int = 5):
+        """Sweep an element boundary through a width and return a set of results
+        width is in seconds,
+        substeps is the number of steps to take within each timestep
+        TODO make sure range doesn't cross adjacent boundary
+        """
+        elid = el if isinstance(el, int) else self.elnames.index(el)
+        bopt = self.flown.labels.element.boundaries[elid]
+        tstart = bopt - width
+        tstop = bopt + width
+        ts = self.flown.data.t[tstart:tstop].to_numpy()
+        splits = np.array(
+            [
+                t0 + (t1 - t0) * i / substeps
+                for t0, t1 in zip(ts[:-1], ts[1:])
+                for i in range(substeps)
+            ]
+        )
+        logger.info(f"Starting {os.cpu_count() * 2 - 1} processes to run {len(splits)} manoeuvres")
+        madicts = Parallel(n_jobs=os.cpu_count() * 2 - 1)(
+            delayed(partial(Basic.parse_analyse_serialise, optimise=False, name=i))(self.set_boundary(el, ic).to_dict())
+            for i, ic in enumerate(splits)
+        )
+        outdata = {ic: Scored.from_dict(mad).scores.dg_dict() for ic, mad in zip(splits, madicts) }
+
+        return pd.DataFrame(outdata).T
+
 
 
 from .scored import Scored  # noqa: E402

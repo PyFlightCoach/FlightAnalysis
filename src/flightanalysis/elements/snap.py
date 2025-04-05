@@ -87,15 +87,12 @@ class Snap(Element):
         )
 
         return State.stack([pb, au, rec]).label(element=self.uid)
-        # .superimpose_rotation(
-        #    istate.att.transform_point(g.PX()), self.roll, reference="world"
-        # )
 
     def describe(self):
         return f"Snap {self.roll}, {self.pitch}"
 
     def match_intention(self, transform: g.Transformation, flown: State) -> Snap:
-        snap_rate = g.Point.scalar_projection(flown.rvel, flown.vel)
+        snap_rate = g.point.scalar_projection(flown.rvel, flown.vel)
 
         snap_angle = np.cumsum(snap_rate * flown.dt)
 

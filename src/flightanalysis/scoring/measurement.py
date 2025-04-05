@@ -7,7 +7,7 @@ import numpy.typing as npt
 from dataclasses import dataclass
 
 
-@dataclass()
+@dataclass
 class Measurement:
     value: npt.NDArray
     unit: str
@@ -39,7 +39,7 @@ class Measurement:
         if len(self.value) == 1:
             return f"Measurement({self.value}, {self.direction}, {self.visibility})"
         else:
-            return f"Measurement(\nvalue:\n={pd.DataFrame(self.value).describe()}\nvisibility:\n{pd.DataFrame(self.visibility).describe()}\n)"
+            return f"Measurement(len={len(self)}, unit={self.unit})"
 
     @staticmethod
     def from_dict(data) -> Measurement:
@@ -52,7 +52,7 @@ class Measurement:
         )
 
     @staticmethod
-    def ratio(vs, expected, zero_ends=True):
+    def ratio(vs, expected):
         avs, aex = np.abs(vs), np.abs(expected)
 
         nom = np.maximum(avs, aex)
@@ -61,14 +61,10 @@ class Measurement:
 
         with np.errstate(divide="ignore", invalid="ignore"):
             res = ((avs > aex) * 2 - 1) * (nom / denom - 1)
-
+        
         res[vs * expected < 0] = -10
-        if zero_ends:
-            res[0] = 0
-            res[-1] = 0
-        return res
-
-
+        
+        return np.nan_to_num(res, 0)
 
 
 

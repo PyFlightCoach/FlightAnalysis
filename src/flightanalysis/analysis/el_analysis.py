@@ -15,6 +15,18 @@ class ElementAnalysis:
     tp: State
     ref_frame: g.Transformation
 
+    def update(self, new_fl: State):
+        new_el = self.el.match_intention(self.ref_frame, new_fl)
+        new_tp = new_el.create_template(self.tp[0], new_fl.time)
+        return ElementAnalysis(
+            self.edef,
+            self.mps,
+            new_el,
+            new_fl,
+            new_tp,
+            self.ref_frame
+        )
+
     def plot_3d(self, **kwargs):
         from plotting import plotsec
         return plotsec(dict(fl=self.fl, tp=self.tp), **kwargs)
@@ -34,6 +46,9 @@ class ElementAnalysis:
             g.Transformation.from_dict(data['ref_frame'])
         )
     
+    def score_dg(self, dg: str):
+        return self.edef.dgs[dg](self.el, self.fl, self.tp)
+
     def intra_score(self):
         return self.edef.dgs.apply(self.el, self.fl, self.tp) #[dg.apply(self.el.uid + (f'_{k}' if len(k) > 0 else ''), self.fl, self.tp) for k, dg in self.edef.dgs.items()]
     

@@ -2,7 +2,6 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 from flightdata import State, Collection
-from flightanalysis.scoring import Measurement
 import geometry as g
 from json import load
 import inspect
@@ -21,13 +20,8 @@ class Element:
     speed: float
 
     def get_data(self, st: State):
-        return st.get_element(self.uid)
-
-    def _add_rolls(self, el: State, roll: float) -> State:
-        if not roll == 0:
-            el = el.superimpose_rotation(g.PX(), roll)
-        return el.label(element=self.uid)
-
+        return st.element[self.uid]
+    
     def __eq__(self, other):
         if not self.__class__ == other.__class__:
             return False
