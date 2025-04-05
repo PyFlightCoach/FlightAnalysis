@@ -1,4 +1,3 @@
-from sqlalchemy import over
 from flightanalysis.definition.eldef import ElDef, ManParm, ManParms
 from flightanalysis.elements import Line, Loop, StallTurn, Snap, Spin, TailSlide
             
