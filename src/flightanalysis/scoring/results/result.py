@@ -81,8 +81,8 @@ class Result:
         return "\n".join(
             [
                 f"dg={self.dgs[i]:.3f}",
-                f"meas={self.plot_f(self.measurement.value[self.sample_keys[self.keys[i]]]):.2f}",
-                f"vis={self.measurement.visibility[self.sample_keys[self.keys[i]]]:.2f}",
+                # f"meas={self.plot_f(self.measurement.value[self.sample_keys[self.keys[i]]]):.2f}",
+                # f"vis={self.measurement.visibility[self.sample_keys[self.keys[i]]]:.2f}",
                 f"sample={self.plot_f(self.sample[self.keys[i]]):.2f}",
                 f"err={self.plot_f(self.errors[i]):.2f}",
             ]
@@ -116,88 +116,115 @@ class Result:
     def plot_f(self):
         return np.degrees if self.measurement.unit == "rad" else lambda x: x
 
-    def measurement_trace(self, xvals=None, **kwargs):
+    def measurement_trace(self, xvs=None, **kwargs):
         import plotly.graph_objects as go
 
-        xvs = np.arange(len(self.measurement)) / 25 if xvals is None else xvals
-        
         return [
-            go.Scatter(**(dict(
-                x=xvs,
-                y=self.plot_f(self.measurement.value),
-                name="Measurement",
-                **kwargs,
-                line=dict(color="blue", width=1, dash="dash")
-            ) | kwargs)),
-            *([go.Scatter(**(dict(
-                x=xvs[self.sample_keys],
-                y=self.plot_f(self.measurement.value)[self.sample_keys],
-                name="Selected",
-                line=dict(color="blue", width=1, dash="solid"),
-            ) | kwargs))] if not len(self.sample)==len(self.measurement) else []
-            )
-            
+            go.Scatter(
+                **(
+                    dict(
+                        x=self.sample_keys if xvs is None else xvs,
+                        y=self.plot_f(self.measurement.value),
+                        name="Measurement",
+                        mode="lines",
+                        **kwargs,
+                        line=dict(color="blue", width=1, dash="dash"),
+                    )
+                    | kwargs
+                )
+            ),
+            *(
+                [
+                    go.Scatter(
+                        **(
+                            dict(
+                                x=self.sample_keys if xvs is None else xvs,
+                                y=self.plot_f(self.measurement.value)[self.sample_keys],
+                                mode="lines",
+                                name="Selected",
+                                line=dict(color="blue", width=1, dash="solid"),
+                            )
+                            | kwargs
+                        )
+                    )
+                ]
+                if not len(self.sample) == len(self.measurement)
+                else []
+            ),
         ]
 
-    def sample_trace(self, xvals=None, **kwargs):
+    def sample_trace(self, xvs=None, **kwargs):
         import plotly.graph_objects as go
 
         return [
             *(
                 [
-                    go.Scatter(**(dict(
-                        x=(
-                            np.arange(len(self.measurement)) / 25
-                            if xvals is None
-                            else xvals
-                        ),
-                        y=self.plot_f(self.raw_sample),
-                        name="Visible Sample",
-                        line=dict(width=1, color="black", dash="dash"),
-                    ) | kwargs))
+                    go.Scatter(
+                        **(
+                            dict(
+                                x=self.sample_keys if xvs is None else xvs,
+                                y=self.plot_f(self.raw_sample),
+                                mode="lines",
+                                name="Visible Sample",
+                                line=dict(width=1, color="black", dash="dash"),
+                            )
+                            | kwargs
+                        )
+                    )
                 ]
                 if self.raw_sample is not None
                 else []
             ),
-            go.Scatter(**(dict(
-                x=(np.arange(len(self.measurement)) / 25 if xvals is None else xvals)[
-                    self.sample_keys
-                ],
-                y=self.plot_f(self.sample),
-                name="Smooth Sample",
-                line=dict(width=1, color="black"),
-            ) | kwargs))
+            go.Scatter(
+                **(
+                    dict(
+                        x=self.sample_keys if xvs is None else xvs,
+                        y=self.plot_f(self.sample),
+                        mode="lines",
+                        name="Smooth Sample",
+                        line=dict(width=1, color="black"),
+                    )
+                    | kwargs
+                )
+            ),
         ]
 
-    def downgrade_trace(self, xvals=None, **kwargs):
+    def downgrade_trace(self, xvs=None, **kwargs):
         import plotly.graph_objects as go
 
-        return go.Scatter(**(dict(
-            x=(
-                np.arange(len(self.measurement)) / 25
-                if xvals is None
-                else xvals
-            )[self.sample_keys[self.keys]],
-            y=self.plot_f(self.sample[self.keys]),
-            text=np.round(self.dgs, 3),
-            hovertext=[self.info(i) for i in range(len(self.keys))],
-            mode="markers+text",
-            name="Downgrades",
-            textposition="bottom right",
-            yaxis="y",
-            marker=dict(size=10, color="black"),
-        )| kwargs))
+        return go.Scatter(
+            **(
+                dict(
+                    x=self.sample_keys[self.keys] if xvs is None else xvs[self.keys],
+                    y=self.plot_f(self.sample[self.keys]),
+                    text=np.round(self.dgs, 3),
+                    hovertext=[self.info(i) for i in range(len(self.keys))],
+                    mode="markers+text",
+                    name="Downgrades",
+                    textposition="bottom right",
+                    yaxis="y",
+                    marker=dict(size=10, color="black"),
+                )
+                | kwargs
+            )
+        )
 
-    def visibility_trace(self, xvals=None, **kwargs):
+    def visibility_trace(self, xvs=None, **kwargs):
         import plotly.graph_objects as go
 
-        return go.Scatter(**(dict(
-            x=np.arange(len(self.measurement)) / 25 if xvals is None else xvals,
-            y=self.measurement.visibility,
-            name="Visibility",
-            yaxis="y2",
-            line=dict(width=1, color="black", dash="dot"),
-        ) | kwargs))
+        return go.Scatter(
+            **(
+                dict(
+                    x=self.sample_keys if xvs is None else xvs,
+                    y=self.measurement.visibility,
+                    mode="lines",
+                    name="Visibility",
+                    yaxis="y2",
+                    line=dict(width=1, color="black", dash="dot"),
+                )
+                | kwargs
+            )
+        )
 
     def traces(self, xvals: np.ndarray = None, **kwargs):
         return [
@@ -217,6 +244,14 @@ class Result:
                     title="visibility", overlaying="y", range=[0, 1], side="right"
                 ),
                 title=f"{self.name}, {self.total:.2f}",
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=1.0,
+                    xanchor="left",
+                    x=0.3,
+                    bgcolor="rgba(0,0,0,0)",
+                ),
             ),
             data=self.traces(xvals),
         )

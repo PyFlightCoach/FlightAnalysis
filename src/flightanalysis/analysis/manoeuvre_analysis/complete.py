@@ -211,9 +211,9 @@ class Complete(Alignment):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
     def plot_3d(self, **kwargs):
-        from plotting import plotdtw, plotsec
+        from plotting import plotsec
 
-        fig = plotdtw(self.flown, self.flown.data.element.unique())
+        fig = self.flown.plotlabels("element")
         return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
 
     def set_boundaries(self, boundaries: list[float]):
