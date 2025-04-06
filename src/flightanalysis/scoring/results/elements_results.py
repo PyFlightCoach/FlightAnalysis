@@ -1,14 +1,6 @@
 from __future__ import annotations
-import numpy as np
-import numpy.typing as npt
 import pandas as pd
 from flightdata import Collection
-from flightdata.base import to_list
-from flightanalysis.scoring.measurement import Measurement
-from flightanalysis.scoring.criteria import Criteria
-from dataclasses import dataclass
-import geometry as g
-from itertools import chain
 from .results import Results
 
 
@@ -47,7 +39,16 @@ class ElementsResults(Collection):
         df.index = list(self.data.keys()) + ["Total"]
 
         return df
-
+    
+    def criteria_sum(self) -> dict[str, float]:
+        criteria = {}
+        for results in self:
+            for k, result in results.data.items():
+                if k not in criteria:
+                    criteria[k] = []
+                criteria[k].append(result.total) 
+        return {k: sum(v) for k, v in criteria.items()}
+        
     def to_dict(self) -> dict[str, dict]:
         return dict(
             data={k: v.to_dict() for k, v in self.data.items()},
