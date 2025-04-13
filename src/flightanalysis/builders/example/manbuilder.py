@@ -9,6 +9,7 @@ from flightanalysis.builders.elbuilders import (
     rollmaker,
     spin,
     stallturn,
+    tailslide
 )
 from flightanalysis.builders.manbuilder import ManBuilder
 from flightanalysis.definition import ManParms
@@ -95,6 +96,17 @@ mb = ManBuilder(
                 rate=1.7 * np.pi,
                 nd_turns=np.pi / 4,
                 recovery_turns=np.pi / 2,
+            ),
+        ),
+        tailslide=dict(
+            func=tailslide,
+            args=[],
+            kwargs=dict(
+                speed=-5.0,
+                direction=1,
+                rate=np.pi,
+                over_flop=np.radians(30),
+                reset_rate=np.pi,
             ),
         ),
     ),

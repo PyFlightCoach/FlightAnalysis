@@ -162,7 +162,7 @@ def pad(speed, line_length, eds: ElDefs, Inter):
         None,
         "m",
         Collectors([e1.get_collector("length"), e3.get_collector("length")]),
-        visor.scale() if hasattr(visor, "scale") else lambda fl, *args, **kwargs: np.ones(len(fl)),
+        visor.scale() if "scale" in visor.funcs else lambda fl, *args, **kwargs: np.ones(len(fl)),
     )
 
     eds = ElDefs([e1] + [ed for ed in eds] + [e3])
