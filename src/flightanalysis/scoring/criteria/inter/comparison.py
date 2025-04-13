@@ -15,3 +15,5 @@ class Comparison(Criteria):
         errors = np.maximum(vals[:-1], vals[1:]) / np.minimum(vals[:-1], vals[1:]) - 1
 
         return errors, self.lookup(errors), np.arange(len(vs))
+
+free_comparison = Comparison()

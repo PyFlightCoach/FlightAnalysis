@@ -22,7 +22,6 @@ from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.criteria import Combination
 
 
-
 @dataclass
 class ManBuilder:
     mps: ManParms
@@ -144,7 +143,5 @@ class ManBuilder:
         propmps = md.mps.subset(md.eds.list_props())
         md.mps = ManParms.merge([collmps, propmps])
         return md.update_dgs(self.dg_applicator)
-
-
 
 
