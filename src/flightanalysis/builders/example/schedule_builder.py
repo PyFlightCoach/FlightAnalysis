@@ -1,6 +1,0 @@
-
-
-
-
-
-def make_schedule()

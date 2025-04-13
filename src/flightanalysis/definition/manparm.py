@@ -88,6 +88,7 @@ class ManParm(Opp):
 
     @staticmethod
     def s_parse(opp: str | Opp | list[str] | Any, mps: Collection):
+        """Serialise and parse a manparm in order to link it to the new collection"""
         try:
             if isinstance(opp, Opp) or isinstance(opp, str):
                 opp = ManParm.parse(str(opp), mps)

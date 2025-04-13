@@ -1,7 +1,6 @@
 from flightanalysis.base.ref_funcs import RFuncBuilders
 from flightdata import State
-import numpy as np
-import numpy.typing as npt
+
 
 measures = RFuncBuilders({})
 smoothers = RFuncBuilders({})
