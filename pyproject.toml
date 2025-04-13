@@ -1,6 +1,6 @@
 [project]
 name = "flightanalysis"
-version="0.3.18"
+version="0.3.19"
 description = "Python tools for Analysis of Flight Data"
 readme = "README.md"
 authors = [{ name = "Thomas David", email = "thomasdavid0@gmail.com" }]
