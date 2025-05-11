@@ -17,8 +17,10 @@ def coll():
             ManParm("b", Comparison(), 1),
             ManParm("c", Comparison(), 1),
             ManParm("d", Combination(desired=np.array([[1, 2, 3], [4, 5, 6]])), 0),
+            ManParm("e", Combination(desired=np.array([[1], [2]])), 0),
         ]
     )
+
 
 
 def test_parse_operator(coll):
@@ -28,8 +30,17 @@ def test_parse_operator(coll):
 
 
 def test_itemopp(coll):
-    opp = o.Opp.parse("d[1]", coll)
+    opp = o.Opp.parse(coll.d[1], coll)
     assert isinstance(opp, o.ItemOpp)
+    assert opp(coll) == 2
+    coll.d.defaul = 1
+    assert opp(coll) == 5
+
+def test_itemopp_single(coll):
+    opp = o.Opp.parse("e[0]", coll)
+    assert isinstance(opp, o.ItemOpp)
+    assert opp(coll) == 1
+    coll.e.defaul = 1
     assert opp(coll) == 2
 
 

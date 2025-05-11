@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from functools import partial
 from typing import Callable, Tuple
-
+from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from schemas.positioning import MBTags
 
@@ -38,18 +38,22 @@ class ManBuilder:
             el.centred = True
         return el
 
+    def _create_mdef(self, fig: Figure) -> ManDef:
+        return self.create(
+            fig.info,
+            [self.create_eb(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
+            fig.relax_back,
+            **fig.ndmps,
+        )
+    
     def create_mdef(self, fig: Figure | Option) -> ManDef | ManOption:
         try:
             if isinstance(fig, Option):
                 return ManOption([self.create_mdef(op) for op in fig.figures])
             else:
-                return self.create(
-                    fig.info,
-                    [self.create_eb(pe) if isinstance(pe, PE) else pe for pe in fig.elements],
-                    fig.relax_back,
-                    **fig.ndmps,
-                )
+                return self._create_mdef(fig)
         except Exception as ex:
+            logger.error(ex)
             raise Exception(f"Error creating ManDef for {fig.info.name}") from ex
 
     def create_scheddef(self, seq: Sequence) -> SchedDef:
@@ -123,6 +127,7 @@ class ManBuilder:
                 try:
                     new_eds = md.eds.add(em(md.eds, md.mps))
                 except Exception as ex:
+                    logger.exception(ex)
                     raise Exception(
                         f"Error running elmaker {i} of {md.info.name}"
                     ) from ex

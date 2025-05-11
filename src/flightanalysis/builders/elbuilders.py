@@ -2,7 +2,7 @@ from numbers import Number
 
 import numpy as np
 
-from flightanalysis.definition import ItemOpp, Opp, maxopp, minopp
+from flightanalysis.definition import ItemOpp, Opp, maxopp
 from flightanalysis.definition.collectors import Collectors
 from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm, ManParms
 from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn, TailSlide
@@ -162,7 +162,9 @@ def pad(speed, line_length, eds: ElDefs, Inter):
         None,
         "m",
         Collectors([e1.get_collector("length"), e3.get_collector("length")]),
-        visor.scale() if "scale" in visor.funcs else lambda fl, *args, **kwargs: np.ones(len(fl)),
+        visor.scale()
+        if "scale" in visor.funcs
+        else lambda fl, *args, **kwargs: np.ones(len(fl)),
     )
 
     eds = ElDefs([e1] + [ed for ed in eds] + [e3])
@@ -265,19 +267,21 @@ def loopmaker(
     sign = angle.sign() if isinstance(angle, Opp) else np.sign(angle)
     rollangle = angle if rollangle is None else rollangle * sign
 
+    mps = ManParms()
+    rolls = mps.parse_rolls(rolls, name, reversible) if not rolls == 0 else 0
+    if isinstance(rolls, ManParm) and len(rolls.value) == 1:
+        rolls = rolls[0]
     if rolls == 0:
         return loop(name, speed, radius, angle, ke, Inter)
-    if (isinstance(rolls, Number) or isinstance(rolls, ItemOpp)) and rollangle == angle:
-        return rolling_loop(name, speed, radius, angle, rolls, ke, Inter)
+    if isinstance(rolls, ItemOpp) and rollangle == angle:
+        ed = rolling_loop(name, speed, radius, angle, rolls, ke, Inter)[0]
+        return ed, mps
 
-    mps = ManParms()
     eds = ElDefs()
 
     rad = radius if isinstance(radius, Number) else radius.value
 
     internal_rad = ManParm(f"{name}_radius", free_comparison, rad, "m")
-
-    rolls = mps.parse_rolls(rolls, name, reversible) if not rolls == 0 else 0
 
     try:
         rvs = rolls.value
@@ -379,11 +383,26 @@ def loopmaker(
         ke = ke - rolls[i + n]
 
     else:
-        eds.add(
-            rolling_loop(
-                f"{name}_rolls", speed, internal_rad, rollangle, rolls, ke, Inter
-            )[0]
-        )
+        if rolltypes == "s":
+            eds.add(
+                snap(
+                    f"{name}_0",
+                    rolls,
+                    break_angle,
+                    snap_rate,
+                    speed,
+                    break_roll,
+                    recovery_roll,
+                    Inter,
+                )[0]
+            )
+
+        else:
+            eds.add(
+                rolling_loop(
+                    f"{name}_rolls", speed, internal_rad, rollangle, rolls, ke, Inter
+                )[0]
+            )
         ke = ke - rolls
 
     if not rollangle == angle:

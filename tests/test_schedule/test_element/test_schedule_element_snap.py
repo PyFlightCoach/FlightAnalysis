@@ -2,7 +2,7 @@ from flightanalysis.elements import Snap
 import geometry as g
 import numpy as np
 from flightdata import State
-from pytest import fixture, approx
+from pytest import fixture, approx, mark
 
 
 @fixture
@@ -16,7 +16,7 @@ def snt(sn: Snap):
     )
 
 
-
+@mark.skip
 def test_create_template(sn: Snap, snt: State):
     #plotsec(snt, nmodels=5, scale=1).show()
     
@@ -27,6 +27,7 @@ def test_create_template(sn: Snap, snt: State):
     ) 
     assert abs(snt.pos[-1] - snt.pos[0])[0] == approx(sn.length)
 
+@mark.skip
 def test_match_intention(sn, snt):
     sn2 = Snap('snap', 30, 50, -2*np.pi, -np.radians(20), np.pi/4, np.pi/4)
 

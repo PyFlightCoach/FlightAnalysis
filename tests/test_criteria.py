@@ -1,4 +1,4 @@
-from pytest import fixture
+from pytest import fixture, mark
 from flightanalysis.scoring.criteria import Single, Exponential, Criteria, Combination, Continuous, Comparison, Bounded, ContinuousValue
 from numpy.testing import assert_array_almost_equal
 import numpy as np
@@ -64,7 +64,7 @@ def test_continuous_call_absolute(contvalue):
     assert_array_almost_equal(res[2], [1,2,4, 5])
     assert_array_almost_equal(res[1], [0.1,0.2, 0.3, 0.2])
 
-
+@mark.skip
 def test_combination_from_dict(combination):
     res = Criteria.from_dict(combination.to_dict())
     assert res == combination

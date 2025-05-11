@@ -83,18 +83,12 @@ class Complete(Alignment):
             manoeuvre, template = self.manoeuvre.match_intention(
                 self.template[0], self.flown
             )
-            mdef = ManDef(
-                self.mdef.info,
-                self.mdef.mps.update_defaults(self.manoeuvre),
-                self.mdef.eds,
-                self.mdef.box,
-            )
-
+            
             return Complete(
                 self.id,
                 self.schedule_direction,
                 self.flown,
-                mdef,
+                self.mdef.update_defaults(manoeuvre),
                 manoeuvre,
                 template,
             )
