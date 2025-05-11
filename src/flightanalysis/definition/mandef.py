@@ -206,5 +206,15 @@ class ManDef:
             )
         return ManDef(self.info, self.mps, ElDefs(new_eds), self.box)
 
+    def update_defaults(self, man: Manoeuvre) -> ManDef:
+        """Pull the parameters from a manoeuvre object and update the defaults of self based on the result of
+        the collectors.
+
+        Args:
+            intended (Manoeuvre): Usually a Manoeuvre that has been resized based on an alinged state
+        """
+        new_mps = self.mps.update_defaults(man)
+        new_eds = ElDefs.from_dict(self.eds.to_dict(), new_mps)
+        return ManDef(self.info, new_mps, new_eds, self.box)
 
 from .manoption import ManOption  # noqa: E402

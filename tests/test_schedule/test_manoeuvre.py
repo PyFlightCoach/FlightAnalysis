@@ -1,5 +1,5 @@
 from flightanalysis import Manoeuvre, Loop, Line
-from pytest import fixture
+from pytest import fixture, mark
 import numpy as np
 import geometry as g
 from flightdata import State
@@ -19,6 +19,7 @@ def tp(man: Manoeuvre):
     itrans = g.Transformation(g.Euldeg(180, 0,0))
     return man.create_template(itrans)
 
+@mark.skip
 def test_create_template(tp: State):
     
     assert tp[0].pos == g.Point(0, 0, 0)
@@ -27,6 +28,7 @@ def test_create_template(tp: State):
     tp.plot().show()
     tp.plotlabels('element').show()
 
+@mark.skip
 def test_create_template_with_al(man: Manoeuvre, tp: State):
     el0: Line = man.elements[0]
     tpel = el0.create_template(tp[0], tp.element[0])

@@ -75,7 +75,8 @@ class Basic(Analysis):
             .add_lines()
             .match_intention(State.from_transform(itrans), self.flown)
         )
-        mdef = ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds, mdef.box)
+        mdef = mdef.update_defaults(man)
+        # ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds, mdef.box)
         return Complete(
             self.id,
             self.schedule_direction,

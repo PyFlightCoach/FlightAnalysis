@@ -31,6 +31,12 @@ class Combination(Criteria):
     come first.
     """
     
+    def __post_init__(self):
+        self.desired = np.array(self.desired)
+
+    def __len__(self):
+        return self.desired.shape[0]
+
     def __getitem__(self, value: int):
         return self.desired[value]
 

@@ -34,6 +34,10 @@ class Loop(Element):
     def rate(self):
         return self.roll * self.speed / (self.angle * self.radius)
 
+    @property
+    def duration(self):
+        return self.radius * abs(self.angle) / self.speed
+
     def create_template(self, istate: State, fl: State = None) -> State:
         """Generate a template loop.
 
@@ -43,7 +47,7 @@ class Loop(Element):
         Returns:
             [State]: flight data representing the loop
         """
-        duration = self.radius * abs(self.angle) / self.speed
+        duration = self.duration
 
         if self.angle == 0:
             raise NotImplementedError()

@@ -56,11 +56,7 @@ class ElDef:
         for pname, prop in self.props.items():
             if pname in args:
                 if isinstance(prop, ManParm):
-                    if prop.kind == "Combination":
-                        el_kwargs[pname] = mps.data[prop.name].value[id]
-
-                    else:
-                        el_kwargs[pname] = mps.data[prop.name].value
+                    el_kwargs[pname] = mps.data[prop.name].value
                 elif isinstance(prop, Opp):
                     el_kwargs[pname] = prop(mps)
                 elif isinstance(prop, Number):

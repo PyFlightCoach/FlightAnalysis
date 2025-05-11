@@ -97,12 +97,7 @@ class Alignment(Basic):
 
     def update(self, aligned: State) -> Alignment:
         man, tps = self.manoeuvre.match_intention(self.template_list[0][0], aligned)
-        mdef = ManDef(
-            self.mdef.info,
-            self.mdef.mps.update_defaults(man),
-            self.mdef.eds,
-            self.mdef.box,
-        )
+        mdef = self.mdef.update_defaults(man)
         return Alignment(self.id, self.schedule_direction, aligned, mdef, man, tps)
 
     def _proceed(self) -> Complete:

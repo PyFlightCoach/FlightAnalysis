@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from geometry import Transformation, P0, PX
+import geometry as g
 from flightdata import State
 from .element import Element
 from dataclasses import dataclass
@@ -32,14 +32,14 @@ class Line(Element):
         Returns:
             State: [description]
         """
-        v = PX(self.speed) if istate.vel == 0 else istate.vel.scale(self.speed)
+        v = g.PX(self.speed) if istate.vel == 0 else istate.vel.scale(self.speed)
         return (
-            istate.copy(vel=v, rvel=P0())
+            istate.copy(vel=v, rvel=g.P0())
             .fill(Element.create_time(self.length / self.speed, fl))
-            .superimpose_rotation(PX(), self.roll)
+            .superimpose_rotation(g.PX(), self.roll)
         )
 
-    def match_intention(self, itrans: Transformation, flown: State) -> Line:
+    def match_intention(self, itrans: g.Transformation, flown: State) -> Line:
         return self.set_parms(
             length=abs(self.length_vec(itrans, flown))[0],
             roll=np.sign(np.mean(flown.p)) * abs(self.roll),
