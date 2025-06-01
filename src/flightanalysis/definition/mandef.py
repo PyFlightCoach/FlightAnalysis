@@ -22,7 +22,7 @@ from flightdata import State
 from schemas.maninfo import ManInfo, Position
 from schemas.positioning import Heading
 
-from flightanalysis.elements import Elements
+from flightanalysis.elements import Elements, AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
 
@@ -216,5 +216,21 @@ class ManDef:
         new_mps = self.mps.update_defaults(man)
         new_eds = ElDefs.from_dict(self.eds.to_dict(), new_mps)
         return ManDef(self.info, new_mps, new_eds, self.box)
+
+    def set_mps(self, **kwargs):
+        """set the manparm default values"""
+        new_mps = self.mps.set_values(**kwargs)
+        new_eds = ElDefs.from_dict(self.eds.to_dict(), new_mps)
+        return ManDef(self.info, new_mps, new_eds, self.box)
+
+    def __iter__(self):
+        """Iterate over the eds, elements and templates."""
+        tp = State.from_transform(
+            g.Transformation(self.initial_rotation(Heading.LTOR)), vel=g.PX(30)
+        )
+        for ed in self.eds:
+            el: AnyElement = ed(self.mps)
+            tp = el.create_template(tp[-1])
+            yield ed, el, tp
 
 from .manoption import ManOption  # noqa: E402

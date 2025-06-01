@@ -49,6 +49,7 @@ class ScheduleAnalysis(Collection):
 
         def parse_analyse_serialise(pad):
             import tuning
+
             try:
                 pad = ma.from_dict(pad)
             except Exception as e:
@@ -113,4 +114,22 @@ class ScheduleAnalysis(Collection):
     def summarydf(self):
         return pd.DataFrame(
             [ma.scores.summary() if hasattr(ma, "scores") else {} for ma in self]
+        )
+
+    def score_summary_df(self, difficulty=3, truncate=False):
+        return pd.DataFrame(
+            [
+                ma.scores.score_summary(difficulty, truncate)
+                if hasattr(ma, "scores")
+                else {}
+                for ma in self
+            ]
+        )
+
+    def basic(self, sdef: SchedDef = None, remove_labels: bool = True) -> Self:
+        return ScheduleAnalysis(
+            [
+                man.basic(sdef[man.mdef.info.short_name] if sdef is not None else None, remove_labels)
+                for man in self
+            ]
         )

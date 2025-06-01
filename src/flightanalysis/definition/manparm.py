@@ -223,6 +223,18 @@ class ManParms(Collection):
                 mps.append(mp)
         return ManParms(mps)
 
+    def set_values(self, **kwargs) -> Self:
+        """Set the default values of the manparms to the kwargs provided"""
+        mps = []
+        for mp in self:
+            if mp.name in kwargs:
+                mps.append(
+                    ManParm(mp.name, mp.criteria, kwargs[mp.name], mp.unit, mp.collectors, mp.visibility)
+                )
+            else:
+                mps.append(mp)
+        return ManParms(mps)
+
     def remove_unused(self):
         return ManParms([mp for mp in self if len(mp.collectors) > 0])
 
