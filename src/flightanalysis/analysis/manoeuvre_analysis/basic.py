@@ -18,7 +18,6 @@ from schemas import MA, fcj
 from importlib.metadata import version
 
 
-
 @dataclass
 class Basic(Analysis):
     id: int
@@ -53,7 +52,8 @@ class Basic(Analysis):
         return dr.run_all(optimise_aligment, force)
 
     def proceed(self) -> Complete:
-        """Proceed the analysis to the final stage for the case where the elements have already been labelled"""
+        """Proceed the analysis to the final stage for the case where the elements 
+        have already been labelled"""
         if "element" not in self.flown.labels.keys() or not isinstance(self, Basic):
             return self
 
@@ -61,12 +61,14 @@ class Basic(Analysis):
 
         elnames = list(self.flown.labels.element.keys())
         for md in mopt:
-            if len(elnames) == len(md.eds)+1 and np.all([elnames[i] == k for i, k in enumerate(md.eds.data.keys())]):
+            if len(elnames) == len(md.eds) + 1 and np.all(
+                [elnames[i] == k for i, k in enumerate(md.eds.data.keys())]
+            ):
                 mdef = md
                 break
         else:
             raise ValueError(
-                f"{self.mdef.info.short_name} element sequence doesn't agree with {self.flown.data.element.unique()}"
+                f"{self.mdef.info.short_name} element sequence doesn't agree with {elnames}"
             )
 
         itrans = self.create_itrans()
@@ -164,9 +166,10 @@ class Basic(Analysis):
         )
 
     @staticmethod
-    def parse_analyse_serialise(pad: dict, optimise: boolean, name:str):
+    def parse_analyse_serialise(pad: dict, optimise: boolean, name: str):
         import tuning
         from flightanalysis import enable_logging
+
         logger = enable_logging("INFO")
         logger.info(f"Running {name}")
         try:
@@ -174,7 +177,7 @@ class Basic(Analysis):
         except Exception as e:
             logger.exception(f"Failed to parse {pad['id']}")
             return pad
-        
+
         try:
             pad = pad.proceed().run_all(optimise)
             logger.info(f"Completed {name}")
@@ -183,6 +186,18 @@ class Basic(Analysis):
             logger.exception(f"Failed to process {name}")
             return pad.to_dict()
 
+    def basic(self, mdef: ManDef = None, remove_labels: bool = True) -> Basic:
+        return Basic(
+            self.id,
+            self.schedule_direction,
+            self.flown.remove_labels() if remove_labels else self.flown,
+            self.mdef if mdef is None else mdef,
+        )
+    
+    #.from_dict(
+    #        dict(**self.to_dict(basic=True), mdef=self.mdef.to_dict())
+    #    )
+    
 from .alignment import Alignment  # noqa: E402
 from .complete import Complete  # noqa: E402
 from .scored import Scored  # noqa: E402

@@ -400,7 +400,7 @@ def loopmaker(
         else:
             eds.add(
                 rolling_loop(
-                    f"{name}_rolls", speed, internal_rad, rollangle, rolls, ke, Inter
+                    f"{name}_0", speed, internal_rad, rollangle, rolls, ke, Inter
                 )[0]
             )
         ke = ke - rolls
