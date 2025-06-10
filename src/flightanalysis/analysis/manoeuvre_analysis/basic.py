@@ -51,11 +51,16 @@ class Basic(Analysis):
 
         return dr.run_all(optimise_aligment, force)
 
-    def proceed(self) -> Complete:
+    def proceed(self, raise_no_labels: bool = False) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements 
         have already been labelled"""
         if "element" not in self.flown.labels.keys() or not isinstance(self, Basic):
-            return self
+            if raise_no_labels:
+                raise ValueError(
+                    "Cannot proceed without element labels in flown state."
+                )
+            else:
+                return self
 
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 
@@ -67,9 +72,12 @@ class Basic(Analysis):
                 mdef = md
                 break
         else:
-            raise ValueError(
-                f"{self.mdef.info.short_name} element sequence doesn't agree with {elnames}"
-            )
+            if raise_no_labels:    
+                raise ValueError(
+                    f"{self.mdef.info.short_name} element sequence doesn't agree with {elnames}"
+                )
+            else:
+                return self.basic(remove_labels=True)
 
         itrans = self.create_itrans()
         man, tps = (
