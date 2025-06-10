@@ -133,3 +133,15 @@ class ScheduleAnalysis(Collection):
                 for man in self
             ]
         )
+
+    @property
+    def mnames(self):
+        return [m.mdef.info.short_name for m in self]
+    
+    @property
+    def fls(self):
+        return {m.mdef.info.short_name: m.flown for m in self}
+    
+    @property
+    def tps(self):
+        return {m.mdef.info.short_name: m.template for m in self}
