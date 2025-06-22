@@ -106,3 +106,22 @@ class Results(Collection):
         inter_dgs = pd.Series(inter_dgs).sort_values(ascending=False)
 
         return inter_dgs.loc[inter_dgs > cutoff]
+
+    def inter_dg_summary(self):
+
+        def group_inter_criteria(cname: str):
+            if "pad_length" in cname:
+                return "pad_length"
+            elif "radius" in cname:
+                return "radius"
+            else:
+                return cname
+
+        inter_csum = {}
+    
+        for res in self:
+            resname = group_inter_criteria(res.name)
+            if resname not in inter_csum:
+                inter_csum[resname] = 0
+            inter_csum[resname] += res.total
+        return inter_csum

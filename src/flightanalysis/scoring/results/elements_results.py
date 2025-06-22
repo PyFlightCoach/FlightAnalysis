@@ -40,14 +40,14 @@ class ElementsResults(Collection):
 
         return df
     
-    def criteria_sum(self) -> dict[str, float]:
+    def criteria_sum(self, k_factor: float=1) -> dict[str, float]:
         criteria = {}
         for results in self:
             for k, result in results.data.items():
                 if k not in criteria:
                     criteria[k] = []
                 criteria[k].append(result.total) 
-        return {k: sum(v) for k, v in criteria.items()}
+        return {k: sum(v) * k_factor for k, v in criteria.items()}
         
     def to_dict(self) -> dict[str, dict]:
         return dict(

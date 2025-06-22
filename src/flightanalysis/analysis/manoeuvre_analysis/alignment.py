@@ -60,20 +60,24 @@ class Alignment(Basic):
     def from_dict(ajman: dict) -> Alignment | Basic:
         basic = Basic.from_dict(ajman)
         if isinstance(basic, Basic) and "manoeuvre" in ajman and ajman["manoeuvre"]:
-            if "template" in ajman:
-                
-                if set(ajman["template"].keys()) == set(
+            manoeuvre = Manoeuvre.from_dict(ajman["manoeuvre"])
+
+            trust_templates = (
+                "templates" in ajman
+                and ajman["templates"] is not None
+                and set(ajman["templates"].keys())
+                == set(
                     [el["uid"] for el in ajman["manoeuvre"]["elements"]] + ["exit_line"]
-                ):
-                    return Alignment(
-                        **basic.__dict__,
-                        manoeuvre=Manoeuvre.from_dict(ajman["manoeuvre"]),
-                        templates={
-                            k: State.from_dict(v) for k, v in ajman["template"].items()
-                        }
-                        if "templates" in ajman
-                        else None,
-                    )
+                )
+            )
+
+            return Alignment(
+                **basic.__dict__,
+                manoeuvre=manoeuvre,
+                templates={k: State.from_dict(v) for k, v in ajman["templates"].items()}
+                if trust_templates
+                else manoeuvre.create_template(basic.create_itrans(), basic.flown),
+            )
         return basic
 
     def to_dict(self, basic: bool = False) -> dict:
@@ -83,14 +87,14 @@ class Alignment(Basic):
         return dict(
             **_basic,
             manoeuvre=self.manoeuvre.to_dict(),
-            template={k: tp.to_dict(True) for k, tp in self.templates.items()},
+            templates={k: tp.to_dict(True) for k, tp in self.templates.items()},
         )
 
     def run(self) -> Alignment | Complete:
         if "element" not in self.flown.labels.lgs:
             return self._run(True)[1]
         return self._run(False)[1].proceed()
-        
+
     def _run(self, mirror=False, radius=10) -> Alignment:
         res = align(self.flown, self.template, radius, mirror)
         return res.dist, self.update(res.aligned)
@@ -115,7 +119,6 @@ class Alignment(Basic):
             )
         else:
             return self
-
 
 
 from .complete import Complete  # noqa: E402

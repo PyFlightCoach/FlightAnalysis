@@ -191,7 +191,8 @@ class Result:
 
     def downgrade_trace(self, xvs=None, **kwargs):
         import plotly.graph_objects as go
-
+        if len(self.keys) == 0:
+            return go.Scatter()
         return go.Scatter(
             **(
                 dict(
@@ -229,9 +230,9 @@ class Result:
     def traces(self, xvals: np.ndarray = None, **kwargs):
         return [
             *self.measurement_trace(xvals, **kwargs),
-            self.visibility_trace(xvals, **kwargs),
             *self.sample_trace(xvals, **kwargs),
             self.downgrade_trace(xvals, **kwargs),
+            self.visibility_trace(xvals, **kwargs),
         ]
 
     def plot(self, xvals: np.ndarray = None):
@@ -257,3 +258,42 @@ class Result:
         )
 
         return fig
+
+
+def comparison_plot(r1: Result | None, r2: Result | None):
+    from plotly.subplots import make_subplots
+    fig = make_subplots(
+        1,
+        2,
+        column_widths=[0.5, 0.5],
+        specs=[
+            [
+                {"secondary_y": True},
+                {"secondary_y": True},
+            ]
+        ],\
+        horizontal_spacing=0.05,
+    )
+    if r1 is not None:
+        d = r1.plot().data
+        fig.add_traces(d[:-1], rows=[1] * (len(d) - 1), cols=[1] * (len(d) - 1))
+        fig.add_trace(d[-1], row=1, col=1, secondary_y=True)
+    if r2 is not None:
+        d = r2.plot().data
+        fig.add_traces(d[:-1], rows=[1] * (len(d) - 1), cols=[2] * (len(d) - 1))
+        fig.add_trace(d[-1], row=1, col=2, secondary_y=True)
+    fig.update_layout(
+        title=f"{r1.name if r1 is not None else r2.name}, L={(r1.total if r1 else 0):.4f}, R={r2.total if r2 else 0:.4f}",
+        yaxis=dict(title="Roll Rate", range=[0, 2]),
+        yaxis2=dict(range=[0, 1]),
+        yaxis3=dict(range=[0, 2]),
+        yaxis4=dict(title="Visibility", range=[0, 1]),
+        #xaxis=dict(range=[0, len(fl1)]),
+        #xaxis2=dict(range=[0, len(fl2)]),
+        margin=dict(l=0, r=0, t=30, b=0),
+        height=300,
+    )
+    for tr in fig.data:
+        tr.showlegend = False
+    return fig
+    
