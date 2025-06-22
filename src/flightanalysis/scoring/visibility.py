@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
+from typing import Literal
 
-
-def visibility(val, factor: float, limit: float, kind: str = 'value'):
+def visibility(val, factor: float, limit: float, kind: Literal["deviation", "value"] = 'value'):
     """factor between 0 and 1"""
 
     b = 1.8 - factor * 0.8

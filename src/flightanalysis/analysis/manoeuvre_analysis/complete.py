@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from functools import partial
 from numbers import Number
 
+from flightanalysis.elements.element import Elements
 import geometry as g
 import numpy as np
 import pandas as pd
@@ -13,12 +14,14 @@ from joblib import Parallel, delayed
 
 from flightanalysis.definition import ElDef, ManDef
 from flightanalysis.elements import Element
+from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring import (
     ElementsResults,
     ManoeuvreResults,
     Results,
 )
 import os
+
 from ..el_analysis import ElementAnalysis
 from .alignment import Alignment
 from .basic import Basic
@@ -83,7 +86,7 @@ class Complete(Alignment):
             manoeuvre, template = self.manoeuvre.match_intention(
                 self.template[0], self.flown
             )
-            
+
             return Complete(
                 self.id,
                 self.schedule_direction,
@@ -101,58 +104,83 @@ class Complete(Alignment):
         ed: ElDef = self.get_edef(eln)
         el: Element = self.manoeuvre.all_elements()[eln].match_intention(itrans, fl)
         tp = el.create_template(State.from_transform(itrans), fl)
-        return ed.dgs.apply(el, fl, tp, False), tp[-1].att
+
+        #        full_tp = State.stack(self.templates | {eln: tp})
+
+        return ed.dgs.apply(el, fl, tp, False), el, tp  # tp[-1].att
 
     def optimise_split(
-        self, itrans: g.Transformation, eln1: str, eln2: str, fl: State
+        self, itrans: g.Transformation, eln1: str, eln2: str, fl: State, min_len: int = 3
     ) -> int:
         el1: Element = self.manoeuvre.all_elements()[eln1]
         el2: Element = self.manoeuvre.all_elements()[eln2]
-        min_len = 3
+
         def score_split(steps: int) -> float:
             new_fl = fl.step_label("element", eln1, steps, fl.t, min_len)
-            res1, new_iatt = self.get_score(eln1, itrans, el1.get_data(new_fl))
+            res1, oel1, tp1 = self.get_score(eln1, itrans, el1.get_data(new_fl))
 
             el2fl = el2.get_data(new_fl)
-            res2 = self.get_score(
-                eln2, g.Transformation(new_iatt, el2fl[0].pos), el2fl
-            )[0]
+            res2, oel2, tp2 = self.get_score(
+                eln2, g.Transformation(tp1[-1].att, el2fl[0].pos), el2fl
+            )
+
+            oman = Manoeuvre.from_all_elements(
+                self.manoeuvre.uid,
+                Elements(self.manoeuvre.elements.data | {eln1: oel1, eln2: oel2}),
+            )
+
+            omdef = self.mdef.update_defaults(oman)
+
+            inter = omdef.mps.collect(
+                oman,
+                State.stack(self.templates | {eln1: tp1, eln2: tp2}, "element"),
+                self.mdef.box,
+            )
+
             logger.debug(f"split {steps} {res1.total + res2.total:.2f}")
             logger.debug(
-                f"e1={eln1}, e2={eln2}, steps={steps}, dg={res1.total + res2.total:.2f}"
+                f"e1={eln1}, e2={eln2}, steps={steps}, intra={res1.total + res2.total:.2f}, inter={inter.total}"
             )
-            return res1.total + res2.total
+            return res1.total + res2.total + inter.total
 
         dgs = {0: score_split(0)}
-        
+
         def check_steps(stps: int):
-            return not ((stps > 0 and len(el2.get_data(fl)) <= stps + min_len) or (
-                stps < 0 and len(el1.get_data(fl)) <= -stps + min_len
-            ))
+            new_l2 = len(el2.get_data(fl)) - stps + 1 
+            new_l1 = len(el1.get_data(fl)) + stps + 1
+            return new_l2 > min_len and new_l1 > min_len
+#            return not (
+#                (stps > 0 and len(el2.get_data(fl)) <= stps + min_len)
+#                or (stps < 0 and len(el1.get_data(fl)) <= -stps + min_len)
+#            )
 
         steps = int(len(el1.get_data(fl)) > len(el2.get_data(fl))) * 2 - 1
-        
+
         if not check_steps(steps):
             return 0
-        
-        new_dg = score_split(steps)
-        if new_dg > dgs[0]:
+
+        try:
+            new_dg = score_split(steps)
+            if new_dg > dgs[0]:
+                steps = -steps
+            else:
+                dgs[steps] = new_dg
+                steps += np.sign(steps)
+        except Exception:
             steps = -steps
-        else:
-            steps += np.sign(steps)
-            dgs[steps] = new_dg
 
         while check_steps(steps):
             try:
                 new_dg = score_split(steps)
+                if new_dg < list(dgs.values())[-1]:
+                    dgs[steps] = new_dg
+                    steps += np.sign(steps)
+                else:
+                    break
             except ValueError:
                 break
 
-            if new_dg < list(dgs.values())[-1]:
-                dgs[steps] = new_dg
-                steps += np.sign(steps)
-            else:
-                break
+            
         min_dg_step = np.argmin(np.array(list(dgs.values())))
         out_steps = list(dgs.keys())[min_dg_step]
         return out_steps
@@ -214,7 +242,7 @@ class Complete(Alignment):
         new_man = Basic(
             self.id,
             self.schedule_direction,
-            self.flown.set_boundaries("element", boundaries),#.resample(),
+            self.flown.set_boundaries("element", boundaries),  # .resample(),
             self.mdef,
         ).proceed()
 
@@ -245,15 +273,21 @@ class Complete(Alignment):
                 for i in range(substeps)
             ]
         )
-        logger.info(f"Starting {os.cpu_count() * 2 - 1} processes to run {len(splits)} manoeuvres")
+        logger.info(
+            f"Starting {os.cpu_count() * 2 - 1} processes to run {len(splits)} manoeuvres"
+        )
         madicts = Parallel(n_jobs=os.cpu_count() * 2 - 1)(
-            delayed(partial(Basic.parse_analyse_serialise, optimise=False, name=i))(self.set_boundary(el, ic).to_dict())
+            delayed(partial(Basic.parse_analyse_serialise, optimise=False, name=i))(
+                self.set_boundary(el, ic).to_dict()
+            )
             for i, ic in enumerate(splits)
         )
-        outdata = {ic: Scored.from_dict(mad).scores.dg_dict() for ic, mad in zip(splits, madicts) }
+        outdata = {
+            ic: Scored.from_dict(mad).scores.dg_dict()
+            for ic, mad in zip(splits, madicts)
+        }
 
         return pd.DataFrame(outdata).T
-
 
 
 from .scored import Scored  # noqa: E402
