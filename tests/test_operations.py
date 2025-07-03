@@ -13,11 +13,11 @@ from flightanalysis.definition.operations.operation import bracksplit
 def coll():
     return ManParms(
         [
-            ManParm("a", Comparison(), 1),
-            ManParm("b", Comparison(), 1),
-            ManParm("c", Comparison(), 1),
-            ManParm("d", Combination(desired=np.array([[1, 2, 3], [4, 5, 6]])), 0),
-            ManParm("e", Combination(desired=np.array([[1], [2]])), 0),
+            ManParm("a", Comparison("test"), 1),
+            ManParm("b", Comparison("test"), 1),
+            ManParm("c", Comparison("test"), 1),
+            ManParm("d", Combination("test", desired=np.array([[1, 2, 3], [4, 5, 6]])), 0),
+            ManParm("e", Combination("test", desired=np.array([[1], [2]])), 0),
         ]
     )
 

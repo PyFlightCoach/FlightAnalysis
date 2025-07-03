@@ -48,37 +48,6 @@ class Complete(Alignment):
             scores=ManoeuvreResults(self.inter(), self.intra(), self.positioning()),
         )
 
-    @property
-    def elnames(self):
-        return list(self.mdef.eds.data.keys())
-
-    def __iter__(self):
-        for edn in list(self.mdef.eds.data.keys()):
-            yield self.get_ea(edn)
-
-    def __getitem__(self, i):
-        if isinstance(i, Number):
-            return self.get_ea(self.mdef.eds[i + 1].name)
-        else:
-            return self.get_ea(i)
-
-    def __getattr__(self, name):
-        if name in self.mdef.eds.data.keys():
-            return self.get_ea(name)
-        raise AttributeError(f"Attribute {name} not found in {self.__class__.__name__}")
-
-    def get_edef(self, name):
-        return self.mdef.eds[name]
-
-    def get_ea(self, name):
-        el: Element = getattr(self.manoeuvre.all_elements(), name)
-        st = el.get_data(self.flown)
-        tp = self.templates[el.uid].relocate(st.pos[0])
-
-        return ElementAnalysis(
-            self.get_edef(name), self.mdef.mps, el, st, tp, el.ref_frame(tp)
-        )
-
     def update_templates(self):
         if not len(self.flown) == len(self.template) or not np.all(
             self.flown.element == self.template.element

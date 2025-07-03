@@ -30,12 +30,12 @@ class ElDef:
     def get_collector(self, name) -> Collector:
         return Collector(self.name, name)
 
-    def to_dict(self, longdgs=True):
+    def to_dict(self, longdgs=True, criteria_names: bool = True) -> dict:
         return dict(
             name=self.name,
             Kind=self.Kind.__name__,
             props={k: str(v) for k, v in self.props.items()},
-            dgs=self.dgs.to_dict() if longdgs else self.dgs.to_list(),
+            dgs=self.dgs.to_dict(criteria_names) if longdgs else self.dgs.to_list(),
         )
 
     def __repr__(self):
@@ -115,9 +115,6 @@ class ElDefs(Collection):
     @staticmethod
     def from_dict(data: dict, mps: ManParms):
         return ElDefs([ElDef.from_dict(v, mps) for v in data.values()])
-
-    def to_dict(self, dgs=True):
-        return {v.name: v.to_dict(dgs) for v in self}
 
     def get_new_name(self):
         new_id = 0 if len(self.data) == 0 else list(self.data.values())[-1].id + 1

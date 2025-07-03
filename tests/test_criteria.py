@@ -9,26 +9,26 @@ from pytest import raises
 
 @fixture
 def single():
-    return Single(Exponential(1,1))
+    return Single("test", Exponential(1,1))
 
 
 @fixture
 def continuous():
-    return Continuous(Exponential(1,1))
+    return Continuous("test", Exponential(1,1))
 
 @fixture
 def contvalue():
-    return ContinuousValue(Exponential(1,1))
+    return ContinuousValue("test", Exponential(1,1))
 
 
 @fixture
 def combination():
-    return Combination(desired=[[1,-1],[-1,1]])
+    return Combination("test", desired=[[1,-1],[-1,1]])
 
 
 @fixture
 def comparison():
-    return Comparison(Exponential(1,1))
+    return Comparison("test", Exponential(1,1))
 
 
 def test_single_to_dict(single: Single):
@@ -91,7 +91,7 @@ def test_combination_append_roll_sum():
     
 @fixture
 def maxbound():
-    return Bounded(Exponential(1,1),  max_bound=0)
+    return Bounded("test", Exponential(1,1),  max_bound=0)
 
 def test_maxbound_prepare(maxbound: Bounded):
     testarr = np.concatenate([np.ones(3), np.zeros(3), np.ones(3), np.zeros(3)])

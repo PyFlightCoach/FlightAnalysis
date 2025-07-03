@@ -52,12 +52,11 @@ class Combination(Criteria):
         """Given a set of values, return the option id which gives the least error"""
         return int(np.sum(np.abs(self.get_errors(values)), axis=1).argmin())
 
-    def to_dict(self):
-        data = self.__dict__.copy()
-        lookup = data.pop('lookup')
+    def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
+            **(dict(name=self.name) if criteria_names else {}),
             kind=self.__class__.__name__,
-            lookup=lookup.__dict__,
+            lookup=self.lookup.__dict__,
             desired=to_list(self.desired),
         )
     
@@ -66,7 +65,7 @@ class Combination(Criteria):
     def rolllist(rolls, reversable=True) -> Combination:
         rolls = [r for r in rolls]
         rolls = [rolls, [-r for r in rolls]] if reversable else [rolls]
-        return Combination(desired=rolls)
+        return Combination("rolllist", desired=rolls)
 
     @staticmethod
     def rollcombo(rollstring, reversable=True) -> Combination:
@@ -80,4 +79,4 @@ class Combination(Criteria):
         if inplace:
             self.desired = des
             return self
-        return Combination(self.lookup, des)
+        return Combination("rollsum", self.lookup, des)

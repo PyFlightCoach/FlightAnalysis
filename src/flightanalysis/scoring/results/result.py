@@ -78,12 +78,14 @@ class Result:
         )
 
     def info(self, i: int):
+        dgkey = self.keys[i] 
+        mkey = self.sample_keys[dgkey]
         return "\n".join(
             [
                 f"dg={self.dgs[i]:.3f}",
-                # f"meas={self.plot_f(self.measurement.value[self.sample_keys[self.keys[i]]]):.2f}",
-                # f"vis={self.measurement.visibility[self.sample_keys[self.keys[i]]]:.2f}",
-                f"sample={self.plot_f(self.sample[self.keys[i]]):.2f}",
+                #f"meas={self.plot_f(self.measurement.value[mkey]):.2f}",
+                #f"vis={self.measurement.visibility[mkey]:.2f}",
+                f"sample={self.plot_f(self.sample[dgkey]):.2f}",
                 f"err={self.plot_f(self.errors[i]):.2f}",
             ]
         )

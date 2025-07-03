@@ -27,14 +27,16 @@ class Alignment(Basic):
 
     def get_ea(self, name_or_id: str | int) -> ElementAnalysis:
         el: Element = self.manoeuvre.elements[name_or_id]
-
+        fl = self.flown.element[el.uid]
+        tp = self.templates[el.uid].relocate(fl.pos[0])
         return ElementAnalysis(
             self.mdef.eds[name_or_id],
             self.mdef.mps,
             el,
-            self.flown.element[el.uid],
-            self.templates[el.uid],
-            self.templates[el.uid][0].transform,
+            fl,
+            tp,
+            tp[0].transform,
+            self.scores.intra[name_or_id] if isinstance(self, Scored) else None
         )
 
     def __getattr__(self, name) -> ElementAnalysis:
@@ -42,6 +44,10 @@ class Alignment(Basic):
 
     def __getitem__(self, name_or_id) -> ElementAnalysis:
         return self.get_ea(name_or_id)
+
+    def __iter__(self):
+        for edn in list(self.mdef.eds.data.keys()):
+            yield self.get_ea(edn)
 
     def run_all(
         self, optimise_aligment=True, force=False

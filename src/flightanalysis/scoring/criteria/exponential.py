@@ -13,8 +13,14 @@ class Exponential:
         val = self.factor * value**self.exponent
         return np.minimum(val, self.limit) if self.limit and limits else val
 
+    @staticmethod
+    def simple(exponent: float, error: float, downgrade: float, has_limit: bool=True):
+        return Exponential(downgrade / error**exponent, exponent, downgrade if has_limit else None)
+
     @property
     def error_limit(self):
+        if self.limit is None or self.factor == 0:
+            return 1.0
         return (self.limit / self.factor) ** (1 / self.exponent)
 
     @staticmethod

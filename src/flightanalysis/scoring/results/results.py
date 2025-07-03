@@ -107,6 +107,17 @@ class Results(Collection):
 
         return inter_dgs.loc[inter_dgs > cutoff]
 
+    def criteria_sum(self, key_by_criteria: bool=False) -> dict[str, float]:
+        sums = {}
+
+        for result in self:
+            key = result.name if not key_by_criteria else result.criteria.name
+            if key not in sums:
+                sums[key] = 0
+            sums[key] += result.total
+        return sums
+    
+
     def inter_dg_summary(self):
 
         def group_inter_criteria(cname: str):

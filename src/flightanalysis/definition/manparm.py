@@ -25,6 +25,7 @@ from flightanalysis.scoring import (
 )
 
 from . import Collector, Collectors, Opp
+from flightanalysis.scoring.visibility import visibility
 
 
 @dataclass
@@ -54,10 +55,10 @@ class ManParm(Opp):
             else None
         )
 
-    def to_dict(self):
+    def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
             name=self.name,
-            criteria=self.criteria.to_dict(),
+            criteria=self.criteria.to_dict(criteria_names),
             defaul=self.defaul,  # because default is reserverd in javascript
             unit=self.unit,
             collectors=self.collectors.to_dict(),
@@ -72,7 +73,9 @@ class ManParm(Opp):
             defaul=data["defaul"],
             unit=data["unit"],
             collectors=Collectors.from_dict(data["collectors"]),
-            visibility=visor.parse(data["visibility"]) if "visibility" in data else None,
+            visibility=visor.parse(data["visibility"])
+            if "visibility" in data
+            else None,
         )
 
     def append(self, collector: Union[Opp, Collector, Collectors]):
@@ -135,7 +138,13 @@ class ManParm(Opp):
             ),
             [str(c) for c in self.collectors],
         )
+
         mistakes, dgs, ids = self.criteria(meas.value)
+        #dgs = np.maximum(dgs, self.criteria.lookup.limit)
+#        dgs = visibility(
+#            dgs, meas.visibility, self.criteria.lookup.limit or 1, "value"
+#        )
+
         return Result(
             self.name,
             meas,
@@ -150,14 +159,12 @@ class ManParm(Opp):
 
     @property
     def value(self):
-        if isinstance(self.criteria, Comparison):
-            return self.defaul
-        elif isinstance(self.criteria, Combination):
+        if isinstance(self.criteria, Combination):
             return self.criteria[self.defaul]
         else:
-            raise AttributeError("This type of ManParm has no value")
+            return self.defaul
 
-    def __call__(self, *args, **kwargs):    
+    def __call__(self, *args, **kwargs):
         return self.value
 
     @property
@@ -217,7 +224,14 @@ class ManParms(Collection):
                 else:
                     defaul = np.mean(np.abs(flown_parm)) * np.sign(mp.defaul)
                 mps.append(
-                    ManParm(mp.name, mp.criteria, defaul, mp.unit, mp.collectors, mp.visibility)
+                    ManParm(
+                        mp.name,
+                        mp.criteria,
+                        defaul,
+                        mp.unit,
+                        mp.collectors,
+                        mp.visibility,
+                    )
                 )
             else:
                 mps.append(mp)
@@ -229,7 +243,14 @@ class ManParms(Collection):
         for mp in self:
             if mp.name in kwargs:
                 mps.append(
-                    ManParm(mp.name, mp.criteria, kwargs[mp.name], mp.unit, mp.collectors, mp.visibility)
+                    ManParm(
+                        mp.name,
+                        mp.criteria,
+                        kwargs[mp.name],
+                        mp.unit,
+                        mp.collectors,
+                        mp.visibility,
+                    )
                 )
             else:
                 mps.append(mp)
@@ -239,7 +260,10 @@ class ManParms(Collection):
         return ManParms([mp for mp in self if len(mp.collectors) > 0])
 
     def parse_rolls(
-        self, rolls: Number | str | Opp | list[Number] | list[Opp], name: str, reversible: bool = True
+        self,
+        rolls: Number | str | Opp | list[Number] | list[Opp],
+        name: str,
+        reversible: bool = True,
     ):
         if isinstance(rolls, Opp) or (
             isinstance(rolls, list) and all([isinstance(r, Opp) for r in rolls])

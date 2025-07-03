@@ -202,6 +202,14 @@ class Basic(Analysis):
             self.mdef if mdef is None else mdef,
         )
     
+    def get_edef(self, name):
+        return self.mdef.eds[name]
+    
+    @property
+    def elnames(self):
+        return list(self.mdef.eds.data.keys())
+
+
     #.from_dict(
     #        dict(**self.to_dict(basic=True), mdef=self.mdef.to_dict())
     #    )
