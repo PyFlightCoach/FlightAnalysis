@@ -21,8 +21,8 @@ class Spin(Element):
     height: float
     turns: float  # sounds strange but this is in radians
     pitch: float
-    drop_turns: float  # radians
-    recovery_turns: float  # radians
+    drop_turns: float  # radians. If zero then no drop, use when this follows another spin
+    recovery_turns: float  # radians. If zero then no recovery, use when an opposite spin follows
 
     @property
     def length(self):
@@ -54,6 +54,7 @@ class Spin(Element):
 
     def create_template(self, istate: State, fl: State = None) -> State:
         istate = istate.copy(vel=istate.vel.scale(self.speed))
+
         _inverted = 1 if istate.transform.rotation.is_inverted()[0] else -1
         rate = self.rate
 
@@ -70,18 +71,21 @@ class Spin(Element):
         _tau = ttot - _td - _trec
         tau = g.Time.uniform(_tau, len(fl) - len(tnd) - len(trec) + 2 if fl else None)
 
-        nd: State = (
-            istate.copy(
-                vel=istate.vel.scale(self.speed),
-                rvel=g.PY(_inverted * 0.5 * np.pi / _td),
+        if _td > 0:
+            nd: State = (
+                istate.copy(
+                    vel=istate.vel.scale(self.speed),
+                    rvel=g.PY(_inverted * 0.5 * np.pi / _td),
+                )
+                .fill(tnd)
+                .superimpose_rotation(g.PY(), -abs(self.pitch) * _inverted)
+                .superimpose_angles(
+                    g.PZ(np.sign(self.turns)) * rate * tnd.t**2 / (2 * _td),
+                    reference="world",
+                )
             )
-            .fill(tnd)
-            .superimpose_rotation(g.PY(), -abs(self.pitch) * _inverted)
-            .superimpose_angles(
-                g.PZ(np.sign(self.turns)) * rate * tnd.t**2 / (2 * _td),
-                reference="world",
-            )
-        )
+        else:
+            nd: State = istate.copy()
 
         au: State = (
             nd[-1]
@@ -96,16 +100,19 @@ class Spin(Element):
             )
         )
 
-        rec: State = (
-            au[-1]
-            .copy(rvel=g.P0())
-            .fill(trec)
-            .superimpose_rotation(g.PY(), abs(self.pitch) * _inverted)
-            .superimpose_angles(
-                g.PZ(np.sign(self.turns)) * rate * (trec.t - 0.5 * trec.t**2 / _trec),
-                "world",
+        if _trec > 0:
+            rec: State = (
+                au[-1]
+                .copy(rvel=g.P0())
+                .fill(trec)
+                .superimpose_rotation(g.PY(), abs(self.pitch) * _inverted)
+                .superimpose_angles(
+                    g.PZ(np.sign(self.turns)) * rate * (trec.t - 0.5 * trec.t**2 / _trec),
+                    "world",
+                )
             )
-        )
+        else:
+            rec = au[-1].copy()
 
         return State.stack([nd, au, rec]).label(element=self.uid)
 

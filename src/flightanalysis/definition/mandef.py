@@ -50,12 +50,12 @@ class ManDef:
     def uid(self):
         return self.info.short_name
 
-    def to_dict(self, dgs=True) -> dict:
+    def to_dict(self, dgs=True, criteria_names: bool=True) -> dict:
         return dict(
             info=self.info.to_dict(),
-            mps=self.mps.to_dict(),
-            eds=self.eds.to_dict(dgs),
-            box=self.box.to_dict(),
+            mps=self.mps.to_dict(criteria_names),
+            eds=self.eds.to_dict(dgs, criteria_names),
+            box=self.box.to_dict(criteria_names),
         )
 
     @staticmethod

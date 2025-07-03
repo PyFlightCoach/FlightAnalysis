@@ -106,7 +106,7 @@ class ManBuilder:
                     mps[k].defaul = v 
                 else: # create and add a manparm
                     if pd.api.types.is_list_like(v):
-                        mps.add(ManParm(k, Combination(desired=v), 0, "rad"))
+                        mps.add(ManParm(k, Combination("generated_combo", desired=v), 0, "rad"))
                     else:
                         mps.add(ManParm.parse(v, mps, k))
 

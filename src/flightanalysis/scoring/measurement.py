@@ -14,6 +14,7 @@ class Measurement:
     direction: g.Point
     visibility: npt.NDArray
     keys: npt.NDArray = None
+    info: dict | None = None
 
     def __len__(self):
         return len(self.value)
@@ -24,6 +25,7 @@ class Measurement:
             self.unit,
             self.direction[sli],
             self.visibility[sli],
+            self.info
         )
 
     def to_dict(self):
@@ -33,6 +35,7 @@ class Measurement:
             direction=self.direction.to_dicts(),
             visibility=self.visibility.tolist(),
             keys=list(self.keys) if self.keys is not None else None,
+            info=self.info
         )
 
     def __repr__(self):
@@ -42,13 +45,14 @@ class Measurement:
             return f"Measurement(len={len(self)}, unit={self.unit})"
 
     @staticmethod
-    def from_dict(data) -> Measurement:
+    def from_dict(data: dict) -> Measurement:
         return Measurement(
             np.array(data["value"]),
             data["unit"],
             g.Point.from_dicts(data["direction"]),
             np.array(data["visibility"]),
             np.array(data["keys"]) if 'keys' in data and data["keys"] is not None else None,
+            info=data.get("info", None)
         )
 
     @staticmethod

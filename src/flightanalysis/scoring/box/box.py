@@ -27,9 +27,9 @@ class BoxDG:
     criteria: Bounded
     measure: RefFunc = None
 
-    def to_dict(self):
+    def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
-            criteria=self.criteria.to_dict(), measure=str(self.measure)
+            criteria=self.criteria.to_dict(criteria_names), measure=str(self.measure)
         )
 
     @staticmethod
@@ -64,7 +64,7 @@ class Box:
     centre_dg: BoxDG | None = None
     relax_back: bool = False
 
-    def to_dict(self):
+    def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
             Kind=self.__class__.__name__,
             width=self.width,
@@ -72,8 +72,8 @@ class Box:
             depth=self.depth,
             distance=self.distance,
             floor=self.floor,
-            bound_dgs={k: v.to_dict() for k, v in self.bound_dgs.items()},
-            centre_dg=self.centre_dg.to_dict() if self.centre_dg else None,
+            bound_dgs={k: v.to_dict(criteria_names) for k, v in self.bound_dgs.items()},
+            centre_dg=self.centre_dg.to_dict(criteria_names) if self.centre_dg else None,
             relax_back=self.relax_back,
         )
 

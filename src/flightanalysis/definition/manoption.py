@@ -15,8 +15,8 @@ class ManOption:
     def uid(self):
         return self.options[0].uid
     
-    def to_dict(self):
-        return [o.to_dict() for o in self.options]
+    def to_dict(self, *args, **kwargs) -> list[dict]:
+        return [o.to_dict(*args, **kwargs) for o in self.options]
     
     @staticmethod
     def from_dict(data:list[dict]):

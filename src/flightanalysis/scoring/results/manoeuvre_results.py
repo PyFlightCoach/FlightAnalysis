@@ -82,4 +82,12 @@ class ManoeuvreResults:
             )
         return grps
 
-    
+    def criteria_sum(self, key_by_criteria: bool = False) -> dict[str, float]:
+        intra = self.intra.criteria_sum(key_by_criteria)
+        inter = self.inter.criteria_sum(key_by_criteria)
+        box = self.positioning.criteria_sum(key_by_criteria)
+        return pd.concat([
+            pd.Series(intra).add_prefix("intra_"),
+            pd.Series(inter).add_prefix("inter_"),
+            pd.Series(box).add_prefix("positioning_"),
+        ])
