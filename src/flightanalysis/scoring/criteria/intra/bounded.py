@@ -53,7 +53,7 @@ class Bounded(Criteria):
             midbound = (self.max_bound + self.min_bound) / 2
             b1fail = (data > midbound) & (data < self.min_bound)
             b0fail = (data <= midbound) & (data > self.max_bound)
-            oarr[b1fail] = self.max_bound - data[b1fail]
+            oarr[b1fail] = self.min_bound - data[b1fail]
             oarr[b0fail] = data[b0fail] - self.max_bound
         else:
             if self.min_bound is not None:  # downgrade below the min bound
