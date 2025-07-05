@@ -130,7 +130,8 @@ def test_inside_above(inside: Bounded):
 def test_inside_below(inside: Bounded):
     sample = inside.prepare(np.full(11, -2))
     np.testing.assert_array_equal(sample, np.ones(11))
-    
+
+
 
 @fixture
 def outside():
@@ -148,6 +149,12 @@ def test_outside_below(outside: Bounded):
     sample = outside.prepare(np.full(11, -2))
     np.testing.assert_array_equal(sample, np.zeros(11))
     
+
+def test_outside_prepare(outside: Bounded):
+    
+    np.testing.assert_array_equal(outside.prepare(np.full(11, 0.5)), np.full(11, 0.5))    
+    np.testing.assert_array_equal(outside.prepare(np.full(11, -0.5)), np.full(11, 0.5))    
+
 
 def test_get_peak_locs():
     res = Continuous.get_peak_locs(np.array([0,1,2,1,0,1,2,1,0,1,2]))
