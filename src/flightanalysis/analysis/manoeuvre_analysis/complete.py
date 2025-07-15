@@ -118,10 +118,6 @@ class Complete(Alignment):
             new_l2 = len(el2.get_data(fl)) - stps + 1 
             new_l1 = len(el1.get_data(fl)) + stps + 1
             return new_l2 > min_len and new_l1 > min_len
-#            return not (
-#                (stps > 0 and len(el2.get_data(fl)) <= stps + min_len)
-#                or (stps < 0 and len(el1.get_data(fl)) <= -stps + min_len)
-#            )
 
         steps = int(len(el1.get_data(fl)) > len(el2.get_data(fl))) * 2 - 1
 

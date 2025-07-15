@@ -92,12 +92,16 @@ class DownGrade:
         fl: State,
         tp: State,
         limits=True,
+        select=True,
         mkwargs: dict = None,
         smkwargs: dict = None,
         sekwargs: dict = None,
     ) -> Result:
 
-        oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
+        if select:
+            oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
+        else:
+            oids = np.arange(len(fl))
         measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
         raw_sample = self.visibility(measurement)
         sample = self.smoothing(raw_sample, fl.dt, el, **(smkwargs or {}))
