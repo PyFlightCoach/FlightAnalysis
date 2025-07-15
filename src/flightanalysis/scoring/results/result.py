@@ -6,6 +6,7 @@ from flightdata.base import to_list
 from flightanalysis.scoring.measurement import Measurement
 from flightanalysis.scoring.criteria import Criteria
 from dataclasses import dataclass
+from geometry.utils import get_value
 
 
 def diff(val, factor=3):
@@ -78,13 +79,13 @@ class Result:
         )
 
     def info(self, i: int):
-        dgkey = self.keys[i] 
+        dgkey = self.keys[i]
         mkey = self.sample_keys[dgkey]
         return "\n".join(
             [
                 f"dg={self.dgs[i]:.3f}",
-                #f"meas={self.plot_f(self.measurement.value[mkey]):.2f}",
-                #f"vis={self.measurement.visibility[mkey]:.2f}",
+                # f"meas={self.plot_f(self.measurement.value[mkey]):.2f}",
+                # f"vis={self.measurement.visibility[mkey]:.2f}",
                 f"sample={self.plot_f(self.sample[dgkey]):.2f}",
                 f"err={self.plot_f(self.errors[i]):.2f}",
             ]
@@ -117,15 +118,19 @@ class Result:
     @property
     def plot_f(self):
         return np.degrees if self.measurement.unit == "rad" else lambda x: x
+    
+    @staticmethod
+    
 
     def measurement_trace(self, xvs=None, **kwargs):
         import plotly.graph_objects as go
 
+        x = self.sample_keys if xvs is None else xvs
         return [
             go.Scatter(
                 **(
                     dict(
-                        x=self.sample_keys if xvs is None else xvs,
+                        x=x,
                         y=self.plot_f(self.measurement.value),
                         name="Measurement",
                         mode="lines",
@@ -140,7 +145,7 @@ class Result:
                     go.Scatter(
                         **(
                             dict(
-                                x=self.sample_keys if xvs is None else xvs,
+                                x=x,
                                 y=self.plot_f(self.measurement.value)[self.sample_keys],
                                 mode="lines",
                                 name="Selected",
@@ -193,6 +198,7 @@ class Result:
 
     def downgrade_trace(self, xvs=None, **kwargs):
         import plotly.graph_objects as go
+
         if len(self.keys) == 0:
             return go.Scatter()
         return go.Scatter(
@@ -242,21 +248,16 @@ class Result:
 
         fig = go.Figure(
             layout=dict(
-                yaxis=dict(title="measurement"),
                 yaxis2=dict(
-                    title="visibility", overlaying="y", range=[0, 1], side="right"
+                    title="Visibility", overlaying="y", range=[0, 1], side="right"
                 ),
                 title=f"{self.name}, {self.total:.2f}",
-                legend=dict(
-                    orientation="h",
-                    yanchor="top",
-                    y=1.0,
-                    xanchor="left",
-                    x=0.3,
-                    bgcolor="rgba(0,0,0,0)",
-                ),
+                legend=dict(orientation="h", x=0, y=1.4, yanchor="top"),
+                margin=dict(t=10, r=90, b=90, l=90),
+                xaxis=dict(visible=True, title="Time (s)", range=[0, xvals[-1] if xvals is not None else len(self.measurement)]),
+                yaxis=dict(title=f"Measurement ({self.measurement.unit.replace("rad", "degrees")})"),
             ),
-            data=self.traces(xvals),
+            data=self.traces(np.array(get_value(xvals, self.sample_keys))),
         )
 
         return fig
@@ -264,6 +265,7 @@ class Result:
 
 def comparison_plot(r1: Result | None, r2: Result | None):
     from plotly.subplots import make_subplots
+
     fig = make_subplots(
         1,
         2,
@@ -273,7 +275,7 @@ def comparison_plot(r1: Result | None, r2: Result | None):
                 {"secondary_y": True},
                 {"secondary_y": True},
             ]
-        ],\
+        ],
         horizontal_spacing=0.05,
     )
     if r1 is not None:
@@ -290,12 +292,11 @@ def comparison_plot(r1: Result | None, r2: Result | None):
         yaxis2=dict(range=[0, 1]),
         yaxis3=dict(range=[0, 2]),
         yaxis4=dict(title="Visibility", range=[0, 1]),
-        #xaxis=dict(range=[0, len(fl1)]),
-        #xaxis2=dict(range=[0, len(fl2)]),
+        # xaxis=dict(range=[0, len(fl1)]),
+        # xaxis2=dict(range=[0, len(fl2)]),
         margin=dict(l=0, r=0, t=30, b=0),
         height=300,
     )
     for tr in fig.data:
         tr.showlegend = False
     return fig
-    
