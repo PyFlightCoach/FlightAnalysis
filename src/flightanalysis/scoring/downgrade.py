@@ -92,10 +92,10 @@ class DownGrade:
         fl: State,
         tp: State,
         limits=True,
-        select=True,
         mkwargs: dict = None,
         smkwargs: dict = None,
         sekwargs: dict = None,
+        select=True,
     ) -> Result:
 
         if select:

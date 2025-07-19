@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import geometry as g
+
 from flightdata import State, align
 
 from flightanalysis.definition import ManDef
@@ -36,7 +38,7 @@ class Alignment(Basic):
             fl,
             tp,
             tp[0].transform,
-            self.scores.intra[name_or_id] if isinstance(self, Scored) else None
+            self.scores.intra[name_or_id] if isinstance(self, Scored) else None,
         )
 
     def __getattr__(self, name) -> ElementAnalysis:
@@ -125,6 +127,110 @@ class Alignment(Basic):
             )
         else:
             return self
+
+    def plot_element(
+        self, 
+        eln: str, 
+        long_name: str, 
+        camera: dict = None,
+        jpannotation: dict = None,
+        elannotation: dict = None,
+        fig=None
+    ):
+        import plotly.graph_objects as go
+        from plotting import plotsec
+
+        ea: ElementAnalysis = self.get_ea(eln)
+
+        colors = [
+            "blue" if el.uid == ea.el.uid else "grey" for el in self.manoeuvre.elements
+        ]
+
+        fig: go.Figure = plotsec(
+            {k: fl for k, fl in self.flown.element.items()},
+            color=colors,
+            scale=10,
+            tips=False,
+            ribb=True,
+            nmodels=0,
+        )
+        fig = g.P0().plot3d(mode="markers", fig=fig, marker=dict(size=5, color="black"))
+
+        fig = self.flown.plot(
+            fig=fig, ribb=False, nmodels=2, color="grey", scale=10, tips=False
+        )
+        fig = ea.fl.plot(
+            fig=fig, ribb=False, nmodels=2, color="red", scale=10, tips=False
+        )
+
+        xrng = [self.flown.data.x.min() - 20, self.flown.data.x.max() + 20]
+        yrng = [0, self.flown.data.y.max() + 20]
+        zrng = [0, self.flown.data.z.max() + 20]
+
+        arx = xrng[1] - xrng[0]
+        ary = yrng[1] - yrng[0]
+        arz = zrng[1] - zrng[0]
+
+        mrng = max(arx, ary, arz)
+        arx = arx / mrng
+        ary = ary / mrng
+        arz = arz / mrng
+
+        ec = ea.fl.pos[len(ea.fl.pos) // 2]
+
+        fig.update_layout(
+            font=dict(family="Rockwell", size=14),
+            scene=dict(
+                aspectmode="manual",
+                camera=dict(
+                    eye=dict(x=-1.1, y=-1.1, z=0.4),
+                    up=dict(x=0, y=0, z=1),
+                    center=dict(x=0, y=0.1, z=-0.2),
+                ) | camera if camera is not None else {},
+                xaxis=dict(range=xrng, title_font_size=16, title="x (m)"),
+                yaxis=dict(range=yrng, title_font_size=16, title="y (m)"),
+                zaxis=dict(range=zrng, title_font_size=16, title="z (m)"),
+                aspectratio=dict(x=arx, y=ary, z=arz),
+                annotations=[
+                    dict(
+                        x=0,
+                        y=0,
+                        z=0,
+                        text="Judge Position",
+                        showarrow=True,
+                        font=dict(size=16),
+                        # arrowcolor="black",
+                        arrowhead=2,
+                        arrowsize=2,
+                        arrowwidth=1,
+                        ax=30,
+                        ay=-60,
+                        xshift=3,
+                        yshift=6,
+                    ) | ({} if jpannotation is None else jpannotation),
+                    dict(
+                        x=ec.x[0],
+                        y=ec.y[0],
+                        z=ec.z[0],
+                        text=long_name,
+                        xanchor="left",
+                        showarrow=True,
+                        font=dict(size=16),
+                        # arrowcolor="black",
+                        arrowhead=2,
+                        arrowsize=2,
+                        arrowwidth=1,
+                        ax=30,
+                        ay=0,
+                        xshift=3,
+                        yshift=0,
+                    ) | ({} if elannotation is None else elannotation),
+                ],
+            ),
+            width=600,
+            height=500,
+        )
+        return fig
 
 
 from .complete import Complete  # noqa: E402
