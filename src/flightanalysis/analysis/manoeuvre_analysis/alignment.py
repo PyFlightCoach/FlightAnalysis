@@ -162,8 +162,10 @@ class Alignment(Basic):
         fig = ea.fl.plot(
             fig=fig, ribb=False, nmodels=2, color="red", scale=10, tips=False
         )
-
-        xrng = [self.flown.data.x.min() - 20, self.flown.data.x.max() + 20]
+        
+        
+        
+        xrng = [min(self.flown.data.x.min()-20, 0), max(self.flown.data.x.max() + 20, 0)]
         yrng = [0, self.flown.data.y.max() + 20]
         zrng = [0, self.flown.data.z.max() + 20]
 
