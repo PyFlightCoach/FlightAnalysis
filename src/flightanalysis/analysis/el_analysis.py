@@ -66,7 +66,7 @@ class ElementAnalysis:
             **(dict(intra=f"{self.results.total:.4f}") if self.results is not None else {}),
         )  # fmt: skip
 
-    def full_result_plot(self, name: str, showlegend=True):
+    def full_result_plot(self, name: str, showlegend=True, textposition: str = "bottom left"):
         """plot the actual result and the uncropped result on the same figure,
         include some info from the ddowngrade"""
         import plotly.graph_objects as go
@@ -102,22 +102,23 @@ class ElementAnalysis:
                 ),
             ),
         )
-
-        fig.add_trace(
-            go.Scatter(
-                x=full_xvals,
-                y=u(full_res.measurement.value),
-                name="Measurement",
-                mode="lines",
-                line=dict(color="blue", width=1, dash="dash"),
-                showlegend=showlegend
+        if len(crop_res.measurement) < len(full_res.measurement):
+            fig.add_trace(
+                go.Scatter(
+                    x=full_xvals,
+                    y=u(full_res.measurement.value),
+                    name="Measurement",
+                    mode="lines",
+                    line=dict(color="blue", width=1, dash="dash"),
+                    showlegend=showlegend
+                )
             )
-        )
+        
         fig.add_trace(
             go.Scatter(
                 x=crop_xvals,
                 y=u(crop_res.measurement.value),
-                name="Selected",
+                name="Selected" if len(crop_res.measurement) < len(full_res.measurement) else "Measurement",
                 mode="lines",
                 line=dict(color="blue", width=1, dash="solid"),
                 showlegend=showlegend
@@ -129,33 +130,22 @@ class ElementAnalysis:
                 go.Scatter(
                     x=crop_xvals,
                     y=u(crop_res.raw_sample),
-                    name="Visible Sample",
+                    name="Raw Sample",
                     mode="lines",
                     line=dict(color="black", width=1, dash="dash"),
                     showlegend=showlegend
                 )
             )
-            fig.add_trace(
-                go.Scatter(
-                    x=crop_xvals,
-                    y=u(crop_res.sample),
-                    name="Smooth Sample",
-                    mode="lines",
-                    line=dict(color="black", width=1, dash="solid"),
-                    showlegend=showlegend
-                )
+        fig.add_trace(
+            go.Scatter(
+                x=crop_xvals,
+                y=u(crop_res.sample),
+                name="Smooth Sample" if len(dg.smoothers) > 1 else "Sample",
+                mode="lines",
+                line=dict(color="black", width=1, dash="solid"),
+                showlegend=showlegend
             )
-        else:
-            fig.add_trace(
-                go.Scatter(
-                    x=crop_xvals,
-                    y=u(crop_res.raw_sample),
-                    name="Sample",
-                    mode="lines",
-                    line=dict(color="black", width=1, dash="solid"),
-                    showlegend=showlegend
-                )
-            )
+        )
         fig.add_trace(
             go.Scatter(
                 x=crop_res.sample_keys[self.keys]
@@ -166,7 +156,7 @@ class ElementAnalysis:
                 hovertext=[crop_res.info(i) for i in range(len(crop_res.keys))],
                 mode="markers+text",
                 name="Downgrades",
-                textposition="bottom right",
+                textposition=textposition,
                 yaxis="y",
                 marker=dict(size=10, color="black"),
                 showlegend=showlegend
@@ -190,6 +180,7 @@ class ElementAnalysis:
             fillcolor="grey",
             opacity=0.2,
             line_width=0,
+            showlegend=False
         )
         fig.add_vrect(
             x0=crop_xvals[-1],
@@ -197,20 +188,61 @@ class ElementAnalysis:
             fillcolor="grey",
             opacity=0.2,
             line_width=0,
+            showlegend=False
         )
         if crop_res.criteria.__class__.__name__ == "Bounded":
             fig.add_shape(
                 type="rect",
                 x0=crop_xvals[0],
                 x1=crop_xvals[-1],
-                y0=u(crop_res.criteria.max_bound),
-                y1=u(crop_res.criteria.min_bound),
+                y0=u(crop_res.criteria.max_bound)  if crop_res.criteria.max_bound is not None else -50,
+                y1=u(crop_res.criteria.min_bound) if crop_res.criteria.min_bound is not None else 50,
                 fillcolor="red",
                 opacity=0.2,
                 line_width=0,
-                showlegend=showlegend
+                showlegend=False
             )
 
+        return fig
+
+    def results_subset_plot(self, names: list[str]):
+        from plotly.subplots import make_subplots
+
+        figs = [self.full_result_plot(name, i==0, "middle left") for i, name in enumerate(names)]
+
+        fig = make_subplots(
+            rows=len(figs),
+            cols=1,
+            shared_xaxes=True,
+            specs=[[{"secondary_y": True}] for _ in range(len(figs))],
+            vertical_spacing=0.06,
+        )
+
+        for i, _fig in enumerate(figs, 1):
+            for tr in _fig.data:
+                fig.add_trace(tr, row=i, col=1, secondary_y=tr.name == "Visibility")
+            for sh in _fig.layout.shapes:
+                fig.add_shape(sh, row=i, col=1)
+
+        axprops = dict(zerolinecolor="RGBA(0, 0, 0, 0.2)", zerolinewidth=2)
+
+        axes = {}
+        for i, _fig in enumerate(figs, 1):
+            axes[f"xaxis{i if i > 1 else ''}"] = dict(
+                visible=True, range=[0, self.fl.duration], **axprops
+            ) | (dict(title="Time (s)") if i == len(figs) else {})
+            axes[f"yaxis{2*i-1 if i>1 else ''}"] = dict(title=names[i-1], **axprops)
+            axes[f"yaxis{2*i}"] = dict(title="Visibility", overlaying=f"y{2*i-1 if i>1 else ''}", range=[0, 1], side="right", **axprops)
+
+        fig.update_layout(
+            legend=dict(orientation="h", x=0, y=1 + 0.4 / len(figs), yanchor="top"),
+            margin=dict(t=10, r=70, b=70, l=70),
+            width=1000,
+            height=250 * len(figs) + 50,
+        )
+        
+        
+        fig.update_layout(**axes)
         return fig
 
     def plot_results(self, name: str):
