@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from functools import partial
-from numbers import Number
 
 from flightanalysis.elements.element import Elements
 import geometry as g
@@ -22,7 +21,6 @@ from flightanalysis.scoring import (
 )
 import os
 
-from ..el_analysis import ElementAnalysis
 from .alignment import Alignment
 from .basic import Basic
 

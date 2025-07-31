@@ -154,7 +154,7 @@ class ElementAnalysis:
                 y=u(crop_res.sample[crop_res.keys]),
                 text=np.round(crop_res.dgs, 3),
                 hovertext=[crop_res.info(i) for i in range(len(crop_res.keys))],
-                mode="markers+text",
+                mode="markers",
                 name="Downgrades",
                 textposition=textposition,
                 yaxis="y",
@@ -208,7 +208,7 @@ class ElementAnalysis:
     def results_subset_plot(self, names: list[str]):
         from plotly.subplots import make_subplots
 
-        figs = [self.full_result_plot(name, i==0, "middle left") for i, name in enumerate(names)]
+        figs = [self.full_result_plot(name, i==0, "bottom left") for i, name in enumerate(names)]
 
         fig = make_subplots(
             rows=len(figs),

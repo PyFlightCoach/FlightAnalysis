@@ -6,7 +6,6 @@ import geometry as g
 
 from flightdata import State, align
 
-from flightanalysis.definition import ManDef
 from flightanalysis.elements import Element
 from flightanalysis.manoeuvre import Manoeuvre
 
@@ -205,27 +204,18 @@ class Alignment(Basic):
                         arrowhead=2,
                         arrowsize=2,
                         arrowwidth=1,
-                        ax=30,
-                        ay=-60,
-                        xshift=3,
-                        yshift=6,
                     ) | ({} if jpannotation is None else jpannotation),
                     dict(
                         x=ec.x[0],
                         y=ec.y[0],
                         z=ec.z[0],
                         text=long_name,
-                        xanchor="left",
                         showarrow=True,
                         font=dict(size=16),
                         # arrowcolor="black",
                         arrowhead=2,
                         arrowsize=2,
                         arrowwidth=1,
-                        ax=30,
-                        ay=0,
-                        xshift=3,
-                        yshift=0,
                     ) | ({} if elannotation is None else elannotation),
                 ],
             ),

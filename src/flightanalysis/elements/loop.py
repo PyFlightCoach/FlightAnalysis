@@ -23,9 +23,12 @@ class Loop(Element):
     ke: float
 
     def describe(self):
-        d1 = "loop" if self.roll == 0 else "rolling loop"
-        return f"{d1}, radius = {self.radius} m, rolls = {self.roll}"
+        return f"{np.degrees(self.angle):0.0f}° {self.__class__.__name__}" \
+            + f", radius = {self.radius:0.0f} m" \
+            + ("" if self.roll==0 else f", roll = {np.degrees(self.roll):0.0f}°") \
+            + ("" if self.ke % np.pi==0 else f", ke = {np.degrees(self.ke):0.0f}°") \
 
+#.replace(", ", "<br>")
     @property
     def diameter(self):
         return self.radius * 2

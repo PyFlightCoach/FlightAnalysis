@@ -115,11 +115,21 @@ class Result:
             ],
         )
 
+    def inter_df(self):
+        data = []
+        for i in range(len(self.measurement)):
+            data.append(dict(
+                name=f"{i+1}",
+                measurement=self.measurement.value[i],
+                error = self.errors[i] + 1,
+                visibility = self.measurement.visibility[i],
+                downgrade = self.dgs[i],
+            ))
+        return pd.DataFrame(data).T
+
     @property
     def plot_f(self):
         return np.degrees if self.measurement.unit == "rad" else lambda x: x
-    
-    @staticmethod
     
 
     def measurement_trace(self, xvs=None, **kwargs):
