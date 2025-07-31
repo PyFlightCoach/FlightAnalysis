@@ -156,3 +156,9 @@ class DownGrades(Collection):
     def to_list(self):
         return [dg.name for dg in self]
 
+
+@dataclass
+class DGApplication:
+    """"""
+    dg: DownGrade
+    els: list[str]

@@ -14,8 +14,8 @@ class Line(Element):
     roll: float = 0
 
     def describe(self):
-        d1 = "line" if self.roll == 0 else f"{self.roll} roll"
-        return f"{d1}, length = {self.length} m"
+        d1 = "Line" if self.roll == 0 else f"{np.degrees(self.roll):0.0f} Roll"
+        return f"{d1}, Length = {self.length:0.0f} m"
 
     @property
     def rate(self):
