@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import ClassVar, Tuple
 
+from flightanalysis.scoring.criteria.intra.deviation import Deviation
 import numpy as np
 import numpy.typing as npt
 from flightdata import Collection, State
@@ -71,12 +72,21 @@ class DownGrade:
     def visibility(self, measurement: Measurement) -> npt.NDArray:
         """Calculate the visibility of the measurement"""
         if DownGrade.ENABLE_VISIBILITY:
-            return visibility(
-                self.criteria.prepare(measurement.value),
+            if isinstance(self.criteria, Deviation):
+                value = measurement.value - 1
+            else:
+                value = measurement.value
+            sample = visibility(
+                self.criteria.prepare(value),
                 measurement.visibility,
                 self.criteria.lookup.error_limit,
                 "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
-            )            
+            )
+            if isinstance(self.criteria, Deviation):
+                return sample + 1
+            else:
+                return sample
+
         else:
             return self.criteria.prepare(measurement.value)
 
