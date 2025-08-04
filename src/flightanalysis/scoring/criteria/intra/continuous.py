@@ -63,9 +63,9 @@ class Continuous(Criteria):
         sample: npt.NDArray,
         direction: Literal["forward", "backward"] = "forward",
     ):
-        """Calculate the height of each point above the last trough, or the next peak if backward.
-        if direction is 'backward' then the local error at each point is calculated as if the sample ended
-        at that point, otherwise it is calculated as if the sample started at that point.
+        """Calculate the height of each point above the last trough. (below the next peak if direction==backward)
+        if direction is 'backward' then the local error at each point is calculated as if the sample started
+        at that point, otherwise it is calculated as if the sample ended at that point.
         """
         # how much does the error increase in each timestep
         dsample = np.concatenate([np.array([0]), np.diff(np.abs(sample))])
@@ -104,7 +104,6 @@ class Continuous(Criteria):
 
         return dg_increment.cumsum() if direction == "forward" else dg_increment[::-1].cumsum()[::-1]
 
-    
 
     def process_increments(
         self,
