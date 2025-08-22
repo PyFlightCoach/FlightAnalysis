@@ -205,6 +205,15 @@ class Basic(Analysis):
     def get_edef(self, name):
         return self.mdef.eds[name]
     
+    def move(self, trans: g.Transformation):
+        return Basic(
+            self.id,
+            self.schedule_direction,
+            self.flown.move(trans),
+            self.mdef,
+        )
+
+
     @property
     def elnames(self):
         return list(self.mdef.eds.data.keys())

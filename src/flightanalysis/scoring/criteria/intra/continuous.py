@@ -15,7 +15,8 @@ class Continuous(Criteria):
 
     @staticmethod
     def get_peak_locs(arr, rev=False):
-        increasing = np.sign(np.diff(np.abs(arr))) > 0
+        _da = np.diff(np.abs(arr))
+        increasing = (np.sign(_da) > 0) & ( _da != 0)
         last_downgrade = np.column_stack([increasing[:-1], increasing[1:]])
         peaks = np.sum(last_downgrade.astype(int) * [10, 1], axis=1) == (
             1 if rev else 10

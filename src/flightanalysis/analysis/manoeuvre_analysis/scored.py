@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from flightanalysis import ManParm, ManoeuvreResults, Result
-from more_itertools import flatten
+
 from .complete import Complete
 import geometry as g
 
@@ -60,7 +60,7 @@ class Scored(Complete):
 
         mp: ManParm = self.mdef.mps[name_or_id]
         el_groups = [[co.elname for co in so.list_parms()] for so in mp.collectors]
-        all_els = list(flatten(el_groups))
+        all_els = [el for elg in el_groups for el in elg] #list(flatten(el_groups))
 #        els = [k.split(".")[0] for k in res.measurement.keys]
 
         fig: go.Figure = plotsec(
