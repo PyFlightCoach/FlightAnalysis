@@ -64,38 +64,14 @@ class Manoeuvre:
     def create_template(
         self, initial: Transformation | State, aligned: State = None
     ) -> dict[str, State]:
-        istate = (
-            State.from_transform(initial, vel=PX())
-            if isinstance(initial, Transformation)
-            else initial
-        )
-        templates = [istate]
-        for i, element in enumerate(self.all_elements()):
-            templates.append(
-                element.create_template(
-                    templates[-1][-1], aligned.element[element.uid] if aligned else None
-                )
-            )
-
-        return {el.uid: tp for el, tp in zip(self.all_elements(), templates[1:])}
+        return self.all_elements().create_templates(initial, aligned)
 
     def match_intention(self, istate: State, aligned: State) -> Tuple[Self, dict[str, State]]:
         """Create a new manoeuvre with all the elements scaled to match the corresponding
         flown element"""
+        elms, tpdict = self.all_elements().match_intention(istate, aligned) 
 
-        elms = Elements()
-        templates = [istate]
-        
-        for elm in self.all_elements():
-            st = aligned.element[elm.uid]
-            elms.add(elm.match_intention(templates[-1][-1].transform, st))
-
-            templates.append(elms[-1].create_template(templates[-1][-1], st))
-
-        return Manoeuvre.from_all_elements(self.uid, elms), {el.uid: tp for el, tp in zip(elms, templates[1:])} 
-     #State.stack(
-     #       templates[1:], "element", [el.uid for el in elms]
-     #   )
+        return Manoeuvre.from_all_elements(self.uid, elms), tpdict
 
     def el_matched_tp(self, istate: State, aligned: State) -> dict[str, State]:
         aligned = self.get_data(aligned)

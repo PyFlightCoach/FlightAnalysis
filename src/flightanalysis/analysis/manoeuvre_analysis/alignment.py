@@ -127,6 +127,16 @@ class Alignment(Basic):
         else:
             return self
 
+    def move(self, trans: g.Transformation):
+        return Alignment(
+            self.id,
+            self.schedule_direction,
+            self.flown.move(trans),
+            self.mdef,
+            self.manoeuvre,
+            {k: t.move(trans) for k, t in self.templates.items()},
+        )
+
     def plot_element(
         self, 
         eln: str, 

@@ -5,7 +5,7 @@ from flightdata import State, Collection
 import geometry as g
 from json import load
 import inspect
-from typing import Self, ClassVar
+from typing import Self, ClassVar, Tuple
 from dataclasses import dataclass
 
 
@@ -119,3 +119,34 @@ class Elements(Collection):
             [[e.uid, e.__class__.__name__] for e in self], columns=['name', 'class']
         )
         return pd.concat([names, params], axis=1).fillna('-')
+
+    def create_templates(self, initial: g.Transformation, aligned: State = None):
+        istate = (
+            State.from_transform(initial, vel=g.PX())
+            if isinstance(initial, g.Transformation)
+            else initial
+        )
+        templates = [istate]
+        for i, element in enumerate(self):
+            templates.append(
+                element.create_template(
+                    templates[-1][-1], aligned.element[element.uid] if aligned else None
+                )
+            )
+
+        return {el.uid: tp for el, tp in zip(self, templates[1:])}
+
+    def match_intention(self, istate: State, aligned: State) -> Tuple[Elements, dict[str, State]]:
+        """Create a new manoeuvre with all the elements scaled to match the corresponding
+        flown element"""
+
+        elms = Elements()
+        templates = [istate]
+        
+        for elm in self:
+            st = aligned.element[elm.uid]
+            elms.add(elm.match_intention(templates[-1][-1].transform, st))
+
+            templates.append(elms[-1].create_template(templates[-1][-1], st))
+
+        return elms, {el.uid: tp for el, tp in zip(elms, templates[1:])} 

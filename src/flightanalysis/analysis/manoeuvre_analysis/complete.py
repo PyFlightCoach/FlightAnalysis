@@ -199,7 +199,7 @@ class Complete(Alignment):
         from plotting import plotsec
 
         fig = self.flown.plotlabels("element")
-        return plotsec(self.flown, color="blue", nmodels=20, fig=fig, **kwargs)
+        return plotsec(self.flown, fig=fig, **dict(color="blue", nmodels=20) | kwargs)
 
     def set_boundaries(self, boundaries: list[float]):
         new_man = Basic(
