@@ -264,12 +264,13 @@ class ManParms(Collection):
         rolls: Number | str | Opp | list[Number] | list[Opp],
         name: str,
         reversible: bool = True,
+        turns: bool = False
     ):
         if isinstance(rolls, Opp) or (
             isinstance(rolls, list) and all([isinstance(r, Opp) for r in rolls])
         ):
             return rolls
-        elif isinstance(rolls, str):
+        elif isinstance(rolls, str) and not turns:
             return self.add(
                 ManParm(
                     f"{name}_rolls", Combination.rollcombo(rolls, reversible), 0, "rad"
@@ -278,7 +279,7 @@ class ManParms(Collection):
         elif isinstance(rolls, Number) or pd.api.types.is_list_like(rolls):
             return self.add(
                 ManParm(
-                    f"{name}_rolls",
+                    f"{name}_{'turns' if turns else 'rolls'}",
                     Combination.rolllist(
                         [rolls] if np.isscalar(rolls) else rolls, reversible
                     ),
@@ -287,7 +288,9 @@ class ManParms(Collection):
                 )
             )
         else:
-            raise ValueError(f"Cannot parse rolls from {rolls}")
+            raise ValueError(f"Cannot parse {'turns' if turns else 'rolls'} from {rolls}")
+
+
 
     def to_df(self):
         return pd.DataFrame(

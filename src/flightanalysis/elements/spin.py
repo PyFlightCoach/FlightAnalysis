@@ -135,7 +135,10 @@ class Spin(Element):
 
         return self.set_parms(
             height=flown.z[0] - flown.z[-1],
-            turns=-np.sign(np.mean(auto.p)) * abs(self.turns),
+            turns=np.sign(np.mean(auto.wrvel.z)) * abs(self.turns),
             speed=np.mean(abs(flown.vel)),
             pitch=pitch,
         )
+
+    def copy_direction(self, other) -> Spin:
+        return self.set_parms(turns=abs(self.turns) * np.sign(other.turns))

@@ -105,6 +105,11 @@ class Continuous(Criteria):
 
         return dg_increment.cumsum() if direction == "forward" else dg_increment[::-1].cumsum()[::-1]
 
+    def calculate_increments(
+        self, sample: npt.NDArray, direction: Literal["forward", "backward"]):
+        le = self.local_error(sample, direction)
+        ldg = self.lookup(le)
+        return self.incremental_downgrade(ldg, direction)
 
     def process_increments(
         self,

@@ -6,7 +6,7 @@ from .inter.combination import Combination
 from .inter.comparison import Comparison
 from .intra.bounded import Bounded
 from .intra.continuous import Continuous, ContinuousValue
-from .intra.peak import Peak, Trough
+from .intra.peak import Peak, Trough, AbsPeak, AbsTrough
 from .intra.single import Limit, Single, Threshold
 from .intra.deviation import Deviation
 from .criteria_group import CriteriaGroup

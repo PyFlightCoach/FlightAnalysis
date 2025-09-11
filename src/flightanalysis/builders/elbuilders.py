@@ -1,5 +1,6 @@
 from numbers import Number
 
+from flightanalysis.scoring.criteria.inter.combination import Combination
 import numpy as np
 
 from flightanalysis.definition import ItemOpp, Opp, maxopp
@@ -50,6 +51,7 @@ def tailslide(name, speed, direction, rate, over_flop, reset_rate, Inter):
 
 
 def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, Inter):
+    
     ed = ElDef.build(
         Snap,
         name,
@@ -67,16 +69,20 @@ def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, Inter
     return ed, ManParms()
 
 
-def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns, Inter):
+def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns, reversible, Inter):
+
+    mps = ManParms([])
+    _turns = mps.parse_rolls(turns, name, reversible, True)
+
     height = Spin.get_height(speed, rate, turns, nd_turns, recovery_turns)
     ed = ElDef.build(
-        Spin, name, [speed, height, turns, break_angle, nd_turns, recovery_turns]
+        Spin, name, [speed, height, _turns if isinstance(_turns, ItemOpp) else _turns[0], break_angle, nd_turns, recovery_turns]
     )
 
     if isinstance(rate, ManParm):
         rate.collectors.add(ed.get_collector("rate"))
 
-    return ed, ManParms()
+    return ed, mps
 
 
 def parse_rolltypes(rolltypes, n):

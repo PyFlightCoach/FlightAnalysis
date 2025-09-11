@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import stat
 from typing import Annotated
-from xmlrpc.client import boolean
-
 import numpy as np
 
 import geometry as g
@@ -43,13 +40,13 @@ class Basic(Analysis):
     def __repr__(self):
         return str(self)
 
-    def run_all(self, optimise_aligment=True, force=False) -> Scored:
+    def run_all(self, optimise_aligment=True, force=False, throw_errors=True) -> Scored:
         """Run the analysis to the final stage"""
         drs = [r._run(True) for r in self.run()]
 
         dr: Alignment = drs[np.argmin([dr[0] for dr in drs])][1]
 
-        return dr.run_all(optimise_aligment, force)
+        return dr.run_all(optimise_aligment, force, throw_errors)
 
     def proceed(self, raise_no_labels: bool = False) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements 
@@ -85,16 +82,15 @@ class Basic(Analysis):
             .add_lines()
             .match_intention(State.from_transform(itrans), self.flown)
         )
+        
         mdef = mdef.update_defaults(man)
-        # ManDef(mdef.info, mdef.mps.update_defaults(man), mdef.eds, mdef.box)
-        return Complete(
+        return Alignment(
             self.id,
             self.schedule_direction,
             self.flown,
             mdef,
-            man,
-            tps,
-        )
+            man, tps
+        ).proceed()
 
     @staticmethod
     def from_dict(data: dict) -> Basic:
@@ -174,7 +170,7 @@ class Basic(Analysis):
         )
 
     @staticmethod
-    def parse_analyse_serialise(pad: dict, optimise: boolean, name: str):
+    def parse_analyse_serialise(pad: dict, optimise: bool, name: str):
         import tuning
         from flightanalysis import enable_logging
 
