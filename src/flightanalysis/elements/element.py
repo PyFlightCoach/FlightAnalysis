@@ -136,12 +136,12 @@ class Elements(Collection):
 
         return {el.uid: tp for el, tp in zip(self, templates[1:])}
 
-    def match_intention(self, istate: State, aligned: State) -> Tuple[Elements, dict[str, State]]:
+    def match_intention(self, istate: State | g.Transformation, aligned: State) -> Tuple[Elements, dict[str, State]]:
         """Create a new manoeuvre with all the elements scaled to match the corresponding
         flown element"""
 
         elms = Elements()
-        templates = [istate]
+        templates = [State.from_transform(istate) if isinstance(istate, g.Transformation) else istate]
         
         for elm in self:
             st = aligned.element[elm.uid]

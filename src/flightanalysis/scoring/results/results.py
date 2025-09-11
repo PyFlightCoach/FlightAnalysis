@@ -74,8 +74,9 @@ class Results(Collection):
         )
 
         for i, res in enumerate(self, 1):
+            res: Result
             fig.add_traces(res.measurement_trace(showlegend=i == 1), rows=i, cols=1)
-            fig.add_trace(res.sample_trace(showlegend=i == 1), row=i, col=1)
+            fig.add_traces(res.sample_trace(showlegend=i == 1), rows=i, cols=1)
             fig.add_trace(res.downgrade_trace(showlegend=i == 1), row=i, col=1)
             fig.add_trace(
                 res.visibility_trace(showlegend=i == 1), secondary_y=True, row=i, col=1

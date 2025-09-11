@@ -1,5 +1,5 @@
 from __future__ import annotations
-from geometry import Transformation, PX
+import geometry as g    
 from typing import  Tuple, Self
 from dataclasses import dataclass
 from flightdata.state import State
@@ -62,11 +62,11 @@ class Manoeuvre:
         )
 
     def create_template(
-        self, initial: Transformation | State, aligned: State = None
+        self, initial: g.Transformation | State, aligned: State = None
     ) -> dict[str, State]:
         return self.all_elements().create_templates(initial, aligned)
 
-    def match_intention(self, istate: State, aligned: State) -> Tuple[Self, dict[str, State]]:
+    def match_intention(self, istate: State | g.Transformation, aligned: State) -> Tuple[Self, dict[str, State]]:
         """Create a new manoeuvre with all the elements scaled to match the corresponding
         flown element"""
         elms, tpdict = self.all_elements().match_intention(istate, aligned) 

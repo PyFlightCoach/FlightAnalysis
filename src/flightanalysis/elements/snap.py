@@ -96,6 +96,11 @@ class Snap(Element):
 
         snap_angle = np.cumsum(snap_rate * flown.dt)
 
+        if np.abs(snap_angle)[-1] < (self.break_roll + self.recovery_roll):
+            return self.set_parms(
+                roll=np.sign(np.mean(flown.p)) * abs(self.roll),
+            )
+
         ipb = np.where(np.abs(snap_angle) > self.break_roll)[0][0]
         irec = np.where(np.abs(snap_angle) < (np.abs(self.roll) - self.recovery_roll))[
             0
@@ -112,3 +117,6 @@ class Snap(Element):
             speed=speed,
             pitch=np.mean(pitch[ipb:irec] - pitch[0]),
         )
+
+    def copy_direction(self, other) -> Snap:
+        return self.set_parms(roll=abs(self.roll) * np.sign(other.roll))

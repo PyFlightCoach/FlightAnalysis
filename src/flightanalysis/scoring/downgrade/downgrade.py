@@ -1,25 +1,27 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import ClassVar, Tuple
+from typing import Tuple
 
 from flightanalysis.scoring.criteria.intra.deviation import Deviation
 import numpy as np
 import numpy.typing as npt
-from flightdata import Collection, State
+from flightdata import State
 from geometry.utils import apply_index_slice
 
 from flightanalysis.base.ref_funcs import RefFunc, RefFuncs
 
-from .criteria import Bounded, Continuous, ContinuousValue, Criteria, Single
-from .measurement import Measurement
-from .reffuncs import measures, selectors, smoothers
-from .results import Result, Results
-from .visibility import visibility
+from ..criteria import Bounded, Continuous, ContinuousValue, Criteria, Single
+from ..measurement import Measurement
+from ..reffuncs import measures as me, selectors as se, smoothers as sm
+from ..results import Result
+from ..visibility import visibility
+
+from .dg import DG
 
 
 @dataclass
-class DownGrade:
+class DownGrade(DG):
     """This is for Intra scoring, it sits within an El and defines how errors should be measured and the criteria to apply
     measure - a Measurement constructor
     criteria - takes a Measurement and calculates the score
@@ -27,18 +29,16 @@ class DownGrade:
     selector - the selector to apply to the measurement before scoring
     """
 
-    name: str
-    measure: RefFunc  
-    smoothers: RefFuncs  
-    selectors: RefFuncs  
+    measure: RefFunc
+    smoothers: RefFuncs
+    selectors: RefFuncs
     criteria: Bounded | Continuous | Single
-    ENABLE_VISIBILITY: ClassVar[bool] = True
 
     def __repr__(self):
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.smoothers)}, {str(self.selectors)}, {str(self.criteria)})"
 
     def rename(self, name: str):
-        return replace(self, name=name) 
+        return replace(self, name=name)
 
     def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
@@ -49,28 +49,23 @@ class DownGrade:
             criteria=self.criteria.to_dict(criteria_names),
         )
 
-    @staticmethod
-    def from_dict(data):
-        return DownGrade(
-            name=data["name"],
-            measure=measures.parse(data["measure"]),
-            smoothers=smoothers.parse(data["smoothers"]),
-            selectors=selectors.parse(data["selectors"]),
-            criteria=Criteria.from_dict(data["criteria"]),
-        )
-
     def select(self, fl: State, tp: State, **kwargs) -> Tuple[np.ndarray, State, State]:
-        """Select the values to downgrade based on the selectors"""
+        """get the indexes of the cropped sample and add datapoint at cropping boundaries"""
         oids = np.arange(len(fl))
+        sfl, stp = fl, tp
         for s in self.selectors:
-            sli = s(fl, **kwargs)
+            sli = s(sfl, **kwargs)
             oids = apply_index_slice(oids, sli)
-            fl = fl.iloc[sli]
-            tp = tp.iloc[sli]
+            sfl = sfl.iloc[sli]
+            stp = stp.iloc[sli]
+
+        fl = State.stack([fl.iloc[: oids[0]], sfl, fl.iloc[oids[-1] :]])
+        tp = State.stack([tp.iloc[: oids[0]], stp, tp.iloc[oids[-1] :]])
+
         return oids, fl, tp
 
-    def visibility(self, measurement: Measurement) -> npt.NDArray:
-        """Calculate the visibility of the measurement"""
+    def create_sample(self, measurement: Measurement) -> npt.NDArray:
+        """create a sample by reducing the measured error to account for the visibility weighting."""
         if DownGrade.ENABLE_VISIBILITY:
             if isinstance(self.criteria, Deviation):
                 value = measurement.value - 1
@@ -90,10 +85,12 @@ class DownGrade:
         else:
             return self.criteria.prepare(measurement.value)
 
-    def smoothing(self, sample: npt.NDArray, dt: float, el: str, **kwargs) -> npt.NDArray:
+    def smoothing(
+        self, sample: npt.NDArray, dt: float, el: str, **kwargs
+    ) -> npt.NDArray:
         """Apply the smoothers to the sample"""
-        for sm in self.smoothers:
-            sample = sm(sample, dt, el, **kwargs)
+        for _sm in self.smoothers:
+            sample = _sm(sample, dt, el, **kwargs)
         return sample
 
     def __call__(
@@ -105,15 +102,16 @@ class DownGrade:
         mkwargs: dict = None,
         smkwargs: dict = None,
         sekwargs: dict = None,
-        select=True,
     ) -> Result:
+        oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
 
-        if select:
-            oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
-        else:
-            oids = np.arange(len(fl))
-        measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))
-        raw_sample = self.visibility(measurement)
+        istart = int(np.ceil(oids[0]))
+        iend = int(np.ceil(oids[-1]) + 1)
+
+        measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))[istart:iend]
+
+        raw_sample = self.create_sample(measurement)
+
         sample = self.smoothing(raw_sample, fl.dt, el, **(smkwargs or {}))
 
         return Result(
@@ -125,7 +123,7 @@ class DownGrade:
             *self.criteria(sample, limits),
             self.criteria,
         )
-    
+
 
 def dg(
     name: str,
@@ -138,31 +136,5 @@ def dg(
         sms = []
     elif isinstance(sms, RefFunc):
         sms = [sms]
-    sms.append(smoothers.final())
-    return DownGrade(
-        name, meas, RefFuncs(sms), RefFuncs(sels), criteria
-    )
-
-
-class DownGrades(Collection):
-    VType = DownGrade
-    uid = "name"
-
-    def apply(
-        self,
-        el: str | any,
-        fl,
-        tp,
-        limits=True,
-        mkwargs: dict = None,
-        smkwargs: dict = None,
-        sekwargs: dict = None,
-    ) -> Results:
-        return Results(
-            el if isinstance(el, str) else el.uid,
-            [dg(el, fl, tp, limits, mkwargs, smkwargs, sekwargs) for dg in self],
-        )
-
-    def to_list(self):
-        return [dg.name for dg in self]
-
+    sms.append(sm.final())
+    return DownGrade(name, meas, RefFuncs(sms), RefFuncs(sels), criteria)

@@ -40,30 +40,11 @@ class Complete(Alignment):
     def run(self, optimise_aligment=True) -> Scored:
         if optimise_aligment:
             self = self.optimise_alignment()
-        self = self.update_templates()
+        #self = self.update_templates()
         return Scored(
             **self.__dict__,
             scores=ManoeuvreResults(self.inter(), self.intra(), self.positioning()),
         )
-
-    def update_templates(self):
-        if not len(self.flown) == len(self.template) or not np.all(
-            self.flown.element == self.template.element
-        ):
-            manoeuvre, template = self.manoeuvre.match_intention(
-                self.template[0], self.flown
-            )
-
-            return Complete(
-                self.id,
-                self.schedule_direction,
-                self.flown,
-                self.mdef.update_defaults(manoeuvre),
-                manoeuvre,
-                template,
-            )
-        else:
-            return self
 
     def get_score(
         self, eln: str, itrans: g.Transformation, fl: State

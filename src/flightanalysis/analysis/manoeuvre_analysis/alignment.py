@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-
+from loguru import logger
 import geometry as g
+from schemas.positioning import Direction, Heading
 
 from flightdata import State, align
 
 from flightanalysis.elements import Element
 from flightanalysis.manoeuvre import Manoeuvre
+from flightanalysis.definition.mandef import ManDef
 
 from ..el_analysis import ElementAnalysis
 from .basic import Basic
@@ -51,16 +53,21 @@ class Alignment(Basic):
             yield self.get_ea(edn)
 
     def run_all(
-        self, optimise_aligment=True, force=False
+        self, optimise_aligment=True, force=False, throw_errors=True
     ) -> Alignment | Complete | Scored:
         if self.__class__.__name__ == "Scored" and force:
             self = self.downgrade()
-        while self.__class__.__name__ != "Scored":
-            self = (
-                self.run(optimise_aligment)
-                if isinstance(self, Complete)
-                else self.run()
-            )
+        try:
+            while self.__class__.__name__ != "Scored":
+                self = (
+                    self.run(optimise_aligment)
+                    if isinstance(self, Complete)
+                    else self.run()
+                )
+        except Exception as ex:
+            if throw_errors:
+                raise ex
+            logger.exception(f"Error in run_all at {self.__class__.__name__}: {ex}")
         return self
 
     @staticmethod
@@ -97,17 +104,73 @@ class Alignment(Basic):
             templates={k: tp.to_dict(True) for k, tp in self.templates.items()},
         )
 
+    def update_templates(self):
+        if (
+            not len(self.flown) == len(self.template)
+            or not self.flown.labels.element.keys()
+            == self.template.labels.element.keys()
+        ):
+            manoeuvre, template = self.manoeuvre.match_intention(
+                self.template[0], self.flown
+            )
+        else:
+            manoeuvre, template = self.manoeuvre, self.template
+
+        corrected = self.mdef.create().add_lines()
+        manoeuvre = manoeuvre.copy_directions(corrected)
+
+        Obj = Complete if self.__class__ is Scored else self.__class__
+            
+        return Obj(
+            self.id,
+            self.schedule_direction,
+            self.flown,
+            self.mdef,
+            manoeuvre,
+            manoeuvre.create_template(template[0], self.flown),
+        )
+
+    def proceed(self) -> Alignment | Complete:
+        if "element" in self.flown.labels.lgs:
+            return Complete(
+                self.id,
+                self.schedule_direction,
+                self.flown,
+                self.mdef,
+                self.manoeuvre,
+                self.templates,
+            ).update_templates()
+        else:
+            return self
+
     def run(self) -> Alignment | Complete:
         if "element" not in self.flown.labels.lgs:
             return self._run(True)[1]
-        return self._run(False)[1].proceed()
+        self = self._run(False)[1]
+
+        return self.proceed()
 
     def _run(self, mirror=False, radius=10) -> Alignment:
         res = align(self.flown, self.template, radius, mirror)
         return res.dist, self.update(res.aligned)
 
+    @staticmethod
+    def build(
+        id: int, schedule_direction: Heading, flown: State, mdef: ManDef
+    ) -> Alignment:
+        itrans = Basic(id, schedule_direction, flown, mdef).create_itrans()
+        manoeuvre = mdef.create().add_lines()
+        return Alignment(
+            id,
+            schedule_direction,
+            flown,
+            mdef,
+            manoeuvre,
+            manoeuvre.create_template(itrans, flown),
+        )
+
     def update(self, aligned: State) -> Alignment:
-        man, tps = self.manoeuvre.match_intention(self.template_list[0][0], aligned)
+        man, tps = self.manoeuvre.match_intention(self.create_itrans(), aligned)
         mdef = self.mdef.update_defaults(man)
         return Alignment(self.id, self.schedule_direction, aligned, mdef, man, tps)
 
@@ -138,13 +201,13 @@ class Alignment(Basic):
         )
 
     def plot_element(
-        self, 
-        eln: str, 
-        long_name: str, 
+        self,
+        eln: str,
+        long_name: str,
         camera: dict = None,
         jpannotation: dict = None,
         elannotation: dict = None,
-        fig=None
+        fig=None,
     ):
         import plotly.graph_objects as go
         from plotting import plotsec
@@ -171,10 +234,11 @@ class Alignment(Basic):
         fig = ea.fl.plot(
             fig=fig, ribb=False, nmodels=2, color="red", scale=10, tips=False
         )
-        
-        
-        
-        xrng = [min(self.flown.data.x.min()-20, 0), max(self.flown.data.x.max() + 20, 0)]
+
+        xrng = [
+            min(self.flown.data.x.min() - 20, 0),
+            max(self.flown.data.x.max() + 20, 0),
+        ]
         yrng = [0, self.flown.data.y.max() + 20]
         zrng = [0, self.flown.data.z.max() + 20]
 
@@ -197,7 +261,10 @@ class Alignment(Basic):
                     eye=dict(x=-1.1, y=-1.1, z=0.4),
                     up=dict(x=0, y=0, z=1),
                     center=dict(x=0, y=0.1, z=-0.2),
-                ) | camera if camera is not None else {},
+                )
+                | camera
+                if camera is not None
+                else {},
                 xaxis=dict(range=xrng, title_font_size=16, title="x (m)"),
                 yaxis=dict(range=yrng, title_font_size=16, title="y (m)"),
                 zaxis=dict(range=zrng, title_font_size=16, title="z (m)"),
@@ -214,7 +281,8 @@ class Alignment(Basic):
                         arrowhead=2,
                         arrowsize=2,
                         arrowwidth=1,
-                    ) | ({} if jpannotation is None else jpannotation),
+                    )
+                    | ({} if jpannotation is None else jpannotation),
                     dict(
                         x=ec.x[0],
                         y=ec.y[0],
@@ -226,7 +294,8 @@ class Alignment(Basic):
                         arrowhead=2,
                         arrowsize=2,
                         arrowwidth=1,
-                    ) | ({} if elannotation is None else elannotation),
+                    )
+                    | ({} if elannotation is None else elannotation),
                 ],
             ),
             width=600,
