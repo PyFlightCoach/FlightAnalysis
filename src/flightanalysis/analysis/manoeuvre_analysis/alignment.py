@@ -53,14 +53,14 @@ class Alignment(Basic):
             yield self.get_ea(edn)
 
     def run_all(
-        self, optimise_aligment=True, force=False, throw_errors=True
+        self, optimise_aligment=True, force=False, throw_errors=True, limits=True
     ) -> Alignment | Complete | Scored:
         if self.__class__.__name__ == "Scored" and force:
             self = self.downgrade()
         try:
             while self.__class__.__name__ != "Scored":
                 self = (
-                    self.run(optimise_aligment)
+                    self.run(optimise_aligment, limits=limits)
                     if isinstance(self, Complete)
                     else self.run()
                 )
@@ -110,11 +110,11 @@ class Alignment(Basic):
             or not self.flown.labels.element.keys()
             == self.template.labels.element.keys()
         ):
-            manoeuvre, template = self.manoeuvre.match_intention(
-                self.template[0], self.flown
+            manoeuvre, templates = self.manoeuvre.match_intention(
+                self.template_list[0][0], self.flown
             )
         else:
-            manoeuvre, template = self.manoeuvre, self.template
+            manoeuvre, templates = self.manoeuvre, self.templates
 
         corrected = self.mdef.create().add_lines()
         manoeuvre = manoeuvre.copy_directions(corrected)
@@ -127,7 +127,7 @@ class Alignment(Basic):
             self.flown,
             self.mdef,
             manoeuvre,
-            manoeuvre.create_template(template[0], self.flown),
+            manoeuvre.create_template(self.template_list[0][0][0], self.flown),
         )
 
     def proceed(self) -> Alignment | Complete:

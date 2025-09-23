@@ -41,6 +41,10 @@ class Loop(Element):
     def duration(self):
         return self.radius * abs(self.angle) / self.speed
 
+    @property
+    def axis(self):
+        return g.Point(0, np.cos(self.ke), np.sin(self.ke))
+
     def create_template(self, istate: State, fl: State = None) -> State:
         """Generate a template loop.
 

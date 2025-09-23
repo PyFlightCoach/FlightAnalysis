@@ -126,7 +126,7 @@ class ManParm(Opp):
             _vis,
         )
 
-    def get_downgrades(self, els: Elements, state: State, box) -> Result:
+    def get_downgrades(self, els: Elements, state: State, box, limits=True) -> Result:
         direction, visor = self.collect_vis(els, state, box)
 
         meas = Measurement(
@@ -139,7 +139,7 @@ class ManParm(Opp):
             [str(c) for c in self.collectors],
         )
 
-        mistakes, dgs, ids = self.criteria(meas.value)
+        mistakes, dgs, ids = self.criteria(meas.value, limits)
         #dgs = np.maximum(dgs, self.criteria.lookup.limit)
 #        dgs = visibility(
 #            dgs, meas.visibility, self.criteria.lookup.limit or 1, "value"
@@ -192,12 +192,12 @@ class ManParms(Collection):
     VType = ManParm
     uid = "name"
 
-    def collect(self, manoeuvre: Manoeuvre, state: State, box) -> Results:
+    def collect(self, manoeuvre: Manoeuvre, state: State, box, limits=True) -> Results:
         """Collect the comparison downgrades for each manparm for a given manoeuvre."""
         return Results(
             "Inter",
             [
-                mp.get_downgrades(manoeuvre.all_elements(), state, box)
+                mp.get_downgrades(manoeuvre.all_elements(), state, box, limits)
                 for mp in self
                 if isinstance(mp.criteria, Comparison) and len(mp.collectors)
             ],

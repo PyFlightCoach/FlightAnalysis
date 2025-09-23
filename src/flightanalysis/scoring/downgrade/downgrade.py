@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Tuple
 
+from flightanalysis.elements.element import Elements
 from flightanalysis.scoring.criteria.intra.deviation import Deviation
 import numpy as np
 import numpy.typing as npt
@@ -108,7 +109,7 @@ class DownGrade(DG):
         istart = int(np.ceil(oids[0]))
         iend = int(np.ceil(oids[-1]) + 1)
 
-        measurement: Measurement = self.measure(fl, tp, **(mkwargs or {}))[istart:iend]
+        measurement: Measurement = self.measure(Elements([el]), fl, tp, **(mkwargs or {}))[istart:iend]
 
         raw_sample = self.create_sample(measurement)
 

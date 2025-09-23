@@ -37,13 +37,13 @@ class Complete(Alignment):
     def to_dict(self, basic: bool = False) -> dict:
         return super().to_dict(basic)
 
-    def run(self, optimise_aligment=True) -> Scored:
+    def run(self, optimise_aligment=True, limits=True) -> Scored:
         if optimise_aligment:
             self = self.optimise_alignment()
         #self = self.update_templates()
         return Scored(
             **self.__dict__,
-            scores=ManoeuvreResults(self.inter(), self.intra(), self.positioning()),
+            scores=ManoeuvreResults(self.inter(limits), self.intra(limits), self.positioning(limits)),
         )
 
     def get_score(
@@ -167,13 +167,13 @@ class Complete(Alignment):
     def optimise_alignment_v2(self):
         pass
 
-    def intra(self):
-        return ElementsResults([ea.intra_score() for ea in self])
+    def intra(self, limits: bool=True):
+        return ElementsResults([ea.intra_score(limits) for ea in self])
 
-    def inter(self):
-        return self.mdef.mps.collect(self.manoeuvre, self.template, self.mdef.box)
+    def inter(self, limits: bool=True):
+        return self.mdef.mps.collect(self.manoeuvre, self.template, self.mdef.box, limits)
 
-    def positioning(self):
+    def positioning(self, limits: bool=True):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
     def plot_3d(self, **kwargs):
@@ -199,7 +199,7 @@ class Complete(Alignment):
         boundaries[elid] = boundary
         return self.set_boundaries(boundaries)
 
-    def boundary_sweep(self, el: str | int, width: float, substeps: int = 5):
+    def boundary_sweep(self, el: str | int, width: float, substeps: int = 5, limits:bool=False):
         """Sweep an element boundary through a width and return a set of results
         width is in seconds,
         substeps is the number of steps to take within each timestep
@@ -221,7 +221,7 @@ class Complete(Alignment):
             f"Starting {os.cpu_count() * 2 - 1} processes to run {len(splits)} manoeuvres"
         )
         madicts = Parallel(n_jobs=os.cpu_count() * 2 - 1)(
-            delayed(partial(Basic.parse_analyse_serialise, optimise=False, name=i))(
+            delayed(partial(Basic.parse_analyse_serialise, optimise=False, limits=limits, name=i))(
                 self.set_boundary(el, ic).to_dict()
             )
             for i, ic in enumerate(splits)

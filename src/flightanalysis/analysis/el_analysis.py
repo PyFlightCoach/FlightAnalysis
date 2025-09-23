@@ -49,10 +49,10 @@ class ElementAnalysis:
     def score_dg(self, dg: str, limits: bool = True, select: bool = True) -> Result:
         return self.edef.dgs[dg](self.el, self.fl, self.tp, limits, select)
 
-    def intra_score(self):
+    def intra_score(self, limits: bool = True) -> Results:
         return self.edef.dgs.apply(
-            self.el, self.fl, self.tp
-        )  # [dg.apply(self.el.uid + (f'_{k}' if len(k) > 0 else ''), self.fl, self.tp) for k, dg in self.edef.dgs.items()]
+            self.el, self.fl, self.tp, limits
+        )
 
     def info(self):
         return dict(
