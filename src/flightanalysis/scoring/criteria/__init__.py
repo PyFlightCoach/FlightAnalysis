@@ -8,7 +8,7 @@ from .intra.bounded import Bounded
 from .intra.continuous import Continuous, ContinuousValue
 from .intra.peak import Peak, Trough, AbsPeak, AbsTrough
 from .intra.single import Limit, Single, Threshold
-from .intra.deviation import Deviation
+from .intra.deviation import Deviation, Total
 from .criteria_group import CriteriaGroup
 
 def plot_lookup(lu, v0=0, v1=10):

@@ -2,6 +2,7 @@ from dataclasses import dataclass, replace
 from .dg import DG
 from .downgrade import DownGrade
 from ..results import Result
+from flightanalysis.elements import Elements
 from typing import Tuple
 import numpy as np
 
@@ -42,8 +43,8 @@ class PairedDowngrade(DG):
         sekwargs: dict = None,
     ) -> Tuple[Result]:
 
-        m1 = self.first.measure(fl, tp, **(mkwargs or {}))
-        m2 = self.second.measure(fl, tp, **(mkwargs or {}))
+        m1 = self.first.measure(Elements([el]), fl, tp, **(mkwargs or {}))
+        m2 = self.second.measure(Elements([el]), fl, tp, **(mkwargs or {}))
 
         rs1 = self.first.create_sample(m1)
         rs2 = self.second.create_sample(m2)

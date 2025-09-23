@@ -40,13 +40,13 @@ class Basic(Analysis):
     def __repr__(self):
         return str(self)
 
-    def run_all(self, optimise_aligment=True, force=False, throw_errors=True) -> Scored:
+    def run_all(self, optimise_aligment=True, force=False, throw_errors=True, limits=True) -> Scored:
         """Run the analysis to the final stage"""
         drs = [r._run(True) for r in self.run()]
 
         dr: Alignment = drs[np.argmin([dr[0] for dr in drs])][1]
 
-        return dr.run_all(optimise_aligment, force, throw_errors)
+        return dr.run_all(optimise_aligment, force, throw_errors, limits)
 
     def proceed(self, raise_no_labels: bool = False) -> Complete:
         """Proceed the analysis to the final stage for the case where the elements 
@@ -170,7 +170,7 @@ class Basic(Analysis):
         )
 
     @staticmethod
-    def parse_analyse_serialise(pad: dict, optimise: bool, name: str):
+    def parse_analyse_serialise(pad: dict, optimise: bool, name: str, limits:bool=True):
         import tuning
         from flightanalysis import enable_logging
 
@@ -183,7 +183,7 @@ class Basic(Analysis):
             return pad
 
         try:
-            pad = pad.proceed().run_all(optimise)
+            pad = pad.proceed().run_all(optimise, limits=limits)
             logger.info(f"Completed {name}")
             return pad.to_dict()
         except Exception as e:
