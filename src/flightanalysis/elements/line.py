@@ -4,7 +4,7 @@ import geometry as g
 from flightdata import State
 from .element import Element
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 
 @dataclass
@@ -21,7 +21,7 @@ class Line(Element):
     def rate(self):
         return self.roll * self.speed / self.length
 
-    def create_template(self, istate: State, fl: State = None) -> State:
+    def create_template(self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3) -> State:
         """construct a State representing the judging frame for this line element
 
         Args:
@@ -32,10 +32,11 @@ class Line(Element):
         Returns:
             State: [description]
         """
+        npoints = 2 if npoints=="min" else npoints
         v = g.PX(self.speed) if istate.vel == 0 else istate.vel.scale(self.speed)
         return (
             istate.copy(vel=v, rvel=g.P0())
-            .fill(Element.create_time(self.length / self.speed, fl))
+            .fill(Element.create_time(self.length / self.speed, fl.time if fl else None, freq, npoints))
             .superimpose_rotation(g.PX(), self.roll)
         )
 

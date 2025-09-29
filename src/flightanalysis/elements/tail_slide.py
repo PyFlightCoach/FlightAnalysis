@@ -4,7 +4,7 @@ import geometry as g
 from flightdata import State
 from .element import Element
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 
 @dataclass
@@ -32,17 +32,17 @@ class TailSlide(Element):
     def describe(self):
         return f"tailslide, pitch rate = {self.pitch_rate}"
 
-    def create_template(self, istate: State, fl: State = None) -> State:
+    def create_template(self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3) -> State:
         _trot = (np.pi + abs(self.over_flop)) / abs(self.pitch_rate)
         _tcor = abs(self.over_flop) / abs(self.reset_rate)
         ttot = _trot + _tcor
 
         trot = g.Time.uniform(
-            _trot, int(np.ceil(len(fl) * _trot / ttot)) if fl else None, 2
+            _trot, int(np.ceil(len(fl) * _trot / ttot)) if fl else None, 2, freq
         )
 
         tcor = g.Time.uniform(
-            _tcor, int(np.ceil(len(fl) * _tcor / ttot)) if fl else None, 2
+            _tcor, int(np.ceil(len(fl) * _tcor / ttot)) if fl else None, 2, freq
         )
 
         rotation = (

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from loguru import logger
 import geometry as g
-from schemas.positioning import Direction, Heading
+from schemas.positioning import Heading
 
 from flightdata import State, align
 
@@ -104,31 +104,6 @@ class Alignment(Basic):
             templates={k: tp.to_dict(True) for k, tp in self.templates.items()},
         )
 
-    def update_templates(self):
-        if (
-            not len(self.flown) == len(self.template)
-            or not self.flown.labels.element.keys()
-            == self.template.labels.element.keys()
-        ):
-            manoeuvre, templates = self.manoeuvre.match_intention(
-                self.template_list[0][0], self.flown
-            )
-        else:
-            manoeuvre, templates = self.manoeuvre, self.templates
-
-        corrected = self.mdef.create().add_lines()
-        manoeuvre = manoeuvre.copy_directions(corrected)
-
-        Obj = Complete if self.__class__ is Scored else self.__class__
-            
-        return Obj(
-            self.id,
-            self.schedule_direction,
-            self.flown,
-            self.mdef,
-            manoeuvre,
-            manoeuvre.create_template(self.template_list[0][0][0], self.flown),
-        )
 
     def proceed(self) -> Alignment | Complete:
         if "element" in self.flown.labels.lgs:
@@ -166,11 +141,11 @@ class Alignment(Basic):
             flown,
             mdef,
             manoeuvre,
-            manoeuvre.create_template(itrans, flown),
+            manoeuvre.create_template(itrans, None, 0, "min"),
         )
 
     def update(self, aligned: State) -> Alignment:
-        man, tps = self.manoeuvre.match_intention(self.create_itrans(), aligned)
+        man, tps = self.manoeuvre.match_intention(self.create_itrans(), aligned, 0, "min")
         mdef = self.mdef.update_defaults(man)
         return Alignment(self.id, self.schedule_direction, aligned, mdef, man, tps)
 
@@ -183,7 +158,7 @@ class Alignment(Basic):
                 self.flown,
                 self.mdef,
                 self.manoeuvre,
-                self.template,
+                self.manoeuvre.create_template(self.template[0], self.flown),
                 correction,
                 correction.create_template(self.template[0], self.flown),
             )

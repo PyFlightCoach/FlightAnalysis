@@ -1,6 +1,5 @@
 from __future__ import annotations
 from re import sub
-import traceback
 from xmlrpc.client import boolean
 from flightdata import State
 from typing import Self

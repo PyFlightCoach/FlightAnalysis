@@ -1,6 +1,6 @@
 from __future__ import annotations
-import geometry as g    
-from typing import  Tuple, Self
+import geometry as g
+from typing import Tuple, Literal, Self
 from dataclasses import dataclass
 from flightdata.state import State
 from flightanalysis.elements import Elements, Element, Line
@@ -50,9 +50,7 @@ class Manoeuvre:
         return els
 
     def add_lines(self, add_entry=True, add_exit=True) -> Manoeuvre:
-        return Manoeuvre.from_all_elements(
-            self.uid, self.all_elements(add_exit)
-        )
+        return Manoeuvre.from_all_elements(self.uid, self.all_elements(add_exit))
 
     def remove_exit_line(self) -> Manoeuvre:
         return Manoeuvre(
@@ -62,24 +60,29 @@ class Manoeuvre:
         )
 
     def create_template(
-        self, initial: g.Transformation | State, aligned: State = None
+        self,
+        initial: g.Transformation | State,
+        aligned: State = None,
+        freq: int = 25,
+        npoints: int | Literal["min"] = 3,
     ) -> dict[str, State]:
-        return self.all_elements().create_templates(initial, aligned)
+        return self.all_elements().create_templates(initial, aligned, freq, npoints)
 
-    def match_intention(self, istate: State | g.Transformation, aligned: State) -> Tuple[Self, dict[str, State]]:
+    def match_intention(
+        self,
+        istate: State | g.Transformation,
+        aligned: State,
+        freq: int = 30,
+        npoints: int | Literal["min"] = 2,
+        match_index: bool = True
+    ) -> Tuple[Self, dict[str, State]]:
         """Create a new manoeuvre with all the elements scaled to match the corresponding
         flown element"""
-        elms, tpdict = self.all_elements().match_intention(istate, aligned) 
+        elms, tpdict = self.all_elements().match_intention(
+            istate, aligned, freq, npoints, match_index
+        )
 
         return Manoeuvre.from_all_elements(self.uid, elms), tpdict
-
-    def el_matched_tp(self, istate: State, aligned: State) -> dict[str, State]:
-        aligned = self.get_data(aligned)
-        templates = [istate]
-        for el in self.all_elements():
-            st = aligned.element[el.uid]
-            templates.append(el.create_template(templates[-1][-1], st))
-        return {el.uid: tp for el, tp in zip(self.all_elements(), templates[1:])}
 
     def copy(self):
         return Manoeuvre.from_all_elements(
