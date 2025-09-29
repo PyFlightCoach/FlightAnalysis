@@ -4,7 +4,7 @@ import geometry as g
 from flightdata import State
 from . import Element
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 
 @dataclass
@@ -45,7 +45,7 @@ class Loop(Element):
     def axis(self):
         return g.Point(0, np.cos(self.ke), np.sin(self.ke))
 
-    def create_template(self, istate: State, fl: State = None) -> State:
+    def create_template(self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3) -> State:
         """Generate a template loop.
 
         Args:
@@ -55,6 +55,12 @@ class Loop(Element):
             [State]: flight data representing the loop
         """
         duration = self.duration
+
+        if npoints=="min":
+            if self.roll != 0:
+                npoints = max(3, int(np.ceil(18 * abs(self.roll) / np.pi)))
+            else:
+                npoints = 2
 
         if self.angle == 0:
             raise NotImplementedError()
@@ -68,7 +74,7 @@ class Loop(Element):
                 * self.angle
                 / duration,
             )
-            .fill(Element.create_time(duration, fl))
+            .fill(Element.create_time(duration, fl.time if fl else None, freq, npoints))
             .superimpose_rotation(g.PX(), self.roll)
         )
 

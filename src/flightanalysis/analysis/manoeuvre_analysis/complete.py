@@ -37,6 +37,33 @@ class Complete(Alignment):
     def to_dict(self, basic: bool = False) -> dict:
         return super().to_dict(basic)
 
+    def update_templates(self):
+        if (
+            not len(self.flown) == len(self.template)
+            or not self.flown.labels.element.keys()
+            == self.template.labels.element.keys()
+        ):
+
+            manoeuvre, templates = self.manoeuvre.match_intention(
+                self.template_list[0][0], 
+                self.flown,
+            )
+        else:
+            manoeuvre, templates = self.manoeuvre, self.templates
+
+        corrected = self.mdef.create().add_lines()
+        manoeuvre = manoeuvre.copy_directions(corrected)
+            
+        return Complete(
+            self.id,
+            self.schedule_direction,
+            self.flown,
+            self.mdef,
+            manoeuvre,
+            manoeuvre.create_template(self.template_list[0][0][0], self.flown),
+        )
+
+
     def run(self, optimise_aligment=True, limits=True) -> Scored:
         if optimise_aligment:
             self = self.optimise_alignment()

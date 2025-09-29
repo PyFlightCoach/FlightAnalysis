@@ -4,7 +4,7 @@ import geometry as g
 from flightdata import State
 from .element import Element
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Literal
 from flightanalysis.scoring.measurement import Measurement
 
 
@@ -16,10 +16,23 @@ class StallTurn(Element):
     def describe(self):
         return f"stallturn, yaw rate = {self.yaw_rate}"
 
-    def create_template(self, istate: State, time: g.Time = None) -> State:
+    def create_template(
+        self,
+        istate: State,
+        fl: State = None,
+        freq=25,
+        npoints: int | Literal["min"] = 3,
+    ) -> State:
         return (
             istate.copy(rvel=g.P0(), vel=g.P0())
-            .fill(Element.create_time(np.pi / abs(self.yaw_rate), time))
+            .fill(
+                Element.create_time(
+                    np.pi / abs(self.yaw_rate),
+                    fl.time if fl else None,
+                    freq,
+                    2 if npoints == "min" else npoints,
+                )
+            )
             .superimpose_rotation(g.PZ(), np.sign(self.yaw_rate) * np.pi)
         )
 

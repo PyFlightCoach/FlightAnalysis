@@ -80,7 +80,7 @@ class Basic(Analysis):
         man, tps = (
             mdef.create()
             .add_lines()
-            .match_intention(State.from_transform(itrans), self.flown)
+            .match_intention(State.from_transform(itrans), self.flown, 0, "min")
         )
         
         mdef = mdef.update_defaults(man)
@@ -145,7 +145,7 @@ class Basic(Analysis):
                     self.flown,
                     mdef,
                     man,
-                    man.create_template(itrans),
+                    man.create_template(itrans, None, 0, "min"),
                 )
             )
         return als
@@ -215,9 +215,6 @@ class Basic(Analysis):
         return list(self.mdef.eds.data.keys())
 
 
-    #.from_dict(
-    #        dict(**self.to_dict(basic=True), mdef=self.mdef.to_dict())
-    #    )
     
 from .alignment import Alignment  # noqa: E402
 from .complete import Complete  # noqa: E402

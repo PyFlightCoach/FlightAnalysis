@@ -4,7 +4,7 @@ import geometry as g
 from flightdata import State
 from .element import Element
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 
 @dataclass
@@ -21,8 +21,12 @@ class Spin(Element):
     height: float
     turns: float  # sounds strange but this is in radians
     pitch: float
-    drop_turns: float  # radians. If zero then no drop, use when this follows another spin
-    recovery_turns: float  # radians. If zero then no recovery, use when an opposite spin follows
+    drop_turns: (
+        float  # radians. If zero then no drop, use when this follows another spin
+    )
+    recovery_turns: (
+        float  # radians. If zero then no recovery, use when an opposite spin follows
+    )
 
     @property
     def length(self):
@@ -52,7 +56,9 @@ class Spin(Element):
             (abs(turns) + (4 / np.pi - 1) * drop_turns + recovery_turns) * speed / rate
         )
 
-    def create_template(self, istate: State, fl: State = None) -> State:
+    def create_template(
+        self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3
+    ) -> State:
         istate = istate.copy(vel=istate.vel.scale(self.speed))
 
         _inverted = 1 if istate.transform.rotation.is_inverted()[0] else -1
@@ -61,15 +67,19 @@ class Spin(Element):
         ttot = self.length / self.speed
 
         _td = 2 * self.drop_turns / rate
-        tnd = g.Time.uniform(_td, int(np.ceil(len(fl) * _td / ttot)) if fl else None)
+        tnd = g.Time.uniform(
+            _td, int(np.ceil(len(fl) * _td / ttot)) if fl else None, 2, freq
+        )
 
         _trec = 2 * self.recovery_turns / rate
         trec = g.Time.uniform(
-            _trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None
+            _trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None, 2, freq
         )
 
         _tau = ttot - _td - _trec
-        tau = g.Time.uniform(_tau, len(fl) - len(tnd) - len(trec) + 2 if fl else None)
+        tau = g.Time.uniform(
+            _tau, len(fl) - len(tnd) - len(trec) + 2 if fl else None, 2, freq
+        )
 
         if _td > 0:
             nd: State = (
@@ -107,7 +117,9 @@ class Spin(Element):
                 .fill(trec)
                 .superimpose_rotation(g.PY(), abs(self.pitch) * _inverted)
                 .superimpose_angles(
-                    g.PZ(np.sign(self.turns)) * rate * (trec.t - 0.5 * trec.t**2 / _trec),
+                    g.PZ(np.sign(self.turns))
+                    * rate
+                    * (trec.t - 0.5 * trec.t**2 / _trec),
                     "world",
                 )
             )

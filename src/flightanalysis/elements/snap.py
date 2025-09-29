@@ -4,7 +4,7 @@ import geometry as g
 from flightdata import State
 from .element import Element
 from dataclasses import dataclass
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 
 @dataclass
@@ -35,20 +35,29 @@ class Snap(Element):
     def get_length(speed, rate, roll, break_roll, recovery_roll):
         return speed * (abs(roll) + break_roll + recovery_roll) / rate
 
-    def create_template(self, istate: State, fl: State = None) -> State:
-        
+    def create_template(
+        self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3
+    ) -> State:
         world_rot_axis = istate.att.transform_point(g.PX())
         rate = self.rate
         ttot = self.length / self.speed
 
         _tpb = 2 * abs(self.break_roll) / rate
-        tpb = g.Time.uniform(_tpb, int(np.ceil(len(fl) * _tpb / ttot)) if fl else None, 2)
+        tpb = g.Time.uniform(
+            _tpb, int(np.ceil(len(fl) * _tpb / ttot)) if fl else None, 2, freq
+        )
 
         _trec = 2 * abs(self.recovery_roll) / rate
-        trec = g.Time.uniform(_trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None, 2)
+        trec = g.Time.uniform(
+            _trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None, 2, freq
+        )
 
-        _tau = ttot * abs((abs(self.roll) - self.break_roll - self.recovery_roll) / self.roll)
-        tau = g.Time.uniform(_tau, len(fl) - len(tpb) - len(trec) + 2  if fl else None, 2)
+        _tau = ttot * abs(
+            (abs(self.roll) - self.break_roll - self.recovery_roll) / self.roll
+        )
+        tau = g.Time.uniform(
+            _tau, len(fl) - len(tpb) - len(trec) + 2 if fl else None, 2, freq
+        )
 
         pb = (
             istate.copy(vel=g.PX(self.speed), rvel=g.P0())
