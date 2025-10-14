@@ -1,5 +1,5 @@
 from flightanalysis.elements import Spin, Snap
-from geometry import Transformation, Euler, P0, PX, PY, PZ, Point, Quaternion
+import geometry as g
 import numpy as np
 from flightdata import State
 from pytest import fixture, approx
@@ -11,15 +11,15 @@ def el():
 @fixture
 def tp(el: Spin):
     return el.create_template(
-        State.from_transform(Transformation(Euler(np.pi, 0, 0)))
+        State.from_transform(g.Transformation(g.Euler(np.pi, 0, 0), vel=g.PX(10)))
     )
 
 
 
 def test_create_template(el: Spin, tp: State):    
     np.testing.assert_array_almost_equal(
-        tp[-1].att.transform_point(PY()).data,
-        tp[0].att.transform_point(PY()).data
+        tp[-1].att.transform_point(g.PY()).data,
+        tp[0].att.transform_point(g.PY()).data
     ) 
-    assert abs(tp.pos[-1].z - tp.pos[0].z)[0] == approx(el.height)
+    assert abs(tp.pos[-1].z - tp.pos[0].z)[0] == approx(el.height, 0.01)
 

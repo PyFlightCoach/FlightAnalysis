@@ -33,7 +33,7 @@ class Criteria:
             return None
         data = data.copy()
         kind = data.pop("kind")
-        name = data.pop("name", None) or str(uuid4())
+        name = data.pop("name", str(uuid4()))
         for Crit in all_subclasses(Criteria):
             if Crit.__name__ == kind:
                 lookup = data.pop("lookup")

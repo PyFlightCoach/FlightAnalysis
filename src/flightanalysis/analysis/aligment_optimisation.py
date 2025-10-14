@@ -20,19 +20,21 @@ def _optimise_split(
     mdef: ManDef,
     manoeuvre: Manoeuvre,
     templates: dict[str, State],
-    el1: AnyElement,
-    el2: AnyElement,
+    eln1: str,
+    eln2: str,
     itrans: g.Transformation,
     fl: State,
     min_len: int = 3,
 ) -> int:
     def score_split(steps: int) -> float:
-        new_fl = fl.step_label("element", el1.uid, steps, fl.t, min_len)
-        res1, oel1, tp1 = get_score(el1, itrans, el1.get_data(new_fl))
+        new_fl = fl.step_label("element", eln1, steps, fl.t, min_len)
+        res1, oel1, tp1 = get_score(
+            mdef.eds[eln1], manoeuvre.elements[eln1], itrans, getattr(new_fl.element, eln1)
+        )
 
-        el2fl = el2.get_data(new_fl)
+        el2fl = getattr(new_fl.element, eln2)
         res2, oel2, tp2 = get_score(
-            el2, g.Transformation(tp1[-1].att, el2fl[0].pos), el2fl
+            mdef.eds[eln2], manoeuvre.elements[eln2], g.Transformation(tp1[-1].att, el2fl[0].pos), el2fl
         )
 
         oman = Manoeuvre.from_all_elements(
@@ -57,11 +59,11 @@ def _optimise_split(
     dgs = {0: score_split(0)}
 
     def check_steps(stps: int):
-        new_l2 = len(el2.get_data(fl)) - stps + 1
-        new_l1 = len(el1.get_data(fl)) + stps + 1
+        new_l2 = len(getattr(fl.element, eln2)) - stps + 1
+        new_l1 = len(getattr(fl.element, eln1)) + stps + 1
         return new_l2 > min_len and new_l1 > min_len
 
-    steps = int(len(el1.get_data(fl)) > len(el2.get_data(fl))) * 2 - 1
+    steps = int(len(getattr(fl.element, eln1)) > len(getattr(fl.element, eln2))) * 2 - 1
 
     if not check_steps(steps):
         return 0
@@ -111,8 +113,8 @@ def optimise_alignment(
                     mdef,
                     manoeuvre,
                     templates,
-                    flown.element[eln1][0],
-                    flown.element[eln2][0],
+                    eln1,  # flown.element[eln1][0],
+                    eln2,  # flown.element[eln2][0],
                     itrans,
                     flown,
                 )

@@ -25,7 +25,7 @@ class Spin(Element):
         float  # radians. If zero then no drop, use when this follows another spin
     )
     recovery_turns: (
-        float  # radians. If zero then no recovery, use when an opposite spin follows
+        float  # radians. If zero then no recovery. Set to zero when an opposite spin follows
     )
 
     @property

@@ -7,7 +7,10 @@ import numpy as np
 
 def tryval(val):
     try:
-        return float(val)
+        if val[-1] == "°":
+            return np.radians(float(val[:-1]))
+        else:
+            return float(val)
     except Exception:
         return val
 
@@ -60,6 +63,23 @@ class RFuncBuilders:
     def add(self, func):
         self.funcs[func.__name__] = func
         return func
+
+    def parse_csv_cell(self, data: str):
+        """parses things like: 'rf1(p1=1), rf2(p1=1, p2=2)'"""
+        data = data.strip()
+        rfuncs = []
+        while "(" in data:
+            name, data = data.split("(", 1)
+            name = name.strip(" ,")
+            sargs, data = data.split(")", 1)
+            sargs = [s.split("=") for s in sargs.split(",")] if len(sargs) > 0 else []
+            rfuncs.append(RefFunc(
+                name,
+                self.funcs[name],
+                {k.strip(): tryval(v.strip()) for k, v in dict(sargs).items()},
+            ))
+        return rfuncs
+        
 
     def parse(self, sfuncs: list[str] | str):
         if isinstance(sfuncs, str):

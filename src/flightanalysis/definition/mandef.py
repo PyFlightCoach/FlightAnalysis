@@ -25,7 +25,8 @@ from schemas.positioning import Heading
 from flightanalysis.elements import Elements, AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
-
+from flightanalysis.scoring.downgrade import DG, DownGrades
+from flightanalysis.builders.dgapplicator import tag_elements, checktagstring
 from . import ElDef, ElDefs, ManParms
 
 
@@ -77,6 +78,7 @@ class ManDef:
 
     def guess_ipos(self, target_depth: float, heading: Heading) -> g.Transformation:
         gpy = g.PY(target_depth)
+        height = self.info.start.height.value if self.info.start.height else 0.2
         return g.Point(
             x={
                 Position.CENTRE: {
@@ -93,8 +95,8 @@ class ManDef:
                 Heading.RTOL: target_depth,
                 Heading.LTOR: target_depth,
             }[heading],
-            z=self.box.bottom(gpy)[1][0] * (self.info.start.height.value - 1)
-            + self.info.start.height.value * self.box.top(gpy)[1][0],
+            z=self.box.bottom(gpy)[1][0] * (height - 1)
+            + height * self.box.top(gpy)[1][0],
         )
 
     def initial_rotation(self, heading: Heading) -> g.Quaternion:
@@ -184,24 +186,21 @@ class ManDef:
         fig = plotsec(template, fig=fig, nmodels=20, scale=3)
         return fig
 
-    def update_dgs(self, applicator: callable):
+    def update_dgs(self, dgs: list[DG]):
         new_eds = []
 
         man = self.create()
         tp = man.create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
-
-        for i, ed in enumerate(self.eds):
+        tags = tag_elements(man.all_elements(), tp)
+        for ed, tag in zip(self.eds, tags.values()):
             new_eds.append(
                 ElDef(
                     ed.name,
                     ed.Kind,
                     ed.props,
-                    applicator(
-                        man.elements[i],
-                        tp[ed.name],
-                        self.eds[i - 1].Kind if i > 0 else "",
-                        self.eds[i + 1].Kind if i < len(self.eds) - 1 else "",
-                    ),
+                    DownGrades([
+                        dg for dg in dgs if checktagstring(dg.tags, tag)
+                    ])
                 )
             )
         return ManDef(self.info, self.mps, ElDefs(new_eds), self.box)

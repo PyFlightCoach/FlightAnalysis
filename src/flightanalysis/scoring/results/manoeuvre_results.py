@@ -4,7 +4,8 @@ from dataclasses import dataclass
 from .results import Results
 from .elements_results import ElementsResults
 from .dgplot import DGPlot
-
+from flightanalysis.scoring.criteria import Criteria
+from flightanalysis.base.utils import df_insert
 
 @dataclass
 class ManoeuvreResults:
@@ -17,6 +18,13 @@ class ManoeuvreResults:
             **self.intra.dg_dict(),
             **self.inter.dg_dict(),
             **self.positioning.dg_dict(),
+        )
+
+    def replace_criteria(self, *args: list[Criteria], limits: bool = True, **kwargs: dict[str, Criteria]) -> ManoeuvreResults:
+        return ManoeuvreResults(
+            self.inter.replace_criteria(*args, limits=limits, **kwargs),
+            self.intra.replace_criteria(*args, limits=limits, **kwargs),
+            self.positioning.replace_criteria(*args, limits=limits, **kwargs),
         )
 
     def summary(self):
@@ -91,3 +99,13 @@ class ManoeuvreResults:
             pd.Series(inter).add_prefix("inter_"),
             pd.Series(box).add_prefix("positioning_"),
         ])
+
+    def tuning_data(self):
+        return pd.concat(
+            [
+                self.intra.tuning_data(),
+                df_insert(self.inter.tuning_data(), type='inter'),
+                df_insert(self.positioning.tuning_data(), type='positioning'),
+            ],
+            ignore_index=True,
+        )

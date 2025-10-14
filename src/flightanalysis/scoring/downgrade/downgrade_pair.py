@@ -1,5 +1,5 @@
 from dataclasses import dataclass, replace
-from .dg import DG
+from .base import DG
 from .downgrade import DownGrade
 from ..results import Result
 from flightanalysis.elements import Elements
@@ -80,6 +80,7 @@ def pdg(
     name: str,
     first: DownGrade,
     second: DownGrade,
+    tags: str=""
 ) -> PairedDowngrade:
     """Create a paired downgrade from two downgrades"""
-    return PairedDowngrade(name, first, second) 
+    return PairedDowngrade(name, tags, first, second)

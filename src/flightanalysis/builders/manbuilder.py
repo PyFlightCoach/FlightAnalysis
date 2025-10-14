@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from functools import partial
 from typing import Callable, Tuple
+from flightanalysis.scoring.downgrade.downgrade import DownGrade
 from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from schemas.positioning import MBTags
@@ -26,9 +27,7 @@ from flightanalysis.scoring.criteria import Combination
 class ManBuilder:
     mps: ManParms
     mpmaps: dict[str, dict]
-    dg_applicator: Callable[
-        [Loop | Line | Snap | Spin | StallTurn, TailSlide, State, str, str], list
-    ]
+    dgs: list[DownGrade]
     Inter: object
     box: Box
 
@@ -111,7 +110,7 @@ class ManBuilder:
                         mps.add(ManParm.parse(v, mps, k))
 
         md = ManDef(
-            maninfo,
+            ManInfo.model_validate(maninfo.model_dump()),
             mps,
             ElDefs(),
             self.box.__class__(**dict(self.box.__dict__, relax_back=relax_back)),
@@ -147,6 +146,6 @@ class ManBuilder:
         collmps = md.mps.remove_unused()
         propmps = md.mps.subset(md.eds.list_props())
         md.mps = ManParms.merge([collmps, propmps])
-        return md.update_dgs(self.dg_applicator)
+        return md.update_dgs(self.dgs)
 
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from pathlib import Path
 import numpy as np
 
 
@@ -12,6 +13,15 @@ class Exponential:
     def __call__(self, value, limits=True):
         val = self.factor * value**self.exponent
         return np.minimum(val, self.limit) if self.limit and limits else val
+
+    def __eq__(self, other):
+        if not isinstance(other, Exponential):
+            return False
+        return (
+            np.isclose(self.factor, other.factor)
+            and np.isclose(self.exponent, other.exponent)
+            and (self.limit == other.limit or (self.limit and other.limit and np.isclose(self.limit, other.limit)))
+        )
 
     @staticmethod
     def simple(exponent: float, error: float, downgrade: float, has_limit: bool=True):
@@ -55,3 +65,4 @@ class Exponential:
 
 
 free = Exponential(0, 1)
+

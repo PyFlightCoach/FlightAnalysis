@@ -9,6 +9,7 @@ from ..criteria import Criteria
 @dataclass
 class DG:
     name: str
+    tags: str
     ENABLE_VISIBILITY: ClassVar[bool] = True
 
     def from_dict(data: dict[str, Any]):

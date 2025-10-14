@@ -11,6 +11,24 @@ from .intra.single import Limit, Single, Threshold
 from .intra.deviation import Deviation, Total
 from .criteria_group import CriteriaGroup
 
+type AnyInterCriteria = Combination | Comparison
+
+type AnyIntraCriteria = (
+    Bounded
+    | Continuous
+    | ContinuousValue
+    | Peak
+    | Trough
+    | AbsPeak
+    | AbsTrough
+    | Limit
+    | Single
+    | Threshold
+    | Deviation
+    | Total
+    | CriteriaGroup
+)
+
 def plot_lookup(lu, v0=0, v1=10):
     import plotly.express as px
 
@@ -22,10 +40,9 @@ def plot_all(crits: CriteriaGroup):
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
 
-    #crits = {k: getattr(crits, k) for k in dir(crits) if not k.startswith("__")}
+    # crits = {k: getattr(crits, k) for k in dir(crits) if not k.startswith("__")}
     # names = [f'{k}_{cr}' for k, crit in crits.items() for cr in crit.keys()]
 
-    
     ncols = 4
     fig = make_subplots(
         int(np.ceil(len(crits) / ncols)),

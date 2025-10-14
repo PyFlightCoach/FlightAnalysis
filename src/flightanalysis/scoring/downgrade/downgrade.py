@@ -4,7 +4,7 @@ from dataclasses import dataclass, replace
 from typing import Tuple
 
 from flightanalysis.elements.element import Elements
-from flightanalysis.scoring.criteria.intra.deviation import Deviation
+from flightanalysis.scoring.criteria import Deviation, ContinuousValue, AnyIntraCriteria
 import numpy as np
 import numpy.typing as npt
 from flightdata import State
@@ -12,13 +12,13 @@ from geometry.utils import apply_index_slice
 
 from flightanalysis.base.ref_funcs import RefFunc, RefFuncs
 
-from ..criteria import Bounded, Continuous, ContinuousValue, Criteria, Single
+from ..criteria import AnyIntraCriteria
 from ..measurement import Measurement
 from ..reffuncs import measures as me, selectors as se, smoothers as sm
 from ..results import Result
 from ..visibility import visibility
 
-from .dg import DG
+from .base import DG
 
 
 @dataclass
@@ -33,7 +33,7 @@ class DownGrade(DG):
     measure: RefFunc
     smoothers: RefFuncs
     selectors: RefFuncs
-    criteria: Bounded | Continuous | Single
+    criteria: AnyIntraCriteria
 
     def __repr__(self):
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.smoothers)}, {str(self.selectors)}, {str(self.criteria)})"
@@ -131,11 +131,12 @@ def dg(
     meas: RefFunc,
     sms: RefFunc | list[RefFunc],
     sels: RefFunc | list[RefFunc],
-    criteria: Criteria,
+    criteria: AnyIntraCriteria,
+    tags: str = "",
 ):
     if sms is None:
         sms = []
     elif isinstance(sms, RefFunc):
         sms = [sms]
     sms.append(sm.final())
-    return DownGrade(name, meas, RefFuncs(sms), RefFuncs(sels), criteria)
+    return DownGrade(name, tags, meas, RefFuncs(sms), RefFuncs(sels), criteria)

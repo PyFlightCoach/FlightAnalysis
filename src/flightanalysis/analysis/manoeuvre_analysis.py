@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from typing import Annotated, Self
-from flightanalysis.definition import ManDef, ManOption, ElDef
-from flightanalysis.elements import AnyElement, Elements
+from flightanalysis.definition import ManDef, ManOption
+from flightanalysis.elements import AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.analysis.el_analysis import ElementAnalysis
-from flightanalysis.scoring.results import ElementsResults, Results, ManoeuvreResults
+from flightanalysis.scoring.results import ElementsResults, ManoeuvreResults
+from .aligment_optimisation import optimise_alignment
 import numpy as np
 
 import geometry as g
@@ -32,35 +33,30 @@ class Analysis:
 
     @property
     def name(self):
-        return self.mdef.uid
+        return self.mdef.info.short_name
 
-    def run(self, optimise: bool = True):
-        for stage, fun in enumerate(
-            [self.create_itrans]
-            + (
-                [
-                    self.select_mdef,
-                    self.create_itrans,
-                ]
-                if "element" in self.flown.labels.keys()
-                else [
-                    self.preliminary_alignment,
-                    self.secondary_alignment,
-                ]
-            )
-            + [
-                self.prepare_scoring,
-                lambda: self.optimise_alignment() if optimise else self,
-                self.prepare_scoring,
-                self.calculate_score,
-            ]
-        ):
+    def run(self, optimise: bool = True, throw_errors: bool = False):
+
+        stages = []
+        if "element" in self.flown.labels.keys():
+            stages.append("select_mdef")
+        stages.append("create_itrans")
+        if "element" not in self.flown.labels.keys():
+            stages.extend(["preliminary_alignment", "secondary_alignment"])
+        if optimise:
+            stages.extend(["prepare_scoring", "optimise_alignment"])
+        stages.extend(["prepare_scoring", "calculate_score"])
+            
+        for stage, fun in enumerate(stages):
             try:
-                logger.info(f"Running step {stage}: {fun.__name__}")
-                self = fun(self)
+                logger.debug(f"Running step {stage}: {fun}")
+                self = getattr(self, fun)()
             except Exception as e:
-                logger.error(f"Error in {fun.__name__}: {e}")
-                break
+                if throw_errors:
+                    raise e
+                else:
+                    logger.error(f"Error running {self.name}, {fun}: {e}")
+                    break
 
         return self
 
@@ -98,7 +94,7 @@ class Analysis:
         )
 
     def create_itrans(self) -> g.Transformation:
-        return replace(self, itrans=self.create_itrans())
+        return replace(self, itrans=self._create_itrans())
 
     def _preliminary_alignment(self, mdef: ManDef):
         manoeuvre = mdef.create().add_lines()
@@ -112,7 +108,8 @@ class Analysis:
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
         res = [self._preliminary_alignment(mdef) for mdef in mopt]
         option = np.argmin([r[0] for r in res])
-        return self.replace(
+        return replace(
+            self,
             mdef=mopt[option],
             flown=res[option][1],
             manoeuvre=res[option][2],
@@ -121,12 +118,12 @@ class Analysis:
 
     def secondary_alignment(self):
         manoeuvre, templates = self.manoeuvre.match_intention(
-            self.create_itrans(), self.flown, 0, "min", False
+            self.itrans, self.flown, 0, "min", False
         )
         template = State.stack(templates, "element")
         res = align(
-            template,
             self.flown,
+            template,
             len(self.flown) and len(template),
             False,
         )
@@ -137,7 +134,7 @@ class Analysis:
 
     def prepare_scoring(self) -> Self:
         manoeuvre = (self.manoeuvre or self.mdef.create().add_lines()).match_intention(
-            self.itrans, None, 0, "min", True
+            self.itrans, self.flown, 0, "min", True
         )[0]
 
         mdef = self.mdef.update_defaults(manoeuvre)
@@ -148,126 +145,10 @@ class Analysis:
 
         return replace(self, mdef=mdef, manoeuvre=manoeuvre, templates=templates)
 
-    def _get_score(
-        self, eln: str, itrans: g.Transformation, fl: State
-    ) -> tuple[Results, g.Transformation]:
-        ed: ElDef = self.get_edef(eln)
-        el: AnyElement = self.manoeuvre.all_elements()[eln].match_intention(itrans, fl)
-        tp = el.create_template(State.from_transform(itrans), fl)
-
-        return ed.dgs.apply(el, fl, tp, False), el, tp  # tp[-1].att
-
-    def _optimise_split(
-        self,
-        itrans: g.Transformation,
-        eln1: str,
-        eln2: str,
-        fl: State,
-        min_len: int = 3,
-    ) -> int:
-        el1: AnyElement = self.manoeuvre.all_elements()[eln1]
-        el2: AnyElement = self.manoeuvre.all_elements()[eln2]
-
-        def score_split(steps: int) -> float:
-            new_fl = fl.step_label("element", eln1, steps, fl.t, min_len)
-            res1, oel1, tp1 = self._get_score(eln1, itrans, el1.get_data(new_fl))
-
-            el2fl = el2.get_data(new_fl)
-            res2, oel2, tp2 = self._get_score(
-                eln2, g.Transformation(tp1[-1].att, el2fl[0].pos), el2fl
-            )
-
-            oman = Manoeuvre.from_all_elements(
-                self.manoeuvre.uid,
-                Elements(self.manoeuvre.elements.data | {eln1: oel1, eln2: oel2}),
-            )
-
-            omdef = self.mdef.update_defaults(oman)
-
-            inter = omdef.mps.collect(
-                oman,
-                State.stack(self.templates | {eln1: tp1, eln2: tp2}, "element"),
-                self.mdef.box,
-            )
-
-            logger.debug(f"split {steps} {res1.total + res2.total:.2f}")
-            logger.debug(
-                f"e1={eln1}, e2={eln2}, steps={steps}, intra={res1.total + res2.total:.2f}, inter={inter.total}"
-            )
-            return res1.total + res2.total + inter.total
-
-        dgs = {0: score_split(0)}
-
-        def check_steps(stps: int):
-            new_l2 = len(el2.get_data(fl)) - stps + 1
-            new_l1 = len(el1.get_data(fl)) + stps + 1
-            return new_l2 > min_len and new_l1 > min_len
-
-        steps = int(len(el1.get_data(fl)) > len(el2.get_data(fl))) * 2 - 1
-
-        if not check_steps(steps):
-            return 0
-
-        try:
-            new_dg = score_split(steps)
-            if new_dg > dgs[0]:
-                steps = -steps
-            else:
-                dgs[steps] = new_dg
-                steps += np.sign(steps)
-        except Exception:
-            steps = -steps
-
-        while check_steps(steps):
-            try:
-                new_dg = score_split(steps)
-                if new_dg < list(dgs.values())[-1]:
-                    dgs[steps] = new_dg
-                    steps += np.sign(steps)
-                else:
-                    break
-            except ValueError:
-                break
-
-        min_dg_step = np.argmin(np.array(list(dgs.values())))
-        out_steps = list(dgs.keys())[min_dg_step]
-        return out_steps
-
     def optimise_alignment(self):
-        fl = self.flown.copy()
-        elns = list(self.mdef.eds.data.keys())
+        fl = optimise_alignment(self.flown, self.mdef, self.manoeuvre, self.templates)
 
-        padjusted = set(elns)
-        count = 0
-        while len(padjusted) > 0 and count < 2:
-            adjusted = set()
-            for eln1, eln2 in zip(elns[:-1], elns[1:]):
-                if (eln1 in padjusted) or (eln2 in padjusted):
-                    itrans = g.Transformation(
-                        self.templates[eln1][0].att,
-                        self.flown.element[eln1][0].pos,
-                    )
-                    steps = self._optimise_split(itrans, eln1, eln2, fl)
-
-                    if not steps == 0:
-                        logger.debug(
-                            f"Adjusting split between {eln1} and {eln2} by {steps} steps"
-                        )
-                        fl = fl.step_label("element", eln1, steps, fl.t, 3)
-                        adjusted.update([eln1, eln2])
-
-            padjusted = adjusted
-            count += 1
-            logger.debug(
-                f"pass {count}, {len(padjusted)} elements adjusted:\n{padjusted}"
-            )
-
-        return Analysis(
-            self.id,
-            self.schedule_direction,
-            fl,
-            self.mdef,
-        )
+        return replace(self, flown=fl)
 
     def intra(self, limits: bool = True):
         return ElementsResults([ea.intra_score(limits) for ea in self])
@@ -314,6 +195,15 @@ class Analysis:
         for edn in list(self.mdef.eds.data.keys()):
             yield self.get_ea(edn)
 
+    def __str__(self):
+        res = f"{self.__class__.__name__}({self.id}, {self.mdef.info.short_name})"
+        if self.scores:
+            res = (
+                res[:-1]
+                + f", {', '.join([f'{k}={v:.2f}' for k, v in self.scores.score_summary(3, False).items()])})"
+            )
+        return res
+
     def basic(self, mdef: ManDef = None, remove_labels: bool = False):
         return Analysis(
             id=self.id,
@@ -334,6 +224,10 @@ class Analysis:
             else None,
         )
 
+    @property
+    def template(self):
+        return State.stack(self.templates, "element") if self.templates else None
+
     @staticmethod
     def from_dict(data: dict):
         if "manoeuvre" in data and data["manoeuvre"]:
@@ -346,10 +240,7 @@ class Analysis:
         else:
             templates = None
 
-        if templates:
-            itrans = list(templates.values())[0][0].transform
-        else:
-            itrans = None
+        itrans = list(templates.values())[0][0].transform if templates else None
 
         if "scores" in data and data["scores"]:
             scores = ManoeuvreResults.from_dict(data["scores"])

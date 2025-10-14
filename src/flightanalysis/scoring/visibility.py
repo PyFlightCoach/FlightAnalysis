@@ -5,7 +5,7 @@ from typing import Literal
 def visibility(val, factor: float, limit: float, kind: Literal["deviation", "value"] = 'value'):
     """factor between 0 and 1"""
 
-    b = 1.8 - factor * 0.8
+    b = 2.2 - factor * 1.2
     if kind == 'value':
         norm = np.abs(val / limit)
         return np.where(norm > 1, norm, norm**b) * limit * np.sign(val)

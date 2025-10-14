@@ -6,7 +6,7 @@ from typing import Self
 from flightdata import Collection
 from flightanalysis import ManDef, SchedDef
 from schemas import AJson
-from . import manoeuvre_analysis as ma
+from .manoeuvre_analysis import Analysis
 from loguru import logger
 from joblib import Parallel, delayed
 import os
@@ -15,7 +15,7 @@ import pandas as pd
 
 
 class ScheduleAnalysis(Collection):
-    VType = ma.Analysis
+    VType = Analysis
     uid = "name"
 
     @property
@@ -37,7 +37,7 @@ class ScheduleAnalysis(Collection):
         if sdef is None:
             sdef = [ManDef.from_dict(man.mdef) for man in ajson.mans]
         for man, mdef in zip(ajson.mans, sdef):
-            analyses.append(ma.from_dict(man.model_dump() | dict(mdef=mdef.to_dict())))
+            analyses.append(Analysis.from_dict(man.model_dump() | dict(mdef=mdef.to_dict())))
         return ScheduleAnalysis(analyses)
 
     def run_all(
@@ -50,7 +50,7 @@ class ScheduleAnalysis(Collection):
             import tuning
 
             try:
-                pad = ma.from_dict(pad)
+                pad = Analysis.from_dict(pad)
             except Exception as e:
                 logger.exception(f"Failed to parse {pad['id']}")
                 return pad
@@ -79,7 +79,7 @@ class ScheduleAnalysis(Collection):
 
         return ScheduleAnalysis(
             [
-                ma.Scored.from_dict(madicts[subset.index(i)])
+                Analysis.from_dict(madicts[subset.index(i)])
                 if i in subset
                 else self[i]
                 for i in range(len(self))
@@ -91,7 +91,7 @@ class ScheduleAnalysis(Collection):
 
     def optimize_alignment(self) -> Self:
         def parse_analyse_serialise(mad):
-            an = ma.Complete.from_dict(mad)
+            an = Analysis.from_dict(mad)
             return an.run_all().to_dict()
 
         logger.info(f"Starting {os.cpu_count()} alignment optimisation processes")
@@ -99,7 +99,7 @@ class ScheduleAnalysis(Collection):
         madicts = Parallel(n_jobs=os.cpu_count())(
             delayed(parse_analyse_serialise)(man.to_dict()) for man in self
         )
-        return ScheduleAnalysis([ma.from_dict(mad) for mad in madicts])
+        return ScheduleAnalysis([Analysis.from_dict(mad) for mad in madicts])
 
     def scores(self):
         scores = {}
@@ -112,14 +112,14 @@ class ScheduleAnalysis(Collection):
 
     def summarydf(self):
         return pd.DataFrame(
-            [ma.scores.summary() if hasattr(ma, "scores") else {} for ma in self]
+            [m.scores.summary() if m.scores else {} for m in self]
         )
 
     def score_summary_df(self, difficulty=3, truncate=False):
         return pd.DataFrame(
             [
                 ma.scores.score_summary(difficulty, truncate)
-                if hasattr(ma, "scores")
+                if ma.scores
                 else {}
                 for ma in self
             ]
@@ -135,12 +135,12 @@ class ScheduleAnalysis(Collection):
 
     @property
     def mnames(self):
-        return [m.mdef.info.short_name for m in self]
+        return [m.name for m in self]
     
     @property
     def fls(self):
-        return {m.mdef.info.short_name: m.flown for m in self}
+        return {m.name: m.flown for m in self}
     
     @property
     def tps(self):
-        return {m.mdef.info.short_name: m.template for m in self}
+        return {m.name: m.template for m in self}
