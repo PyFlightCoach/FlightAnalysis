@@ -5,7 +5,7 @@ import pandas as pd
 from flightdata.base import to_list
 from flightanalysis.scoring.measurement import Measurement
 from flightanalysis.scoring.criteria import Criteria
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from geometry.utils import get_value
 
 
@@ -44,6 +44,20 @@ class Result:
     def score(self, difficulty=3, truncate: None | str = None):
         res = sum(diff(self.dgs, difficulty))
         return trunc(res) if truncate == "result" else res
+
+    def replace_criteria(self, new_criteria: Criteria, limits: bool=True):
+        mistakes, dgs, keys = new_criteria(self.sample, limits)
+        return replace(
+            self,
+            errors=mistakes,
+            dgs=dgs,
+            keys=keys,
+            criteria=new_criteria
+        )
+
+    def replace_lookup(self, new_lookup, limits: bool=True):
+        new_criteria = replace(self.criteria, lookup=new_lookup)
+        return self.replace_criteria(new_criteria, limits=limits)
 
     def to_dict(self):
         return dict(

@@ -1,9 +1,10 @@
 from __future__ import annotations
+from itertools import chain
 import numpy as np
 import pandas as pd
 from flightdata import Collection
 from .result import Result, trunc
-
+from flightanalysis.scoring.criteria import Criteria
 
 
 class Results(Collection):
@@ -24,11 +25,39 @@ class Results(Collection):
         self.name = name
 
     def __repr__(self):
-        return f'Results({self.name}, {self.total:.2f}, ({",".join([f"{res.total:.2f}" for res in self])}))'
+        return f"Results({self.name}, {self.total:.2f}, ({','.join([f'{res.total:.2f}' for res in self])}))"
 
     @property
     def total(self):
         return sum([cr.total for cr in self])
+
+    def replace_criteria(
+        self, *args: list[Criteria], limits: bool = False, **kwargs: dict[str, Criteria]
+    ):
+        """recalculate the results by replacing selected criteria
+        *args will replace all criteria with matching names
+        **kwargs will replace criteria in downgrades with matching keys
+        If there is a conflict, kwargs will take precedence
+        """
+
+        def safe_replace_criteria(
+            res: Result,
+            *args: list[Criteria],
+            limits: bool = False,
+            **kwargs: dict[str, Criteria],
+        ):
+            for k, v in kwargs.items():
+                if k == res.name:
+                    return res.replace_criteria(v, limits=limits)
+            for arg in args:
+                if hasattr(res.criteria, "name") and arg.name == res.criteria.name:
+                    return res.replace_criteria(arg, limits=limits)
+            return res
+
+        return Results(
+            self.name,
+            [safe_replace_criteria(v, *args, limits=limits, **kwargs) for v in self],
+        )
 
     def downgrade_summary(self):
         return {r.name: r.dgs for r in self if len(r.dgs) > 0}
@@ -84,11 +113,11 @@ class Results(Collection):
 
             fig.update_layout(
                 **{
-                    f"yaxis{i*2-1}": dict(
-                        title=f'{res.name}, {res.measurement.unit.replace("rad", "deg")}',
+                    f"yaxis{i * 2 - 1}": dict(
+                        title=f"{res.name}, {res.measurement.unit.replace('rad', 'deg')}",
                         rangemode="tozero",
                     ),
-                    f"yaxis{i*2}": dict(
+                    f"yaxis{i * 2}": dict(
                         title="visibility", range=[0, 1], showgrid=False
                     ),
                 },
@@ -108,32 +137,38 @@ class Results(Collection):
 
         return inter_dgs.loc[inter_dgs > cutoff]
 
-    def criteria_sum(self, key_by_criteria: bool=False) -> dict[str, float]:
-        sums = {}
+    def _criteria_filter(self, key: str, key_by_criteria: bool = False):
+        if key_by_criteria:
+            return [v for v in self if key == v.criteria.name]
+        else:
+            return [v for v in self if key == v.name]
 
-        for result in self:
-            key = result.name if not key_by_criteria else result.criteria.name
-            if key not in sums:
-                sums[key] = 0
-            sums[key] += result.total
-        return sums
-    
+    def criteria_filter(self, key: str | list[str], key_by_criteria: bool = False):
+        key = [key] if isinstance(key, str) else key
+        if isinstance(key, str):
+            return self._criteria_filter(key, key_by_criteria)
+        else:
+            return list(
+                *chain([self._criteria_filter(k, key_by_criteria) for k in key])
+            )
 
-    def inter_dg_summary(self):
-
-        def group_inter_criteria(cname: str):
-            if "pad_length" in cname:
-                return "pad_length"
-            elif "radius" in cname:
-                return "radius"
-            else:
-                return cname
-
-        inter_csum = {}
-    
-        for res in self:
-            resname = group_inter_criteria(res.name)
-            if resname not in inter_csum:
-                inter_csum[resname] = 0
-            inter_csum[resname] += res.total
-        return inter_csum
+    def tuning_data(self):
+        data = [
+            [
+                self.name,
+                k,
+                v.criteria.name,
+                v.criteria.lookup.factor,
+                v.criteria.lookup.exponent,
+                v.criteria.lookup.limit,
+                error,
+                dg
+            ]
+            for k, v in self.items() for error, dg in zip(v.errors, v.dgs)
+        ]
+        if len(data) == 0:
+            return pd.DataFrame()
+        return pd.DataFrame(
+            data,
+            columns=["results", "result", "criteria", "factor", "exponent", "limit", "error", "dg"],
+        ).dropna(axis=1)

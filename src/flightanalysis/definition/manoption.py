@@ -44,3 +44,6 @@ class ManOption:
     def __iter__(self):
         for mdef in self.options:
             yield mdef
+
+    def create(self):
+        return self[self.active].create()

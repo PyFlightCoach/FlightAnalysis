@@ -12,7 +12,7 @@ from flightanalysis.schedule import Schedule
 
 
 class SchedDef(Collection):
-    VType = ManDef
+    VType = ManDef | ManOption
 
     def __init__(self, data: dict[str, VType] | list[VType] = None):
         super().__init__(data, check_types=False)

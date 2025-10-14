@@ -1,3 +1,3 @@
 from .el_analysis import ElementAnalysis
-from .manoeuvre_analysis import Analysis, Basic, Alignment, Complete, Scored
-from .sch_analysis import ScheduleAnalysis
+from .manoeuvre_analysis import Analysis
+from .schedule_analysis import ScheduleAnalysis
