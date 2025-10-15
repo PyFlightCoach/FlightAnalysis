@@ -1,8 +1,9 @@
 from enum import Enum, auto
 
 import geometry as g
-from flightanalysis import Elements,Spin,StallTurn,TailSlide
 from flightdata import State
+
+from flightanalysis import Elements, Snap, Spin, StallTurn, TailSlide
 
 
 class ElTag(Enum):
@@ -21,6 +22,8 @@ class ElTag(Enum):
     POSTSTALLTURN = auto()
     PRETAILSLIDE = auto()
     POSTTAILSLIDE = auto()
+    PRESNAP = auto()
+    POSTSNAP = auto()
     HORIZONTAL = auto()
     HORIZONTALENTRY = auto()
     HORIZONTALEXIT = auto()
@@ -59,6 +62,11 @@ def tag_elements(els: Elements, tps: dict[str, State]):
             tag.append(ElTag.PRETAILSLIDE)
         elif last is TailSlide:
             tag.append(ElTag.POSTTAILSLIDE)
+
+        if next is Snap:
+            tag.append(ElTag.PRESNAP)
+        if last is Snap:
+            tag.append(ElTag.POSTSNAP)
 
         if all(g.point.is_either_parallel(tp.wvel, g.PZ())):
             tag.append(ElTag.VERTICAL)

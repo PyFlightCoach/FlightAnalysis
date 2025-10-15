@@ -1,15 +1,15 @@
 from __future__ import annotations
-
+from pathlib import Path
 from dataclasses import dataclass, field
 from numbers import Number
-from typing import Any, Callable, Dict, Self, Tuple, Union
+from typing import Callable, Self, Tuple, NamedTuple
 
 import geometry as g
 import numpy as np
 import pandas as pd
 from flightdata import Collection, State
 from geometry import Point
-
+from flightanalysis.base.utils import parse_csv
 from flightanalysis.base.ref_funcs import RefFunc
 from flightanalysis.elements import Elements
 from flightanalysis.manoeuvre import Manoeuvre
@@ -23,9 +23,7 @@ from flightanalysis.scoring import (
     Single,
     visor,
 )
-
 from . import Collector, Collectors, Opp
-from flightanalysis.scoring.visibility import visibility
 
 
 @dataclass
@@ -78,7 +76,7 @@ class ManParm(Opp):
             else None,
         )
 
-    def append(self, collector: Union[Opp, Collector, Collectors]):
+    def append(self, collector: Opp | Collector | Collectors):
         if isinstance(collector, Opp) or isinstance(collector, Collector):
             self.collectors.add(collector)
         elif isinstance(collector, Collectors):
@@ -90,7 +88,7 @@ class ManParm(Opp):
             )
 
     @staticmethod
-    def s_parse(opp: str | Opp | list[str] | Any, mps: Collection):
+    def s_parse(opp: str | Opp | list[str], mps: Collection):
         """Serialise and parse a manparm in order to link it to the new collection"""
         try:
             if isinstance(opp, Opp) or isinstance(opp, str):
@@ -203,7 +201,7 @@ class ManParms(Collection):
             ],
         )
 
-    def append_collectors(self, colls: Dict[str, Callable]):
+    def append_collectors(self, colls: dict[str, Callable]):
         """Append each of a dict of collector methods to the relevant ManParm"""
         for mp, col in colls.items():
             self.data[mp].append(col)
@@ -306,6 +304,20 @@ class ManParms(Collection):
             ],
             columns=["name", "criteria", "default", "unit", "collectors"],
         )
+
+    @staticmethod
+    def parse_csv(file: str | Path, criteria: NamedTuple) -> ManParms:
+        df = parse_csv(file, sep=";")
+        mps = []
+        for row in df.itertuples(index=False):
+            mps.append(ManParm(
+                row.name,
+                getattr(criteria, row.criteria),
+                row.value,
+                row.unit,
+                visibility=visor.parse_csv_cell(row.visor)[0] if row.visor and len(row.visor) else None
+            ))
+        return ManParms(mps)
 
 
 class DummyMPs:

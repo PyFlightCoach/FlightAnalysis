@@ -16,12 +16,14 @@ class DG:
         if "first" in data:
             return PairedDowngrade(
                 name=data["name"],
+                tags=data.get("tags", ""),
                 first=DG.from_dict(data["first"]),
                 second=DG.from_dict(data["second"]),
             )
         elif "measure" in data:
             return DownGrade(
                 name=data["name"],
+                tags=data.get("tags", ""),
                 measure=me.parse(data["measure"]),
                 smoothers=sm.parse(data["smoothers"]),
                 selectors=se.parse(data["selectors"]),

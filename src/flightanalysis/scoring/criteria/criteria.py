@@ -1,13 +1,10 @@
+
 from uuid import uuid4
-from flightdata.base.collection import Collection
 from .exponential import Exponential, free
 from dataclasses import dataclass, field
 
+from flightanalysis.base.utils import all_subclasses
 
-def all_subclasses(cls):
-    return set(cls.__subclasses__()).union(
-        [s for c in cls.__subclasses__() for s in all_subclasses(c)]
-    )
 
 
 @dataclass
@@ -23,9 +20,7 @@ class Criteria:
         lookup = data.pop("lookup")
         if not include_name:
             data.pop("name", None)
-        return dict(
-            kind=self.__class__.__name__, lookup=lookup.__dict__, **data
-        )
+        return dict(kind=self.__class__.__name__, lookup=lookup.__dict__, **data)
 
     @staticmethod
     def from_dict(data: dict):
@@ -55,3 +50,5 @@ class Criteria:
         if hasattr(self, "limit"):
             _so = f"{_so}, limit={self.limit}"
         return _so + ")"
+
+

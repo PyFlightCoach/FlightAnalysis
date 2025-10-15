@@ -1,4 +1,8 @@
 import numpy as np
+from typing import NamedTuple
+from collections import namedtuple
+from pathlib import Path
+from flightanalysis.base.utils import parse_csv, tryval, all_subclasses
 
 from .exponential import Exponential, free
 from .criteria import Criteria
@@ -29,6 +33,8 @@ type AnyIntraCriteria = (
     | CriteriaGroup
 )
 
+from .parser import parse_criteria_csv
+
 def plot_lookup(lu, v0=0, v1=10):
     import plotly.express as px
 
@@ -56,3 +62,5 @@ def plot_all(crits: CriteriaGroup):
             crit.lookup.trace(showlegend=False), row=1 + i // ncols, col=1 + i % ncols
         )
     return fig
+
+

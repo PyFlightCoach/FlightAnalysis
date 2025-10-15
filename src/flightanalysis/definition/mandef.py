@@ -12,7 +12,7 @@ elements collection.
 """
 
 from __future__ import annotations
-
+from typing import NamedTuple
 from dataclasses import dataclass
 
 from loguru import logger
@@ -186,7 +186,7 @@ class ManDef:
         fig = plotsec(template, fig=fig, nmodels=20, scale=3)
         return fig
 
-    def update_dgs(self, dgs: list[DG]):
+    def update_dgs(self, dgs: NamedTuple):
         new_eds = []
 
         man = self.create()
@@ -199,7 +199,7 @@ class ManDef:
                     ed.Kind,
                     ed.props,
                     DownGrades([
-                        dg for dg in dgs if checktagstring(dg.tags, tag)
+                        dg for dg in dgs if checktagstring(tag, dg.tags)
                     ])
                 )
             )
