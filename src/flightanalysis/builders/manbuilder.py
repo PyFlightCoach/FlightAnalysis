@@ -1,13 +1,19 @@
-from dataclasses import dataclass
+from tomllib import load
+from pathlib import Path
+from dataclasses import dataclass, replace
 from functools import partial
-from typing import Callable, Tuple
-from flightanalysis.scoring.downgrade.downgrade import DownGrade
+from typing import Callable, Tuple, NamedTuple
+from flightanalysis.scoring.box import TriangularBox, RectangularBox
+from flightanalysis.scoring.criteria.exponential import parse_expos_from_csv
+from flightanalysis.scoring.downgrade.downgrades import parse_downgrade_csv
+from flightanalysis.scoring.criteria import parse_criteria_csv, Combination
+from flightanalysis.scoring.box.parser import parse_box_downgrades, parse_box
 from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
+from inspect import getfullargspec
 from schemas.positioning import MBTags
 
 import pandas as pd
-from flightdata import State
 
 from flightanalysis.definition import (
     ElDef,
@@ -16,20 +22,19 @@ from flightanalysis.definition import (
     ManParm,
     ManParms,
     ManOption,
-    SchedDef
+    SchedDef,
 )
-from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn, TailSlide
-from flightanalysis.scoring.box import Box
-from flightanalysis.scoring.criteria import Combination
+
+from flightanalysis.builders import elbuilders
 
 
 @dataclass
 class ManBuilder:
     mps: ManParms
     mpmaps: dict[str, dict]
-    dgs: list[DownGrade]
-    Inter: object
-    box: Box
+    dgs: NamedTuple
+    inter_criteria: NamedTuple
+    box: TriangularBox | RectangularBox
 
     def create_eb(self, pe: PE) -> ElDef:
         el = getattr(self, pe.kind)(*pe.args, **pe.kwargs)
@@ -44,7 +49,7 @@ class ManBuilder:
             fig.relax_back,
             **fig.ndmps,
         )
-    
+
     def create_mdef(self, fig: Figure | Option) -> ManDef | ManOption:
         try:
             if isinstance(fig, Option):
@@ -81,9 +86,9 @@ class ManBuilder:
 
             neds, nmps = self.mpmaps[kind]["func"](
                 force_name if force_name else eds.get_new_name(),
-                **dict(**full_kwargs, Inter=self.Inter),
+                **(full_kwargs | {"Inter": self.inter_criteria}),
             )
-            #neds = eds.add(eds)
+            # neds = eds.add(eds)
             mps.add(nmps)
             return neds
 
@@ -98,14 +103,18 @@ class ManBuilder:
     ) -> ManDef:
         mps = self.mps.copy()
         for k, v in kwargs.items():
-            if isinstance(v, ManParm): # add a new manparm
-                mps.add(v) 
+            if isinstance(v, ManParm):  # add a new manparm
+                mps.add(v)
             else:
-                if k in mps.data: # update the default value
-                    mps[k].defaul = v 
-                else: # create and add a manparm
+                if k in mps.data:  # update the default value
+                    mps[k].defaul = v
+                else:  # create and add a manparm
                     if pd.api.types.is_list_like(v):
-                        mps.add(ManParm(k, Combination("generated_combo", desired=v), 0, "rad"))
+                        mps.add(
+                            ManParm(
+                                k, Combination("generated_combo", desired=v), 0, "rad"
+                            )
+                        )
                     else:
                         mps.add(ManParm.parse(v, mps, k))
 
@@ -113,7 +122,7 @@ class ManBuilder:
             ManInfo.model_validate(maninfo.model_dump()),
             mps,
             ElDefs(),
-            self.box.__class__(**dict(self.box.__dict__, relax_back=relax_back)),
+            replace(self.box, relax_back=relax_back),
         )
         md.eds.add(self.line(force_name="entry_line", length=30)(md.eds, md.mps))
 
@@ -148,4 +157,42 @@ class ManBuilder:
         md.mps = ManParms.merge([collmps, propmps])
         return md.update_dgs(self.dgs)
 
+    @staticmethod
+    def _parse_func(tomldata: dict):
+        fun = getattr(elbuilders, tomldata["func"])
+        args = getfullargspec(fun)[0]
+        for arg in args:
+            if arg=="Inter" or arg=="name":
+                continue
+            
+            if arg not in tomldata["args"] and arg not in tomldata["kwargs"]:
+                tomldata["kwargs"][arg] = None
+        return dict(
+            func=fun,
+            args=tomldata["args"],
+            kwargs=tomldata["kwargs"],
+        )
 
+    @staticmethod
+    def parse_toml(file: Path, mps: ManParms, dgs: NamedTuple, inter_criteria: NamedTuple, box: TriangularBox | RectangularBox):
+        toml = load(file.open("rb"))
+        data = {
+            k: ManBuilder._parse_func(v) for k, v in toml.items()
+        }
+        return ManBuilder(mps, data, dgs, inter_criteria, box)
+
+    @staticmethod
+    def parse_folder(folder: Path):
+        lookups = parse_expos_from_csv(folder / "lookups.csv")
+        criteria = parse_criteria_csv(folder / "criteria.csv", lookups)
+        intra_downgrades = parse_downgrade_csv(
+            folder / "intra_downgrades.csv", criteria.intra
+        )
+        box_downgrades = parse_box_downgrades(
+            folder / "box_downgrades.csv", criteria.box
+        )
+        box = parse_box(folder / "box.toml", box_downgrades)
+        mps = ManParms.parse_csv(folder / "default_mps.csv", criteria.inter)
+        return ManBuilder.parse_toml(
+            folder / "builders.toml", mps, intra_downgrades, criteria.inter, box
+        )

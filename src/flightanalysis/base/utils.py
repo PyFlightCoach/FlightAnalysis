@@ -40,7 +40,7 @@ def tryval(val):
         else:
             return float(val)
     except Exception:
-        return val
+        return val if len(val) else None
 
 
 def process_series(ser: pd.Series):
@@ -55,10 +55,18 @@ def process_series(ser: pd.Series):
             return ser
     else:
         return ser
-    return ser
+    
 
 def parse_csv(file: Path | str | pd.DataFrame, sep: str=","):
     path = Path(file)
     df = pd.read_csv(path, sep=sep).apply(lambda x:x.str.strip() if x.dtype == object else x)
     df.columns = [c.strip() for c in df.columns]
     return df.apply(process_series)
+
+
+
+
+def all_subclasses(cls):
+    return set(cls.__subclasses__()).union(
+        [s for c in cls.__subclasses__() for s in all_subclasses(c)]
+    )

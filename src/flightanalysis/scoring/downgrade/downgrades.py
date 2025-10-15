@@ -1,29 +1,40 @@
-from flightanalysis.scoring.criteria.criteria_group import CriteriaGroup
+from collections import namedtuple
 from .base import DG
 from .downgrade import DownGrade, dg
 from .downgrade_pair import PairedDowngrade, pdg
 from flightdata.base import Collection
 from ..results import Results
-from typing import Any
-from pathlib import Path    
+from typing import Any, NamedTuple
+from pathlib import Path
 from ..reffuncs import measures as me, selectors as se, smoothers as sm
 from flightanalysis.base.utils import parse_csv
 
-def parse_downgrade_csv(file: Path | str, criteria: CriteriaGroup)  -> list[DG]:
-    #TODO handle paired downgrades
-    df = parse_csv(file)
-    dgs: list[DownGrade | PairedDowngrade] = []
-    for row in df.loc[df.kind=="dg"].itertuples(index=False):
-        dgs.append(dg(
-            row.display_name,
-            me.parse_csv_cell(row.measure),
-            sm.parse_csv_cell(row.smoother),
-            se.parse_csv_cell(row.selector),
-            criteria[row.criteria],
-            row.tags
-        ))
 
-    return dgs
+def parse_downgrade_csv(file: Path | str, intra_criteria: NamedTuple) -> list[DG]:
+    df = parse_csv(file, sep=";")
+    downgrades: dict[str : DownGrade | PairedDowngrade] = {}
+    for name, dgs in df.groupby("unique_name"):
+        new_dgs = [
+            dg(
+                row.display_name,
+                me.parse_csv_cell(row.measure),
+                sm.parse_csv_cell(row.smoother),
+                se.parse_csv_cell(row.selector),
+                getattr(intra_criteria, row.criteria),
+                row.tags,
+            )
+            for row in dgs.itertuples(index=False)
+        ]
+        if len(new_dgs) == 1:
+            downgrades[name] = new_dgs[0]
+        elif len(new_dgs) == 2:
+            assert new_dgs[0].tags == new_dgs[1].tags, "downgrades with same name must have same tags"
+            downgrades[name] = pdg(name, *new_dgs, new_dgs[0].tags)
+        else:
+            raise ValueError(f"Expected 1 or 2 downgrades with unique name {name}, got {len(new_dgs)}")
+
+    return namedtuple("Downgrades", downgrades.keys())(*downgrades.values())
+
 
 class DownGrades(Collection):
     VType = DG
@@ -38,7 +49,7 @@ class DownGrades(Collection):
         mkwargs: dict = None,
         smkwargs: dict = None,
         sekwargs: dict = None,
-    ) -> Results:        
+    ) -> Results:
         res = Results(el if isinstance(el, str) else el.uid, [])
         for downgrade in self:
             res.add(downgrade(el, fl, tp, limits, mkwargs, smkwargs, sekwargs))
@@ -46,5 +57,3 @@ class DownGrades(Collection):
 
     def to_list(self):
         return [downgrade.name for downgrade in self]
-
-
