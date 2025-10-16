@@ -40,17 +40,18 @@ class RefFunc:
 
     @staticmethod
     def from_str(funcs: dict[str, Callable], data: str) -> RefFunc:
-        if "(" not in data:
-            return None
-        name = data.split("(")[0]
-        sargs = data.split("(")[1][:-1]
-        sargs = sargs.split(",") if len(sargs) > 0 else []
-        return RefFunc(
-            name,
-            funcs[name],
-            {k: tryval(v) for k, v in dict([a.split(":") for a in sargs]).items()},
-        )
-
+        try:
+            if "(" not in data:
+                return None
+            name, sargs = data.split("(", 1)
+            sargs = sargs.strip(") ,").split(",") if len(sargs) > 0 else []
+            return RefFunc(
+                name,
+                funcs[name],
+                {k: tryval(v) for k, v in dict([a.split(":") for a in sargs if len(a)]).items()},
+            )
+        except Exception as e:
+            raise ValueError(f"Could not parse RefFunc from string: {data}") from e
 
 @dataclass
 class RFuncBuilders:
@@ -64,7 +65,7 @@ class RFuncBuilders:
         self.funcs[func.__name__] = func
         return func
 
-    def parse_csv_cell(self, data: str):
+    def parse_csv_cell(self, data: str) -> list[RefFunc]:
         """parses things like: 'rf1(p1=1), rf2(p1=1, p2=2)'"""
         data = data.strip()
         rfuncs = []

@@ -55,15 +55,19 @@ class ElDef:
         args = getfullargspec(self.Kind.__init__).args
         for pname, prop in self.props.items():
             if pname in args:
-                if isinstance(prop, ManParm):
-                    el_kwargs[pname] = mps.data[prop.name].value
-                elif isinstance(prop, Opp):
-                    el_kwargs[pname] = prop(mps)
-                elif isinstance(prop, Number):
-                    el_kwargs[pname] = prop
-                else:
-                    raise TypeError(f"Invalid prop type {prop.__class__.__name__}")
-
+                try:
+                    if isinstance(prop, ManParm):
+                        el_kwargs[pname] = mps.data[prop.name].value
+                    elif isinstance(prop, Opp):
+                        el_kwargs[pname] = prop(mps)
+                    elif isinstance(prop, Number):
+                        el_kwargs[pname] = prop
+                    else:
+                        raise TypeError(f"Invalid prop type {prop.__class__.__name__}")
+                except Exception as e:
+                    raise Exception(
+                        f"Error creating property {pname} for {self.name} with {prop}"
+                    ) from e
         try:
             return self.Kind(uid=self.name, **el_kwargs)
         except Exception as e:

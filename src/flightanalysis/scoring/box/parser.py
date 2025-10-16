@@ -18,7 +18,7 @@ def parse_box_downgrades(file: Path, box_criteria: NamedTuple):
         for row in grp.itertuples(index=False):
             boxdgs[grpname][row.name] = BoxDG(
                 getattr(box_criteria, row.criteria),
-                measures.parse_csv_cell(row.measure),
+                measures.parse_csv_cell(row.measure)[0],
 
             )
     return namedtuple("BoxDGs", boxdgs.keys())(
