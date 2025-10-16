@@ -99,12 +99,17 @@ def checktag(
 
 
 def checktagstring(tag: set[ElTag], tagstr: str) -> bool:
-    has = []
-    hasnot = []
-    for checkstr in [s.strip() for s in tagstr.split(",")]:
-        if checkstr.startswith("!"):
-            hasnot.append(ElTag[checkstr[1:].upper()])
-        else:
-            has.append(ElTag[checkstr.upper()])
+    try:
+        has = []
+        hasnot = []
+        for checkstr in [s.strip() for s in tagstr.split(",")]:
+            if len(checkstr) == 0:
+                continue
+            if checkstr.startswith("!"):
+                hasnot.append(ElTag[checkstr[1:].upper()])
+            else:
+                has.append(ElTag[checkstr.upper()])
 
-    return checktag(tag, has=set(has), hasnot=set(hasnot))
+        return checktag(tag, has=set(has), hasnot=set(hasnot))
+    except Exception as ex:
+        raise Exception(f"Error checking tag string '{tagstr}'") from ex

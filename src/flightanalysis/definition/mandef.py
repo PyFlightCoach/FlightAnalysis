@@ -179,11 +179,10 @@ class ManDef:
     def plot(self, depth=170, heading=Heading.LTOR):
         itrans = self.guess_itrans(depth, heading)
         man = self.create()
-        template = man.create_template(itrans)
-        from plotting import plotdtw, plotsec
-
-        fig = plotdtw(template, template.data.element.unique())
-        fig = plotsec(template, fig=fig, nmodels=20, scale=3)
+        
+        tp = State.stack(man.create_template(itrans), "element")
+        fig = tp.plotlabels("element")
+        fig.add_traces(tp.plot(nmodels=20, scale=3, ribb=False, tips=True).data)
         return fig
 
     def update_dgs(self, dgs: NamedTuple):

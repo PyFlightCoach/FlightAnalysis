@@ -17,7 +17,7 @@ def parse_downgrade_csv(file: Path | str, intra_criteria: NamedTuple) -> list[DG
         new_dgs = [
             dg(
                 row.display_name,
-                me.parse_csv_cell(row.measure),
+                me.parse_csv_cell(row.measure)[0],
                 sm.parse_csv_cell(row.smoother),
                 se.parse_csv_cell(row.selector),
                 getattr(intra_criteria, row.criteria),
