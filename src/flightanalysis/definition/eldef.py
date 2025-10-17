@@ -7,7 +7,7 @@ from uuid import uuid1
 import numpy as np
 from flightdata import Collection
 
-from flightanalysis.elements import Element
+from flightanalysis.elements import Element, AnyElement
 from flightanalysis.scoring.downgrade import DownGrades
 
 from . import Collector, Collectors, ItemOpp, ManParm, ManParms, Opp, SumOpp
@@ -23,7 +23,7 @@ class ElDef:
     """
 
     name: str  # the name of the Eldef, must be unique and work as an attribute
-    Kind: object  # the class of the element (Loop, Line etc)
+    Kind: AnyElement  # the class of the element (Loop, Line etc)
     props: dict[str, Number | Opp]  # The element property generators (Number, Opp)
     dgs: DownGrades  # The DownGrades applicable this element
 

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from flightanalysis.elements.tags import DGTags
 
 from dataclasses import dataclass, replace
 from typing import Tuple
@@ -12,7 +13,6 @@ from geometry.utils import apply_index_slice
 
 from flightanalysis.base.ref_funcs import RefFunc, RefFuncs
 
-from ..criteria import AnyIntraCriteria
 from ..measurement import Measurement
 from ..reffuncs import measures as me, selectors as se, smoothers as sm
 from ..results import Result
@@ -44,6 +44,7 @@ class DownGrade(DG):
     def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
             name=self.name,
+            tags=self.tags.to_dict() if self.tags else None,
             measure=str(self.measure),
             smoothers=self.smoothers.to_list(),
             selectors=self.selectors.to_list(),
@@ -52,47 +53,56 @@ class DownGrade(DG):
 
     def select(self, fl: State, tp: State, **kwargs) -> Tuple[np.ndarray, State, State]:
         """get the indexes of the cropped sample and add datapoint at cropping boundaries"""
-        oids = np.arange(len(fl))
-        sfl, stp = fl, tp
-        for s in self.selectors:
-            sli = s(sfl, **kwargs)
-            oids = apply_index_slice(oids, sli)
-            sfl = sfl.iloc[sli]
-            stp = stp.iloc[sli]
+        try:
+            oids = np.arange(len(fl))
+            sfl, stp = fl, tp
+            for s in self.selectors:
+                sli = s(sfl, **kwargs)
+                oids = apply_index_slice(oids, sli)
+                sfl = sfl.iloc[sli]
+                stp = stp.iloc[sli]
 
-        fl = State.stack([fl.iloc[: oids[0]], sfl, fl.iloc[oids[-1] :]])
-        tp = State.stack([tp.iloc[: oids[0]], stp, tp.iloc[oids[-1] :]])
+            fl = State.stack([fl.iloc[: oids[0]], sfl, fl.iloc[oids[-1] :]])
+            tp = State.stack([tp.iloc[: oids[0]], stp, tp.iloc[oids[-1] :]])
 
-        return oids, fl, tp
+            return oids, fl, tp
+        except Exception as e:
+            raise Exception(f"Selector: {e}") from e
 
     def create_sample(self, measurement: Measurement) -> npt.NDArray:
         """create a sample by reducing the measured error to account for the visibility weighting."""
-        if DownGrade.ENABLE_VISIBILITY:
-            if isinstance(self.criteria, Deviation):
-                value = measurement.value - 1
-            else:
-                value = measurement.value
-            sample = visibility(
-                self.criteria.prepare(value),
-                measurement.visibility,
-                self.criteria.lookup.error_limit,
-                "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
-            )
-            if isinstance(self.criteria, Deviation):
-                return sample + 1
-            else:
-                return sample
+        try:
+            if DownGrade.ENABLE_VISIBILITY:
+                if isinstance(self.criteria, Deviation):
+                    value = measurement.value - 1
+                else:
+                    value = measurement.value
+                sample = visibility(
+                    self.criteria.prepare(value),
+                    measurement.visibility,
+                    self.criteria.lookup.error_limit,
+                    "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
+                )
+                if isinstance(self.criteria, Deviation):
+                    return sample + 1
+                else:
+                    return sample
 
-        else:
-            return self.criteria.prepare(measurement.value)
-
+            else:
+                return self.criteria.prepare(measurement.value)
+        except Exception as e:
+            raise Exception(f"Creating sample: {e}") from e
+        
     def smoothing(
         self, sample: npt.NDArray, dt: float, el: str, **kwargs
     ) -> npt.NDArray:
         """Apply the smoothers to the sample"""
-        for _sm in self.smoothers:
-            sample = _sm(sample, dt, el, **kwargs)
-        return sample
+        try:
+            for _sm in self.smoothers:
+                sample = _sm(sample, dt, el, **kwargs)
+            return sample
+        except Exception as e:
+            raise Exception(f"Smoothing: {e}") from e
 
     def __call__(
         self,
@@ -104,27 +114,29 @@ class DownGrade(DG):
         smkwargs: dict = None,
         sekwargs: dict = None,
     ) -> Result:
-        oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
+        try:
+            oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
 
-        istart = int(np.ceil(oids[0]))
-        iend = int(np.ceil(oids[-1]) + 1)
+            istart = int(np.ceil(oids[0]))
+            iend = int(np.ceil(oids[-1]) + 1)
 
-        measurement: Measurement = self.measure(Elements([el]), fl, tp, **(mkwargs or {}))[istart:iend]
+            measurement: Measurement = self.measure(Elements([el]), fl, tp, **(mkwargs or {}))[istart:iend]
 
-        raw_sample = self.create_sample(measurement)
+            raw_sample = self.create_sample(measurement)
 
-        sample = self.smoothing(raw_sample, fl.dt, el, **(smkwargs or {}))
+            sample = self.smoothing(raw_sample, fl.dt, el, **(smkwargs or {}))
 
-        return Result(
-            self.name,
-            measurement,
-            raw_sample,
-            sample,
-            oids,
-            *self.criteria(sample, limits),
-            self.criteria,
-        )
-
+            return Result(
+                self.name,
+                measurement,
+                raw_sample,
+                sample,
+                oids,
+                *self.criteria(sample, limits),
+                self.criteria,
+            )
+        except Exception as e:
+            raise Exception(f"{self.name}: {e}") from e
 
 def dg(
     name: str,
@@ -132,11 +144,6 @@ def dg(
     sms: RefFunc | list[RefFunc],
     sels: RefFunc | list[RefFunc],
     criteria: AnyIntraCriteria,
-    tags: str = "",
+    tags: DGTags,
 ):
-    if sms is None:
-        sms = []
-    elif isinstance(sms, RefFunc):
-        sms = [sms]
-    sms.append(sm.final())
     return DownGrade(name, tags, meas, RefFuncs(sms), RefFuncs(sels), criteria)

@@ -26,9 +26,7 @@ def parse_box_downgrades(file: Path, box_criteria: NamedTuple):
     )
 
 
-def parse_box(toml: Path, box_dgs: NamedTuple):
-    data = load(toml.open("rb"))
-
+def parse_box(data: dict, box_dgs: NamedTuple):
     Cls = TriangularBox if data["kind"] == "Triangular" else RectangularBox
 
     return Cls(

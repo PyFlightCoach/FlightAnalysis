@@ -50,9 +50,12 @@ class ElementAnalysis:
         return self.edef.dgs[dg](self.el, self.fl, self.tp, limits, select)
 
     def intra_score(self, limits: bool = True) -> Results:
-        return self.edef.dgs.apply(
-            self.el, self.fl, self.tp, limits
-        )
+        try:
+            return self.edef.dgs.apply(
+                self.el, self.fl, self.tp, limits
+            )
+        except Exception as e:
+            raise Exception(f"{self.el.uid}: {e}") from e
 
     def info(self):
         return dict(

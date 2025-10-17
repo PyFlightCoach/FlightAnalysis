@@ -8,6 +8,7 @@ from typing import Any, NamedTuple
 from pathlib import Path
 from ..reffuncs import measures as me, selectors as se, smoothers as sm
 from flightanalysis.base.utils import parse_csv
+from flightanalysis.elements.tags import DGTags
 
 
 def parse_downgrade_csv(file: Path | str, intra_criteria: NamedTuple) -> list[DG]:
@@ -21,7 +22,7 @@ def parse_downgrade_csv(file: Path | str, intra_criteria: NamedTuple) -> list[DG
                 sm.parse_csv_cell(row.smoother),
                 se.parse_csv_cell(row.selector),
                 getattr(intra_criteria, row.criteria),
-                row.tags,
+                DGTags.parse(row.last, row.this, row.next),
             )
             for row in dgs.itertuples(index=False)
         ]

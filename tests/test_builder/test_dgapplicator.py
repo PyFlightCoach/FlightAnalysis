@@ -1,6 +1,6 @@
 import numpy as np
 import geometry as g
-from flightanalysis.builders.dgapplicator import ElTag, checktagstring, tag_elements, checktag
+from flightanalysis.builders.dgapplicator import ElTag, checktagstring, tag_elements, checktag, parse_tagstring
 from pytest import fixture
 from flightdata import State
 from flightanalysis import (
@@ -41,49 +41,29 @@ def test_tag_elements(manoeuvre: Manoeuvre, tps: dict[str, State]):
     tags = tag_elements(manoeuvre.all_elements(), tps)
     # fmt: off
     assert tags == dict(
-        entry_line= set([ElTag.LINE, ElTag.ENTRYLINE , ElTag.HORIZONTAL ]),
+        entry_line= set([ElTag.LINE , ElTag.HORIZONTAL ]),
         loop1= set([ElTag.LOOP, ElTag.HORIZONTALENTRY, ElTag.VERTICALEXIT ]),
         pad1= set([ElTag.LINE, ElTag.VERTICAL ]),
         roll1= set([ElTag.LINE, ElTag.VERTICAL, ElTag.ROLL ]),
         pad2= set([ElTag.LINE, ElTag.VERTICAL ]),
         loop2= set([ElTag.LOOP, ElTag.VERTICALENTRY, ElTag.HORIZONTALEXIT ]),
-        exit_line= set([ElTag.LINE, ElTag.EXITLINE, ElTag.HORIZONTAL ]),
+        exit_line= set([ElTag.LINE,ElTag.HORIZONTAL ]),
     )
     # fmt: on
 
 
-def test_checktag():
-    #empty has and hasnot
-    assert checktag(
-        tag=set([ElTag.LINE, ElTag.ENTRYLINE, ElTag.HORIZONTAL]),
-    )
+def test_parse_tagstring():
+    check = parse_tagstring("LINE, HORIZONTAL, !ROLL")
+    
+    #exact match
+    assert check(set([ElTag.LINE, ElTag.HORIZONTAL])) 
+    
+    #got something it shouldnt have
+    assert not check(set([ElTag.LINE, ElTag.HORIZONTAL, ElTag.ROLL]))
+    
+    #got some things that dont matter
+    assert check(set([ElTag.LINE, ElTag.HORIZONTAL, ElTag.HORIZONTALENTRY, ElTag.HORIZONTALEXIT]))
 
-    # confirm it has
-    assert checktag(
-        tag=set([ElTag.LINE, ElTag.ENTRYLINE, ElTag.HORIZONTAL]),
-        has=set([ElTag.LINE, ElTag.HORIZONTAL]),
-    )
-
-    # missing a has
-    assert not checktag(
-        tag=set([ElTag.LINE, ElTag.ENTRYLINE, ElTag.HORIZONTAL]),
-        has=set([ElTag.LOOP, ElTag.HORIZONTAL]),
-    )
-
-    # it has but shouldnt 
-    assert not checktag(
-        tag=set([ElTag.LINE, ElTag.ENTRYLINE, ElTag.HORIZONTAL]),
-        hasnot=set([ElTag.ENTRYLINE]),
-    )
-
-    # confirm it hasnot
-    assert checktag(
-        tag=set([ElTag.LINE, ElTag.HORIZONTAL]),
-        hasnot=set([ElTag.ENTRYLINE]),
-    )
-
-def test_checktagstring():
-    assert not checktagstring(
-        set([ElTag.LINE, ElTag.ENTRYLINE, ElTag.HORIZONTAL]),
-        "LINE, HORIZONTAL, !ENTRYLINE"
-    )
+    #missing something it should have
+    assert not check(set([ElTag.LINE, ElTag.VERTICAL]))
+    
