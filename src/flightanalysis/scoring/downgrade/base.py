@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from flightanalysis.elements.tags import DGTags
 from dataclasses import dataclass
 from typing import ClassVar, Any
 from ..reffuncs import measures as me, selectors as se, smoothers as sm
@@ -9,21 +10,22 @@ from ..criteria import Criteria
 @dataclass
 class DG:
     name: str
-    tags: str
+    tags: DGTags | None
     ENABLE_VISIBILITY: ClassVar[bool] = True
 
     def from_dict(data: dict[str, Any]):
+        tags = DGTags.from_dict(data["tags"]) if "tags" in data and data["tags"] else None
         if "first" in data:
             return PairedDowngrade(
                 name=data["name"],
-                tags=data.get("tags", ""),
+                tags=tags,
                 first=DG.from_dict(data["first"]),
                 second=DG.from_dict(data["second"]),
             )
         elif "measure" in data:
             return DownGrade(
                 name=data["name"],
-                tags=data.get("tags", ""),
+                tags=tags,
                 measure=me.parse(data["measure"]),
                 smoothers=sm.parse(data["smoothers"]),
                 selectors=se.parse(data["selectors"]),

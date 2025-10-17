@@ -174,25 +174,20 @@ class ManBuilder:
         )
 
     @staticmethod
-    def parse_toml(file: Path, mps: ManParms, dgs: NamedTuple, inter_criteria: NamedTuple, box: TriangularBox | RectangularBox):
+    def parse_toml(file: Path):
         toml = load(file.open("rb"))
-        data = {
-            k: ManBuilder._parse_func(v) for k, v in toml.items()
-        }
-        return ManBuilder(mps, data, dgs, inter_criteria, box)
-
-    @staticmethod
-    def parse_folder(folder: Path):
-        lookups = parse_expos_from_csv(folder / "lookups.csv")
-        criteria = parse_criteria_csv(folder / "criteria.csv", lookups)
+        lookups = parse_expos_from_csv(file.parent / toml["lookups"])
+        criteria = parse_criteria_csv(file.parent / toml["criteria"], lookups)
         intra_downgrades = parse_downgrade_csv(
-            folder / "intra_downgrades.csv", criteria.intra
+            file.parent / toml["intra_downgrades"], criteria.intra
         )
         box_downgrades = parse_box_downgrades(
-            folder / "box_downgrades.csv", criteria.box
+            file.parent / toml["box_downgrades"], criteria.box
         )
-        box = parse_box(folder / "box.toml", box_downgrades)
-        mps = ManParms.parse_csv(folder / "default_mps.csv", criteria.inter)
-        return ManBuilder.parse_toml(
-            folder / "builders.toml", mps, intra_downgrades, criteria.inter, box
-        )
+        box = parse_box(toml["box"], box_downgrades)
+        mps = ManParms.parse_csv(file.parent / toml["default_mps"], criteria.inter)
+
+        data = {
+            k: ManBuilder._parse_func(v) for k, v in toml["builders"].items()
+        }
+        return ManBuilder(mps, data, intra_downgrades, criteria.inter, box)

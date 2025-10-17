@@ -53,9 +53,9 @@ class Analysis:
                 self = getattr(self, fun)()
             except Exception as e:
                 if throw_errors:
-                    raise e
+                    raise Exception(f"Error running {self.name}, {fun}: {e}") from e
                 else:
-                    logger.error(f"Error running {self.name}, {fun}: {e}")
+                    logger.error(f"{self.name}, {fun}: {e}")
                     break
 
         return self

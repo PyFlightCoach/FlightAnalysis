@@ -1,11 +1,12 @@
+from typing import Tuple
+import numpy as np
 from dataclasses import dataclass, replace
 from .base import DG
 from .downgrade import DownGrade
 from ..results import Result
 from flightanalysis.elements import Elements
-from typing import Tuple
-import numpy as np
 
+from flightanalysis.elements.tags import DGTags
 
 @dataclass
 class PairedDowngrade(DG):
@@ -14,9 +15,7 @@ class PairedDowngrade(DG):
 
     Paired downgrades don't support selectors or smoothing, and only instantanious
     measurements (those that depend only on the current datapoint) can be used.
-
     """
-
     first: DownGrade
     second: DownGrade
 
@@ -26,6 +25,7 @@ class PairedDowngrade(DG):
     def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
             name=self.name,
+            tags=self.tags.to_dict() if self.tags else None,
             first=self.first.to_dict(criteria_names),
             second=self.second.to_dict(criteria_names),
         )
@@ -80,7 +80,7 @@ def pdg(
     name: str,
     first: DownGrade,
     second: DownGrade,
-    tags: str=""
+    tags: DGTags
 ) -> PairedDowngrade:
     """Create a paired downgrade from two downgrades"""
     return PairedDowngrade(name, tags, first, second)

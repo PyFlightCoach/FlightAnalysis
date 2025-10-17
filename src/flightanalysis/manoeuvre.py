@@ -49,7 +49,7 @@ class Manoeuvre:
 
         return els
 
-    def add_lines(self, add_entry=True, add_exit=True) -> Manoeuvre:
+    def add_lines(self, add_exit=True) -> Manoeuvre:
         return Manoeuvre.from_all_elements(self.uid, self.all_elements(add_exit))
 
     def remove_exit_line(self) -> Manoeuvre:

@@ -67,14 +67,20 @@ class Spin(Element):
         ttot = self.length / self.speed
 
         _td = 2 * self.drop_turns / rate
-        tnd = g.Time.uniform(
-            _td, int(np.ceil(len(fl) * _td / ttot)) if fl else None, 2, freq
-        )
-
+        if _td>0:
+            tnd = g.Time.uniform(
+                _td, int(np.ceil(len(fl) * _td / ttot)) if fl else None, 2, freq
+            )
+        else:
+            tnd = g.Time.from_t(0)
+            
         _trec = 2 * self.recovery_turns / rate
-        trec = g.Time.uniform(
-            _trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None, 2, freq
-        )
+        if _trec > 0:
+            trec = g.Time.uniform(
+                _trec, int(np.ceil(len(fl) * _trec / ttot)) if fl else None, 2, freq
+            )
+        else:
+            trec = g.Time.from_t(0)
 
         _tau = ttot - _td - _trec
         tau = g.Time.uniform(

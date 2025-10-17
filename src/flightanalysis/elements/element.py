@@ -7,7 +7,7 @@ from json import load
 import inspect
 from typing import Self, ClassVar, Tuple, Literal
 from dataclasses import dataclass
-
+from .tags import ElTag
 
 class ElementError(Exception):
     pass
@@ -104,6 +104,29 @@ class Element:
     def match_intention(self, itrans: g.Transformation, flown: State) -> Self:
         raise Exception("Not available on base class")
 
+    def tag(self, tp: State) -> set[ElTag]:
+        tag = {getattr(ElTag, self.__class__.__name__.upper())}
+
+        wvel = tp.wvel
+
+        if hasattr(self, "roll") and abs(self.roll) > 0:
+            tag.add(ElTag.ROLL)
+
+        if all(g.point.is_either_parallel(wvel, g.PZ())):
+            tag.add(ElTag.VERTICAL)
+        elif all(g.point.is_perpendicular(wvel, g.PZ())):
+            tag.add(ElTag.HORIZONTAL)
+        else:
+            if g.point.is_either_parallel(wvel[0], g.PZ())[0]:
+                tag.add(ElTag.VERTICALENTRY)
+            elif g.point.is_perpendicular(wvel[0], g.PZ())[0]:
+                tag.add(ElTag.HORIZONTALENTRY)
+
+            if g.point.is_either_parallel(wvel[-1], g.PZ())[0]:
+                tag.add(ElTag.VERTICALEXIT)
+            elif g.point.is_perpendicular(wvel[-1], g.PZ())[0]:
+                tag.add(ElTag.HORIZONTALEXIT)
+        return tag
 
 class Elements(Collection):
     VType = Element
@@ -185,3 +208,6 @@ class Elements(Collection):
             )
 
         return elms, {el.uid: tp for el, tp in zip(elms, templates[1:])}
+
+    def generate_tags(els: Elements, tps: dict[str, State]) -> dict[str, set[ElTag]]:
+        return [v.tag(tps[k]) for k, v in els.items()]

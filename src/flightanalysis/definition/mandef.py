@@ -25,8 +25,8 @@ from schemas.positioning import Heading
 from flightanalysis.elements import Elements, AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
-from flightanalysis.scoring.downgrade import DG, DownGrades
-from flightanalysis.builders.dgapplicator import tag_elements, checktagstring
+from flightanalysis.scoring.downgrade import DownGrades
+from flightanalysis.elements.tags import TagCheck, ElTag
 from . import ElDef, ElDefs, ManParms
 
 
@@ -189,16 +189,20 @@ class ManDef:
         new_eds = []
 
         man = self.create()
-        tp = man.create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
-        tags = tag_elements(man.all_elements(), tp)
-        for ed, tag in zip(self.eds, tags.values()):
+        tps = man.add_lines(add_exit=True).create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
+        tags = man.all_elements(create_exit=True).generate_tags(tps)
+        for i, ed in enumerate(self.eds):
             new_eds.append(
                 ElDef(
                     ed.name,
                     ed.Kind,
                     ed.props,
                     DownGrades([
-                        dg for dg in dgs if checktagstring(tag, dg.tags)
+                        dg for dg in dgs if dg.tags(
+                            {ElTag.NONE} if i==0 else tags[i-1], 
+                            tags[i], 
+                            tags[i+1]
+                        )
                     ])
                 )
             )
