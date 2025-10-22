@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import Annotated, Self
+from typing import Annotated, Self, Literal
 from flightanalysis.definition import ManDef, ManOption
 from flightanalysis.elements import AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
@@ -162,10 +162,16 @@ class Analysis:
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
     def calculate_score(self, limits: bool = True) -> Self:
+        def fun(group: Literal["inter", "intra", "positioning"]):
+            try:
+                return getattr(self, group)(limits)
+            except Exception as e:
+                raise Exception(f"Error calculating {group} scores: {e}") from e
+
         return replace(
             self,
             scores=ManoeuvreResults(
-                self.inter(limits), self.intra(limits), self.positioning(limits)
+                fun("inter"), fun("intra"), fun("positioning")
             ),
         )
 
@@ -283,3 +289,8 @@ class Analysis:
             ],
             results=self.scores.fcj_results(),
         )
+    
+    @staticmethod
+    def parse_analyse_serialise(mad: dict, optimise: bool = False, throw_errors: bool = False) -> dict:
+        an = Analysis.from_dict(mad)
+        return an.run(optimise, throw_errors).to_dict()
