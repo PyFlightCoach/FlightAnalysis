@@ -107,7 +107,7 @@ class Box:
                     return getattr(self, "_" + "_".join(parts))(p)
 
                 return fun
-        raise AttributeError
+        raise AttributeError(f"{self.__class__.__name__} has no attribute {name}")
 
     def middle(self):
         py = (self.back_pos() + self.front_pos()) / 2

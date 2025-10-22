@@ -1,12 +1,11 @@
 from __future__ import annotations
-from re import sub
 from xmlrpc.client import boolean
 from flightdata import State
 from typing import Self
 from flightdata import Collection
 from flightanalysis import ManDef, SchedDef
 from schemas import AJson
-from .manoeuvre_analysis import Analysis
+from flightanalysis.analysis.manoeuvre_analysis import Analysis
 from loguru import logger
 from joblib import Parallel, delayed
 import os
@@ -40,39 +39,22 @@ class ScheduleAnalysis(Collection):
             analyses.append(Analysis.from_dict(man.model_dump() | dict(mdef=mdef.to_dict())))
         return ScheduleAnalysis(analyses)
 
-    def run_all(
-        self, optimise: bool = False, sync: boolean = False, subset: list = None
+    def run(
+        self, optimise: bool = False, sync: boolean = False, throw_errors: bool = False, subset: list = None
     ) -> Self:
         if subset is None:
             subset = range(len(self))
 
-        def parse_analyse_serialise(pad):
-            import tuning
-
-            try:
-                pad = Analysis.from_dict(pad)
-            except Exception as e:
-                logger.exception(f"Failed to parse {pad['id']}")
-                return pad
-
-            try:
-                pad = pad.run_all(optimise)
-                logger.info(f"Completed {pad.name}")
-                return pad.to_dict()
-            except Exception as e:
-                logger.exception(f"Failed to process {pad.name}")
-                return pad.to_dict()
-
         logger.info(f"Starting {os.cpu_count()} ma processes")
         if sync:
             madicts = [
-                parse_analyse_serialise(man.to_dict())
+                Analysis.parse_analyse_serialise(man.to_dict(), optimise, throw_errors)
                 for i, man in enumerate(self)
                 if i in subset
             ]
         else:
             madicts = Parallel(n_jobs=os.cpu_count() * 2 - 1)(
-                delayed(parse_analyse_serialise)(man.to_dict())
+                delayed(Analysis.parse_analyse_serialise)(man.to_dict(), optimise, throw_errors)
                 for i, man in enumerate(self)
                 if i in subset
             )
@@ -86,26 +68,12 @@ class ScheduleAnalysis(Collection):
             ]
         )
 
-    def run_all_sync(self, optimise: bool = False, force: bool = False) -> Self:
-        return ScheduleAnalysis([ma.run_all(optimise, force) for ma in self])
-
-    def optimize_alignment(self) -> Self:
-        def parse_analyse_serialise(mad):
-            an = Analysis.from_dict(mad)
-            return an.run_all().to_dict()
-
-        logger.info(f"Starting {os.cpu_count()} alignment optimisation processes")
-
-        madicts = Parallel(n_jobs=os.cpu_count())(
-            delayed(parse_analyse_serialise)(man.to_dict()) for man in self
-        )
-        return ScheduleAnalysis([Analysis.from_dict(mad) for mad in madicts])
 
     def scores(self):
         scores = {}
         total = 0
         scores = {
-            ma.name: (ma.scores.score() if hasattr(ma, "scores") else 0) for ma in self
+            ma.name: (ma.scores.score() if hasattr(ma, "scores") and ma.scores else 0) for ma in self
         }
         total = sum([ma.mdef.info.k * v for ma, v in zip(self, scores.values())])
         return total, scores
