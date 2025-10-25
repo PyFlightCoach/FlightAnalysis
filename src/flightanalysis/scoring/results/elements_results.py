@@ -1,7 +1,6 @@
 from __future__ import annotations
 import pandas as pd
 from flightdata import Collection
-from sympy import im
 from .results import Results
 from flightanalysis.scoring.criteria import Criteria
 from more_itertools import flatten
