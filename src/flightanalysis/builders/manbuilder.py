@@ -8,6 +8,7 @@ from flightanalysis.scoring.criteria.exponential import parse_expos_from_csv
 from flightanalysis.scoring.downgrade.downgrades import parse_downgrade_csv
 from flightanalysis.scoring.criteria import parse_criteria_csv, Combination
 from flightanalysis.scoring.box.parser import parse_box_downgrades, parse_box
+from flightanalysis.base.utils import replace_parameters
 from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from inspect import getfullargspec
@@ -176,16 +177,16 @@ class ManBuilder:
     @staticmethod
     def parse_toml(file: Path):
         toml = load(file.open("rb"))
-        lookups = parse_expos_from_csv(file.parent / toml["lookups"])
-        criteria = parse_criteria_csv(file.parent / toml["criteria"], lookups)
+        lookups = parse_expos_from_csv(Path.resolve(file.parent / toml["lookups"]))
+        criteria = parse_criteria_csv(Path.resolve(file.parent / toml["criteria"]), lookups)
         intra_downgrades = parse_downgrade_csv(
-            file.parent / toml["intra_downgrades"], criteria.intra
+            Path.resolve(file.parent / toml["intra_downgrades"]), criteria.intra
         )
         box_downgrades = parse_box_downgrades(
-            file.parent / toml["box_downgrades"], criteria.box
+            Path.resolve(file.parent / toml["box_downgrades"]), criteria.box
         )
         box = parse_box(toml["box"], box_downgrades)
-        mps = ManParms.parse_csv(file.parent / toml["default_mps"], criteria.inter)
+        mps = ManParms.parse_csv(Path.resolve(file.parent / toml["default_mps"]), criteria.inter)
 
         data = {
             k: ManBuilder._parse_func(v) for k, v in toml["builders"].items()

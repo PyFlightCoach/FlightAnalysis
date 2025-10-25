@@ -63,7 +63,7 @@ class Manoeuvre:
         self,
         initial: g.Transformation | State,
         aligned: State = None,
-        freq: int = 25,
+        freq: int = 20,
         npoints: int | Literal["min"] = 3,
     ) -> dict[str, State]:
         return self.all_elements().create_templates(initial, aligned, freq, npoints)
@@ -72,7 +72,7 @@ class Manoeuvre:
         self,
         istate: State | g.Transformation,
         aligned: State,
-        freq: int = 30,
+        freq: int = 20,
         npoints: int | Literal["min"] = 2,
         match_index: bool = True
     ) -> Tuple[Self, dict[str, State]]:
