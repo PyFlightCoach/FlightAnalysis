@@ -43,7 +43,7 @@ class Loop(Element):
 
     @property
     def axis(self):
-        return g.Point(0, np.cos(self.ke), np.sin(self.ke))
+        return g.Point(0, np.cos(self.ke), np.sin(self.ke)) * np.sign(self.angle)
 
     def create_template(self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3) -> State:
         """Generate a template loop.
@@ -70,9 +70,7 @@ class Loop(Element):
         return (
             istate.copy(
                 vel=v,
-                rvel=g.Point(0, np.cos(self.ke), np.sin(self.ke))
-                * self.angle
-                / duration,
+                rvel=self.axis * abs(self.angle) / duration,
             )
             .fill(Element.create_time(duration, fl.time if fl else None, freq, npoints))
             .superimpose_rotation(g.PX(), self.roll)

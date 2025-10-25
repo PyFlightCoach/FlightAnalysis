@@ -1,3 +1,4 @@
+from numbers import Number
 import os
 from json import load
 import pandas as pd
@@ -59,7 +60,7 @@ def process_series(ser: pd.Series):
 
 def parse_csv(file: Path | str | pd.DataFrame, sep: str=","):
     path = Path(file)
-    df = pd.read_csv(path, sep=sep).apply(lambda x:x.str.strip() if x.dtype == object else x)
+    df = pd.read_csv(path, sep=sep, comment="#").apply(lambda x:x.str.strip() if x.dtype == object else x)
     df.columns = [c.strip() for c in df.columns]
     return df.apply(process_series)
 
@@ -70,3 +71,19 @@ def all_subclasses(cls):
     return set(cls.__subclasses__()).union(
         [s for c in cls.__subclasses__() for s in all_subclasses(c)]
     )
+
+
+
+def replace_parameters(data: dict | list | str | Number, parameters: dict):
+    if isinstance(data, dict):
+        return {
+            k: replace_parameters(v, parameters)
+            for k, v in data.items()
+        }
+    elif isinstance(data, list):
+        return [replace_parameters(v, parameters) for v in data]
+    elif isinstance(data, str) and data.startswith("parameters."):
+        return parameters[data.split(".")[1]]
+    else:
+        return data
+    

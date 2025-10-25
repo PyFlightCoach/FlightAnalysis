@@ -7,11 +7,13 @@ from flightanalysis.elements import AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.analysis.el_analysis import ElementAnalysis
 from flightanalysis.scoring.results import ElementsResults, ManoeuvreResults
+
 from .aligment_optimisation import optimise_alignment
 import numpy as np
 
 import geometry as g
-from flightdata import State, align
+from flightdata import State, Alignment
+from flightdata.state.alignment import AlignRadiusOption
 from schemas.positioning import Direction, Heading
 
 
@@ -35,8 +37,13 @@ class Analysis:
     def name(self):
         return self.mdef.info.short_name
 
-    def run(self, optimise: bool = True, throw_errors: bool = False):
-
+    def run(
+        self,
+        optimise: bool = True,
+        throw_errors: bool = False,
+        stop_after: str = None,
+        **kwargs,
+    ) -> Self:
         stages = []
         if "element" in self.flown.labels.keys():
             stages.append("select_mdef")
@@ -46,11 +53,14 @@ class Analysis:
         if optimise:
             stages.extend(["prepare_scoring", "optimise_alignment"])
         stages.extend(["prepare_scoring", "calculate_score"])
-            
+
         for stage, fun in enumerate(stages):
             try:
                 logger.debug(f"Running step {stage}: {fun}")
-                self = getattr(self, fun)()
+                self = getattr(self, fun)(**kwargs.get(fun, {}))
+                if stop_after == fun:
+                    logger.debug(f"Stopping after step {stage}: {fun}")
+                    break
             except Exception as e:
                 if throw_errors:
                     raise Exception(f"Error running {self.name}, {fun}: {e}") from e
@@ -96,17 +106,19 @@ class Analysis:
     def create_itrans(self) -> g.Transformation:
         return replace(self, itrans=self._create_itrans())
 
-    def _preliminary_alignment(self, mdef: ManDef):
+    def _preliminary_alignment(
+        self, mdef: ManDef, freq: int = 25, radius: AlignRadiusOption = 10
+    ):
         manoeuvre = mdef.create().add_lines()
-        templates = manoeuvre.create_template(self.itrans, None, 0, "min")
+        templates = manoeuvre.create_template(self.itrans, None, freq, "min")
         template = State.stack(templates, "element")
-        res = align(self.flown, template, len(self.flown) and len(template), True)
+        res = Alignment.align(self.flown, template, radius, True)
 
         return res.dist, res.aligned, manoeuvre, templates
 
-    def preliminary_alignment(self) -> Self:
+    def preliminary_alignment(self, **kwargs) -> Self:
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
-        res = [self._preliminary_alignment(mdef) for mdef in mopt]
+        res = [self._preliminary_alignment(mdef, **kwargs) for mdef in mopt]
         option = np.argmin([r[0] for r in res])
         return replace(
             self,
@@ -116,15 +128,15 @@ class Analysis:
             templates=res[option][3],
         )
 
-    def secondary_alignment(self):
+    def secondary_alignment(self, freq: int = 25, radius: AlignRadiusOption = 10):
         manoeuvre, templates = self.manoeuvre.match_intention(
-            self.itrans, self.flown, 0, "min", False
+            self.itrans, self.flown, freq, "min", False
         )
         template = State.stack(templates, "element")
-        res = align(
+        res = Alignment.align(
             self.flown,
             template,
-            len(self.flown) and len(template),
+            radius,
             False,
         )
 
@@ -170,9 +182,7 @@ class Analysis:
 
         return replace(
             self,
-            scores=ManoeuvreResults(
-                fun("inter"), fun("intra"), fun("positioning")
-            ),
+            scores=ManoeuvreResults(fun("inter"), fun("intra"), fun("positioning")),
         )
 
     def get_ea(self, name: str | int) -> ElementAnalysis:
@@ -273,14 +283,20 @@ class Analysis:
             if self.schedule_direction
             else None,
             flown=self.flown.to_dict(True),
-            **({} if basic else dict(
-                mdef=self.mdef.to_dict() if self.mdef else None,
-                manoeuvre=self.manoeuvre.to_dict() if self.manoeuvre else None,
-                templates={k: tp.to_dict(True) for k, tp in self.templates.items()} if self.templates else None,
-                scores=self.scores.to_dict() if self.scores else None,
-            )),
+            **(
+                {}
+                if basic
+                else dict(
+                    mdef=self.mdef.to_dict() if self.mdef else None,
+                    manoeuvre=self.manoeuvre.to_dict() if self.manoeuvre else None,
+                    templates={k: tp.to_dict(True) for k, tp in self.templates.items()}
+                    if self.templates
+                    else None,
+                    scores=self.scores.to_dict() if self.scores else None,
+                )
+            ),
         )
-    
+
     def fcj_results(self):
         return dict(
             els=[
@@ -289,8 +305,10 @@ class Analysis:
             ],
             results=self.scores.fcj_results(),
         )
-    
+
     @staticmethod
-    def parse_analyse_serialise(mad: dict, optimise: bool = False, throw_errors: bool = False) -> dict:
+    def parse_analyse_serialise(
+        mad: dict, optimise: bool = False, throw_errors: bool = False, freq: int = 0
+    ) -> dict:
         an = Analysis.from_dict(mad)
-        return an.run(optimise, throw_errors).to_dict()
+        return an.run(optimise, throw_errors, freq).to_dict()

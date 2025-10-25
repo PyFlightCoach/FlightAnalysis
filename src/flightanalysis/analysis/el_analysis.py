@@ -46,8 +46,8 @@ class ElementAnalysis:
             g.Transformation.from_dict(data["ref_frame"]),
         )
 
-    def score_dg(self, dg: str, limits: bool = True, select: bool = True) -> Result:
-        return self.edef.dgs[dg](self.el, self.fl, self.tp, limits, select)
+    def score_dg(self, dg: str, limits: bool = True) -> Result:
+        return self.edef.dgs[dg](self.el, self.fl, self.tp, limits)
 
     def intra_score(self, limits: bool = True) -> Results:
         try:
