@@ -167,7 +167,7 @@ class Analysis:
 
     def inter(self, limits: bool = True):
         return self.mdef.mps.collect(
-            self.manoeuvre, self.template, self.mdef.box, limits
+            self.manoeuvre, self.flown, self.mdef.box, limits
         )
 
     def positioning(self, limits: bool = True):

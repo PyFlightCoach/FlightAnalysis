@@ -13,8 +13,11 @@ def diff(val, factor=3):
     """factor == 1 (easy), 2 (medium), 3 (hard)"""
     b = 1.3 - factor * 0.1
     m = 6 / 6**b
-    return m * val**b
-
+    try:
+        with np.errstate(invalid="raise"):
+            return m * val**b
+    except FloatingPointError:
+        pass
 
 def trunc(val):
     return np.floor(val * 2) / 2
