@@ -13,7 +13,7 @@ elements collection.
 
 from __future__ import annotations
 from typing import NamedTuple
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from loguru import logger
 
@@ -51,7 +51,7 @@ class ManDef:
     def uid(self):
         return self.info.short_name
 
-    def to_dict(self, dgs=True, criteria_names: bool=True) -> dict:
+    def to_dict(self, dgs=True, criteria_names: bool = True) -> dict:
         return dict(
             info=self.info.to_dict(),
             mps=self.mps.to_dict(criteria_names),
@@ -133,7 +133,9 @@ class ManDef:
             uid=self.info.name,
         )
 
-        template = State.stack(man.create_template(State.from_transform(itrans)), "element")
+        template = State.stack(
+            man.create_template(State.from_transform(itrans)), "element"
+        )
 
         if self.info.position == Position.CENTRE and (
             heading == Heading.LTOR or heading == Heading.RTOL
@@ -163,10 +165,12 @@ class ManDef:
             return max(min(getattr(self.box, bound)(template.pos)[1]), 20)
 
     def fit_box(self, itrans: g.Transformation, target_depth=None):
-        self.eds.entry_line.props["length"] = self.entry_line_length(
-            itrans, target_depth
+        new_eline = replace(
+            self.eds.entry_line,
+            props=self.eds.entry_line.props
+            | dict(length=self.entry_line_length(itrans, target_depth)),
         )
-        return self
+        return replace(self, eds=ElDefs([new_eline] + self.eds[1:].to_list()))
 
     def create(self) -> Manoeuvre:
         """Create the manoeuvre based on the default values in self.mps."""
@@ -179,7 +183,7 @@ class ManDef:
     def plot(self, depth=170, heading=Heading.LTOR):
         itrans = self.guess_itrans(depth, heading)
         man = self.create()
-        
+
         tp = State.stack(man.create_template(itrans), "element")
         fig = tp.plotlabels("element")
         fig.add_traces(tp.plot(nmodels=20, scale=3, ribb=False, tips=True).data)
@@ -189,7 +193,9 @@ class ManDef:
         new_eds = []
 
         man = self.create()
-        tps = man.add_lines(add_exit=True).create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
+        tps = man.add_lines(add_exit=True).create_template(
+            g.Transformation(self.initial_rotation(Heading.LTOR))
+        )
         tags = man.all_elements(create_exit=True).generate_tags(tps)
         for i, ed in enumerate(self.eds):
             new_eds.append(
@@ -197,13 +203,17 @@ class ManDef:
                     ed.name,
                     ed.Kind,
                     ed.props,
-                    DownGrades([
-                        dg for dg in dgs if dg.tags(
-                            {ElTag.NONE} if i==0 else tags[i-1], 
-                            tags[i], 
-                            tags[i+1]
-                        )
-                    ])
+                    DownGrades(
+                        [
+                            dg
+                            for dg in dgs
+                            if dg.tags(
+                                {ElTag.NONE} if i == 0 else tags[i - 1],
+                                tags[i],
+                                tags[i + 1],
+                            )
+                        ]
+                    ),
                 )
             )
         return ManDef(self.info, self.mps, ElDefs(new_eds), self.box)
@@ -234,5 +244,6 @@ class ManDef:
             el: AnyElement = ed(self.mps)
             tp = el.create_template(tp[-1])
             yield ed, el, tp
+
 
 from .manoption import ManOption  # noqa: E402
