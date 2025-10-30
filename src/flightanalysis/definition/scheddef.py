@@ -56,7 +56,7 @@ class SchedDef(Collection):
                 if len(templates) == 0
                 else templates[-1][-1].att,
             )
-            md.fit_box(itrans)
+            md = md.fit_box(itrans)
             man = md.create()
             templates.append(State.stack(man.create_template(itrans), "element"))
             mans.append(man)
