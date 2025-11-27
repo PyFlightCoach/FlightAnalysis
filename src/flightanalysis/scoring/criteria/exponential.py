@@ -1,7 +1,6 @@
 from __future__ import annotations
 from collections import namedtuple
 from dataclasses import dataclass
-from os import name
 from pathlib import Path
 import numpy as np
 from flightanalysis.base.utils import parse_csv
@@ -32,7 +31,7 @@ class Exponential:
     @staticmethod
     def simple(exponent: float, error: float, downgrade: float, has_limit: bool = True):
         return Exponential(
-            downgrade / error**exponent, exponent, downgrade if has_limit else None
+            downgrade / error**exponent, exponent, downgrade# if has_limit else None
         )
 
     @property
