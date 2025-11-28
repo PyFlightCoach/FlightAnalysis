@@ -45,10 +45,10 @@ class Analysis:
         **kwargs,
     ) -> Self:
         stages = []
+        stages.append("create_itrans")
         if "element" in self.flown.labels.keys():
             stages.append("select_mdef")
-        stages.append("create_itrans")
-        if "element" not in self.flown.labels.keys():
+        elif "element" not in self.flown.labels.keys():
             stages.extend(["preliminary_alignment", "secondary_alignment"])
         if optimise:
             stages.extend(["prepare_scoring", "optimise_alignment"])
@@ -69,21 +69,6 @@ class Analysis:
                     break
 
         return self
-
-    def select_mdef(self):
-        mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
-
-        elnames = list(self.flown.labels.element.keys())
-        for md in mopt:
-            if len(elnames) == len(md.eds) + 1 and np.all(
-                [elnames[i] == k for i, k in enumerate(md.eds.data.keys())]
-            ):
-                mdef = md
-                return replace(self, mdef=mdef)
-        else:
-            raise ValueError(
-                f"{self.mdef.info.short_name} element sequence doesn't agree with {elnames}"
-            )
 
     def _create_itrans(self) -> g.Transformation:
         if (
@@ -106,6 +91,37 @@ class Analysis:
     def create_itrans(self) -> g.Transformation:
         return replace(self, itrans=self._create_itrans())
 
+    def select_mdef(self):
+        """If the elements are labelled it should be possible to select the correct option.
+            First find all the options that match the element sequence.
+            If more than one option matches, select the one with the best score.
+        """
+        mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
+
+        elnames = list(self.flown.labels.element.keys())
+
+        options = []
+        for md in mopt:
+            if len(elnames) == len(md.eds) + 1 and np.all(
+                [elnames[i] == k for i, k in enumerate(md.eds.data.keys())]
+            ):
+                options.append(md)
+        if len(options) == 0:
+            raise ValueError(
+                f"{self.mdef.info.short_name} element sequence doesn't agree with {elnames}"
+            )
+        
+        elif len(options) == 1:
+            option_id = 0
+        else:
+            scores = []
+            for option in options:
+                scores.append(replace(self, mdef=option).run(False).scores.score())
+            option_id = np.argmax(scores)
+        return replace(self, mdef=options[option_id])
+
+
+
     def _preliminary_alignment(
         self, mdef: ManDef, freq: int = 25, radius: AlignRadiusOption = 10
     ):
@@ -117,7 +133,10 @@ class Analysis:
         return res.dist, res.aligned, manoeuvre, templates
 
     def preliminary_alignment(self, **kwargs) -> Self:
+        """Run DTW alignment for each option, select the one with the lowest distance.
+        TODO this is not proving very reliable for the P27 top hat. """
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
+
         res = [self._preliminary_alignment(mdef, **kwargs) for mdef in mopt]
         option = np.argmin([r[0] for r in res])
         return replace(
