@@ -272,7 +272,7 @@ class Result:
 
     def plot(self, xvals: np.ndarray = None):
         import plotly.graph_objects as go
-
+        xvals = np.arange(len(self.measurement)) if xvals is None else xvals
         fig = go.Figure(
             layout=dict(
                 yaxis2=dict(
