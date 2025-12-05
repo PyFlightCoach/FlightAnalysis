@@ -28,6 +28,13 @@ class Exponential:
             )
         )
 
+    def to_simple(self):
+        return (
+            self.exponent,
+            self.error_limit,
+            self.limit
+        )   
+
     @staticmethod
     def simple(exponent: float, error: float, downgrade: float, has_limit: bool = True):
         return Exponential(
