@@ -8,7 +8,6 @@ from flightanalysis.scoring.criteria.exponential import parse_expos_from_csv
 from flightanalysis.scoring.downgrade.downgrades import parse_downgrade_csv
 from flightanalysis.scoring.criteria import parse_criteria_csv, Combination
 from flightanalysis.scoring.box.parser import parse_box_downgrades, parse_box
-from flightanalysis.base.utils import replace_parameters
 from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from inspect import getfullargspec
