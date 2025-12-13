@@ -1,7 +1,7 @@
 from __future__ import annotations
 import numpy as np
 import numpy.typing as npt
-from .. import Criteria
+from ..criteria import Criteria
 from dataclasses import dataclass, field
 from flightdata.base import to_list   
 import re

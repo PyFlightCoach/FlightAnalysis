@@ -2,7 +2,6 @@ import numpy as np
 from typing import NamedTuple
 from collections import namedtuple
 from pathlib import Path
-from flightanalysis.base.utils import parse_csv, tryval, all_subclasses
 
 from .exponential import Exponential, free
 from .criteria import Criteria

@@ -1,8 +1,9 @@
+from __future__ import annotations
 from tomllib import load
 from pathlib import Path
 from dataclasses import dataclass, replace
 from functools import partial
-from typing import Callable, Tuple, NamedTuple
+from typing import Callable, Tuple, NamedTuple, Any
 from flightanalysis.scoring.box import TriangularBox, RectangularBox
 from flightanalysis.scoring.criteria.exponential import parse_expos_from_csv
 from flightanalysis.scoring.downgrade.downgrades import parse_downgrade_csv
@@ -12,7 +13,7 @@ from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from inspect import getfullargspec
 from schemas.positioning import MBTags
-
+import numpy as np
 import pandas as pd
 
 from flightanalysis.definition import (
@@ -174,8 +175,17 @@ class ManBuilder:
         )
 
     @staticmethod
-    def parse_toml(file: Path):
+    def parse_toml(file: Path, **kwargs) -> ManBuilder:
         toml = load(file.open("rb"))
+
+        params = toml.get("parameters", {})
+
+        for k, v in kwargs.items():
+            if k in params:
+                group = params[v]
+                for param_name, param_value in group.items():
+                    toml = replace_any_depth_value(toml, "parameters." + param_name, param_value)
+
         lookups = parse_expos_from_csv(Path.resolve(file.parent / toml["lookups"]))
         criteria = parse_criteria_csv(Path.resolve(file.parent / toml["criteria"]), lookups)
         intra_downgrades = parse_downgrade_csv(
@@ -191,3 +201,14 @@ class ManBuilder:
             k: ManBuilder._parse_func(v) for k, v in toml["builders"].items()
         }
         return ManBuilder(mps, data, intra_downgrades, criteria.inter, box)
+
+
+def replace_any_depth_value(d: Any, old_value: Any, new_value: Any) -> dict:
+    if pd.api.types.is_list_like(d):
+        return [replace_any_depth_value(v, old_value, new_value) for v in d]
+    elif isinstance(d, dict):
+        return {k: replace_any_depth_value(v, old_value, new_value) for k, v in d.items()}
+    elif d.__class__ is old_value.__class__ and d == old_value:
+        return new_value
+    else:
+        return d

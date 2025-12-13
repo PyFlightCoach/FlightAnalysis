@@ -48,19 +48,22 @@ def process_series(ser: pd.Series):
     if sum(ser=="True") + sum(ser=="False") == len(ser):
         return ser=="True"
     elif ser.dtype == object:
-        deglocs = ser.str.endswith("°")
-        if sum(deglocs):
-            vals = ser.str.rstrip("°").astype(float)
-            return np.where(deglocs, np.radians(vals), vals)
-        else:
+        try:
+            deglocs = ser.str.endswith("°")
+            if sum(deglocs):
+                vals = ser.str.rstrip("°").astype(float)
+                return np.where(deglocs, np.radians(vals), vals)
+            else:
+                return ser.astype(float)
+        except Exception:
             return ser
     else:
         return ser
     
 
-def parse_csv(file: Path | str | pd.DataFrame, sep: str=","):
+def parse_csv(file: Path | str | pd.DataFrame, **kwargs) -> pd.DataFrame:
     path = Path(file)
-    df = pd.read_csv(path, sep=sep, comment="#").apply(lambda x:x.str.strip() if x.dtype == object else x)
+    df: pd.DataFrame = pd.read_csv(path, **({"comment":"#"} | kwargs)).apply(lambda x:x.str.strip() if x.dtype == object else x)
     df.columns = [c.strip() for c in df.columns]
     return df.apply(process_series)
 
