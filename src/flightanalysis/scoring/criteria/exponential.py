@@ -82,7 +82,7 @@ free = Exponential(0, 1)
 
 
 def parse_expos_from_csv(file: Path | str):
-    df = parse_csv(file, ";")
+    df = parse_csv(file, sep=";")
 
     expos: dict[str, dict[str, Exponential]] = {}
     for grpname, grp in df.groupby("group"):
