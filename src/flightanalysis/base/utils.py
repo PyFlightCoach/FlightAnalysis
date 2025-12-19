@@ -4,6 +4,9 @@ from json import load
 import pandas as pd
 from pathlib import Path    
 import numpy as np
+from typing import Any
+
+
 
 def combine_args(names: list[str], *args, **kwargs) -> dict:
     """Combine the args and kwargs into a dict with the names as keys"""
@@ -90,3 +93,13 @@ def replace_parameters(data: dict | list | str | Number, parameters: dict):
     else:
         return data
     
+
+def replace_any_depth_value(d: Any, old_value: Any, new_value: Any) -> dict:
+    if isinstance(d, dict):
+        return {k: replace_any_depth_value(v, old_value, new_value) for k, v in d.items()}
+    elif isinstance(d, list):
+        return [replace_any_depth_value(v, old_value, new_value) for v in d]
+    elif d.__class__ is old_value.__class__ and d == old_value:
+        return new_value
+    else:
+        return d
