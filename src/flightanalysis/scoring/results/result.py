@@ -272,7 +272,9 @@ class Result:
 
     def plot(self, xvals: np.ndarray = None):
         import plotly.graph_objects as go
-        xvals = np.arange(len(self.measurement)) if xvals is None else xvals
+        xtitle = "Time (s)" if xvals is not None else "Index"
+        xvals = np.arange(np.ceil(self.sample_keys[-1]+1)) if xvals is None else xvals
+
         fig = go.Figure(
             layout=dict(
                 yaxis2=dict(
@@ -281,7 +283,7 @@ class Result:
                 title=f"{self.name}, {self.total:.2f}",
                 legend=dict(orientation="h", x=0, y=1.4, yanchor="top"),
                 margin=dict(t=10, r=90, b=90, l=90),
-                xaxis=dict(visible=True, title="Time (s)", range=[0, xvals[-1] if xvals is not None else len(self.measurement)]),
+                xaxis=dict(visible=True, title=xtitle, range=[0, xvals[-1]]),
                 yaxis=dict(title=f"Measurement ({self.measurement.unit.replace("rad", "degrees")})"),
             ),
             data=self.traces(np.array(get_value(xvals, self.sample_keys))),
