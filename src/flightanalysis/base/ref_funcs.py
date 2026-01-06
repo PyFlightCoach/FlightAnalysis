@@ -27,6 +27,7 @@ class RefFunc:
     name: str
     method: callable
     preset_kwargs: dict[str, Any] = field(default_factory=dict())
+    description: str = ""
 
     def __call__(self, *args, **kwargs):
         return self.method(*args, **kwargs, **self.preset_kwargs)
@@ -39,7 +40,7 @@ class RefFunc:
         return arg.split(":")
 
     @staticmethod
-    def from_str(funcs: dict[str, Callable], data: str) -> RefFunc:
+    def from_str(funcs: dict[str, Callable], data: str, descriptions: dict[str, str] = {}) -> RefFunc:
         try:
             if "(" not in data:
                 return None
@@ -49,21 +50,41 @@ class RefFunc:
                 name,
                 funcs[name],
                 {k: tryval(v) for k, v in dict([a.split(":") for a in sargs if len(a)]).items()},
+                descriptions.get(name, "")
             )
         except Exception as e:
             raise ValueError(f"Could not parse RefFunc from string: {data}") from e
+
+    def describe(self) -> str:
+        description = self.description
+        for k, v in self.preset_kwargs.items():
+            description = description.replace(f"{{{k}}}", str(v))
+        return description
+
+class RefFuncs(Collection):
+    VType = RefFunc
+    uid = "name"
+
+    def to_list(self):
+        return [str(rf) for rf in self]
+
+
 
 @dataclass
 class RFuncBuilders:
     """A collection of functions to be referenced by a RefFunc."""
     funcs: dict[str, Callable]
+    descriptions: dict[str, str] = field(default_factory=dict)
 
     def __getattr__(self, name):
-        return lambda **kwargs : RefFunc(name, self.funcs[name], kwargs)
+        return lambda **kwargs : RefFunc(name, self.funcs[name], kwargs, self.descriptions.get(name, ""))
 
-    def add(self, func):
-        self.funcs[func.__name__] = func
-        return func
+    def add(self, description: str = ""):
+        def decorator(func: Callable):
+            self.funcs[func.__name__] = func
+            self.descriptions[func.__name__] = description
+            return func
+        return decorator
 
     def parse_csv_cell(self, data: str) -> list[RefFunc]:
         """parses things like: 'rf1(p1=1), rf2(p1=1, p2=2)'"""
@@ -78,24 +99,16 @@ class RFuncBuilders:
                 name,
                 self.funcs[name],
                 {k.strip(): tryval(v.strip()) for k, v in dict(sargs).items()},
+                self.descriptions.get(name, "")
             ))
         return rfuncs
         
 
     def parse(self, sfuncs: list[str] | str):
         if isinstance(sfuncs, str):
-            return RefFunc.from_str(self.funcs, sfuncs)
+            return RefFunc.from_str(self.funcs, sfuncs, self.descriptions)
         elif np.ndim(sfuncs)>0:
-            return RefFuncs([RefFunc.from_str(self.funcs, sf) for sf in sfuncs])
+            return RefFuncs([RefFunc.from_str(self.funcs, sf, self.descriptions) for sf in sfuncs])
         else:
             return None
 
-
-class RefFuncs(Collection):
-    VType = RefFunc
-    uid = "name"
-
-    def to_list(self):
-        return [str(rf) for rf in self]
-    
-    
