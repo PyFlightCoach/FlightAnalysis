@@ -253,6 +253,7 @@ class Analysis:
             self.schedule_direction,
             self.flown.move(transform),
             self.mdef,
+            self.itrans,
             self.manoeuvre,
             {k: t.move(transform) for k, t in self.templates.items()}
             if self.templates
