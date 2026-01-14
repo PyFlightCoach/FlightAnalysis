@@ -73,9 +73,12 @@ class Combination(Criteria):
         1/2"""
         return Combination.rolllist([2 * np.pi * r for r in parse_roll_string(rollstring)], reversable)
     
-    def append_roll_sum(self, inplace=False) -> Combination:
+    def append_roll_sum(self, inplace=False, indeces: list[int]=None) -> Combination:
         """Add a roll sum to the end of the desired list"""
-        des = np.column_stack([self.desired, np.cumsum(self.desired, axis=1)])
+        if indeces is None:
+            indeces = list(range(len(self)))
+
+        des = np.column_stack([self.desired, np.cumsum(self.desired[:, indeces], axis=1)])
         if inplace:
             self.desired = des
             return self

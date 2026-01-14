@@ -2,7 +2,7 @@ from numbers import Number
 
 from flightanalysis.scoring.criteria.inter.combination import Combination
 import numpy as np
-
+import pandas as pd
 from flightanalysis.definition import ItemOpp, Opp, maxopp
 from flightanalysis.definition.collectors import Collectors
 from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm, ManParms
@@ -275,13 +275,21 @@ def loopmaker(
 
     mps = ManParms()
     rolls = mps.parse_rolls(rolls, name, reversible) if not rolls == 0 else 0
-    if isinstance(rolls, ManParm) and len(rolls.value) == 1:
-        rolls = rolls[0]
+
+    if isinstance(rolls, ManParm):
+        indeces = list(range(rolls.n))
+        if len(rolls.value) == 1:
+            rolls = rolls[0]
     if rolls == 0:
         return loop(name, speed, radius, angle, ke, Inter)
     if isinstance(rolls, ItemOpp) and rollangle == angle:
         ed = rolling_loop(name, speed, radius, angle, rolls, ke, Inter)[0]
         return ed, mps
+    if pd.api.types.is_list_like(rolls) and all([isinstance(r, ItemOpp) for r in rolls]):
+        assert all(r.a.name == rolls[0].a.name for r in rolls), "All rolls must refer to same ManParm if list of ManParms"
+        indeces = [r.item for r in rolls]
+        rolls = rolls[0].a
+        
 
     eds = ElDefs()
 
@@ -290,7 +298,7 @@ def loopmaker(
     internal_rad = ManParm(f"{name}_radius", free_comparison, rad, "m")
 
     try:
-        rvs = rolls.value
+        rvs = rolls.value[indeces]
     except Exception:
         rvs = None
 
@@ -336,16 +344,14 @@ def loopmaker(
             only_rolls.append(abs(rvs[i]) if rt == "r" else 0)
         only_rolls = np.array(only_rolls)
 
-        rolls.criteria.append_roll_sum(inplace=True)
+        rolls.criteria.append_roll_sum(inplace=True, indeces=indeces)
 
         loop_proportions = np.abs(only_rolls) / np.sum(np.abs(only_rolls))
 
         loop_angles = [remaining_rollangle * rp for rp in loop_proportions]
 
-        n = len(loop_angles)
-
         for i, r in enumerate(loop_angles):
-            roll_done = rolls[i + n - 1] if i > 0 else 0
+            roll_done = rolls[i + indeces[-1]] if i > 0 else 0
             if rolltypes[i] == "r":
                 eds.add(
                     rolling_loop(
@@ -353,7 +359,7 @@ def loopmaker(
                         speed,
                         internal_rad,
                         r,
-                        rolls[i],
+                        rolls[indeces[i]],
                         ke - roll_done,
                         Inter,
                     )[0]
@@ -362,7 +368,7 @@ def loopmaker(
                 eds.add(
                     snap(
                         f"{name}_{i}",
-                        rolls[i],
+                        rolls[indeces[i]],
                         break_angle,
                         snap_rate,
                         speed,
@@ -381,12 +387,12 @@ def loopmaker(
                         speed,
                         internal_rad,
                         pause_angle,
-                        ke - rolls[i + n],
+                        ke - rolls[i + indeces[-1] + 1],
                         Inter,
                     )[0]
                 )
 
-        ke = ke - rolls[i + n]
+        ke = ke - rolls[i + indeces[-1] + 1]
 
     else:
         if rolltypes == "s":

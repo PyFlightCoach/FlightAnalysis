@@ -25,7 +25,8 @@ class FunOpp(Opp):
                 return max(self.get_vf(self.a)(*args, **kwargs), self.get_vf(self.b)(*args, **kwargs))
             case 'min':
                 return min(self.get_vf(self.a)(*args, **kwargs), self.get_vf(self.b)(*args, **kwargs))
-    
+            case 'sign':
+                return 1 if self.get_vf(self.a)(*args, **kwargs)>0 else -1
     def __str__(self):
         return f"{self.opp}({str(self.a)}{',' + str(self.b) if self.b else ''})"
 

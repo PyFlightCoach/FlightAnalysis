@@ -59,7 +59,7 @@ class Opp:
         return FunOpp(self.name, "abs", self)
 
     def sign(self) -> FunOpp:
-        return FunOpp(self.name, "abs", self)
+        return FunOpp(self.name, "sign", self)
 
     def __add__(self, other) -> MathOpp:
         return MathOpp(self.name, self, other, "+")
