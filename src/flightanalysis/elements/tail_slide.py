@@ -86,5 +86,7 @@ class TailSlide(Element):
 
     def copy_direction(self, other: TailSlide) -> TailSlide:
         return self.set_parms(
-            pitch_rate=abs(self.pitch_rate) * np.sign(other.pitch_rate)
+            pitch_rate=abs(self.pitch_rate) * np.sign(other.pitch_rate),
+            over_flop=abs(self.over_flop) * np.sign(other.over_flop),
+            reset_rate=abs(self.reset_rate) * np.sign(other.reset_rate),
         )

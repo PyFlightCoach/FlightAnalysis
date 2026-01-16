@@ -11,6 +11,7 @@ from flightanalysis.scoring import visor
 from flightanalysis.scoring.criteria.inter.comparison import free_comparison
 
 
+
 def line(name: str, speed, length, Inter):
     return ElDef.build(Line, name, [speed, length]), ManParms()
 

@@ -20,6 +20,10 @@ from schemas.positioning import Direction, Heading
 from loguru import logger
 
 
+class ElSequenceError(Exception):
+    pass
+
+
 @dataclass
 class Analysis:
     id: int
@@ -61,6 +65,12 @@ class Analysis:
                 if stop_after == fun:
                     logger.debug(f"Stopping after step {stage}: {fun}")
                     break
+            except ElSequenceError as ese:
+                logger.warning(f"{self.name}, {fun}: {ese}")
+                self = self.preliminary_alignment(
+                    **kwargs.get("preliminary_alignment", {})
+                )
+                self = self.secondary_alignment(**kwargs.get("secondary_alignment", {}))
             except Exception as e:
                 if throw_errors:
                     raise Exception(f"Error running {self.name}, {fun}: {e}") from e
@@ -93,8 +103,8 @@ class Analysis:
 
     def select_mdef(self):
         """If the elements are labelled it should be possible to select the correct option.
-            First find all the options that match the element sequence.
-            If more than one option matches, select the one with the best score.
+        First find all the options that match the element sequence.
+        If more than one option matches, select the one with the best score.
         """
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 
@@ -107,10 +117,10 @@ class Analysis:
             ):
                 options.append(md)
         if len(options) == 0:
-            raise ValueError(
+            raise ElSequenceError(
                 f"{self.mdef.info.short_name} element sequence doesn't agree with {elnames}"
             )
-        
+
         elif len(options) == 1:
             option_id = 0
         else:
@@ -119,8 +129,6 @@ class Analysis:
                 scores.append(replace(self, mdef=option).run(False).scores.score())
             option_id = np.argmax(scores)
         return replace(self, mdef=options[option_id])
-
-
 
     def _preliminary_alignment(
         self, mdef: ManDef, freq: int = 25, radius: AlignRadiusOption = 10
@@ -134,7 +142,7 @@ class Analysis:
 
     def preliminary_alignment(self, **kwargs) -> Self:
         """Run DTW alignment for each option, select the one with the lowest distance.
-        TODO this is not proving very reliable for the P27 top hat. """
+        TODO this is not proving very reliable for the P27 top hat."""
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 
         res = [self._preliminary_alignment(mdef, **kwargs) for mdef in mopt]
@@ -185,9 +193,7 @@ class Analysis:
         return ElementsResults([ea.intra_score(limits) for ea in self])
 
     def inter(self, limits: bool = True):
-        return self.mdef.mps.collect(
-            self.manoeuvre, self.flown, self.mdef.box, limits
-        )
+        return self.mdef.mps.collect(self.manoeuvre, self.flown, self.mdef.box, limits)
 
     def positioning(self, limits: bool = True):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)

@@ -40,17 +40,19 @@ class Combination(Criteria):
     def __getitem__(self, value: int):
         return self.desired[value]
 
-    def get_errors(self, values: npt.ArrayLike):
+    def get_errors(self, values: npt.ArrayLike, indeces: list[int | None]):
         """get the error between values and desired for all the options"""
-        return np.array(self.desired)[:,:len(values)] - np.array(values)
+
+        return np.array(self.desired)[:,indeces] - np.array(values)
 
     def get_option_error(self, option: int, values: npt.ArrayLike) -> npt.NDArray:
         """The difference between the values and a given option"""
         return np.array(values) - self.desired[option]
 
-    def check_option(self, values) -> int:
+    def check_option(self, values, indeces: list[int | None]) -> int:
         """Given a set of values, return the option id which gives the least error"""
-        return int(np.sum(np.abs(self.get_errors(values)), axis=1).argmin())
+
+        return int(np.sum(np.abs(self.get_errors(values, indeces)), axis=1).argmin())
 
     def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(

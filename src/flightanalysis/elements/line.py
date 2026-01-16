@@ -48,4 +48,4 @@ class Line(Element):
         )
 
     def copy_direction(self, other) -> Line:
-        return self.set_parms(roll=abs(self.roll) * np.sign(other.roll))
+        return self.set_parms(roll=other.roll)

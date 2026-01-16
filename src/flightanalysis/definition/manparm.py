@@ -218,7 +218,7 @@ class ManParms(Collection):
             flown_parm = list(mp.collect(intended.all_elements()).values())
             if len(flown_parm) > 0 and mp.defaul is not None:
                 if isinstance(mp.criteria, Combination):
-                    defaul = mp.criteria.check_option(flown_parm)
+                    defaul = mp.criteria.check_option(flown_parm, [col.index for col in mp.collectors])
                 else:
                     defaul = np.mean(np.abs(flown_parm)) * np.sign(mp.defaul)
                 mps.append(
