@@ -112,8 +112,9 @@ class Loop(Element):
 
     def copy_direction(self, other) -> Loop:
         return self.set_parms(
-            roll=abs(self.roll) * np.sign(other.roll),
-            angle=abs(self.angle) * np.sign(other.angle),
+            roll=other.roll,
+            angle=other.angle,
+            ke=other.ke,
         )
 
 

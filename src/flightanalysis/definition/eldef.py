@@ -27,8 +27,8 @@ class ElDef:
     props: dict[str, Number | Opp]  # The element property generators (Number, Opp)
     dgs: DownGrades  # The DownGrades applicable this element
 
-    def get_collector(self, name) -> Collector:
-        return Collector(self.name, name)
+    def get_collector(self, name: str, index: int | None = None) -> Collector:
+        return Collector(self.name, name, index)
 
     def to_dict(self, longdgs=True, criteria_names: bool = True) -> dict:
         return dict(
@@ -84,7 +84,7 @@ class ElDef:
             if isinstance(value, ManParm):
                 value.append(ed.get_collector(key))
             elif isinstance(value, ItemOpp):
-                value.a.assign(value.item, ed.get_collector(key))
+                value.a.assign(value.item, ed.get_collector(key, value.item))
 
         return ed
 
