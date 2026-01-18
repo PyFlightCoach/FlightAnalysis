@@ -33,7 +33,7 @@ class ElTag(Enum):
     VERTICAL = auto()
     VERTICALENTRY = auto()
     VERTICALEXIT = auto()
-
+    LOOPSEQUENCE = auto()
 
 
 

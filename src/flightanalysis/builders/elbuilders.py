@@ -11,9 +11,14 @@ from flightanalysis.scoring import visor
 from flightanalysis.scoring.criteria.inter.comparison import free_comparison
 
 
-
 def line(name: str, speed, length, Inter):
     return ElDef.build(Line, name, [speed, length]), ManParms()
+
+
+def line_duration(name: str, speed, duration, Inter):
+    ed = ElDef.build(Line, name, [speed, speed * duration])
+    duration.collectors.add(ed.get_collector("duration"))
+    return ed, ManParms()
 
 
 def roll(name: str, speed, rate, rolls, Inter):
@@ -36,6 +41,18 @@ def loop(name: str, speed, radius, angle, ke, Inter):
     return ed, ManParms()
 
 
+def loop_duration(name: str, angle, duration, radius, ke, Inter):
+    speed = angle * radius / duration
+
+    ed = ElDef.build(
+        Loop,
+        name,
+        [speed, angle, radius, 0, ke],
+    )
+    duration.collectors.add(ed.get_collector("duration"))
+    return ed, ManParms()
+
+
 def rolling_loop(name, speed, radius, angle, roll, ke, Inter):
     ed = ElDef.build(Loop, name, [speed, angle, radius, roll, ke])
     return ed, ManParms()
@@ -52,7 +69,6 @@ def tailslide(name, speed, direction, rate, over_flop, reset_rate, Inter):
 
 
 def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, Inter):
-    
     ed = ElDef.build(
         Snap,
         name,
@@ -70,14 +86,24 @@ def snap(name, rolls, break_angle, rate, speed, break_roll, recovery_roll, Inter
     return ed, ManParms()
 
 
-def spin(name, turns, rate, break_angle, speed, nd_turns, recovery_turns, reversible, Inter):
-
+def spin(
+    name, turns, rate, break_angle, speed, nd_turns, recovery_turns, reversible, Inter
+):
     mps = ManParms([])
     _turns = mps.parse_rolls(turns, name, reversible, True)
 
     height = Spin.get_height(speed, rate, turns, nd_turns, recovery_turns)
     ed = ElDef.build(
-        Spin, name, [speed, height, _turns if isinstance(_turns, ItemOpp) else _turns[0], break_angle, nd_turns, recovery_turns]
+        Spin,
+        name,
+        [
+            speed,
+            height,
+            _turns if isinstance(_turns, ItemOpp) else _turns[0],
+            break_angle,
+            nd_turns,
+            recovery_turns,
+        ],
     )
 
     if isinstance(rate, ManParm):
@@ -113,12 +139,23 @@ def roll_combo(
 ) -> ElDefs:
     """This creates a set of ElDefs to represent a list of rolls or snaps
     and pauses between them if mode==f3a it does not create pauses when roll direction is reversed
+    if mode==iac or mode==imac it will create a new manparm for point length
+    if mode==iac point_length is taken as duration
     """
     eds = ElDefs()
-
+    mps = ManParms()
     rvs = [r.a.value[r.item] for r in rolls] if isinstance(rolls, list) else rolls.value
 
     rolltypes = parse_rolltypes(rolltypes, len(rvs))
+
+    if (mode == "iac" or mode == "imac") and isinstance(pause_length, ManParm):
+        pause_length = pause_length.copy(
+            name=f"{name}_point_{'duration' if mode == 'iac' else 'length'}"
+        )
+        mps.add(pause_length)
+        partial_rate = partial_rate.copy(name=f"{name}_roll_rate")
+        mps.add(partial_rate)
+        full_rate = partial_rate
 
     for i, r in enumerate(rvs):
         if rolltypes[i] == "r":
@@ -145,10 +182,17 @@ def roll_combo(
                 )[0]
             )
 
-        if i < len(rvs) - 1 and (mode == "imac" or np.sign(r) == np.sign(rvs[i + 1])):
-            eds.add(line(f"{name}_{i + 1}_pause", speed, pause_length, Inter))
+        if i < len(rvs) - 1 and (
+            mode in ["imac", "iac"] or np.sign(r) == np.sign(rvs[i + 1])
+        ):
+            if mode == "iac":
+                eds.add(
+                    line_duration(f"{name}_{i + 1}_pause", speed, pause_length, Inter)
+                )
+            else:
+                eds.add(line(f"{name}_{i + 1}_pause", speed, pause_length, Inter))
 
-    return eds, ManParms()
+    return eds, mps
 
 
 def pad(speed, line_length, eds: ElDefs, Inter):
@@ -268,7 +312,7 @@ def loopmaker(
     mode,
     Inter,
 ):
-    """Create a set of ElDefs to represent a loops with integrated rolls"""
+    """Create a set of ElDefs to represent a loop with integrated rolls"""
     if isinstance(ke, bool):
         ke = 0 if not ke else np.pi / 2
     sign = angle.sign() if isinstance(angle, Opp) else np.sign(angle)
@@ -286,11 +330,14 @@ def loopmaker(
     if isinstance(rolls, ItemOpp) and rollangle == angle:
         ed = rolling_loop(name, speed, radius, angle, rolls, ke, Inter)[0]
         return ed, mps
-    if pd.api.types.is_list_like(rolls) and all([isinstance(r, ItemOpp) for r in rolls]):
-        assert all(r.a.name == rolls[0].a.name for r in rolls), "All rolls must refer to same ManParm if list of ManParms"
+    if pd.api.types.is_list_like(rolls) and all(
+        [isinstance(r, ItemOpp) for r in rolls]
+    ):
+        assert all(r.a.name == rolls[0].a.name for r in rolls), (
+            "All rolls must refer to same ManParm if list of ManParms"
+        )
         indeces = [r.item for r in rolls]
         rolls = rolls[0].a
-        
 
     eds = ElDefs()
 
@@ -330,8 +377,10 @@ def loopmaker(
             has_pause = np.concatenate([np.diff(np.sign(rvs)), np.ones(1)]) == 0
         else:
             has_pause = np.concatenate([np.full(len(rvs) - 1, True), np.full(1, False)])
-
-        pause_angle = sign * pause_length / internal_rad
+        if mode=="iac":
+            pause_angle = sign * pause_length * speed / internal_rad
+        else:
+            pause_angle = sign * pause_length / internal_rad
 
         if np.sum(has_pause) == 0:
             remaining_rollangle = rollangle
@@ -392,6 +441,8 @@ def loopmaker(
                         Inter,
                     )[0]
                 )
+                if mode=="iac":
+                    pause_length.collectors.add(eds[-1].get_collector("duration"))
 
         ke = ke - rolls[i + indeces[-1] + 1]
 

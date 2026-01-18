@@ -9,7 +9,7 @@ from typing import ClassVar, Literal
 
 @dataclass
 class Line(Element):
-    parameters: ClassVar[list[str]] = Element.parameters + "length,roll,rate".split(",")
+    parameters: ClassVar[list[str]] = Element.parameters + "length,roll,rate,duration".split(",")
     length: float
     roll: float = 0
 
@@ -20,6 +20,10 @@ class Line(Element):
     @property
     def rate(self):
         return self.roll * self.speed / self.length
+
+    @property
+    def duration(self):
+        return self.length / self.speed 
 
     def create_template(self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3) -> State:
         """construct a State representing the judging frame for this line element

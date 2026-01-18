@@ -15,7 +15,7 @@ class Loop(Element):
     """
 
     parameters: ClassVar[list[str]] = (
-        Element.parameters + "radius,angle,roll,ke,rate".split(",")
+        Element.parameters + "radius,angle,roll,ke,rate,duration".split(",")
     )
     angle: float
     radius: float
@@ -28,7 +28,7 @@ class Loop(Element):
             + ("" if self.roll==0 else f", roll = {np.degrees(self.roll):0.0f}°") \
             + ("" if self.ke % np.pi==0 else f", ke = {np.degrees(self.ke):0.0f}°") \
 
-#.replace(", ", "<br>")
+
     @property
     def diameter(self):
         return self.radius * 2
