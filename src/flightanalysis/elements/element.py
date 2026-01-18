@@ -104,7 +104,7 @@ class Element:
     def match_intention(self, itrans: g.Transformation, flown: State) -> Self:
         raise Exception("Not available on base class")
 
-    def tag(self, tp: State) -> set[ElTag]:
+    def tag(self, tp: State, lastel: Element | None, lasttp: State | None) -> set[ElTag]:
         tag = {getattr(ElTag, self.__class__.__name__.upper())}
 
         wvel = tp.wvel
@@ -126,6 +126,11 @@ class Element:
                 tag.add(ElTag.VERTICALEXIT)
             elif g.point.is_perpendicular(wvel[-1], g.PZ())[0]:
                 tag.add(ElTag.HORIZONTALEXIT)
+        
+        if self.__class__.__name__ == "Loop" and lastel is not None and lastel.__class__.__name__ == "Loop":
+            if np.sign(self.angle) == np.sign(lastel.angle):
+                tag.add(ElTag.LOOPSEQUENCE)
+
         return tag
 
 class Elements(Collection):
@@ -209,5 +214,12 @@ class Elements(Collection):
 
         return elms, {el.uid: tp for el, tp in zip(elms, templates[1:])}
 
-    def generate_tags(els: Elements, tps: dict[str, State]) -> dict[str, set[ElTag]]:
-        return [v.tag(tps[k]) for k, v in els.items()]
+    def generate_tags(els: Elements, tps: dict[str, State]) -> list[set[ElTag]]:
+        tags: list[set[ElTag]] = []
+        for i, (k, v) in enumerate(els.items()):
+            tags.append(v.tag(
+                tps[k],
+                els[list(els.keys())[i-1]] if i>0 else None,
+                tps[ list(els.keys())[i-1] ] if i>0 else None
+            ))
+        return tags

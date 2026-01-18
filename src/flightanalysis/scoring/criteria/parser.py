@@ -16,27 +16,33 @@ def parse_criteria_csv(file: str | Path, lookups: NamedTuple):
     for grpname, grp in df.groupby("group"):
         criteria[grpname] = {}
         for row in grp.itertuples(index=False):
-            args = []
-            for arg in row.args.split(","):
-                if len(arg.strip()):
-                    args.append(tryval(arg.strip()))
-                else:
-                    args.append(None)
+            try:
+                args = []
+            
+                for arg in row.args.split(","):
+                    if len(arg.strip()):
+                        args.append(tryval(arg.strip()))
+                    else:
+                        args.append(None)
 
-            while len(args) and args[-1] is None:
-                args.pop()
+                while len(args) and args[-1] is None:
+                    args.pop()
 
-            lookup = (
-                free
-                if row.lookup == "free"
-                else getattr(getattr(lookups, grpname), row.lookup)
-            )
+                lookup = (
+                    free
+                    if row.lookup == "free"
+                    else getattr(getattr(lookups, grpname), row.lookup)
+                )
 
-            criteria[grpname][row.name] = subclasses[row.kind](
-                row.name,
-                lookup,
-                *args,
-            )
+                criteria[grpname][row.name] = subclasses[row.kind](
+                    row.name,
+                    lookup,
+                    *args,
+                )
+            except Exception as ex:
+                raise Exception(
+                    f"Error parsing criteria {row.name} of group {grpname} from file {file}"
+                ) from ex
     return namedtuple("Criteria", criteria.keys())(
         *[namedtuple(k, v.keys())(**v) for k, v in criteria.items()]
     )

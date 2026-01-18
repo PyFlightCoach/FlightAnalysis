@@ -14,7 +14,6 @@ from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from inspect import getfullargspec
 from schemas.positioning import MBTags
-import numpy as np
 import pandas as pd
 
 from flightanalysis.definition import (

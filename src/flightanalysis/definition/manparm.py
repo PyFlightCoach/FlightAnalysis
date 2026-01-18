@@ -169,14 +169,14 @@ class ManParm(Opp):
     def kind(self):
         return self.criteria.__class__.__name__
 
-    def copy(self):
+    def copy(self, **kwargs) -> ManParm:
         return ManParm(
-            name=self.name,
-            criteria=self.criteria,
-            defaul=self.defaul,
-            unit=self.unit,
-            collectors=self.collectors.copy(),
-            visibility=self.visibility,
+            name=kwargs.get("name", self.name),
+            criteria=kwargs.get("criteria", self.criteria),
+            defaul=kwargs.get("defaul", self.defaul),
+            unit=kwargs.get("unit", self.unit),
+            collectors=kwargs.get("collectors", self.collectors.copy()),
+            visibility=kwargs.get("visibility", self.visibility),
         )
 
     def list_parms(self):
