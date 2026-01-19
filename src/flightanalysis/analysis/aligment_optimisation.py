@@ -25,6 +25,8 @@ def _optimise_split(
     itrans: g.Transformation,
     fl: State,
     min_len: int = 3,
+    step_size: int = 1,
+    include_inter: bool = True,
 ) -> int:
     def score_split(steps: int) -> float:
         new_fl = fl.step_label("element", eln1, steps, fl.t, min_len)
@@ -37,24 +39,25 @@ def _optimise_split(
             mdef.eds[eln2], manoeuvre.elements[eln2], g.Transformation(tp1[-1].att, el2fl[0].pos), el2fl
         )
 
-        oman = Manoeuvre.from_all_elements(
-            manoeuvre.uid,
-            Elements(manoeuvre.elements.data | {oel1.uid: oel1, oel2.uid: oel2}),
-        )
+        if include_inter:
+            oman = Manoeuvre.from_all_elements(
+                manoeuvre.uid,
+                Elements(manoeuvre.elements.data | {oel1.uid: oel1, oel2.uid: oel2}),
+            )
 
-        omdef = mdef.update_defaults(oman)
+            omdef = mdef.update_defaults(oman)
 
-        inter = omdef.mps.collect(
-            oman,
-            State.stack(templates | {oel1.uid: tp1, oel2.uid: tp2}, "element"),
-            mdef.box,
-        )
+            inter = omdef.mps.collect(
+                oman,
+                State.stack(templates | {oel1.uid: tp1, oel2.uid: tp2}, "element"),
+                mdef.box,
+            )
 
         logger.debug(f"split {steps} {res1.total + res2.total:.2f}")
         logger.debug(
-            f"e1={oel1.uid}, e2={oel2.uid}, steps={steps}, intra={res1.total + res2.total:.2f}, inter={inter.total}"
+            f"e1={oel1.uid}, e2={oel2.uid}, steps={steps}, intra={res1.total + res2.total:.2f}, inter={inter.total if include_inter else 'not included'}"
         )
-        return res1.total + res2.total + inter.total
+        return res1.total + res2.total + (inter.total if include_inter else 0)
 
     dgs = {0: score_split(0)}
 
@@ -63,7 +66,7 @@ def _optimise_split(
         new_l1 = len(getattr(fl.element, eln1)) + stps + 1
         return new_l2 > min_len and new_l1 > min_len
 
-    steps = int(len(getattr(fl.element, eln1)) > len(getattr(fl.element, eln2))) * 2 - 1
+    steps = step_size * (int(len(getattr(fl.element, eln1)) > len(getattr(fl.element, eln2))) * 2 - 1)
 
     if not check_steps(steps):
         return 0
@@ -74,7 +77,7 @@ def _optimise_split(
             steps = -steps
         else:
             dgs[steps] = new_dg
-            steps += np.sign(steps)
+            steps += np.sign(steps) * step_size
     except Exception:
         steps = -steps
 
@@ -83,7 +86,7 @@ def _optimise_split(
             new_dg = score_split(steps)
             if new_dg < list(dgs.values())[-1]:
                 dgs[steps] = new_dg
-                steps += np.sign(steps)
+                steps += np.sign(steps) * step_size
             else:
                 break
         except ValueError:
@@ -94,7 +97,7 @@ def _optimise_split(
     return out_steps
 
 
-def optimise_alignment(
+def optimise_alignment_old(
     flown: State, mdef: ManDef, manoeuvre: Manoeuvre, templates: dict[str, State]
 ) -> State:
     elns = list(mdef.eds.data.keys())
@@ -130,4 +133,39 @@ def optimise_alignment(
         count += 1
         logger.debug(f"pass {count}, {len(padjusted)} elements adjusted:\n{padjusted}")
 
+    return flown
+
+def optimise_alignment(
+    flown: State, mdef: ManDef, manoeuvre: Manoeuvre, templates: dict[str, State]
+) -> State:
+
+    elns = list(mdef.eds.data.keys())
+
+    
+
+    for eln1, eln2 in zip(elns[:-1], elns[1:]):
+        for step_size in [5, 1]:
+            itrans = g.Transformation(
+                templates[eln1][0].att,
+                flown.element[eln1][0].pos,
+            )
+            steps = _optimise_split(
+                mdef,
+                manoeuvre,
+                templates,
+                eln1,  # flown.element[eln1][0],
+                eln2,  # flown.element[eln2][0],
+                itrans,
+                flown,
+                3,
+                step_size,
+                True
+            )
+
+            if not steps == 0:
+                logger.debug(
+                    f"Adjusting split between {eln1} and {eln2} by {steps} steps"
+                )
+                flown = flown.step_label("element", eln1, steps, flown.t, 3)
+            
     return flown

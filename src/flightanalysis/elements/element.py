@@ -114,8 +114,12 @@ class Element:
 
         if all(g.point.is_either_parallel(wvel, g.PZ())):
             tag.add(ElTag.VERTICAL)
+            tag.add(ElTag.VERTICALEXIT)
+            tag.add(ElTag.VERTICALENTRY)
         elif all(g.point.is_perpendicular(wvel, g.PZ())):
             tag.add(ElTag.HORIZONTAL)
+            tag.add(ElTag.HORIZONTALEXIT)
+            tag.add(ElTag.HORIZONTALENTRY)
         else:
             if g.point.is_either_parallel(wvel[0], g.PZ())[0]:
                 tag.add(ElTag.VERTICALENTRY)
@@ -128,6 +132,7 @@ class Element:
                 tag.add(ElTag.HORIZONTALEXIT)
         
         if self.__class__.__name__ == "Loop" and lastel is not None and lastel.__class__.__name__ == "Loop":
+            # TODO to be complete this should consider the rolls and ke angles too
             if np.sign(self.angle) == np.sign(lastel.angle):
                 tag.add(ElTag.LOOPSEQUENCE)
 

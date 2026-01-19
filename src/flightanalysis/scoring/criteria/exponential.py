@@ -14,7 +14,7 @@ class Exponential:
 
     def __call__(self, value, limits=True):
         val = self.factor * value**self.exponent
-        return np.minimum(val, self.limit) if self.limit and limits else val
+        return val # np.minimum(val, self.limit) if self.limit and limits else val
 
     def __eq__(self, other):
         if not isinstance(other, Exponential):
