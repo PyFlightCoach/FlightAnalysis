@@ -6,7 +6,7 @@ from flightdata.base import Collection
 from ..results import Results
 from typing import Any, NamedTuple
 from pathlib import Path
-from ..reffuncs import measures as me, selectors as se, smoothers as sm
+from flightanalysis.scoring.reffuncs import measures as me, selectors as se, smoothers as sm
 from flightanalysis.base.utils import parse_csv
 from flightanalysis.elements.tags import DGTags
 
