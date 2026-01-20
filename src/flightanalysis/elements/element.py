@@ -109,7 +109,7 @@ class Element:
 
         wvel = tp.wvel
 
-        if hasattr(self, "roll") and abs(self.roll) > 0:
+        if (ElTag.LINE in tag or ElTag.LOOP in tag) and abs(self.roll) > 0:
             tag.add(ElTag.ROLL)
 
         if all(g.point.is_either_parallel(wvel, g.PZ())):
