@@ -3,15 +3,13 @@ from flightdata import State
 
 
 measures = RFuncBuilders({})
-smoothers = RFuncBuilders({})
 selectors = RFuncBuilders({})
-visor = RFuncBuilders({})
+visors = RFuncBuilders({})
 
 rfuncs = dict(
     measures=measures,
-    smoothers=smoothers,
     selectors=selectors,
-    visor=visor,
+    visors=visors,
 )
 
 @selectors.add("The last data point")

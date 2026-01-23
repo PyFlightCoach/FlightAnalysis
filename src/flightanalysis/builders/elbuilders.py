@@ -7,7 +7,7 @@ from flightanalysis.definition import ItemOpp, Opp, maxopp
 from flightanalysis.definition.collectors import Collectors
 from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm, ManParms
 from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn, TailSlide
-from flightanalysis.scoring import visor
+from flightanalysis.scoring import visors
 from flightanalysis.scoring.criteria.inter.comparison import free_comparison
 
 
@@ -213,8 +213,8 @@ def pad(speed, line_length, eds: ElDefs, Inter):
         None,
         "m",
         Collectors([e1.get_collector("length"), e3.get_collector("length")]),
-        visor.scale()
-        if "scale" in visor.funcs
+        visors.scale()
+        if "scale" in visors.funcs
         else lambda fl, *args, **kwargs: np.ones(len(fl)),
     )
 
