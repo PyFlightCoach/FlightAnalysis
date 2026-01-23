@@ -1,7 +1,5 @@
+from __future__ import annotations
 import numpy as np
-from typing import NamedTuple
-from collections import namedtuple
-from pathlib import Path
 
 from .exponential import Exponential, free
 from .criteria import Criteria
@@ -13,6 +11,7 @@ from .intra.peak import Peak, Trough, AbsPeak, AbsTrough
 from .intra.single import Limit, Single, Threshold
 from .intra.deviation import Deviation, Total
 from .criteria_group import CriteriaGroup
+
 
 type AnyInterCriteria = Combination | Comparison
 

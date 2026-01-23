@@ -6,11 +6,13 @@ from dataclasses import dataclass, field
 from flightanalysis.base.utils import all_subclasses
 
 
-
 @dataclass
 class Criteria:
     name: str
     lookup: Exponential = field(default_factory=lambda: free)
+    
+    def describe(self, unit: str = "") -> str:
+        return f"{self.__class__.__name__} Criteria"
 
     def prepare(self, value):
         return value
@@ -35,7 +37,7 @@ class Criteria:
                 if "comparison" in data:
                     data.pop("comparison")
                 return Crit(
-                    name,
+                    name=name,
                     lookup=Exponential(**lookup),
                     **data,
                 )

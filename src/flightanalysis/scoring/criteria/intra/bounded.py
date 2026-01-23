@@ -13,9 +13,22 @@ class Bounded(Criteria):
     The downgrade is the average distance from the bound multiplied by the ratio
     of the group width to the total width and by the average visibility of the group.
     """
-
     min_bound: float = None  # values below the min bound will be downgraded
     max_bound: float = None  # values above the max bound will be downgraded
+    
+    def describe(self, unit: str = "") -> str:
+        region=""
+        if self.min_bound is not None and self.max_bound is not None:
+            if self.min_bound > self.max_bound:
+                region = f"{super().describe()}: Regions of the sample below {self.min_bound}{unit}, or above than {self.max_bound}{unit} are downgraded." 
+            else:
+                region =f"{super().describe()}: Regions of the sample between {self.max_bound}{unit} and {self.min_bound}{unit} are downgraded." 
+        elif self.min_bound is not None:
+            region = f"{super().describe()}: Regions of the sample below {self.min_bound}{unit} are downgraded."
+        elif self.max_bound is not None:
+            region = f"{super().describe()}: Regions of the sample above {self.max_bound}{unit} are downgraded."
+        
+        return f"{super().describe()}: {region} Downgrades are assigned to each exceedence based on the average distance from the bound(s) and the ratio of its width to the total sample width."
 
     def __call__(self, vs: npt.NDArray, limits=True):
         """each downgrade corresponds to a group of values outside the bounds, ids

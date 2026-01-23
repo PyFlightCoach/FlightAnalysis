@@ -120,9 +120,9 @@ class DownGrade(DG):
             istart = int(np.ceil(oids[0]))
             iend = int(np.ceil(oids[-1]) + 1)
 
-            measurement: Measurement = self.measure(Elements([el]), fl, tp, **(mkwargs or {}))[istart:iend]
+            measurement: Measurement = self.measure(Elements([el]), fl, tp, **(mkwargs or {}))
 
-            raw_sample = self.create_sample(measurement)
+            raw_sample = self.create_sample(measurement[istart:iend])
 
             sample = self.smoothing(raw_sample, fl.dt, el, **(smkwargs or {}))
 

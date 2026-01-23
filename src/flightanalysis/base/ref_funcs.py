@@ -1,8 +1,12 @@
 from __future__ import annotations
+
+from numbers import Number
+import re
 from dataclasses import dataclass, field
-from typing import Callable, Any
-from flightdata.base import Collection
+from typing import Any, Callable
+
 import numpy as np
+from flightdata.base import Collection
 
 
 def tryval(val):
@@ -56,9 +60,25 @@ class RefFunc:
             raise ValueError(f"Could not parse RefFunc from string: {data}") from e
 
     def describe(self) -> str:
+        #Search for {} enclosing a valid python variable, optionally followed by : and a unit (any characters except })
+        template_search = re.compile(r"\{([_a-zA-Z]+[_a-zA-Z0-9]*)+(:[^\}]*)?\}")
         description = self.description
-        for k, v in self.preset_kwargs.items():
-            description = description.replace(f"{{{k}}}", str(v))
+        for match in template_search.finditer(self.description):
+            template = match.group(0)
+            variable = match.group(1)
+            unit = match.group(2)[1:] if match.group(2) else None
+            if variable in self.preset_kwargs:
+
+                value = self.preset_kwargs[variable]
+                if unit == "rad":
+                    value = np.degrees(value)
+                    unit = "°"
+                elif unit == "deg":
+                    unit = "°"
+                if isinstance(value, Number):
+                    value = f"{value:.2f}"
+                description = description.replace(template, f"{value}{unit if unit else ''}")
+                
         return description
 
 class RefFuncs(Collection):
