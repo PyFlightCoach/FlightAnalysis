@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from typing import Literal
 
-def visibility(val, factor: float, limit: float, kind: Literal["deviation", "value"] = 'value'):
+def apply_visibility(val, factor: float, limit: float, kind: Literal["deviation", "value"] = 'value'):
     """factor between 0 and 1"""
 
     b = 2.2 - factor * 1.2
@@ -19,13 +19,3 @@ def visibility(val, factor: float, limit: float, kind: Literal["deviation", "val
         raise ValueError(f'kind {kind} not recognized')
 
 
-
-if __name__=='__main__':
-    import plotly.express as px
-
-
-    x = np.linspace(0, 20, 100)
-    px.line(pd.DataFrame({k: visibility(x, k, 10) for k in np.linspace(0.1,1,9)}, index=x)).show()
-
-    x = np.linspace(0, 2, 100)
-    px.line(pd.DataFrame({k: visibility(x, k, 1) for k in np.linspace(0.1,1,9)}, index=x)).show()
