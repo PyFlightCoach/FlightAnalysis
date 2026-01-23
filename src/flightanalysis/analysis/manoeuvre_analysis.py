@@ -189,13 +189,13 @@ class Analysis:
 
         return replace(self, flown=fl)
 
-    def intra(self):
-        return ElementsResults([ea.intra_score() for ea in self])
+    def intra(self, limits: bool = True):
+        return ElementsResults([ea.intra_score(limits) for ea in self])
 
-    def inter(self):
-        return self.mdef.mps.collect(self.manoeuvre, self.flown, self.mdef.box)
+    def inter(self, limits: bool = True):
+        return self.mdef.mps.collect(self.manoeuvre, self.flown, self.mdef.box, limits)
 
-    def positioning(self):
+    def positioning(self, limits: bool = True):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
     def calculate_score(self, limits: bool = True) -> Self:
