@@ -1,5 +1,4 @@
 from __future__ import annotations
-import unittest
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -32,10 +31,9 @@ class Result:
     """
 
     name: str
-    unit: str  # unit of the measurement
-    measurement: npt.NDArray  # the raw measured data
-    visibility: npt.NDArray  # the visibility of the measurement
-    sample: npt.NDArray  # the selected, visibility weighted sample used for scoring
+    measurement: Measurement  # the raw measured data
+    raw_sample: npt.NDArray | None  # the visibility factored data
+    sample: npt.NDArray  # the smoothed data
     sample_keys: npt.NDArray  # the keys to link the sample to the measurement
     errors: npt.NDArray  # the errors resulting from the comparison
     dgs: npt.NDArray  # downgrades for the errors
@@ -67,9 +65,8 @@ class Result:
     def to_dict(self):
         return dict(
             name=self.name,
-            unit=self.unit,
-            measurement=to_list(self.measurement),
-            visibility=to_list(self.visibility),
+            measurement=self.measurement.to_dict(),
+            raw_sample=to_list(self.raw_sample),
             sample=to_list(self.sample),
             sample_keys=to_list(self.sample_keys),
             errors=to_list(self.errors),
@@ -86,9 +83,10 @@ class Result:
     def from_dict(data) -> Result:
         return Result(
             data["name"],
-            np.array(data["measurement"]),
-            data["unit"],
-            np.array(data["visibility"]),
+            Measurement.from_dict(data["measurement"])
+            if isinstance(data["measurement"], dict)
+            else np.array(data["measurement"]),
+            np.array(data["raw_sample"]) if "raw_sample" in data else None,
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
             np.array(data["errors"]),
@@ -115,8 +113,9 @@ class Result:
             np.column_stack(
                 [
                     self.keys,
-                    self.visibility,
-                    self.measurement,
+                    self.measurement.visibility,
+                    self.measurement.value,
+                    self.raw_sample,
                     self.sample,
                     self.errors,
                     self.dgs,
@@ -126,6 +125,7 @@ class Result:
                 "collector",
                 "visibility",
                 "measurement",
+                "raw_sample",
                 "sample",
                 "error",
                 "downgrade",
@@ -137,16 +137,16 @@ class Result:
         for i in range(len(self.measurement)):
             data.append(dict(
                 name=f"{i+1}",
-                measurement=self.measurement[i],
+                measurement=self.measurement.value[i],
                 error = self.errors[i] + 1,
-                visibility = self.visibility[i],
+                visibility = self.measurement.visibility[i],
                 downgrade = self.dgs[i],
             ))
         return pd.DataFrame(data).T
 
     @property
     def plot_f(self):
-        return np.degrees if self.unit.find("rad") >= 0 else lambda x: x
+        return np.degrees if self.measurement.unit == "rad" else lambda x: x
     
 
     def measurement_trace(self, xvs=None, **kwargs):
@@ -158,7 +158,7 @@ class Result:
                 **(
                     dict(
                         x=x,
-                        y=self.plot_f(self.measurement),
+                        y=self.plot_f(self.measurement.value),
                         name="Measurement",
                         mode="lines",
                         **kwargs,
@@ -173,7 +173,7 @@ class Result:
                         **(
                             dict(
                                 x=x,
-                                y=self.plot_f(self.measurement)[self.sample_keys],
+                                y=self.plot_f(self.measurement.value)[self.sample_keys],
                                 mode="lines",
                                 name="Selected",
                                 line=dict(color="blue", width=1, dash="solid"),
@@ -191,6 +191,24 @@ class Result:
         import plotly.graph_objects as go
 
         return [
+            *(
+                [
+                    go.Scatter(
+                        **(
+                            dict(
+                                x=self.sample_keys if xvs is None else xvs,
+                                y=self.plot_f(self.raw_sample),
+                                mode="lines",
+                                name="Visible Sample",
+                                line=dict(width=1, color="black", dash="dash"),
+                            )
+                            | kwargs
+                        )
+                    )
+                ]
+                if self.raw_sample is not None
+                else []
+            ),
             go.Scatter(
                 **(
                     dict(
@@ -234,7 +252,7 @@ class Result:
             **(
                 dict(
                     x=self.sample_keys if xvs is None else xvs,
-                    y=self.visibility,
+                    y=self.measurement.visibility,
                     mode="lines",
                     name="Visibility",
                     yaxis="y2",
@@ -266,7 +284,7 @@ class Result:
                 legend=dict(orientation="h", x=0, y=1.4, yanchor="top"),
                 margin=dict(t=10, r=90, b=90, l=90),
                 xaxis=dict(visible=True, title=xtitle, range=[0, xvals[-1]]),
-                yaxis=dict(title=f"Measurement ({self.unit.replace("rad", "degrees")})"),
+                yaxis=dict(title=f"Measurement ({self.measurement.unit.replace("rad", "degrees")})"),
             ),
             data=self.traces(np.array(get_value(xvals, self.sample_keys))),
         )

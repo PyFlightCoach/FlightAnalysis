@@ -13,7 +13,7 @@ def get_score(
 ) -> tuple[Results, g.Transformation]:
     el: AnyElement = el.match_intention(itrans, fl)
     tp = el.create_template(State.from_transform(itrans), fl)
-    return ed.dgs.apply(el, fl, tp), el, tp  # tp[-1].att
+    return ed.dgs.apply(el, fl, tp, False), el, tp  # tp[-1].att
 
 
 def _optimise_split(

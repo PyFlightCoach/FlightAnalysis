@@ -26,7 +26,7 @@ from flightanalysis.elements import Elements, AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.downgrade import DownGrades
-from flightanalysis.elements.tags import ElTag
+from flightanalysis.elements.tags import TagCheck, ElTag
 from . import ElDef, ElDefs, ManParms
 
 
