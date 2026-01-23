@@ -33,9 +33,6 @@ class RefFunc:
     preset_kwargs: dict[str, Any] = field(default_factory=dict())
     description: str = ""
 
-    def __getattr__(self, name):
-        return getattr(self.method, name)
-
     def __call__(self, *args, **kwargs):
         return self.method(*args, **kwargs, **self.preset_kwargs)
 
@@ -73,11 +70,11 @@ class RefFunc:
             if variable in self.preset_kwargs:
 
                 value = self.preset_kwargs[variable]
-                if unit.find("rad")>=0:
+                if unit == "rad":
                     value = np.degrees(value)
-                    unit = re.sub(r"rad(ian)?(s)?", "°", unit)
-                elif unit.find("deg")>=0:
-                    unit = re.sub(r"deg(ree)?(s)?", "°", unit)
+                    unit = "°"
+                elif unit == "deg":
+                    unit = "°"
                 if isinstance(value, Number):
                     value = f"{value:.2f}"
                 description = description.replace(template, f"{value}{unit if unit else ''}")
