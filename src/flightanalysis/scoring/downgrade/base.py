@@ -3,7 +3,7 @@ from __future__ import annotations
 from flightanalysis.elements.tags import DGTags
 from dataclasses import dataclass
 from typing import ClassVar, Any
-from ..reffuncs import measures as me, selectors as se, smoothers as sm
+from ..reffuncs import measures as me, selectors as se
 from ..criteria import Criteria
 
 
@@ -27,7 +27,6 @@ class DG:
                 name=data["name"],
                 tags=tags,
                 measure=me.parse(data["measure"]),
-                smoothers=sm.parse(data["smoothers"]),
                 selectors=se.parse(data["selectors"]),
                 criteria=Criteria.from_dict(data["criteria"]),
             )

@@ -13,10 +13,9 @@ from geometry.utils import apply_index_slice
 
 from flightanalysis.base.ref_funcs import RefFunc, RefFuncs
 
-from ..measurement import Measurement
-from ..reffuncs import measures as me, selectors as se, smoothers as sm
+from ..reffuncs import measures as me, selectors as se, visors as vi
 from ..results import Result
-from ..visibility import visibility
+from ..visibility import apply_visibility
 
 from .base import DG
 
@@ -24,19 +23,18 @@ from .base import DG
 @dataclass
 class DownGrade(DG):
     """This is for Intra scoring, it sits within an El and defines how errors should be measured and the criteria to apply
-    measure - a Measurement constructor
+    measure - takes a measurement of the flown data 
+    visor - estimate of the visibility of the measurement
+    selectors - a set of functions that extract a region of interest from the measurement
     criteria - takes a Measurement and calculates the score
-    display_name - the name to display in the results
-    selector - the selector to apply to the measurement before scoring
     """
-
     measure: RefFunc
-    smoothers: RefFuncs
+    visor: RefFunc
     selectors: RefFuncs
     criteria: AnyIntraCriteria
-
+    
     def __repr__(self):
-        return f"DownGrade({self.name}, {str(self.measure)}, {str(self.smoothers)}, {str(self.selectors)}, {str(self.criteria)})"
+        return f"DownGrade({self.name}, {str(self.measure)}, {str(self.visor)}, {str(self.selectors)}, {str(self.criteria)})"
 
     def rename(self, name: str):
         return replace(self, name=name)
@@ -46,9 +44,10 @@ class DownGrade(DG):
             name=self.name,
             tags=self.tags.to_dict() if self.tags else None,
             measure=str(self.measure),
-            smoothers=self.smoothers.to_list(),
+            visor=str(self.visor),
             selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(criteria_names),
+            unit=self.unit,
         )
 
     def select(self, fl: State, tp: State, **kwargs) -> Tuple[np.ndarray, State, State]:
@@ -69,17 +68,17 @@ class DownGrade(DG):
         except Exception as e:
             raise Exception(f"Selector: {e}") from e
 
-    def create_sample(self, measurement: Measurement) -> npt.NDArray:
+    def create_sample(self, measurement: npt.NDArray, visibility: npt.NDArray) -> npt.NDArray:
         """create a sample by reducing the measured error to account for the visibility weighting."""
         try:
             if DownGrade.ENABLE_VISIBILITY:
                 if isinstance(self.criteria, Deviation):
-                    value = measurement.value - 1
+                    value = measurement - 1
                 else:
-                    value = measurement.value
-                sample = visibility(
+                    value = measurement
+                sample = apply_visibility(
                     self.criteria.prepare(value),
-                    measurement.visibility,
+                    visibility,
                     self.criteria.lookup.error_limit,
                     "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
                 )
@@ -89,50 +88,36 @@ class DownGrade(DG):
                     return sample
 
             else:
-                return self.criteria.prepare(measurement.value)
+                return self.criteria.prepare(measurement)
         except Exception as e:
             raise Exception(f"Creating sample: {e}") from e
         
-    def smoothing(
-        self, sample: npt.NDArray, dt: float, el: str, **kwargs
-    ) -> npt.NDArray:
-        """Apply the smoothers to the sample"""
-        try:
-            for _sm in self.smoothers:
-                sample = _sm(sample, dt, el, **kwargs)
-            return sample
-        except Exception as e:
-            raise Exception(f"Smoothing: {e}") from e
-
     def __call__(
         self,
         el,
         fl: State,
         tp: State,
-        limits=True,
-        mkwargs: dict = None,
-        smkwargs: dict = None,
-        sekwargs: dict = None,
     ) -> Result:
         try:
-            oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
+            oids, fl, tp = self.select(fl, tp)
 
             istart = int(np.ceil(oids[0]))
             iend = int(np.ceil(oids[-1]) + 1)
 
-            measurement: Measurement = self.measure(Elements([el]), fl, tp, **(mkwargs or {}))
+            measurement = self.measure(Elements([el]), fl, tp)
 
-            raw_sample = self.create_sample(measurement[istart:iend])
-
-            sample = self.smoothing(raw_sample, fl.dt, el, **(smkwargs or {}))
+            visibility: npt.NDArray = self.visor(Elements([el]), fl, tp)
+            
+            sample = self.create_sample(measurement[istart:iend], visibility)
 
             return Result(
                 self.name,
+                self.measure.unit,
                 measurement,
-                raw_sample,
+                visibility,
                 sample,
                 oids,
-                *self.criteria(sample, limits),
+                *self.criteria(sample),
                 self.criteria,
             )
         except Exception as e:
@@ -141,9 +126,8 @@ class DownGrade(DG):
 def dg(
     name: str,
     meas: RefFunc,
-    sms: RefFunc | list[RefFunc],
     sels: RefFunc | list[RefFunc],
     criteria: AnyIntraCriteria,
     tags: DGTags,
 ):
-    return DownGrade(name, tags, meas, RefFuncs(sms), RefFuncs(sels), criteria)
+    return DownGrade(name, tags, meas, RefFuncs(sels), criteria)
