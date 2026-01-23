@@ -12,7 +12,7 @@ class Exponential:
     exponent: float
     limit: float | None = None
 
-    def __call__(self, value, limits=True):
+    def __call__(self, value):
         val = self.factor * value**self.exponent
         return val # np.minimum(val, self.limit) if self.limit and limits else val
 
