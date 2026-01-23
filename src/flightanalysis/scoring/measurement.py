@@ -1,10 +1,14 @@
 from __future__ import annotations
-from flightdata import State
+
+from dataclasses import dataclass
+from typing import Callable
+
 import geometry as g
 import numpy as np
-import pandas as pd
 import numpy.typing as npt
-from dataclasses import dataclass
+from flightdata import State
+
+from flightanalysis.elements import Elements
 
 
 @dataclass
@@ -25,7 +29,7 @@ class Measurement:
             self.unit,
             self.direction[sli],
             self.visibility[sli],
-            self.info
+            self.info,
         )
 
     def to_dict(self):
@@ -35,7 +39,7 @@ class Measurement:
             direction=self.direction.to_dicts(),
             visibility=self.visibility.tolist(),
             keys=list(self.keys) if self.keys is not None else None,
-            info=self.info
+            info=self.info,
         )
 
     def __repr__(self):
@@ -51,8 +55,10 @@ class Measurement:
             data["unit"],
             g.Point.from_dicts(data["direction"]),
             np.array(data["visibility"]),
-            np.array(data["keys"]) if 'keys' in data and data["keys"] is not None else None,
-            info=data.get("info", None)
+            np.array(data["keys"])
+            if "keys" in data and data["keys"] is not None
+            else None,
+            info=data.get("info", None),
         )
 
     @staticmethod
@@ -65,15 +71,28 @@ class Measurement:
 
         with np.errstate(divide="ignore", invalid="ignore"):
             res = ((avs > aex) * 2 - 1) * (nom / denom - 1)
-        
+
         res[vs * expected < 0] = -10
-        
+
         return np.nan_to_num(res, 0)
 
 
+@dataclass
+class Measure:
+    unit: str = ""
+    description: str = "Base Measure"
+    measure: Callable[[Elements, State, State], npt.NDArray] = lambda els, fl, tp, **kwargs: np.array([])
+    vis_description: str = "Base Visibility"
+    visor: Callable[[Elements, State, State], tuple[g.Point, npt.NDArray]] = lambda els, fl, tp, **kwargs: (fl.pos, np.ones(len(fl)))
 
     @staticmethod
     def get_axial_direction(tp: State):
         """Proj is a vector in the axial direction for the template ref_frame (tp[0].transform)*"""
-        # proj = g.g.Point(0, np.cos(el.ke), np.sin(el.ke))
-        return g.PX().cross(tp[0].arc_centre()).unit()
+        return g.point.cross(g.PX(), tp[0].arc_centre()).unit()
+    
+
+    def __call__(self, els: Elements, fl: State, tp: State, **kwargs) -> Measurement:
+        info: dict = {}
+        meas = self.measure(els, fl, tp, info, **kwargs)
+        vis = self.visibility(els, fl, tp, info, **kwargs)
+        return Measurement(meas, self.unit, *vis, info=info)

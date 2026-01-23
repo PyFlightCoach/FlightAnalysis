@@ -8,6 +8,10 @@ from typing import Tuple
 
 @dataclass
 class Comparison(Criteria):
+
+    def describe(self, unit: str = "") -> str:
+        return f"{super().describe(unit)}: Used for comparing sequential values for a given parameter. Compares each value to the previous one."
+
     def __call__(self, vs: npt.NDArray, limits: bool=True)-> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         """given an array of values
         returns the errors, downgrades and keys"""

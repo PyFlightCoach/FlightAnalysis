@@ -1,9 +1,12 @@
 from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Literal, Tuple
+
 import numpy as np
 import numpy.typing as npt
+
 from .. import Criteria
-from dataclasses import dataclass
-from typing import Tuple, Literal
 
 
 @dataclass
@@ -13,10 +16,13 @@ class Continuous(Criteria):
     treats each separate increase (peak - trough) as a new error.
     """
 
+    def describe(self, unit: str = "") -> str:
+        return f"{super().describe()}: Downgrades are assigned for each increase in the sample away from zero. Each increase is treated as a separate error, with downgrades assigned based on the height of the increase."
+
     @staticmethod
     def get_peak_locs(arr, rev=False):
         _da = np.diff(np.abs(arr))
-        increasing = (np.sign(_da) > 0) & ( _da != 0)
+        increasing = (np.sign(_da) > 0) & (_da != 0)
         last_downgrade = np.column_stack([increasing[:-1], increasing[1:]])
         peaks = np.sum(last_downgrade.astype(int) * [10, 1], axis=1) == (
             1 if rev else 10
@@ -103,10 +109,15 @@ class Continuous(Criteria):
         # downgrade deltas cant be negative ( if it is negative its because of a different clump)
         dg_increment = np.where(dg_increment > 0, dg_increment, 0)
 
-        return dg_increment.cumsum() if direction == "forward" else dg_increment[::-1].cumsum()[::-1]
+        return (
+            dg_increment.cumsum()
+            if direction == "forward"
+            else dg_increment[::-1].cumsum()[::-1]
+        )
 
     def calculate_increments(
-        self, sample: npt.NDArray, direction: Literal["forward", "backward"]):
+        self, sample: npt.NDArray, direction: Literal["forward", "backward"]
+    ):
         le = self.local_error(sample, direction)
         ldg = self.lookup(le)
         return self.incremental_downgrade(ldg, direction)
@@ -130,6 +141,10 @@ class Continuous(Criteria):
 
 @dataclass
 class ContinuousValue(Continuous):
+
+    def describe(self, unit: str = "") -> str:
+        return f"{super().describe()}: Downgrades are assigned for each change in the sample. Each change is treated as a separate error, with downgrades assigned based on the size of the change."
+
     @staticmethod
     def mistakes(data, peaks, troughs):
         """All changes are downgraded (peaks and troughs)"""

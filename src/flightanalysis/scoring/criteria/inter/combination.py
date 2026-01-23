@@ -31,6 +31,9 @@ class Combination(Criteria):
     come first.
     """
     
+    def describe(self, unit = ""):
+        return super().describe(unit) + ": Used for checking pilot selected parameters align with those defined in the sequence."
+
     def __post_init__(self):
         self.desired = np.array(self.desired)
 
