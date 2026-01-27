@@ -198,10 +198,10 @@ class Analysis:
     def positioning(self):
         return self.mdef.box.score(self.mdef.info, self.flown, self.template)
 
-    def calculate_score(self, limits: bool = True) -> Self:
+    def calculate_score(self) -> Self:
         def fun(group: Literal["inter", "intra", "positioning"]):
             try:
-                return getattr(self, group)(limits)
+                return getattr(self, group)()
             except Exception as e:
                 raise Exception(f"Error calculating {group} scores: {e}") from e
 

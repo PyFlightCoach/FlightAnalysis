@@ -29,12 +29,11 @@ class DownGrade(DG):
     criteria - takes a Measurement and calculates the score
     """
     measure: RefFunc
-    visor: RefFunc
     selectors: RefFuncs
     criteria: AnyIntraCriteria
     
     def __repr__(self):
-        return f"DownGrade({self.name}, {str(self.measure)}, {str(self.visor)}, {str(self.selectors)}, {str(self.criteria)})"
+        return f"DownGrade({self.name}, {str(self.measure)}, {str(self.selectors)}, {str(self.criteria)})"
 
     def rename(self, name: str):
         return replace(self, name=name)
@@ -44,10 +43,8 @@ class DownGrade(DG):
             name=self.name,
             tags=self.tags.to_dict() if self.tags else None,
             measure=str(self.measure),
-            visor=str(self.visor),
             selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(criteria_names),
-            unit=self.unit,
         )
 
     def select(self, fl: State, tp: State, **kwargs) -> Tuple[np.ndarray, State, State]:
@@ -106,13 +103,12 @@ class DownGrade(DG):
 
             measurement = self.measure(Elements([el]), fl, tp)
 
-            visibility: npt.NDArray = self.visor(Elements([el]), fl, tp)
+            visibility: npt.NDArray = self.measure.visor(fl, tp, measurement)
             
-            sample = self.create_sample(measurement[istart:iend], visibility)
+            sample = self.create_sample(measurement.value, visibility)[istart:iend]
 
             return Result(
                 self.name,
-                self.measure.unit,
                 measurement,
                 visibility,
                 sample,

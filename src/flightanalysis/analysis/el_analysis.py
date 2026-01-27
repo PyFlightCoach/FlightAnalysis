@@ -49,10 +49,10 @@ class ElementAnalysis:
     def score_dg(self, dg: str, limits: bool = True) -> Result:
         return self.edef.dgs[dg](self.el, self.fl, self.tp, limits)
 
-    def intra_score(self, limits: bool = True) -> Results:
+    def intra_score(self) -> Results:
         try:
             return self.edef.dgs.apply(
-                self.el, self.fl, self.tp, limits
+                self.el, self.fl, self.tp
             )
         except Exception as e:
             raise Exception(f"{self.el.uid}: {e}") from e

@@ -21,7 +21,7 @@ from flightanalysis.scoring import (
     Result,
     Results,
     Single,
-    visors,
+    inter_visors as visors,
 )
 from . import Collector, Collectors, Opp
 
@@ -126,30 +126,26 @@ class ManParm(Opp):
 
     def get_downgrades(self, els: Elements, state: State, box) -> Result:
         direction, visor = self.collect_vis(els, state, box)
+        
+        measurement = Measurement(
+            np.array([c(els) for c in self.collectors]),
+            direction,
+            self.unit,
+            [str(c) for c in self.collectors],
+        )
 
-        measurement = np.array([c(els) for c in self.collectors])
         visibility = np.array(
             [visor[0]] + [max(va, vb) for va, vb in zip(visor[:-1], visor[1:])]
         )
 
-        Measurement(
-            [c(els) for c in self.collectors],
-            self.unit,
-            direction,
-            np.array(
-                [visor[0]] + [max(va, vb) for va, vb in zip(visor[:-1], visor[1:])]
-            ),
-            [str(c) for c in self.collectors],
-        )
 
-        mistakes, dgs, ids = self.criteria(measurement)
+        mistakes, dgs, ids = self.criteria(measurement.value)
 
         return Result(
             self.name,
-            self.unit,
             measurement,
             visibility,
-            measurement,
+            measurement.value,
             np.arange(len(measurement)),
             mistakes,
             dgs * visibility,

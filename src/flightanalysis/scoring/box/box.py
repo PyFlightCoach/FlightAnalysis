@@ -6,18 +6,16 @@ from geometry.utils import get_index
 from flightanalysis.base.ref_funcs import RefFunc
 from flightanalysis.scoring import (
     Bounded,
-    Single,
     Result,
-    Measurement,
     Criteria,
     Results,
-    measures,
+    box_measures as measures,
 )
 from schemas.maninfo import ManInfo
 from flightdata import State
 from typing import Tuple
 import numpy.typing as npt
-from ..visibility import visibility
+from ..visibility import apply_visibility
 
 T = Tuple[g.Point, npt.NDArray]
 
@@ -138,10 +136,10 @@ class Box:
         res = Results("positioning")
 
         if self.centre_dg and len(info.centre_points) and len(info.centred_els):
-            m = self.centre_dg.measure(fl, tp, self)
+            m, vis = self.centre_dg.measure(fl, tp, self)
 
-            sample = visibility(
-                m.value, m.visibility, self.centre_dg.criteria.lookup.error_limit
+            sample = apply_visibility(
+                m.value, vis, self.centre_dg.criteria.lookup.error_limit
             )
             
             ovs = []
@@ -158,6 +156,7 @@ class Box:
                 Result(
                     "centre_box",
                     m,
+                    vis,
                     sample,
                     ovs,
                     *self.centre_dg.criteria(sample[ovs]),
@@ -170,17 +169,18 @@ class Box:
                 if abs(tp.pos.y.max() - tp.pos.y.min()) > 20:
                     continue
 
-            m: Measurement = dg.measure(fl, tp, self)
+            m, vis = dg.measure(fl, tp, self)
 
-            sample = visibility(
+            sample = apply_visibility(
                 dg.criteria.prepare(m.value),
-                m.visibility,
+                vis,
                 dg.criteria.lookup.error_limit,
             )
             res.add(
                 Result(
                     f"{k}_box",
                     m,
+                    vis,
                     sample,
                     np.arange(len(fl)),
                     *dg.criteria(sample),

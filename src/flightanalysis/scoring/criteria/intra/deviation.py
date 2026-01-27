@@ -15,9 +15,9 @@ class Deviation(Criteria):
     def describe(self, unit: str = "") -> str:
         return f"{super().describe()}: Downgrades are assigned based on the coefficient of variation (standard deviation divided by the mean) of the entire sample."
 
-    def __call__(self, vs: npt.NDArray, limits=True):
+    def __call__(self, vs: npt.NDArray):
         error = np.std(vs) / np.mean(vs)
-        dg = self.lookup(np.abs(error), limits)
+        dg = self.lookup(np.abs(error))
         dgid = len(vs) - 1
         return np.array([error]), np.array([dg]), np.array([dgid])
 
@@ -29,8 +29,8 @@ class Total(Criteria):
     def describe(self, unit: str = "") -> str:
         return f"{super().describe()}: Downgrades are assigned based on the sum of the absolute sample."
 
-    def __call__(self, vs: npt.NDArray, limits=True):
+    def __call__(self, vs: npt.NDArray):
         error = np.sum(np.abs(vs)) / len(vs)
-        dg = self.lookup(error, limits)
+        dg = self.lookup(error)
         dgid = len(vs) - 1
         return np.array([error]), np.array([dg]), np.array([dgid])

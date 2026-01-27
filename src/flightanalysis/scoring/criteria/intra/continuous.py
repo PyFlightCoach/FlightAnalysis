@@ -17,7 +17,7 @@ class Continuous(Criteria):
     """
 
     def describe(self, unit: str = "") -> str:
-        return f"{super().describe()}: Downgrades are assigned for each increase in the sample away from zero. Each increase is treated as a separate error, with downgrades assigned based on the height of the increase."
+        return "Continuous Criteria: Downgrades are assigned for each increase in the sample away from zero. Each increase is treated as a separate error, with downgrades assigned based on the size of the increase."
 
     @staticmethod
     def get_peak_locs(arr, rev=False):
@@ -35,7 +35,7 @@ class Continuous(Criteria):
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
     def __call__(
-        self, vs: npt.NDArray, limits=True
+        self, vs: npt.NDArray
     ) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         if len(vs) <= 1:
             return np.array([]), np.array([]), np.array([], dtype=int)
@@ -48,7 +48,7 @@ class Continuous(Criteria):
         dgids = self.__class__.dgids(
             np.linspace(0, len(vs) - 1, len(vs)).astype(int), peak_locs, trough_locs
         )
-        return mistakes, self.lookup(np.abs(mistakes), limits), dgids
+        return mistakes, self.lookup(np.abs(mistakes)), dgids
 
     @staticmethod
     def mistakes(data, peaks, troughs):
@@ -143,7 +143,7 @@ class Continuous(Criteria):
 class ContinuousValue(Continuous):
 
     def describe(self, unit: str = "") -> str:
-        return f"{super().describe()}: Downgrades are assigned for each change in the sample. Each change is treated as a separate error, with downgrades assigned based on the size of the change."
+        return "ContinuousValue Criteria: Downgrades are assigned for each change in the sample. Each change is treated as a separate error, with downgrades assigned based on the size of the change."
 
     @staticmethod
     def mistakes(data, peaks, troughs):
