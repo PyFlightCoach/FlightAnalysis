@@ -1,5 +1,4 @@
 from __future__ import annotations
-import unittest
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -32,9 +31,8 @@ class Result:
     """
 
     name: str
-    unit: str  # unit of the measurement
-    measurement: npt.NDArray  # the raw measured data
-    visibility: npt.NDArray  # the visibility of the measurement
+    measurement: Measurement  # the raw measured data
+    visibility: npt.NDArray  # the visibility of the error
     sample: npt.NDArray  # the selected, visibility weighted sample used for scoring
     sample_keys: npt.NDArray  # the keys to link the sample to the measurement
     errors: npt.NDArray  # the errors resulting from the comparison
@@ -67,8 +65,7 @@ class Result:
     def to_dict(self):
         return dict(
             name=self.name,
-            unit=self.unit,
-            measurement=to_list(self.measurement),
+            measurement=self.measurement.to_dict(),
             visibility=to_list(self.visibility),
             sample=to_list(self.sample),
             sample_keys=to_list(self.sample_keys),
@@ -87,7 +84,6 @@ class Result:
         return Result(
             data["name"],
             np.array(data["measurement"]),
-            data["unit"],
             np.array(data["visibility"]),
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
@@ -146,7 +142,7 @@ class Result:
 
     @property
     def plot_f(self):
-        return np.degrees if self.unit.find("rad") >= 0 else lambda x: x
+        return np.degrees if self.measurement.unit.find("rad") >= 0 else lambda x: x
     
 
     def measurement_trace(self, xvs=None, **kwargs):
@@ -266,7 +262,7 @@ class Result:
                 legend=dict(orientation="h", x=0, y=1.4, yanchor="top"),
                 margin=dict(t=10, r=90, b=90, l=90),
                 xaxis=dict(visible=True, title=xtitle, range=[0, xvals[-1]]),
-                yaxis=dict(title=f"Measurement ({self.unit.replace("rad", "degrees")})"),
+                yaxis=dict(title=f"Measurement ({self.measurement.unit.replace("rad", "degrees")})"),
             ),
             data=self.traces(np.array(get_value(xvals, self.sample_keys))),
         )

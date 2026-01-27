@@ -3,7 +3,7 @@ import numpy as np
 import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass
-
+import re
 
 @dataclass
 class Bounded(Criteria):
@@ -18,19 +18,22 @@ class Bounded(Criteria):
     
     def describe(self, unit: str = "") -> str:
         region=""
+        max_bound = np.degrees(self.max_bound) if unit.find("rad") > 0 and self.max_bound is not None else self.max_bound
+        min_bound = np.degrees(self.min_bound) if unit.find("rad") > 0 and self.min_bound is not None else self.min_bound
+        unit = re.sub(r"radians|radian|rad", "°", unit)
         if self.min_bound is not None and self.max_bound is not None:
             if self.min_bound > self.max_bound:
-                region = f"{super().describe()}: Regions of the sample below {self.min_bound}{unit}, or above than {self.max_bound}{unit} are downgraded." 
+                region = f"Regions of the sample below {min_bound:.2f}{unit}, or above than {max_bound:.2f}{unit} are downgraded." 
             else:
-                region =f"{super().describe()}: Regions of the sample between {self.max_bound}{unit} and {self.min_bound}{unit} are downgraded." 
+                region =f"Regions of the sample between {max_bound:.2f}{unit} and {min_bound:.2f}{unit} are downgraded." 
         elif self.min_bound is not None:
-            region = f"{super().describe()}: Regions of the sample below {self.min_bound}{unit} are downgraded."
+            region = f"Regions of the sample below {min_bound:.2f}{unit} are downgraded."
         elif self.max_bound is not None:
-            region = f"{super().describe()}: Regions of the sample above {self.max_bound}{unit} are downgraded."
+            region = f"Regions of the sample above {max_bound:.2f}{unit} are downgraded."
         
         return f"{super().describe()}: {region} Downgrades are assigned to each exceedence based on the average distance from the bound(s) and the ratio of its width to the total sample width."
 
-    def __call__(self, vs: npt.NDArray, limits=True):
+    def __call__(self, vs: npt.NDArray):
         """each downgrade corresponds to a group of values outside the bounds, ids
         correspond to the last value in each case"""
         # sample = self.prepare(vs)
@@ -46,7 +49,7 @@ class Bounded(Criteria):
                 for grp in set(groups)
             ]
         )
-        dgs = self.lookup(np.abs(errors), limits)
+        dgs = self.lookup(np.abs(errors))
 
         return errors[dgs>0], dgs[dgs>0], dgids[dgs>0]
 

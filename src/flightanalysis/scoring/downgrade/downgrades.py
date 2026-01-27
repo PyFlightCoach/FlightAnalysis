@@ -45,11 +45,13 @@ class DownGrades(Collection):
         el: str | Any,
         fl,
         tp,
-        limits=True,
     ) -> Results:
         res = Results(el if isinstance(el, str) else el.uid, [])
         for downgrade in self:
-            res.add(downgrade(el, fl, tp))
+            try:
+                res.add(downgrade(el, fl, tp))
+            except Exception as e:
+                raise Exception(f"Error applying downgrade {downgrade.name}: {e}") from e
         return res
 
     def to_list(self):
