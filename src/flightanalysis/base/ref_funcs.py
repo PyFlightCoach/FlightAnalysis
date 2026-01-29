@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 from numbers import Number
 import re
 from dataclasses import dataclass, field
@@ -37,7 +38,10 @@ class RefFunc:
     def __getattr__(self, name):
         return getattr(self.method, name)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, meta=None, **kwargs):
+        argspec = inspect.getfullargspec(self.method.measure if hasattr(self.method, 'measure') else self.method)
+        if meta is not None and "meta" in argspec.args + argspec.kwonlyargs:
+            kwargs=dict(**kwargs, meta=meta)
         return self.method(*args, **kwargs, **self.preset_kwargs)
 
     def __str__(self):

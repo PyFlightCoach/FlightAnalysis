@@ -39,6 +39,7 @@ class Result:
     dgs: npt.NDArray  # downgrades for the errors
     keys: npt.NDArray  # links from dgs to sample index
     criteria: Criteria
+    meta: dict = None  # extra info about the score calculation
 
     @property
     def total(self):
@@ -74,6 +75,7 @@ class Result:
             keys=to_list(self.keys),
             total=self.total,
             criteria=self.criteria.to_dict(),
+            meta=self.meta,
         )
 
     def __repr__(self):
@@ -91,6 +93,7 @@ class Result:
             np.array(data["dgs"]),
             np.array(data["keys"]),
             Criteria.from_dict(data["criteria"]),
+            data.get("meta", None),
         )
 
     def info(self, i: int):
