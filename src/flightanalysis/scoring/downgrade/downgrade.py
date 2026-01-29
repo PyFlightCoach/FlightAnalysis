@@ -96,14 +96,15 @@ class DownGrade(DG):
         tp: State,
     ) -> Result:
         try:
-            oids, fl, tp = self.select(fl, tp)
+            meta = {}
+            oids, fl, tp = self.select(fl, tp, meta=meta)
 
             istart = int(np.ceil(oids[0]))
             iend = int(np.ceil(oids[-1]) + 1)
 
-            measurement = self.measure(Elements([el]), fl, tp)
+            measurement = self.measure(Elements([el]), fl, tp, meta=meta)
 
-            visibility: npt.NDArray = self.measure.visor(fl, tp, measurement)
+            visibility: npt.NDArray = self.measure.visor(fl, tp, measurement, meta=meta)
             
             sample = self.create_sample(measurement.value, visibility)[istart:iend]
 
@@ -115,6 +116,7 @@ class DownGrade(DG):
                 oids,
                 *self.criteria(sample),
                 self.criteria,
+                meta
             )
         except Exception as e:
             raise Exception(f"{self.name}: {e}") from e
