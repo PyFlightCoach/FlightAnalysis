@@ -31,12 +31,19 @@ class DownGrade(DG):
     """
 
     measure: RefFunc
+<<<<<<< HEAD
     smoothers: RefFuncs
+=======
+>>>>>>> newmeasure
     selectors: RefFuncs
     criteria: AnyIntraCriteria
 
     def __repr__(self):
+<<<<<<< HEAD
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.smoothers)}, {str(self.selectors)}, {str(self.criteria)})"
+=======
+        return f"DownGrade({self.name}, {str(self.measure)}, {str(self.selectors)}, {str(self.criteria)})"
+>>>>>>> newmeasure
 
     def rename(self, name: str):
         return replace(self, name=name)
@@ -46,7 +53,10 @@ class DownGrade(DG):
             name=self.name,
             tags=self.tags.to_dict() if self.tags else None,
             measure=str(self.measure),
+<<<<<<< HEAD
             smoothers=self.smoothers.to_list(),
+=======
+>>>>>>> newmeasure
             selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(criteria_names),
         )
@@ -115,16 +125,29 @@ class DownGrade(DG):
         sekwargs: dict = None,
     ) -> Result:
         try:
+<<<<<<< HEAD
             oids, fl, tp = self.select(fl, tp, **(sekwargs or {}))
+=======
+            meta = {}
+            oids, fl, tp = self.select(fl, tp, meta=meta)
+>>>>>>> newmeasure
 
             istart = int(np.ceil(oids[0]))
             iend = int(np.ceil(oids[-1]) + 1)
 
+<<<<<<< HEAD
             measurement: Measurement = self.measure(Elements([el]), fl, tp, **(mkwargs or {}))
 
             raw_sample = self.create_sample(measurement[istart:iend])
 
             sample = self.smoothing(raw_sample, fl.dt, el, **(smkwargs or {}))
+=======
+            measurement = self.measure(Elements([el]), fl, tp, meta=meta)
+
+            visibility: npt.NDArray = self.measure.visor(fl, tp, measurement, meta=meta)
+            
+            sample = self.create_sample(measurement.value, visibility)[istart:iend]
+>>>>>>> newmeasure
 
             return Result(
                 self.name,
@@ -134,6 +157,7 @@ class DownGrade(DG):
                 oids,
                 *self.criteria(sample, limits),
                 self.criteria,
+                meta
             )
         except Exception as e:
             raise Exception(f"{self.name}: {e}") from e

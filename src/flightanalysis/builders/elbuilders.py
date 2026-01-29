@@ -1,13 +1,17 @@
 from numbers import Number
 
-from flightanalysis.scoring.criteria.inter.combination import Combination
 import numpy as np
 import pandas as pd
+
 from flightanalysis.definition import ItemOpp, Opp, maxopp
 from flightanalysis.definition.collectors import Collectors
 from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm, ManParms
 from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn, TailSlide
+<<<<<<< HEAD
 from flightanalysis.scoring import visor
+=======
+from flightanalysis.scoring import inter_visors as visors
+>>>>>>> newmeasure
 from flightanalysis.scoring.criteria.inter.comparison import free_comparison
 
 

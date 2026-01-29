@@ -3,7 +3,11 @@ from __future__ import annotations
 from flightanalysis.elements.tags import DGTags
 from dataclasses import dataclass
 from typing import ClassVar, Any
+<<<<<<< HEAD
 from ..reffuncs import measures as me, selectors as se, smoothers as sm
+=======
+from ..reffuncs import measures as me, selectors as se, visors as vi
+>>>>>>> newmeasure
 from ..criteria import Criteria
 
 

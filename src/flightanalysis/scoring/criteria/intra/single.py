@@ -12,9 +12,9 @@ class Single(Criteria):
     def describe(self, unit: str = "") -> str:
         return super().describe() + ": Downgrades are assigned to each value in the sample based on its absolute value."
 
-    def __call__(self, vs: npt.NDArray, limits: bool=True) -> npt.NDArray:
+    def __call__(self, vs: npt.NDArray) -> npt.NDArray:
         errors = np.abs(vs)
-        return errors, self.lookup(errors, limits), np.arange(len(vs))
+        return errors, self.lookup(errors), np.arange(len(vs))
                 
 
 
@@ -27,9 +27,9 @@ class Limit(Criteria):
         limit = np.degrees(self.limit) if unit == "radians" else self.limit
         return super().describe() + f": Downgrades are assigned to each value in the sample, for its distance above {limit} {unit}."
 
-    def __call__(self, vs: npt.NDArray, limits: bool=True) -> npt.NDArray:
+    def __call__(self, vs: npt.NDArray) -> npt.NDArray:
         idx = np.arange(len(vs))
-        return vs, self.lookup(vs, limits), idx 
+        return vs, self.lookup(vs), idx 
 
     def prepare(self, vs):
         return np.maximum(np.abs(vs) - self.limit, 0)
@@ -43,9 +43,9 @@ class Threshold(Criteria):
         limit = np.degrees(self.limit) if unit == "radians" else self.limit
         return super().describe() + f": Downgrades are assigned to each value in the sample, for its distance below {limit} {unit}."
 
-    def __call__(self, vs: npt.NDArray, limits: bool=False) -> npt.NDArray:
+    def __call__(self, vs: npt.NDArray) -> npt.NDArray:
         idx = np.arange(len(vs))
-        return vs, self.lookup(vs, limits), idx 
+        return vs, self.lookup(vs), idx 
 
     def prepare(self, vs):
         return np.maximum(self.limit - np.abs(vs), 0)

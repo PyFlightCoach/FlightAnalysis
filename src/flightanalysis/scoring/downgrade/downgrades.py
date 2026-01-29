@@ -46,6 +46,7 @@ class DownGrades(Collection):
         el: str | Any,
         fl,
         tp,
+<<<<<<< HEAD
         limits=True,
         mkwargs: dict = None,
         smkwargs: dict = None,
@@ -54,6 +55,15 @@ class DownGrades(Collection):
         res = Results(el if isinstance(el, str) else el.uid, [])
         for downgrade in self:
             res.add(downgrade(el, fl, tp, limits, mkwargs, smkwargs, sekwargs))
+=======
+    ) -> Results:
+        res = Results(el if isinstance(el, str) else el.uid, [])
+        for downgrade in self:
+            try:
+                res.add(downgrade(el, fl, tp))
+            except Exception as e:
+                raise Exception(f"Error applying downgrade {downgrade.name}: {e}") from e
+>>>>>>> newmeasure
         return res
 
     def to_list(self):

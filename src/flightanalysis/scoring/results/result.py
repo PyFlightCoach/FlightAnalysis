@@ -32,13 +32,19 @@ class Result:
 
     name: str
     measurement: Measurement  # the raw measured data
+<<<<<<< HEAD
     raw_sample: npt.NDArray | None  # the visibility factored data
     sample: npt.NDArray  # the smoothed data
+=======
+    visibility: npt.NDArray  # the visibility of the error
+    sample: npt.NDArray  # the selected, visibility weighted sample used for scoring
+>>>>>>> newmeasure
     sample_keys: npt.NDArray  # the keys to link the sample to the measurement
     errors: npt.NDArray  # the errors resulting from the comparison
     dgs: npt.NDArray  # downgrades for the errors
     keys: npt.NDArray  # links from dgs to sample index
     criteria: Criteria
+    meta: dict = None  # extra info about the score calculation
 
     @property
     def total(self):
@@ -66,7 +72,11 @@ class Result:
         return dict(
             name=self.name,
             measurement=self.measurement.to_dict(),
+<<<<<<< HEAD
             raw_sample=to_list(self.raw_sample),
+=======
+            visibility=to_list(self.visibility),
+>>>>>>> newmeasure
             sample=to_list(self.sample),
             sample_keys=to_list(self.sample_keys),
             errors=to_list(self.errors),
@@ -74,6 +84,7 @@ class Result:
             keys=to_list(self.keys),
             total=self.total,
             criteria=self.criteria.to_dict(),
+            meta=self.meta,
         )
 
     def __repr__(self):
@@ -83,16 +94,22 @@ class Result:
     def from_dict(data) -> Result:
         return Result(
             data["name"],
+<<<<<<< HEAD
             Measurement.from_dict(data["measurement"])
             if isinstance(data["measurement"], dict)
             else np.array(data["measurement"]),
             np.array(data["raw_sample"]) if "raw_sample" in data else None,
+=======
+            np.array(data["measurement"]),
+            np.array(data["visibility"]),
+>>>>>>> newmeasure
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
             np.array(data["errors"]),
             np.array(data["dgs"]),
             np.array(data["keys"]),
             Criteria.from_dict(data["criteria"]),
+            data.get("meta", None),
         )
 
     def info(self, i: int):
@@ -146,7 +163,11 @@ class Result:
 
     @property
     def plot_f(self):
+<<<<<<< HEAD
         return np.degrees if self.measurement.unit == "rad" else lambda x: x
+=======
+        return np.degrees if self.measurement.unit.find("rad") >= 0 else lambda x: x
+>>>>>>> newmeasure
     
 
     def measurement_trace(self, xvs=None, **kwargs):

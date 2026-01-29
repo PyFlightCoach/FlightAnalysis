@@ -1,5 +1,6 @@
 from typing import Tuple
 import numpy as np
+import numpy.typing as npt
 from dataclasses import dataclass, replace
 from .base import DG
 from .downgrade import DownGrade
@@ -37,7 +38,6 @@ class PairedDowngrade(DG):
         el,
         fl,
         tp,
-        limits=True,
         mkwargs: dict = None,
         smkwargs: dict = None,
         sekwargs: dict = None,
@@ -46,8 +46,11 @@ class PairedDowngrade(DG):
         m1 = self.first.measure(Elements([el]), fl, tp, **(mkwargs or {}))
         m2 = self.second.measure(Elements([el]), fl, tp, **(mkwargs or {}))
 
-        rs1 = self.first.create_sample(m1)
-        rs2 = self.second.create_sample(m2)
+        v1: npt.NDArray = self.first.measure.visor(fl, tp, m1)
+        v2: npt.NDArray = self.second.measure.visor(fl, tp, m2)
+
+        rs1 = self.first.create_sample(m1.value, v1)
+        rs2 = self.second.create_sample(m2.value, v2)
 
         idg1 = self.first.criteria.calculate_increments(rs1, "forward")
         idg2 = self.second.criteria.calculate_increments(rs2, "backward")
@@ -57,20 +60,22 @@ class PairedDowngrade(DG):
         return (
             Result(
                 f"{self.name}_{self.first.name}",
-                m1[: splitindex + 1],
+                m1,
+                v1,
                 rs1[: splitindex + 1],
                 rs1[: splitindex + 1],
                 np.arange(splitindex+1),
-                *self.first.criteria(rs1[: splitindex + 1], limits),
+                *self.first.criteria(rs1[: splitindex + 1]),
                 self.first.criteria,
             ),
             Result(
                 f"{self.name}_{self.second.name}",
-                m2[splitindex:],
+                m2,
+                v2,
                 rs2[splitindex:],
                 rs2[splitindex:],
                 np.arange(splitindex, len(fl)),
-                *self.second.criteria(rs2[splitindex:], limits),
+                *self.second.criteria(rs2[splitindex:]),
                 self.second.criteria,
             ),
         )
