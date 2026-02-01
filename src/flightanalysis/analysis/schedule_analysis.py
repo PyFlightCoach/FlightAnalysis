@@ -25,9 +25,6 @@ class ScheduleAnalysis(Collection):
     def template(self):
         return State.stack([m.template for m in self])
 
-    def proceed(self):
-        return ScheduleAnalysis([m.proceed() for m in self])
-
     @staticmethod
     def parse_ajson(ajson: AJson, sdef: SchedDef = None) -> ScheduleAnalysis:
         if not all([ajson.mdef for ajson in ajson.mans]) and sdef is None:
