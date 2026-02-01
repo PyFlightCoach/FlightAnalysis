@@ -17,7 +17,7 @@ class Continuous(Criteria):
     """
 
     def describe(self, unit: str = "") -> str:
-        return "Continuous Criteria: Downgrades are assigned for each increase in the sample away from zero. Each increase is treated as a separate error, with downgrades assigned based on the size of the increase."
+        return "Continuous Criteria: Downgrades are assigned to each increase in the sample away from zero."
 
     @staticmethod
     def get_peak_locs(arr, rev=False):
@@ -143,7 +143,7 @@ class Continuous(Criteria):
 class ContinuousValue(Continuous):
 
     def describe(self, unit: str = "") -> str:
-        return "ContinuousValue Criteria: Downgrades are assigned for each change in the sample. Each change is treated as a separate error, with downgrades assigned based on the size of the change."
+        return "ContinuousValue Criteria: Downgrades are assigned to each change in the sample based on the size of the change."
 
     @staticmethod
     def mistakes(data, peaks, troughs):
