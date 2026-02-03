@@ -19,6 +19,9 @@ from ..visibility import apply_visibility
 
 from .base import DG
 
+class SquashError(Exception):
+    pass
+
 
 @dataclass
 class DownGrade(DG):
@@ -57,9 +60,9 @@ class DownGrade(DG):
                 oids = apply_index_slice(oids, sli)
                 sfl = sfl.iloc[sli]
                 stp = stp.iloc[sli]
-
-            fl = State.stack([fl.iloc[: oids[0]], sfl, fl.iloc[oids[-1] :]])
-            tp = State.stack([tp.iloc[: oids[0]], stp, tp.iloc[oids[-1] :]])
+            if len(oids) > 0:
+                fl = State.stack([fl.iloc[: oids[0]], sfl, fl.iloc[oids[-1] :]])
+                tp = State.stack([tp.iloc[: oids[0]], stp, tp.iloc[oids[-1] :]])
 
             return oids, fl, tp
         except Exception as e:
@@ -98,7 +101,8 @@ class DownGrade(DG):
         try:
             meta = {}
             oids, fl, tp = self.select(fl, tp, meta=meta)
-
+            if len(oids) == 0:
+                raise SquashError("No data selected by selectors")
             istart = int(np.ceil(oids[0]))
             iend = int(np.ceil(oids[-1]) + 1)
 
@@ -118,8 +122,11 @@ class DownGrade(DG):
                 self.criteria,
                 meta
             )
-        except Exception as e:
-            raise Exception(f"{self.name}: {e}") from e
+        except (SquashError, Exception) as e:
+            if type(e) is SquashError:
+                raise e
+            else:
+                raise Exception(f"{self.name}: {e}") from e
 
 def dg(
     name: str,

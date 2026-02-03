@@ -1,6 +1,6 @@
 from collections import namedtuple
 from .base import DG
-from .downgrade import DownGrade, dg
+from .downgrade import DownGrade, dg, SquashError
 from .downgrade_pair import PairedDowngrade, pdg
 from flightdata.base import Collection
 from ..results import Results
@@ -9,7 +9,7 @@ from pathlib import Path
 from flightanalysis.scoring.reffuncs import measures as me, selectors as se, visors as vi
 from flightanalysis.base.utils import parse_csv
 from flightanalysis.elements.tags import DGTags
-
+from loguru import logger
 
 def parse_downgrade_csv(file: Path | str, intra_criteria: NamedTuple) -> list[DG]:
     df = parse_csv(file, sep=";")
@@ -50,6 +50,8 @@ class DownGrades(Collection):
         for downgrade in self:
             try:
                 res.add(downgrade(el, fl, tp))
+            except SquashError as e:
+                logger.debug(f"Skipping downgrade {downgrade.name}: {e}")
             except Exception as e:
                 raise Exception(f"Error applying downgrade {downgrade.name}: {e}") from e
         return res
