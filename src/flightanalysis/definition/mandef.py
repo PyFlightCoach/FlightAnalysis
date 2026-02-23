@@ -15,6 +15,7 @@ from __future__ import annotations
 from typing import NamedTuple
 from dataclasses import dataclass, replace
 
+from .manparms import ManParms
 from loguru import logger
 
 import geometry as g
@@ -27,7 +28,7 @@ from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.downgrade import DownGrades
 from flightanalysis.elements.tags import ElTag
-from . import ElDef, ElDefs, ManParms
+from .eldef import ElDef, ElDefs
 
 
 @dataclass
@@ -238,7 +239,7 @@ class ManDef:
     def __iter__(self):
         """Iterate over the eds, elements and templates."""
         tp = State.from_transform(
-            g.Transformation(self.initial_rotation(Heading.LTOR)), vel=g.PX(30)
+            g.Transformation(self.initial_rotation(Heading.RTOL)), vel=g.PX(30)
         )
         for ed in self.eds:
             el: AnyElement = ed(self.mps)

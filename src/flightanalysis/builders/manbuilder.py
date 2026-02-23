@@ -5,6 +5,7 @@ from dataclasses import dataclass, replace
 from functools import partial
 from typing import Callable, Tuple, NamedTuple
 from flightanalysis.base.utils import replace_any_depth_value
+from flightanalysis.definition.manparms import ManParms
 from flightanalysis.scoring.box import TriangularBox, RectangularBox
 from flightanalysis.scoring.criteria.exponential import parse_expos_from_csv
 from flightanalysis.scoring.downgrade.downgrades import parse_downgrade_csv
@@ -21,7 +22,6 @@ from flightanalysis.definition import (
     ElDefs,
     ManDef,
     ManParm,
-    ManParms,
     ManOption,
     SchedDef,
 )

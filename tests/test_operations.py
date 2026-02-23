@@ -1,8 +1,9 @@
+from flightanalysis.definition.manparms import ManParms
 import numpy as np
 from pytest import fixture
 
 import flightanalysis.definition.operations as o
-from flightanalysis.definition.manparm import ManParm, ManParms
+from flightanalysis.definition.manparm import ManParm
 from flightanalysis.definition.operations.sumopp import SumOpp
 from flightanalysis.scoring.criteria import Comparison
 from flightanalysis.scoring.criteria.inter.combination import Combination

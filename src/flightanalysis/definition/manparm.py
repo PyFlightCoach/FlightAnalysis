@@ -1,29 +1,24 @@
 from __future__ import annotations
-from pathlib import Path
 from dataclasses import dataclass, field
 from numbers import Number
-from typing import Callable, Self, Tuple, NamedTuple
+from typing import Tuple
 
-import geometry as g
 import numpy as np
-import pandas as pd
 from flightdata import Collection, State
 from geometry import Point
-from flightanalysis.base.utils import parse_csv
 from flightanalysis.base.ref_funcs import RefFunc
 from flightanalysis.elements import Elements
-from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring import (
     Combination,
     Comparison,
     Criteria,
     Measurement,
     Result,
-    Results,
     Single,
     inter_visors as visors,
 )
-from . import Collector, Collectors, Opp
+from .collectors import Collector, Collectors
+from .operations import Opp
 
 
 @dataclass
@@ -184,152 +179,4 @@ class ManParm(Opp):
         return f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul}, {self.unit}, {str(self.visibility) if self.visibility else 'None'})"
 
 
-class ManParms(Collection):
-    VType = ManParm
-    uid = "name"
 
-    def collect(self, manoeuvre: Manoeuvre, state: State, box) -> Results:
-        """Collect the comparison downgrades for each manparm for a given manoeuvre."""
-        return Results(
-            "Inter",
-            [
-                mp.get_downgrades(manoeuvre.all_elements(), state, box)
-                for mp in self
-                if isinstance(mp.criteria, Comparison) and len(mp.collectors)
-            ],
-        )
-
-    def append_collectors(self, colls: dict[str, Callable]):
-        """Append each of a dict of collector methods to the relevant ManParm"""
-        for mp, col in colls.items():
-            self.data[mp].append(col)
-
-    def update_defaults(self, intended: Manoeuvre) -> Self:
-        """Pull the parameters from a manoeuvre object and update the defaults of self based on the result of
-        the collectors.
-
-        Args:
-            intended (Manoeuvre): Usually a Manoeuvre that has been resized based on an alinged state
-        """
-        mps = []
-        for mp in self:
-            flown_parm = list(mp.collect(intended.all_elements()).values())
-            if len(flown_parm) > 0 and mp.defaul is not None:
-                if isinstance(mp.criteria, Combination):
-                    defaul = mp.criteria.check_option(flown_parm, [col.index for col in mp.collectors])
-                else:
-                    defaul = np.mean(np.abs(flown_parm)) * np.sign(mp.defaul)
-                mps.append(
-                    ManParm(
-                        mp.name,
-                        mp.criteria,
-                        defaul,
-                        mp.unit,
-                        mp.collectors,
-                        mp.visibility,
-                    )
-                )
-            else:
-                mps.append(mp)
-        return ManParms(mps)
-
-    def set_values(self, **kwargs) -> Self:
-        """Set the default values of the manparms to the kwargs provided"""
-        mps = []
-        for mp in self:
-            if mp.name in kwargs:
-                mps.append(
-                    ManParm(
-                        mp.name,
-                        mp.criteria,
-                        kwargs[mp.name],
-                        mp.unit,
-                        mp.collectors,
-                        mp.visibility,
-                    )
-                )
-            else:
-                mps.append(mp)
-        return ManParms(mps)
-
-    def remove_unused(self):
-        return ManParms([mp for mp in self if len(mp.collectors) > 0])
-
-    def parse_rolls(
-        self,
-        rolls: Number | str | Opp | list[Number] | list[Opp],
-        name: str,
-        reversible: bool = True,
-        turns: bool = False
-    ):
-        if isinstance(rolls, Opp) or (
-            isinstance(rolls, list) and all([isinstance(r, Opp) for r in rolls])
-        ):
-            return rolls
-        elif isinstance(rolls, str) and not turns:
-            return self.add(
-                ManParm(
-                    f"{name}_rolls", Combination.rollcombo(rolls, reversible), 0, "rad"
-                )
-            )
-        elif isinstance(rolls, Number) or pd.api.types.is_list_like(rolls):
-            return self.add(
-                ManParm(
-                    f"{name}_{'turns' if turns else 'rolls'}",
-                    Combination.rolllist(
-                        [rolls] if np.isscalar(rolls) else rolls, reversible
-                    ),
-                    0,
-                    "rad",
-                )
-            )
-        else:
-            raise ValueError(f"Cannot parse {'turns' if turns else 'rolls'} from {rolls}")
-
-
-
-    def to_df(self):
-        return pd.DataFrame(
-            [
-                [
-                    mp.name,
-                    mp.criteria.__class__.__name__,
-                    mp.defaul,
-                    mp.unit,
-                    ",".join([str(v) for v in mp.collectors]),
-                ]
-                for mp in self
-            ],
-            columns=["name", "criteria", "default", "unit", "collectors"],
-        )
-
-    @staticmethod
-    def parse_csv(file: str | Path, criteria: NamedTuple) -> ManParms:
-        df = parse_csv(file, sep=";")
-        mps = []
-        for row in df.itertuples(index=False):
-            mps.append(ManParm(
-                row.name,
-                getattr(criteria, row.criteria),
-                row.value,
-                row.unit,
-                visibility=visors.parse_csv_cell(row.visor)[0] if row.visor and len(row.visor) else None
-            ))
-        return ManParms(mps)
-
-
-class DummyMPs:
-    def __getattr__(self, name):
-        return ManParm(name, Single(), 0)
-
-
-def scale_vis(fl: State, box):
-    # factor of 1 when it takes up 1/2 of the box height.
-    # reduces to zero for zero length el
-    depth = fl.pos.y.mean()
-
-    h = box.top_pos(g.PY(depth)) - box.bottom_pos(g.PY(depth))
-
-    _range = fl.pos.max() - fl.pos.min()
-    length = abs(_range)[0]
-    return min(1, 4 * length / h.z[0])  # np.tan(np.radians(60)) / 2

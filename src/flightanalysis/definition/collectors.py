@@ -1,7 +1,7 @@
 """The collectors are serializable functions that return parameters from elements"""
 
 from flightdata import Collection
-from . import Opp
+from .operations import Opp
 from uuid import uuid1
 
 
