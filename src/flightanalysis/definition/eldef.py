@@ -4,13 +4,14 @@ from numbers import Number
 from typing import Callable, List, Tuple, Union
 from uuid import uuid1
 
+from .manparms import ManParms
 import numpy as np
 from flightdata import Collection
 
 from flightanalysis.elements import Element, AnyElement
 from flightanalysis.scoring.downgrade import DownGrades
 
-from . import Collector, Collectors, ItemOpp, ManParm, ManParms, Opp, SumOpp
+from . import Collector, Collectors, ItemOpp, ManParm, Opp, SumOpp
 
 
 @dataclass

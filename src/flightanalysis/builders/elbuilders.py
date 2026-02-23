@@ -1,11 +1,12 @@
 from numbers import Number
 
+from flightanalysis.definition.manparms import ManParms
 import numpy as np
 import pandas as pd
 
 from flightanalysis.definition import ItemOpp, Opp, maxopp
 from flightanalysis.definition.collectors import Collectors
-from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm, ManParms
+from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm
 from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn, TailSlide
 from flightanalysis.scoring import inter_visors as visors
 from flightanalysis.scoring.criteria.inter.comparison import free_comparison
