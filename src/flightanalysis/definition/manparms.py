@@ -1,6 +1,7 @@
 from __future__ import annotations
 from itertools import product
 
+from math import e
 from numbers import Number
 from pathlib import Path
 from typing import Callable, NamedTuple, Self
@@ -178,24 +179,54 @@ class ManParms(Collection):
         else:
             return [ComboSettings(cs) for cs in list(product(*all_settings))]
 
+    def _find_redundant_combosetting(self, cs_list: list[ComboSettings]):
+        """identify one redundant entry from the list of combosettings, if one exists."""
+        for cs in cs_list:
+            for c in cs:
+                ## list the entries where the remaining (not c) values match exactly
+                matching_entries = []
+                for j, checkcs in enumerate(cs_list):
+                    if (
+                        (c.mp_name in checkcs.keys())
+                        and checkcs.without(c) == cs.without(c)
+                    ):
+                        matching_entries.append(j)
+                ## if all permutations of c are found in the matching entries.
+                ## update the remove dict
+                if (
+                    len(
+                        self.clean_comboset(
+                            ComboSet(
+                                [cs_list[j][c.mp_name] for j in matching_entries]
+                            )
+                        )
+                    )
+                    == 0
+                ):  
+                    return c.mp_name, matching_entries
+        else:
+            raise ValueError("No redundant combosettings found")
+
+
     def clean_combosettings(self, cs_list: list[ComboSettings]):
-        """Remove redundant entries from a list of combosettings.
-        A combosettings is redundant if all other permutations of its mps are included in the list."""
-        cleaned = []
-        for i, cs in enumerate(cs_list):
-            permutations = self.filter_keys(lambda k: k in cs.mp_names()).permutations()
+        """Remove redundant entries from a list of combosettings.."""
 
-            for j, checkcs in enumerate(cs_list):
-                if checkcs.mp_names() == cs.mp_names():
-                    for p in permutations:
-                        if p == checkcs:
-                            permutations.remove(p)
-                            break
-            if len(permutations) > 0:
-                cleaned.append(cs)
-
-        return cleaned
-
+        cs_list_out = cs_list.copy()
+        while True:
+            try:
+                k, v = self._find_redundant_combosetting(cs_list_out)
+                for j in v:
+                    cs_list_out[j] = cs_list_out[j].without(k)
+                cs_list_out = [cs for cs in cs_list_out if len(cs) > 0]
+            except ValueError:
+                break
+        
+        no_duplicates = []
+        for cs in cs_list_out:
+            if cs not in no_duplicates:
+                no_duplicates.append(cs)
+        return no_duplicates
+    
     def clean_comboset(self, cs: ComboSet):
         """Remove any combinations for which all possible values are included in the set."""
         cleaned = ComboSet()

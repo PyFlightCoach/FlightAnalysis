@@ -41,9 +41,11 @@ def test_clean_combosettings_keeps_incomplete_entries(mps: ManParms):
     cleaned = mps.clean_combosettings([
         ComboSettings([ComboSetting("mp1", 0), ComboSetting("mp2", 0)]),
         ComboSettings([ComboSetting("mp1", 0), ComboSetting("mp2", 1)]),
-        ComboSettings([ComboSetting("mp1", 1), ComboSetting("mp2", 0)]),
     ])
-    assert len(cleaned) == 3
+    assert len(cleaned) == 1
+    assert cleaned[0] == ComboSettings([ComboSetting("mp1", 0)])
+
+
 
 def test_clean_combosettings_removes_redundant_entries(mps: ManParms):
 
@@ -55,3 +57,13 @@ def test_clean_combosettings_removes_redundant_entries(mps: ManParms):
     ]
     )
     assert len(cleaned) == 0
+
+def test_clean_combosettings_removes_redundant_leaves_incomplete(mps: ManParms):
+    cleaned = mps.clean_combosettings([
+        ComboSettings([ComboSetting("mp1", 0), ComboSetting("mp2", 0)]),
+        ComboSettings([ComboSetting("mp1", 0), ComboSetting("mp2", 1)]),
+        ComboSettings([ComboSetting("mp1", 1)])
+    ]
+    )
+    assert len(cleaned) == 0
+
