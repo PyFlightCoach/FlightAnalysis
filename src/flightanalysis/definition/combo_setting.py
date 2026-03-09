@@ -7,6 +7,14 @@ class ComboSetting:
     mp_name: str
     value: int
 
+    def to_dict(self):
+        return str(self)
+    
+    @staticmethod
+    def from_dict(data: str):
+        mp_name, value = data.split(".")
+        return ComboSetting(mp_name, int(value))
+
     def __str__(self):
         return f"{self.mp_name}.{self.value}"
 

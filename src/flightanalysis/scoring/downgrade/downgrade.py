@@ -128,6 +128,35 @@ class DownGrade(DG):
             else:
                 raise Exception(f"{self.name}: {e}") from e
 
+    def markdown(self, rule: str, description: str | None = None) -> str:
+
+        def var_to_title(var: str) -> str:
+            return var.replace("_", " ").title()
+        
+        odata = [f"# {rule.upper()} {var_to_title(self.name)}"]
+
+        if description is not None:
+            odata.append(description)
+
+        odata.append(f"### Measurement: {var_to_title(self.measure.__name__)}\n{self.measure.description}")
+
+        odata.append(f"### Visibility: {var_to_title(self.measure.visor.__name__)}\n{self.measure.visor.description}")
+
+        if len(self.selectors) > 0:
+            _seldata = []
+            _seldata.append("### Selectors")
+            for i, sel in enumerate(self.selectors, 1):
+                _seldata.append(f"- {var_to_title(sel.__name__)}\n{sel.description}")
+            odata.extend("\n".join(_seldata))
+
+        odata.append(f"### Criteria: {self.criteria.__class__.__name__}\n{self.criteria.describe().split(":")[1]}")
+
+        odata.append("### Applicability")
+        for k, v in self.tags.to_dict().items():
+            odata.append(f"{k}: {v}\n")
+
+        return "\n".join(odata)
+
 def dg(
     name: str,
     meas: RefFunc,

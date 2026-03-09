@@ -38,6 +38,11 @@ class Opp:
     __array_priority__ = 15.0
     name: str
     
+    def __post_init__(self):
+        if self.name=="OPTION":
+            raise ValueError("'OPTION' is a reserved name and cannot be used here.")
+
+
     def __getattr__(self, name):
         if name == "name":
             self.name = uuid1() 

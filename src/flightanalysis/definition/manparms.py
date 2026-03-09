@@ -179,8 +179,26 @@ class ManParms(Collection):
         else:
             return [ComboSettings(cs) for cs in list(product(*all_settings))]
 
-    def _find_redundant_combosetting(self, cs_list: list[ComboSettings]):
-        """identify one redundant entry from the list of combosettings, if one exists."""
+    def clean_comboset(self, cs: ComboSet, noptions: int = None):
+        """Remove any combinations for which all possible values are included in the set."""
+        cleaned = ComboSet()
+        for mp in self.combinations.values():
+            values = cs.collect_mp(mp.name)
+            if len(values) == 0 or len(values) == len(mp.criteria):
+                continue
+            else:
+                cleaned.add([ComboSetting(mp.name, v) for v in values], inplace=True)
+        if noptions is not None:
+            _options = cs.collect_mp("OPTION")
+            if len(_options) != 0 and len(_options) < noptions:
+                cleaned.add([ComboSetting("OPTION", v) for v in _options], inplace=True)
+        return cleaned
+
+    def _find_redundant_combosetting(self, cs_list: list[ComboSettings], noptions: int = None):
+        """identify one redundant entry from the list of combosettings, if one exists.
+        if noptions is set also identify entries where all possible values of OPTION.i are included as redundant.
+        Raise a value error if no redundant entries are found.
+        """
         for cs in cs_list:
             for c in cs:
                 ## list the entries where the remaining (not c) values match exactly
@@ -198,7 +216,8 @@ class ManParms(Collection):
                         self.clean_comboset(
                             ComboSet(
                                 [cs_list[j][c.mp_name] for j in matching_entries]
-                            )
+                            ),
+                            noptions
                         )
                     )
                     == 0
@@ -208,13 +227,16 @@ class ManParms(Collection):
             raise ValueError("No redundant combosettings found")
 
 
-    def clean_combosettings(self, cs_list: list[ComboSettings]):
-        """Remove redundant entries from a list of combosettings.."""
+    def clean_combosettings(self, cs_list: list[ComboSettings], noptions: int = None):
+        """Remove redundant entries from a list of combosettings.
+        
+        if noptions is set also remove entries where all possible values of OPTION.i are included
+        """
 
         cs_list_out = cs_list.copy()
         while True:
             try:
-                k, v = self._find_redundant_combosetting(cs_list_out)
+                k, v = self._find_redundant_combosetting(cs_list_out, noptions)
                 for j in v:
                     cs_list_out[j] = cs_list_out[j].without(k)
                 cs_list_out = [cs for cs in cs_list_out if len(cs) > 0]
@@ -227,13 +249,3 @@ class ManParms(Collection):
                 no_duplicates.append(cs)
         return no_duplicates
     
-    def clean_comboset(self, cs: ComboSet):
-        """Remove any combinations for which all possible values are included in the set."""
-        cleaned = ComboSet()
-        for mp in self.combinations.values():
-            values = cs.collect_mp(mp.name)
-            if len(values) == 0 or len(values) == len(mp.criteria):
-                continue
-            else:
-                cleaned.add([ComboSetting(mp.name, v) for v in values], inplace=True)
-        return cleaned

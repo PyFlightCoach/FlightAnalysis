@@ -26,7 +26,7 @@ class ManParm(Opp):
     """This class represents a parameter that can be used to characterise the geometry of a manoeuvre.
     For example, the loop diameters, line lengths, roll direction.
         name (str): a short name, must work as an attribute so no spaces or funny characters
-        criteria (Comparison): The comparison criteria function to be used when judging this parameter
+        criteria (Comparison | Combination): The criteria function to be used when judging this parameter
         defaul (float): A default value (or default option if specified in criteria)
         collectors (Collectors): a list of functions that will pull values for this parameter from an Elements
             collection. If the manoeuvre was flown correctly these should all be the same. The resulting list

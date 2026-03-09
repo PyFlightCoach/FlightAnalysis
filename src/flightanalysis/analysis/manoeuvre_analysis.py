@@ -52,7 +52,7 @@ class Analysis:
         stages.append("create_itrans")
         if "element" in self.flown.labels.keys():
             stages.append("select_mdef")
-        elif "element" not in self.flown.labels.keys():
+        else:
             stages.extend(["preliminary_alignment", "secondary_alignment"])
         if optimise:
             stages.extend(["prepare_scoring", "optimise_alignment"])
@@ -62,7 +62,7 @@ class Analysis:
             try:
                 logger.debug(f"Running step {stage}: {fun}")
                 self = getattr(self, fun)(**kwargs.get(fun, {}))
-                if stop_after == fun:
+                if stop_after == fun:  # TODO this wont stop after select_mdef (for example) if it isnt in the stages list
                     logger.debug(f"Stopping after step {stage}: {fun}")
                     break
             except ElSequenceError as ese:
