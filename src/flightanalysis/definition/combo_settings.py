@@ -29,6 +29,12 @@ class ComboSettings(Collection):
     def to_dict(self):
         return {s.mp_name: s.value for s in self.values()}
 
+    @staticmethod
+    def from_dict(vals: dict[str, int]):
+        return ComboSettings(
+            [ComboSetting(mp_name, value) for mp_name, value in vals.items()]
+        )
+
     def mp_names(self):
         return {s.mp_name for s in self.values()}
 
@@ -90,8 +96,13 @@ class ComboSet(Collection):
     def collect_mp(self, mp_name: str):
         return {s.value for s in self.values() if s.mp_name == mp_name}
 
+    def remove_mp(self, mp_name: str):
+        return ComboSet([s for s in self.values() if s.mp_name != mp_name])
+
     def __str__(self):
         return ",".join([str(s) for s in self.values()])
 
     def __eq__(self, other):
         return set(list(self.values())) == set(list(other.values()))
+
+    

@@ -36,6 +36,15 @@ class ElTag(Enum):
     LOOPSEQUENCE = auto()
 
 
+class OnlyElTag(Enum):
+    LINE = ElTag.LINE
+    LOOP = ElTag.LOOP
+    SNAP = ElTag.SNAP
+    SPIN = ElTag.SPIN
+    STALLTURN = ElTag.STALLTURN
+    TAILSLIDE = ElTag.TAILSLIDE
+    ROLL = ElTag.ROLL
+
 
 @dataclass
 class TagCheck:
@@ -129,3 +138,4 @@ class DGTags:
             this=TagCheckAnd.parse(data["this"]),
             next=TagCheckAnd.parse(data["next"]),
         )
+    
