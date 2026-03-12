@@ -29,6 +29,18 @@ class ComboSettings(Collection):
     def to_dict(self):
         return {s.mp_name: s.value for s in self.values()}
 
+    def rename_combos(self, rename_dict: dict[str, str] | None) :
+        """Return a new ComboSettings with the mp_names renamed according to the provided rename_dict."""
+        if rename_dict is None:
+            return self
+        else:
+            return ComboSettings(
+                [
+                    ComboSetting(rename_dict.get(s.mp_name, s.mp_name), s.value)
+                    for s in self.values()
+                ]
+            )
+
     @staticmethod
     def from_dict(vals: dict[str, int]):
         return ComboSettings(
