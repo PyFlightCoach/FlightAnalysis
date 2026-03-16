@@ -105,6 +105,9 @@ class Analysis:
         """If the elements are labelled it should be possible to select the correct option.
         First find all the options that match the element sequence.
         If more than one option matches, select the one with the best score.
+
+        # There is a problem if both options have the same element names
+        # in this case we need to score both and choose the best. 
         """
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 
