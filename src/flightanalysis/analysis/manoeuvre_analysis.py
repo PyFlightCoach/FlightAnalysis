@@ -48,36 +48,36 @@ class Analysis:
         stop_after: str = None,
         **kwargs,
     ) -> Self:
-        stages = []
-        stages.append("create_itrans")
-        if "element" in self.flown.labels.keys():
-            stages.append("select_mdef")
-        else:
-            stages.extend(["preliminary_alignment", "secondary_alignment"])
-        if optimise:
-            stages.extend(["prepare_scoring", "optimise_alignment"])
-        stages.extend(["prepare_scoring", "calculate_score"])
-
-        for stage, fun in enumerate(stages):
-            try:
-                logger.debug(f"Running step {stage}: {fun}")
-                self = getattr(self, fun)(**kwargs.get(fun, {}))
-                if stop_after == fun:  # TODO this wont stop after select_mdef (for example) if it isnt in the stages list
-                    logger.debug(f"Stopping after step {stage}: {fun}")
-                    break
-            except ElSequenceError as ese:
-                logger.warning(f"{self.name}, {fun}: {ese}")
-                self = self.preliminary_alignment(
-                    **kwargs.get("preliminary_alignment", {})
-                )
-                self = self.secondary_alignment(**kwargs.get("secondary_alignment", {}))
-            except Exception as e:
-                if throw_errors:
-                    raise Exception(f"Error running {self.name}, {fun}: {e}") from e
-                else:
-                    logger.error(f"{self.name}, {fun}: {e}")
-                    break
-
+        stages = [
+            ("create_itrans", True),
+            ("select_mdef", "element" in self.flown.labels.keys()),
+            ("preliminary_alignment", "element" not in self.flown.labels.keys()),
+            ("secondary_alignment", "element" not in self.flown.labels.keys()),
+            ("prepare_scoring", optimise),
+            ("optimise_alignment", optimise),
+            ("prepare_scoring", True),
+            ("calculate_score", True),
+        ]
+        for stage, (fun_name, run) in enumerate(stages):
+            if run:
+                try:
+                    logger.debug(f"Running step {stage}: {fun_name}")
+                    self = getattr(self, fun_name)(**kwargs.get(fun_name, {}))
+                    if stop_after == fun_name:
+                        logger.debug(f"Stopping after step {stage}: {fun_name}")
+                        break
+                except ElSequenceError as ese:
+                    logger.warning(f"{self.name}, {fun_name}: {ese}")
+                    stages[2][1] = True
+                    stages[3][1] = True
+                except Exception as e:
+                    if throw_errors:
+                        raise Exception(f"Error running {self.name}, {fun_name}: {e}") from e
+                    else:
+                        logger.error(f"{self.name}, {fun_name}: {e}")
+                        break
+            else:
+                logger.debug(f"Skipping step {stage}: {fun_name}")
         return self
 
     def _create_itrans(self) -> g.Transformation:
