@@ -227,7 +227,7 @@ class Analysis:
             self.scores.intra[name] if self.scores else None,
         )
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> ElementAnalysis:
         if name in self.flown.labels.element.keys():
             return self.get_ea(name)
         raise AttributeError(f"{self.__class__.__name__} has no attribute {name}")

@@ -2,7 +2,7 @@
 from uuid import uuid4
 from .exponential import Exponential, free
 from dataclasses import dataclass, field
-
+from json import dumps
 from flightanalysis.base.utils import all_subclasses
 
 
@@ -23,6 +23,9 @@ class Criteria:
         if not include_name:
             data.pop("name", None)
         return dict(kind=self.__class__.__name__, lookup=lookup.__dict__, **data)
+
+    def __repr__(self):
+        return dumps(self.to_dict(), indent=2)
 
     @staticmethod
     def from_dict(data: dict):

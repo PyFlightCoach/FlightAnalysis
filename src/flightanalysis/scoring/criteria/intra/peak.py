@@ -6,15 +6,15 @@ from dataclasses import dataclass
 from .. import Criteria
 
 
-
 @dataclass
 class Peak(Criteria):
-    limit: float=0
-    """Downgrade the largest absolute value based on its distance above the limit"""
+    limit: float = 0
+    direction: int = 1  # 1 for distance above the limit, -1 for distance below the limit
+    
 
     def describe(self, unit: str = "") -> str:
         limit = np.degrees(self.limit) if unit == "radians" else self.limit
-        return f"{super().describe()}: Downgrades are assigned to the maximum value in the sample, for its distance above {limit:.2f} {unit}."
+        return f"{super().describe()}: Downgrades are assigned to the maximum value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def __call__(self, vs: npt.NDArray) -> npt.NDArray:
         idx = np.argmax(vs)
@@ -23,30 +23,35 @@ class Peak(Criteria):
             return np.array([]), np.array([]), np.array([], dtype=int)
         else:
             return errors, self.lookup(errors), np.array([idx])
-    
+
     def prepare(self, vs):
-        return np.maximum(vs - self.limit, 0)
+        return np.maximum(
+            vs - self.limit if self.direction == 1 else self.limit - vs, 0
+        )
+
 
 @dataclass
 class AbsPeak(Peak):
-
-    def describe(self, unit = ""):
+    def describe(self, unit=""):
         limit = np.degrees(self.limit) if unit == "radians" else self.limit
-        return f"AbsPeak Criteria: Downgrades are assigned to the maximum absolute value in the sample, for its distance above {limit:.2f} {unit}."
+        return f"AbsPeak Criteria: Downgrades are assigned to the maximum absolute value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def prepare(self, vs):
         """Downgrade the largest absolute value based on its distance above the limit"""
-        return np.maximum(np.abs(vs) - self.limit, 0)
+        return np.maximum(
+            np.abs(vs) - self.limit if self.direction == 1 else self.limit - np.abs(vs),
+            0,
+        )
 
 
 @dataclass
 class Trough(Criteria):
-    limit: float=0
-    """Downgrade the smallest value based on its distance below the limit"""
+    limit: float = 0
+    direction: int = -1 # 1 for distance above the limit, -1 for distance below the limit
 
     def describe(self, unit: str = "") -> str:
         limit = np.degrees(self.limit) if unit == "radians" else self.limit
-        return f"{super().describe()}: Downgrades are assigned to the minimum value in the sample, for its distance below {limit:.2f} {unit}."
+        return f"{super().describe()}: Downgrades are assigned to the minimum value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def __call__(self, vs: npt.NDArray) -> npt.NDArray:
         idx = np.argmin(vs)
@@ -55,18 +60,22 @@ class Trough(Criteria):
             return np.array([]), np.array([]), np.array([], dtype=int)
         else:
             return errors, self.lookup(errors), np.array([idx])
-    
+
     def prepare(self, vs):
-        return np.maximum(self.limit - vs, 0)
-    
+        return np.maximum(
+            vs - self.limit if self.direction == 1 else self.limit - vs, 0
+        )
+
+
 @dataclass
 class AbsTrough(Trough):
     """Downgrade the smallest absolute value based on its distance below the limit"""
 
     def describe(self, unit: str = "") -> str:
         limit = np.degrees(self.limit) if unit == "radians" else self.limit
-        return f"AbsTrough Criteria: Downgrades are assigned to the minimum absolute value in the sample, for its distance below {limit:.2f} {unit}."
+        return f"AbsTrough Criteria: Downgrades are assigned to the minimum absolute value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def prepare(self, vs):
-        return np.maximum(self.limit - np.abs(vs), 0)
-    
+        return np.maximum(
+            np.abs(vs) - self.limit if self.direction == 1 else self.limit - np.abs(vs), 0
+        )
