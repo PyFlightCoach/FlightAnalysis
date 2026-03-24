@@ -61,7 +61,9 @@ class ManDef:
         )
 
     @staticmethod
-    def from_dict(data: dict | list) -> ManDef | ManOption:
+    def from_dict(data: dict | list | ManDef | ManOption) -> ManDef | ManOption:
+        if isinstance(data, ManDef) or isinstance(data, ManOption):
+            return data
         if isinstance(data, list):
             return ManOption.from_dict(data)
         elif (
