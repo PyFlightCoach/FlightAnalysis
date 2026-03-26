@@ -1,7 +1,6 @@
 from __future__ import annotations
 from itertools import product
 
-from math import e
 from numbers import Number
 from pathlib import Path
 from typing import Callable, NamedTuple, Self

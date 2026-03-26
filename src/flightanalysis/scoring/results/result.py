@@ -1,5 +1,5 @@
 from __future__ import annotations
-from networkx import goldberg_radzik
+from flightdata.state.state import State
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
@@ -7,8 +7,6 @@ from flightdata.base import to_list
 from flightanalysis.scoring.measurement import Measurement
 from flightanalysis.scoring.criteria import Criteria
 from dataclasses import dataclass, replace
-from geometry.utils import get_value
-from sqlalchemy import over
 
 
 def diff(val, factor=3):
@@ -145,7 +143,7 @@ class Result:
     def plot_f(self):
         return np.degrees if self.measurement.unit.find("rad") >= 0 else lambda x: x
 
-    def plot(self, xvals: np.ndarray = None, fig=None, row=None, col=None):
+    def plot(self, st: State, fig=None, row=None, col=None):
         import plotly.graph_objects as go
         from plotly.subplots import make_subplots
 
@@ -153,12 +151,13 @@ class Result:
             fig = make_subplots(
                 rows=1, cols=1, shared_xaxes=True, specs=[[{"secondary_y": True}]]
             )
-        if xvals is None:
-            xvals = np.arange(len(self.measurement))
-
+        
+        sliced_st = st.iloc[self.sample_keys[0]:self.sample_keys[-1]]
+        
+        
         fig.add_trace(
             go.Scatter(
-                x=xvals,
+                x=st.t,
                 y=self.measurement.value,
                 mode="lines",
                 name="Measurement",
@@ -169,7 +168,7 @@ class Result:
         )
         fig.add_trace(
             go.Scatter(
-                x=xvals,
+                x=st.t,
                 y=self.visibility,
                 mode="lines",
                 name="Visibility",
@@ -180,16 +179,7 @@ class Result:
             col=col,
         )
         fig.add_trace(
-            go.Scatter(
-                x=xvals[self.sample_keys],
-                y=self.measurement.value[self.sample_keys],
-                name="Sample",
-            ),
-            row=row,
-            col=col,
-        )
-        fig.add_trace(
-            go.Scatter(x=xvals[self.sample_keys], y=self.sample, name="Errors"),
+            go.Scatter(x=sliced_st.t, y=self.sample, name="Errors"),
             row=row,
             col=col,
         )

@@ -31,6 +31,9 @@ type AnyIntraCriteria = (
     | CriteriaGroup
 )
 
+AnyDeviationCriteria = (ContinuousValue , Deviation)
+
+
 from .parser import parse_criteria_csv
 
 def plot_lookup(lu, v0=0, v1=10):
