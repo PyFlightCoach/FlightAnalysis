@@ -5,7 +5,7 @@ from dataclasses import dataclass, replace
 from typing import Tuple
 
 from flightanalysis.elements.element import Elements
-from flightanalysis.scoring.criteria import Deviation, ContinuousValue, AnyIntraCriteria
+from flightanalysis.scoring.criteria import Deviation, ContinuousValue, AnyIntraCriteria, AnyDeviationCriteria
 import numpy as np
 import numpy.typing as npt
 from flightdata import State
@@ -80,7 +80,7 @@ class DownGrade(DG):
                     self.criteria.prepare(value),
                     visibility,
                     self.criteria.lookup.error_limit,
-                    "deviation" if isinstance(self.criteria, ContinuousValue) else "value",
+                    "deviation" if isinstance(self.criteria, AnyDeviationCriteria) else "value",
                 )
                 if isinstance(self.criteria, Deviation):
                     return sample + 1
