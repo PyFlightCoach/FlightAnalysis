@@ -67,9 +67,14 @@ class Analysis:
                         logger.debug(f"Stopping after step {stage}: {fun_name}")
                         break
                 except ElSequenceError as ese:
-                    logger.warning(f"{self.name}, {fun_name}: {ese}")
-                    stages[2][1] = True
-                    stages[3][1] = True
+                    if throw_errors:
+                        raise ElSequenceError(
+                            f"Error running {self.name}, {fun_name}: {ese}"
+                        ) from ese
+                    else:
+                        logger.warning(f"{self.name}, {fun_name}: {ese}")
+                        stages[2] = (stages[2][0], True) 
+                        stages[3] = (stages[3][0], True) 
                 except Exception as e:
                     if throw_errors:
                         raise Exception(f"Error running {self.name}, {fun_name}: {e}") from e
