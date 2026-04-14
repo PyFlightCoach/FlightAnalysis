@@ -1,12 +1,17 @@
 from __future__ import annotations
-from flightdata.state.state import State
+
+from dataclasses import dataclass, replace
+
+import geometry as g
+from geometry.utils import get_value
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
 from flightdata.base import to_list
-from flightanalysis.scoring.measurement import Measurement
+from flightdata.state.state import State
+
 from flightanalysis.scoring.criteria import Criteria
-from dataclasses import dataclass, replace
+from flightanalysis.scoring.measurement import Measurement
 
 
 def diff(val, factor=3):
@@ -147,45 +152,66 @@ class Result:
         import plotly.graph_objects as go
         from plotly.subplots import make_subplots
 
-        if fig is None:
-            fig = make_subplots(
-                rows=1, cols=1, shared_xaxes=True, specs=[[{"secondary_y": True}]]
-            )
-        
-        sliced_st = st.iloc[self.sample_keys[0]:self.sample_keys[-1]]
-        
-        
-        fig.add_trace(
+        _f = fig or make_subplots(
+            rows=1, cols=1, shared_xaxes=True, specs=[[{"secondary_y": True}]]
+        )
+        sample_x = np.array(get_value(st.t, self.sample_keys))
+        sliced_st = st.iloc[self.sample_keys[0] : self.sample_keys[-1]]
+
+        _f.add_trace(
             go.Scatter(
                 x=st.t,
-                y=self.measurement.value,
+                y=self.measurement.value
+                if hasattr(self.measurement, "value")
+                else self.measurement,
                 mode="lines",
                 name="Measurement",
                 line=dict(color="blue", dash="solid"),
+                showlegend=row == 1,
             ),
             row=row,
             col=col,
         )
-        fig.add_trace(
+        _f.add_trace(
             go.Scatter(
                 x=st.t,
                 y=self.visibility,
                 mode="lines",
                 name="Visibility",
-                line=dict(color="blue", dash="dash"),
-                yaxis="y2",
+                line=dict(color="blue", dash="dash", width=1),
+                showlegend=row == 1,
+            ),
+            row=row,
+            col=col,
+            secondary_y=True,
+        )
+        _f.add_trace(
+            go.Scatter(
+                x=sample_x,
+                y=self.sample,
+                name="Errors",
+                showlegend=row == 1,
+                mode="lines" if len(sample_x) > 1 else "markers",
+                line=dict(color="red", dash="solid"),
             ),
             row=row,
             col=col,
         )
-        fig.add_trace(
-            go.Scatter(x=sliced_st.t, y=self.sample, name="Errors"),
+        _f.add_trace(
+            go.Scatter(
+                x=sample_x[self.keys],
+                y=self.sample[self.keys],
+                text=np.array(self.dgs).round(2).astype(str),
+                mode="markers+text",
+                textposition="top right",
+                name="Downgrades",
+                marker=dict(color="black", size=5, symbol="circle"),
+                showlegend=row == 1,
+            ),
             row=row,
             col=col,
         )
-
-        fig.update_yaxes(
-            overlaying="y",
+        _f.update_yaxes(
             side="right",
             range=[0, 1],
             secondary_y=True,
@@ -193,4 +219,4 @@ class Result:
             col=col,
         )
 
-        return fig
+        return _f

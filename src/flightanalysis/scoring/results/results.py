@@ -2,7 +2,7 @@ from __future__ import annotations
 from itertools import chain
 import numpy as np
 import pandas as pd
-from flightdata import Collection
+from flightdata import Collection, State
 from .result import Result, trunc
 from flightanalysis.scoring.criteria import Criteria
 
@@ -91,40 +91,23 @@ class Results(Collection):
             data["name"], [Result.from_dict(v) for v in data["data"].values()]
         )
 
-    def plot(self):
+    def plot(self, st: State, fig=None):
         from plotly.subplots import make_subplots
 
-        fig = make_subplots(
+        fig = fig or make_subplots(
             rows=len(self),
             cols=1,
             shared_xaxes=True,
             specs=[[{"secondary_y": True}] for _ in self],
-            vertical_spacing=0.03,
+            vertical_spacing=0.05,
+            subplot_titles=[f"{res.name} (dg={res.total:.2f})" for res in self],
         )
 
         for i, res in enumerate(self, 1):
             res: Result
-            fig.add_traces(res.measurement_trace(showlegend=i == 1), rows=i, cols=1)
-            fig.add_traces(res.sample_trace(showlegend=i == 1), rows=i, cols=1)
-            fig.add_trace(res.downgrade_trace(showlegend=i == 1), row=i, col=1)
-            fig.add_trace(
-                res.visibility_trace(showlegend=i == 1), secondary_y=True, row=i, col=1
-            )
-
-            fig.update_layout(
-                **{
-                    f"yaxis{i * 2 - 1}": dict(
-                        title=f"{res.name}, {res.measurement.unit.replace('rad', 'deg')}",
-                        rangemode="tozero",
-                    ),
-                    f"yaxis{i * 2}": dict(
-                        title="visibility", range=[0, 1], showgrid=False
-                    ),
-                },
-                hovermode="x unified",
-                hoversubplots="axis",
-                title=f"{self.name}, {self.total:.2f}",
-            )
+            fig = res.plot(st, fig, row=i, col=1)
+            
+                
 
         return fig
 
@@ -162,13 +145,23 @@ class Results(Collection):
                 v.criteria.lookup.exponent,
                 v.criteria.lookup.limit,
                 error,
-                dg
+                dg,
             ]
-            for k, v in self.items() for error, dg in zip(v.errors, v.dgs)
+            for k, v in self.items()
+            for error, dg in zip(v.errors, v.dgs)
         ]
         if len(data) == 0:
             return pd.DataFrame()
         return pd.DataFrame(
             data,
-            columns=["results", "result", "criteria", "factor", "exponent", "limit", "error", "dg"],
+            columns=[
+                "results",
+                "result",
+                "criteria",
+                "factor",
+                "exponent",
+                "limit",
+                "error",
+                "dg",
+            ],
         ).dropna(axis=1)
