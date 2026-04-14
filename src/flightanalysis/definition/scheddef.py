@@ -12,7 +12,7 @@ from flightanalysis.schedule import Schedule
 
 
 class SchedDef(Collection):
-    VType = ManDef | ManOption
+    VType = ManDef
 
     def __init__(self, data: dict[str, VType] | list[VType] = None):
         super().__init__(data, check_types=False)
@@ -37,7 +37,7 @@ class SchedDef(Collection):
         return Schedule([md.create() for md in self])
 
     def create_template(
-        self, depth: float = 170, wind: Heading = Heading.LTOR
+        self, depth: float = 170, wind: Heading = Heading.LTOR, **kwargs
     ) -> Tuple[Schedule, State]:
         templates = []
         ipos = self[0].guess_ipos(depth, wind)
@@ -58,7 +58,7 @@ class SchedDef(Collection):
             )
             md = md.fit_box(itrans)
             man = md.create()
-            templates.append(State.stack(man.create_template(itrans), "element"))
+            templates.append(State.stack(man.create_template(itrans, **kwargs), "element"))
             mans.append(man)
         return Schedule(mans), State.stack(templates, "manoeuvre", [md.info.short_name for md in self] )
 
