@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import numpy as np
 from flightanalysis.base.utils import parse_csv
-
+from loguru import logger
 
 @dataclass
 class Exponential:
@@ -88,12 +88,15 @@ def parse_expos_from_csv(file: Path | str):
     for grpname, grp in df.groupby("group"):
         expos[grpname] = {}
         for row in grp.itertuples(index=False):
-            expos[grpname][row.name] = Exponential.simple(
-                row.exponent,
-                row.error,
-                row.downgrade,
-                row.haslimit,
-            )
+            try:
+                expos[grpname][row.name] = Exponential.simple(
+                    row.exponent,
+                    row.error,
+                    row.downgrade,
+                    row.haslimit,
+                )
+            except Exception as ex:
+                raise Exception(f"Error parsing lookup {row.name} in group {grpname}") from ex
     return namedtuple("Expos", expos.keys())(
         *[namedtuple(k, v.keys())(**v) for k, v in expos.items()]
     )

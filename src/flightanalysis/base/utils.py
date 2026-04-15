@@ -54,7 +54,7 @@ def tryval(val):
 def process_series(ser: pd.Series):
     if sum(ser == "True") + sum(ser == "False") == len(ser):
         return ser == "True"
-    elif ser.dtype == object:
+    elif ser.dtype == object or ser.dtype == "string":
         try:
             deglocs = ser.str.endswith("°")
             if sum(deglocs):
@@ -71,7 +71,7 @@ def process_series(ser: pd.Series):
 def parse_csv(file: Path | str | pd.DataFrame, **kwargs) -> pd.DataFrame:
     path = Path(file)
     df: pd.DataFrame = pd.read_csv(path, **({"comment": "#"} | kwargs), keep_default_na=False).apply(
-        lambda x: x.str.strip() if x.dtype == object else x
+        lambda x: x.str.strip() if x.dtype == object or x.dtype == "string" else x
     )
     df.columns = [c.strip() for c in df.columns]
     return df.apply(process_series)
