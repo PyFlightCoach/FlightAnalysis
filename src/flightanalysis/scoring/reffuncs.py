@@ -8,7 +8,11 @@ from flightdata import State
 
 
 measures = RFuncBuilders({})
+smoothers = RFuncBuilders({})
 selectors = RFuncBuilders({})
+<<<<<<< HEAD
+visor = RFuncBuilders({})
+=======
 visors = RFuncBuilders({})
 inter_visors = RFuncBuilders({})
 box_measures = RFuncBuilders({})
@@ -24,14 +28,20 @@ def measure(
 
     return inner
 
+>>>>>>> newmeasure
 
 rfuncs = dict(
     measures=measures,
+    smoothers=smoothers,
     selectors=selectors,
+<<<<<<< HEAD
+    visor=visor,
+=======
     visors=visors,
     inter_visors=inter_visors,
     box_measures=box_measures,
     box_visors=box_visors,
+>>>>>>> newmeasure
 )
 
 

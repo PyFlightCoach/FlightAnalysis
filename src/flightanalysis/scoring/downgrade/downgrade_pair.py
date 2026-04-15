@@ -39,6 +39,7 @@ class PairedDowngrade(DG):
         fl,
         tp,
         mkwargs: dict = None,
+        smkwargs: dict = None,
         sekwargs: dict = None,
     ) -> Tuple[Result]:
 
@@ -62,6 +63,7 @@ class PairedDowngrade(DG):
                 m1,
                 v1,
                 rs1[: splitindex + 1],
+                rs1[: splitindex + 1],
                 np.arange(splitindex+1),
                 *self.first.criteria(rs1[: splitindex + 1]),
                 self.first.criteria,
@@ -70,6 +72,7 @@ class PairedDowngrade(DG):
                 f"{self.name}_{self.second.name}",
                 m2,
                 v2,
+                rs2[splitindex:],
                 rs2[splitindex:],
                 np.arange(splitindex, len(fl)),
                 *self.second.criteria(rs2[splitindex:]),

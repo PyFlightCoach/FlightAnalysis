@@ -35,6 +35,9 @@ class RefFunc:
     preset_kwargs: dict[str, Any] = field(default_factory=dict())
     description: str = ""
 
+<<<<<<< HEAD
+    def __call__(self, *args, **kwargs):
+=======
     def __getattr__(self, name):
         return getattr(self.method, name)
 
@@ -42,6 +45,7 @@ class RefFunc:
         argspec = inspect.getfullargspec(self.method.measure if hasattr(self.method, 'measure') else self.method)
         if meta is not None and "meta" in argspec.args + argspec.kwonlyargs:
             kwargs=dict(**kwargs, meta=meta)
+>>>>>>> newmeasure
         return self.method(*args, **kwargs, **self.preset_kwargs)
 
     def __str__(self):
@@ -82,11 +86,19 @@ class RefFunc:
             unit = match.group(2)[1:] if match.group(2) else None
             if variable in self.preset_kwargs:
                 value = self.preset_kwargs[variable]
+<<<<<<< HEAD
+                if unit == "rad":
+                    value = np.degrees(value)
+                    unit = "°"
+                elif unit == "deg":
+                    unit = "°"
+=======
                 if unit and unit.find("rad") >= 0:
                     value = np.degrees(value)
                     unit = re.sub(r"rad(ian)?(s)?", "°", unit)
                 elif unit and unit.find("deg") >= 0:
                     unit = re.sub(r"deg(ree)?(s)?", "°", unit)
+>>>>>>> newmeasure
                 if isinstance(value, Number):
                     value = f"{value:.2f}"
                 description = description.replace(

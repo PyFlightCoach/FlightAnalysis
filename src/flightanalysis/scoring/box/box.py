@@ -156,10 +156,14 @@ class Box:
                 Result(
                     "centre_box",
                     m,
+<<<<<<< HEAD
+                    None,
+=======
                     vis,
+>>>>>>> newmeasure
                     sample,
                     ovs,
-                    *self.centre_dg.criteria(sample[ovs]),
+                    *self.centre_dg.criteria(sample[ovs], True),
                     self.centre_dg.criteria
                 )
             )
@@ -180,10 +184,14 @@ class Box:
                 Result(
                     f"{k}_box",
                     m,
+<<<<<<< HEAD
+                    None,
+=======
                     vis,
+>>>>>>> newmeasure
                     sample,
                     np.arange(len(fl)),
-                    *dg.criteria(sample),
+                    *dg.criteria(sample, True),
                     dg.criteria,
                 )
             )

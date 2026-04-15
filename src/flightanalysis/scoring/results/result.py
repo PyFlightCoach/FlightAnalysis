@@ -113,8 +113,9 @@ class Result:
             np.column_stack(
                 [
                     self.keys,
-                    self.visibility,
-                    self.measurement,
+                    self.measurement.visibility,
+                    self.measurement.value,
+                    self.raw_sample,
                     self.sample,
                     self.errors,
                     self.dgs,
@@ -124,6 +125,7 @@ class Result:
                 "collector",
                 "visibility",
                 "measurement",
+                "raw_sample",
                 "sample",
                 "error",
                 "downgrade",
@@ -133,20 +135,19 @@ class Result:
     def inter_df(self):
         data = []
         for i in range(len(self.measurement)):
-            data.append(
-                dict(
-                    name=f"{i + 1}",
-                    measurement=self.measurement[i],
-                    error=self.errors[i] + 1,
-                    visibility=self.visibility[i],
-                    downgrade=self.dgs[i],
-                )
-            )
+            data.append(dict(
+                name=f"{i+1}",
+                measurement=self.measurement.value[i],
+                error = self.errors[i] + 1,
+                visibility = self.measurement.visibility[i],
+                downgrade = self.dgs[i],
+            ))
         return pd.DataFrame(data).T
 
     @property
     def plot_f(self):
         return np.degrees if self.measurement.unit.find("rad") >= 0 else lambda x: x
+    
 
     def plot(self, st: State, fig=None, row=None, col=None):
         import plotly.graph_objects as go
@@ -160,19 +161,60 @@ class Result:
 
         _f.add_trace(
             go.Scatter(
-                x=st.t,
-                y=self.measurement.value
-                if hasattr(self.measurement, "value")
-                else self.measurement,
-                mode="lines",
-                name="Measurement",
-                line=dict(color="blue", dash="solid"),
-                showlegend=row == 1,
+                **(
+                    dict(
+                        x=x,
+                        y=self.plot_f(self.measurement.value),
+                        name="Measurement",
+                        mode="lines",
+                        **kwargs,
+                        line=dict(color="blue", width=1, dash="dash"),
+                    )
+                    | kwargs
+                )
             ),
-            row=row,
-            col=col,
-        )
-        _f.add_trace(
+            *(
+                [
+                    go.Scatter(
+                        **(
+                            dict(
+                                x=x,
+                                y=self.plot_f(self.measurement.value)[self.sample_keys],
+                                mode="lines",
+                                name="Selected",
+                                line=dict(color="blue", width=1, dash="solid"),
+                            )
+                            | kwargs
+                        )
+                    )
+                ]
+                if not len(self.sample) == len(self.measurement)
+                else []
+            ),
+        ]
+
+    def sample_trace(self, xvs=None, **kwargs):
+        import plotly.graph_objects as go
+
+        return [
+            *(
+                [
+                    go.Scatter(
+                        **(
+                            dict(
+                                x=self.sample_keys if xvs is None else xvs,
+                                y=self.plot_f(self.raw_sample),
+                                mode="lines",
+                                name="Visible Sample",
+                                line=dict(width=1, color="black", dash="dash"),
+                            )
+                            | kwargs
+                        )
+                    )
+                ]
+                if self.raw_sample is not None
+                else []
+            ),
             go.Scatter(
                 x=st.t,
                 y=self.visibility,
@@ -185,17 +227,22 @@ class Result:
             col=col,
             secondary_y=True,
         )
-        _f.add_trace(
-            go.Scatter(
-                x=sample_x,
-                y=self.sample,
-                name="Errors",
-                showlegend=row == 1,
-                mode="lines" if len(sample_x) > 1 else "markers",
-                line=dict(color="red", dash="solid"),
-            ),
-            row=row,
-            col=col,
+
+    def visibility_trace(self, xvs=None, **kwargs):
+        import plotly.graph_objects as go
+
+        return go.Scatter(
+            **(
+                dict(
+                    x=self.sample_keys if xvs is None else xvs,
+                    y=self.measurement.visibility,
+                    mode="lines",
+                    name="Visibility",
+                    yaxis="y2",
+                    line=dict(width=1, color="black", dash="dot"),
+                )
+                | kwargs
+            )
         )
         _f.add_trace(
             go.Scatter(

@@ -13,9 +13,10 @@ from geometry.utils import apply_index_slice
 
 from flightanalysis.base.ref_funcs import RefFunc, RefFuncs
 
-from ..reffuncs import measures as me, selectors as se, visors as vi
+from ..measurement import Measurement
+from ..reffuncs import measures as me, selectors as se, smoothers as sm
 from ..results import Result
-from ..visibility import apply_visibility
+from ..visibility import visibility
 
 from .base import DG
 
@@ -26,15 +27,16 @@ class SquashError(Exception):
 @dataclass
 class DownGrade(DG):
     """This is for Intra scoring, it sits within an El and defines how errors should be measured and the criteria to apply
-    measure - takes a measurement of the flown data 
-    visor - estimate of the visibility of the measurement
-    selectors - a set of functions that extract a region of interest from the measurement
+    measure - a Measurement constructor
     criteria - takes a Measurement and calculates the score
+    display_name - the name to display in the results
+    selector - the selector to apply to the measurement before scoring
     """
+
     measure: RefFunc
     selectors: RefFuncs
     criteria: AnyIntraCriteria
-    
+
     def __repr__(self):
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.selectors)}, {str(self.criteria)})"
 
@@ -68,17 +70,17 @@ class DownGrade(DG):
         except Exception as e:
             raise Exception(f"Selector: {e}") from e
 
-    def create_sample(self, measurement: npt.NDArray, visibility: npt.NDArray) -> npt.NDArray:
+    def create_sample(self, measurement: Measurement) -> npt.NDArray:
         """create a sample by reducing the measured error to account for the visibility weighting."""
         try:
             if DownGrade.ENABLE_VISIBILITY:
                 if isinstance(self.criteria, Deviation):
-                    value = measurement - 1
+                    value = measurement.value - 1
                 else:
-                    value = measurement
-                sample = apply_visibility(
+                    value = measurement.value
+                sample = visibility(
                     self.criteria.prepare(value),
-                    visibility,
+                    measurement.visibility,
                     self.criteria.lookup.error_limit,
                     "deviation" if isinstance(self.criteria, AnyDeviationCriteria) else "value",
                 )
@@ -88,10 +90,21 @@ class DownGrade(DG):
                     return sample
 
             else:
-                return self.criteria.prepare(measurement)
+                return self.criteria.prepare(measurement.value)
         except Exception as e:
             raise Exception(f"Creating sample: {e}") from e
         
+    def smoothing(
+        self, sample: npt.NDArray, dt: float, el: str, **kwargs
+    ) -> npt.NDArray:
+        """Apply the smoothers to the sample"""
+        try:
+            for _sm in self.smoothers:
+                sample = _sm(sample, dt, el, **kwargs)
+            return sample
+        except Exception as e:
+            raise Exception(f"Smoothing: {e}") from e
+
     def __call__(
         self,
         el,
@@ -101,8 +114,7 @@ class DownGrade(DG):
         try:
             meta = {}
             oids, fl, tp = self.select(fl, tp, meta=meta)
-            if len(oids) == 0:
-                raise SquashError("No data selected by selectors")
+
             istart = int(np.ceil(oids[0]))
             iend = int(np.ceil(oids[-1]) + 1)
 
@@ -115,10 +127,10 @@ class DownGrade(DG):
             return Result(
                 self.name,
                 measurement,
-                visibility,
+                raw_sample,
                 sample,
                 oids,
-                *self.criteria(sample),
+                *self.criteria(sample, limits),
                 self.criteria,
                 meta
             )
@@ -160,8 +172,9 @@ class DownGrade(DG):
 def dg(
     name: str,
     meas: RefFunc,
+    sms: RefFunc | list[RefFunc],
     sels: RefFunc | list[RefFunc],
     criteria: AnyIntraCriteria,
     tags: DGTags,
 ):
-    return DownGrade(name, tags, meas, RefFuncs(sels), criteria)
+    return DownGrade(name, tags, meas, RefFuncs(sms), RefFuncs(sels), criteria)

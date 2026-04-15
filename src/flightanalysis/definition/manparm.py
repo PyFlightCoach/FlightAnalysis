@@ -66,7 +66,7 @@ class ManParm(Opp):
             defaul=data["defaul"],
             unit=data["unit"],
             collectors=Collectors.from_dict(data["collectors"]),
-            visibility=visors.parse(data["visibility"])
+            visibility=visor.parse(data["visibility"])
             if "visibility" in data
             else None,
         )
@@ -119,7 +119,7 @@ class ManParm(Opp):
             _vis,
         )
 
-    def get_downgrades(self, els: Elements, state: State, box) -> Result:
+    def get_downgrades(self, els: Elements, state: State, box, limits=True) -> Result:
         direction, visor = self.collect_vis(els, state, box)
         
         measurement = Measurement(
@@ -143,7 +143,7 @@ class ManParm(Opp):
             measurement.value,
             np.arange(len(measurement)),
             mistakes,
-            dgs * visibility,
+            dgs * meas.visibility,
             ids,
             self.criteria,
         )
