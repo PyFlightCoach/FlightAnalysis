@@ -152,16 +152,18 @@ class Result:
         import plotly.graph_objects as go
         from plotly.subplots import make_subplots
 
+        def scale(x):
+            return np.degrees(x) if self.measurement.unit.find("rad") >= 0 else x
+
         _f = fig or make_subplots(
             rows=1, cols=1, shared_xaxes=True, specs=[[{"secondary_y": True}]]
         )
         sample_x = np.array(get_value(st.t, self.sample_keys))
-        sliced_st = st.iloc[self.sample_keys[0] : self.sample_keys[-1]]
 
         _f.add_trace(
             go.Scatter(
                 x=st.t,
-                y=self.measurement.value
+                y=scale(self.measurement.value)
                 if hasattr(self.measurement, "value")
                 else self.measurement,
                 mode="lines",
@@ -188,7 +190,7 @@ class Result:
         _f.add_trace(
             go.Scatter(
                 x=sample_x,
-                y=self.sample,
+                y=scale(self.sample),
                 name="Errors",
                 showlegend=row == 1,
                 mode="lines" if len(sample_x) > 1 else "markers",
@@ -200,7 +202,7 @@ class Result:
         _f.add_trace(
             go.Scatter(
                 x=sample_x[self.keys],
-                y=self.sample[self.keys],
+                y=scale(self.sample[self.keys]),
                 text=np.array(self.dgs).round(2).astype(str),
                 mode="markers+text",
                 textposition="top right",
