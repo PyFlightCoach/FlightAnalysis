@@ -46,8 +46,12 @@ class Analysis:
         optimise: bool = True,
         throw_errors: bool = False,
         stop_after: str = None,
+        force: bool = False,
         **kwargs,
     ) -> Self:
+        if self.scores and not force:
+            logger.info(f"Analysis {self.id} already has scores, skipping run.")
+            return self
         stages = [
             ("create_itrans", True),
             ("select_mdef", "element" in self.flown.labels.keys()),
@@ -78,7 +82,7 @@ class Analysis:
                 except Exception as e:
                     if throw_errors:
                         raise Exception(f"Error running {self.name}, {fun_name}: {e}") from e
-                    else:
+                    else:                        
                         logger.error(f"{self.name}, {fun_name}: {e}")
                         break
             else:

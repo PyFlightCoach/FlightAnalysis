@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import re
+
 import numpy as np
 import numpy.typing as npt
 from dataclasses import dataclass
@@ -13,7 +16,8 @@ class Peak(Criteria):
     
 
     def describe(self, unit: str = "") -> str:
-        limit = np.degrees(self.limit) if unit == "radians" else self.limit
+        limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
+        unit = re.sub(r"radians|radian|rad", "°", unit)
         return f"{super().describe()}: Downgrades are assigned to the maximum value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def __call__(self, vs: npt.NDArray) -> npt.NDArray:
@@ -33,7 +37,8 @@ class Peak(Criteria):
 @dataclass
 class AbsPeak(Peak):
     def describe(self, unit=""):
-        limit = np.degrees(self.limit) if unit == "radians" else self.limit
+        limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
+        unit = re.sub(r"radians|radian|rad", "°", unit)
         return f"AbsPeak Criteria: Downgrades are assigned to the maximum absolute value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def prepare(self, vs):
@@ -50,7 +55,8 @@ class Trough(Criteria):
     direction: int = -1 # 1 for distance above the limit, -1 for distance below the limit
 
     def describe(self, unit: str = "") -> str:
-        limit = np.degrees(self.limit) if unit == "radians" else self.limit
+        limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
+        unit = re.sub(r"radians|radian|rad", "°", unit)
         return f"{super().describe()}: Downgrades are assigned to the minimum value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def __call__(self, vs: npt.NDArray) -> npt.NDArray:
@@ -72,7 +78,8 @@ class AbsTrough(Trough):
     """Downgrade the smallest absolute value based on its distance below the limit"""
 
     def describe(self, unit: str = "") -> str:
-        limit = np.degrees(self.limit) if unit == "radians" else self.limit
+        limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
+        unit = re.sub(r"radians|radian|rad", "°", unit)
         return f"AbsTrough Criteria: Downgrades are assigned to the minimum absolute value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def prepare(self, vs):
