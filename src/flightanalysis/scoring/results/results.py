@@ -91,24 +91,29 @@ class Results(Collection):
             data["name"], [Result.from_dict(v) for v in data["data"].values()]
         )
 
-    def plot(self, st: State, fig=None):
+    def plot(self, st: State, subset: None | list[str] = None, dgs: bool = False, threshold=0.005):
         from plotly.subplots import make_subplots
+        subset = subset or list(self.keys())
 
-        fig = fig or make_subplots(
-            rows=len(self),
+        fig = make_subplots(
+            rows=len(subset),
             cols=1,
             shared_xaxes=True,
-            specs=[[{"secondary_y": True}] for _ in self],
-            vertical_spacing=0.05,
-            subplot_titles=[f"{res.name} (dg={res.total:.2f})" for res in self],
+            specs=[[{"secondary_y": True}] for _ in subset],
+            vertical_spacing=0.06,
+            subplot_titles=[f"{self[k].name} (dg={self[k].total:.2f})" for k in subset],
         )
 
-        for i, res in enumerate(self, 1):
-            res: Result
-            fig = res.plot(st, fig, row=i, col=1)
-            
-                
+        for i, k in enumerate(subset, 1):
+            res: Result = self[k]
+            fig = res.plot(st, dgs=dgs, threshold=threshold, fig=fig, row=i, col=1)
 
+        fig.update_layout(
+            height=150 * len(subset),
+            template="plotly_white",
+            margin=dict(l=0, r=0, t=30, b=0),   
+        )
+        fig.update_xaxes(title="Time (s)", row=len(subset), col=1)
         return fig
 
     def inter_dg_list(self, cutoff=0.05):

@@ -46,7 +46,7 @@ class Analysis:
         optimise: bool = True,
         throw_errors: bool = False,
         stop_after: str = None,
-        force: bool = False,
+        force: bool = True,
         **kwargs,
     ) -> Self:
         if self.scores and not force:
