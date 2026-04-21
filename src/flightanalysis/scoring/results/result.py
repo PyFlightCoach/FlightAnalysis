@@ -85,7 +85,7 @@ class Result:
     def from_dict(data) -> Result:
         return Result(
             data["name"],
-            np.array(data["measurement"]),
+            Measurement.from_dict(data["measurement"]),
             np.array(data["visibility"]),
             np.array(data["sample"]),
             np.array(data["sample_keys"]),
@@ -148,7 +148,7 @@ class Result:
     def plot_f(self):
         return np.degrees if self.measurement.unit.find("rad") >= 0 else lambda x: x
 
-    def plot(self, st: State, fig=None, row=None, col=None):
+    def plot(self, st: State, dgs: bool = False, threshold=0.005, fig=None, row=None, col=None):
         import plotly.graph_objects as go
         from plotly.subplots import make_subplots
 
@@ -159,6 +159,7 @@ class Result:
             rows=1, cols=1, shared_xaxes=True, specs=[[{"secondary_y": True}]]
         )
         sample_x = np.array(get_value(st.t, self.sample_keys))
+
 
         _f.add_trace(
             go.Scatter(
@@ -199,24 +200,36 @@ class Result:
             row=row,
             col=col,
         )
-        _f.add_trace(
-            go.Scatter(
-                x=sample_x[self.keys],
-                y=scale(self.sample[self.keys]),
-                text=np.array(self.dgs).round(2).astype(str),
-                mode="markers+text",
-                textposition="top right",
-                name="Downgrades",
-                marker=dict(color="black", size=5, symbol="circle"),
-                showlegend=row == 1,
-            ),
-            row=row,
-            col=col,
-        )
+        if dgs:
+
+            keys = self.keys[self.dgs > threshold]
+            
+            _f.add_trace(
+                go.Scatter(
+                    x=sample_x[keys],
+                    y=scale(self.sample[keys]),
+                    text=np.array(self.dgs[self.dgs > threshold]).round(2).astype(str),
+                    mode="markers+text",
+                    textposition="top right",
+                    name="Downgrades",
+                    marker=dict(color="black", size=5, symbol="circle"),
+                    showlegend=row == 1,
+                ),
+                row=row,
+                col=col,
+            )
         _f.update_yaxes(
             side="right",
             range=[0, 1],
             secondary_y=True,
+            row=row,
+            col=col,
+        )
+
+        _f.update_yaxes(
+            title_text=self.measurement.unit.replace("radian", "degree").replace(
+                "rad", "degree"
+            ),
             row=row,
             col=col,
         )

@@ -6,6 +6,7 @@ def apply_visibility(val, factor: float, limit: float, kind: Literal["deviation"
     """factor between 0 and 1"""
 
     b = 2.2 - factor * 1.2
+
     if kind == 'value':
         norm = np.abs(val / limit)
         return np.where(norm > 1, norm, norm**b) * limit * np.sign(val)
