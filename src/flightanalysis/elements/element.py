@@ -130,7 +130,25 @@ class Element:
                 tag.add(ElTag.VERTICALEXIT)
             elif g.point.is_perpendicular(wvel[-1], g.PZ())[0]:
                 tag.add(ElTag.HORIZONTALEXIT)
-        
+
+        wbzup = g.point.is_parallel(tp.att.transform_point(g.PZ()), g.PZ())
+        wbzdown = g.point.is_anti_parallel(tp.att.transform_point(g.PZ()), g.PZ())
+
+        if wbzup[0]:
+            tag.add(ElTag.UPRIGHTENTRY)
+        elif wbzdown[0]:
+            tag.add(ElTag.INVERTEDENTRY)
+        if wbzup[-1]:
+            tag.add(ElTag.UPRIGHTEXIT)
+        elif wbzdown[-1]:
+            tag.add(ElTag.INVERTEDEXIT)
+
+        wbyvert = g.point.is_parallel(tp.att.transform_point(g.PY()), g.PZ())
+        if wbyvert[0]:
+            tag.add(ElTag.KEENTRY)
+        elif wbyvert[-1]:
+            tag.add(ElTag.KEEXIT)
+
         if self.__class__.__name__ == "Loop" and lastel is not None and lastel.__class__.__name__ == "Loop":
             # TODO to be complete this should consider the rolls and ke angles too
             if np.sign(self.angle) == np.sign(lastel.angle):
@@ -138,8 +156,7 @@ class Element:
 
         return tag
 
-class Elements(Collection):
-    VType = Element
+class Elements(Collection[Element]):
 
     def get_parameter_from_element(self, element_name: str, parameter_name: str):
         return getattr(self.data[element_name], parameter_name)

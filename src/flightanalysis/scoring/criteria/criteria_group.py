@@ -3,8 +3,7 @@ from .criteria import Criteria
 
 
 
-class CriteriaGroup(Collection):
-    VType: Criteria = Criteria
+class CriteriaGroup(Collection[Criteria]):
     uid: str = "name"
 
 

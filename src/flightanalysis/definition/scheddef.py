@@ -11,10 +11,9 @@ from flightanalysis.elements import Line
 from flightanalysis.schedule import Schedule
 
 
-class SchedDef(Collection):
-    VType = ManDef
+class SchedDef(Collection[ManDef]):
 
-    def __init__(self, data: dict[str, VType] | list[VType] = None):
+    def __init__(self, data: dict[str, ManDef | ManOption] | list[ManDef | ManOption] = None):
         super().__init__(data, check_types=False)
         assert all([v.__class__.__name__ in ["ManOption", "ManDef"] for v in self])
     

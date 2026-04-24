@@ -4,8 +4,10 @@ from flightanalysis.elements.tags import DGTags
 from dataclasses import dataclass, replace
 from typing import Tuple
 
+from loguru import logger
+
 from flightanalysis.elements.element import Elements
-from flightanalysis.scoring.criteria import Deviation, ContinuousValue, AnyIntraCriteria, AnyDeviationCriteria
+from flightanalysis.scoring.criteria import Deviation, AnyIntraCriteria, AnyDeviationCriteria
 import numpy as np
 import numpy.typing as npt
 from flightdata import State
@@ -61,9 +63,9 @@ class DownGrade(DG):
                 sfl = sfl.iloc[sli]
                 stp = stp.iloc[sli]
             if len(oids) > 0:
-                fl = State.stack([fl.iloc[: oids[0]], sfl, fl.iloc[oids[-1] :]])
-                tp = State.stack([tp.iloc[: oids[0]], stp, tp.iloc[oids[-1] :]])
-
+                fl = State.splice([fl, fl.iloc[oids]])
+                tp = State.splice([tp, tp.iloc[oids]])
+                
             return oids, fl, tp
         except Exception as e:
             raise Exception(f"Selector: {e}") from e
@@ -103,14 +105,16 @@ class DownGrade(DG):
             oids, fl, tp = self.select(fl, tp, meta=meta)
             if len(oids) == 0:
                 raise SquashError("No data selected by selectors")
-            istart = int(np.ceil(oids[0]))
-            iend = int(np.ceil(oids[-1]) + 1)
-
+            
+            _oids = oids.copy()
+            _oids[0] = int(np.ceil(oids[0]))
+            _oids[-1] = int(np.ceil(oids[-1]) + (0 if _oids[0] == oids[0] else 1)) 
+            
             measurement = self.measure(Elements([el]), fl, tp, meta=meta)
 
             visibility: npt.NDArray = self.measure.visor(fl, tp, measurement, meta=meta)
             
-            sample = self.create_sample(measurement.value, visibility)[istart:iend]
+            sample = self.create_sample(measurement.value, visibility)[_oids.astype(int)]
 
             return Result(
                 self.name,

@@ -160,28 +160,44 @@ class Result:
         )
         sample_x = np.array(get_value(st.t, self.sample_keys))
 
+        if len(sample_x) < len(self.measurement.value):
+            _f.add_trace(
+                go.Scatter(
+                    x=st.t,
+                    y=scale(self.measurement.value)
+                    if hasattr(self.measurement, "value")
+                    else get_value(self.measurement.value, self.sample_keys),
+                    mode="lines",
+                    name="Measurement",
+                    line=dict(color="blue", dash="dash", width=1),
+                    showlegend=row == 1,
+                ),
+                row=row,
+                col=col,
+            )
 
         _f.add_trace(
             go.Scatter(
-                x=st.t,
-                y=scale(self.measurement.value)
+                x=sample_x,
+                y=scale(get_value(self.measurement.value, self.sample_keys))
                 if hasattr(self.measurement, "value")
-                else self.measurement,
+                else get_value(self.measurement.value, self.sample_keys),
                 mode="lines",
-                name="Measurement",
+                name="Selected Measurement" if len(sample_x) < len(self.measurement.value) else "Measurement",
                 line=dict(color="blue", dash="solid"),
                 showlegend=row == 1,
             ),
             row=row,
             col=col,
         )
+
         _f.add_trace(
             go.Scatter(
                 x=st.t,
                 y=self.visibility,
                 mode="lines",
                 name="Visibility",
-                line=dict(color="blue", dash="dash", width=1),
+                line=dict(color="black", dash="dash", width=1),
                 showlegend=row == 1,
             ),
             row=row,
@@ -220,6 +236,7 @@ class Result:
             )
         _f.update_yaxes(
             side="right",
+            title_text="Visibility",
             range=[0, 1],
             secondary_y=True,
             row=row,
@@ -230,6 +247,7 @@ class Result:
             title_text=self.measurement.unit.replace("radian", "degree").replace(
                 "rad", "degree"
             ),
+            secondary_y=False,
             row=row,
             col=col,
         )

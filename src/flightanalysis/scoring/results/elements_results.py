@@ -6,12 +6,10 @@ from flightanalysis.scoring.criteria import Criteria
 from more_itertools import flatten
 from flightanalysis.base.utils import df_insert
 
-class ElementsResults(Collection):
+class ElementsResults(Collection[Results]):
     """Intra Only
     Elements Results covers all the elements in a manoeuvre
     """
-
-    VType = Results
     uid = "name"
 
     def __repr__(self):

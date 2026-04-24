@@ -96,8 +96,7 @@ class RefFunc:
         return description
 
 
-class RefFuncs(Collection):
-    VType = RefFunc
+class RefFuncs(Collection[RefFunc]):
     uid = "name"
 
     def to_list(self):

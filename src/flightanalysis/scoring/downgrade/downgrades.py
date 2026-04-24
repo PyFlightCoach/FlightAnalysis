@@ -28,7 +28,7 @@ def parse_downgrade_csv(file: Path | str, intra_criteria: NamedTuple) -> list[DG
         if len(new_dgs) == 1:
             downgrades[name] = new_dgs[0]
         elif len(new_dgs) == 2:
-            assert new_dgs[0].tags == new_dgs[1].tags, "downgrades with same name must have same tags"
+            assert new_dgs[0].tags == new_dgs[1].tags, f"downgrades with same name ({name}) must have same tags"
             downgrades[name] = pdg(name, *new_dgs, new_dgs[0].tags)
         else:
             raise ValueError(f"Expected 1 or 2 downgrades with unique name {name}, got {len(new_dgs)}")
@@ -36,8 +36,7 @@ def parse_downgrade_csv(file: Path | str, intra_criteria: NamedTuple) -> list[DG
     return namedtuple("Downgrades", downgrades.keys())(*downgrades.values())
 
 
-class DownGrades(Collection):
-    VType = DG
+class DownGrades(Collection[DG]):
     uid = "name"
 
     def apply(

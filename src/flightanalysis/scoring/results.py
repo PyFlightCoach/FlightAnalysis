@@ -265,13 +265,11 @@ class Result:
         return fig
 
 
-class Results(Collection):
+class Results(Collection[Result]):
     """
     Intra - the Results collection covers all the downgrades in one element
     Inter - the Results collection covers all the downgrades in one Manoeuvre
     """
-
-    VType = Result
     uid = "name"
 
     def score(self, difficulty=3, truncate: None | str = False):
@@ -364,12 +362,10 @@ class Results(Collection):
         return inter_dgs.loc[inter_dgs > cutoff]
 
 
-class ElementsResults(Collection):
+class ElementsResults(Collection[Results]):
     """Intra Only
     Elements Results covers all the elements in a manoeuvre
     """
-
-    VType = Results
     uid = "name"
 
     def __repr__(self):

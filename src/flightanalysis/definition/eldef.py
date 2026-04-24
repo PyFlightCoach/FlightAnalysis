@@ -109,12 +109,10 @@ class ElDef:
         return list(set(parms))
 
 
-class ElDefs(Collection):
+class ElDefs(Collection[ElDef]):
     """This class wraps a dict of ElDefs, which would generally be used sequentially to build a manoeuvre.
     It provides attribute access to the ElDefs based on their names.
     """
-
-    VType = ElDef
     uid = "name"
 
     @staticmethod
