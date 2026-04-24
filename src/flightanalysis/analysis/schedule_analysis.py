@@ -13,8 +13,7 @@ import numpy as np
 import pandas as pd
 
 
-class ScheduleAnalysis(Collection):
-    VType = Analysis
+class ScheduleAnalysis(Collection[Analysis]):
     uid = "name"
 
     @property

@@ -5,10 +5,8 @@ from flightdata.base.collection import Collection
 from .combo_setting import ComboSetting
 
 
-class ComboSettings(Collection):
+class ComboSettings(Collection[ComboSetting]):
     """A collection of ComboSetting objects, keyed on the manparm name, so only one setting is allowed per manparm."""
-
-    VType = ComboSetting
     uid = "mp_name"
 
     def set_values(self, **kwargs):

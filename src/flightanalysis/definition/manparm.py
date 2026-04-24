@@ -179,4 +179,3 @@ class ManParm(Opp):
         return f"ManParm({self.name}, {self.criteria.__class__.__name__}, {self.defaul}, {self.unit}, {str(self.visibility) if self.visibility else 'None'})"
 
 
-

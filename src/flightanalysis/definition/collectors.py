@@ -58,8 +58,7 @@ class Collector(Opp):
         return [self]
 
 
-class Collectors(Collection):
-    VType = Opp
+class Collectors(Collection[Opp]):    
     uid = "name"
 
     def __str__(self):

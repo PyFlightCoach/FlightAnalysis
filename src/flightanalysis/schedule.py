@@ -5,8 +5,7 @@ from flightdata import State, Collection
 from typing import Tuple
 
 
-class Schedule(Collection):
-    VType = Manoeuvre
+class Schedule(Collection[Manoeuvre]):
 
     def create_template(self, itrans: Transformation, aligned: State=None) -> State:
         """Create labelled template flight data

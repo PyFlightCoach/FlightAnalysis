@@ -7,13 +7,11 @@ from .result import Result, trunc
 from flightanalysis.scoring.criteria import Criteria
 
 
-class Results(Collection):
+class Results(Collection[Result]):
     """
     Intra - the Results collection covers all the downgrades in one element
     Inter - the Results collection covers all the downgrades in one Manoeuvre
     """
-
-    VType = Result
     uid = "name"
 
     def score(self, difficulty=3, truncate: None | str = False):
@@ -100,8 +98,8 @@ class Results(Collection):
             cols=1,
             shared_xaxes=True,
             specs=[[{"secondary_y": True}] for _ in subset],
-            vertical_spacing=0.06,
-            subplot_titles=[f"{self[k].name} (dg={self[k].total:.2f})" for k in subset],
+            vertical_spacing=6*0.06 / len(subset),
+            subplot_titles=[f"{self[k].name.replace('_', ' ').title()} (dg={self[k].total:.2f})" for k in subset],
         )
 
         for i, k in enumerate(subset, 1):

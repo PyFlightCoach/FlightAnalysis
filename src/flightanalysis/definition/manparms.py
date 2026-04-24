@@ -19,8 +19,7 @@ from .combo_setting import ComboSetting
 from .combo_settings import ComboSet, ComboSettings
 
 
-class ManParms(Collection):
-    VType = ManParm
+class ManParms(Collection[ManParm]):
     uid = "name"
 
     def collect(self, manoeuvre: Manoeuvre, state: State, box) -> Results:

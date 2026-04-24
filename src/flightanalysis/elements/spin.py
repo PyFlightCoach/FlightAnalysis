@@ -29,6 +29,10 @@ class Spin(Element):
     )
 
     @property
+    def roll(self):
+        return self.turns
+
+    @property
     def length(self):
         return (
             (abs(self.turns) + self.drop_turns + self.recovery_turns)
@@ -96,7 +100,7 @@ class Spin(Element):
                 .fill(tnd)
                 .superimpose_rotation(g.PY(), -abs(self.pitch) * _inverted)
                 .superimpose_angles(
-                    g.PZ(np.sign(self.turns)) * rate * tnd.t**2 / (2 * _td),
+                    -g.PZ(np.sign(self.turns)) * rate * tnd.t**2 / (2 * _td),
                     reference="world",
                 )
             )
@@ -110,7 +114,7 @@ class Spin(Element):
             .label(element=self.uid + "_autorotation")
             .superimpose_rotation(
                 g.PZ(),
-                np.sign(self.turns)
+                -np.sign(self.turns)
                 * (abs(self.turns) - self.drop_turns - self.recovery_turns),
                 "world",
             )
@@ -123,7 +127,7 @@ class Spin(Element):
                 .fill(trec)
                 .superimpose_rotation(g.PY(), abs(self.pitch) * _inverted)
                 .superimpose_angles(
-                    g.PZ(np.sign(self.turns))
+                    -g.PZ(np.sign(self.turns))
                     * rate
                     * (trec.t - 0.5 * trec.t**2 / _trec),
                     "world",
@@ -153,7 +157,7 @@ class Spin(Element):
 
         return self.set_parms(
             height=flown.z[0] - flown.z[-1],
-            turns=np.sign(np.mean(auto.wrvel.z)) * abs(self.turns),
+            turns=np.sign(-np.mean(auto.wrvel.z)) * abs(self.turns),
             speed=np.mean(abs(flown.vel)),
             pitch=pitch,
         )
