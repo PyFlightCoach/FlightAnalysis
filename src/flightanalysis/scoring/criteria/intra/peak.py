@@ -18,7 +18,7 @@ class Peak(Criteria):
     def describe(self, unit: str = "") -> str:
         limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
         unit = re.sub(r"radians|radian|rad", "°", unit)
-        return f"{super().describe()}: Downgrades are assigned to the maximum value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
+        return f"{super().describe()}: One downgrade is assigned to the value furthest  {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def __call__(self, vs: npt.NDArray) -> npt.NDArray:
         idx = np.argmax(vs)
@@ -30,7 +30,7 @@ class Peak(Criteria):
 
     def prepare(self, vs):
         return np.maximum(
-            vs - self.limit if self.direction == 1 else self.limit - vs, 0
+            self.direction * (vs - self.limit), 0
         )
 
 
@@ -39,12 +39,11 @@ class AbsPeak(Peak):
     def describe(self, unit=""):
         limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
         unit = re.sub(r"radians|radian|rad", "°", unit)
-        return f"AbsPeak Criteria: Downgrades are assigned to the maximum absolute value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
+        return f"{super().describe()}: One downgrade is assigned to the absolute value furthest {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
 
     def prepare(self, vs):
-        """Downgrade the largest absolute value based on its distance above the limit"""
         return np.maximum(
-            np.abs(vs) - self.limit if self.direction == 1 else self.limit - np.abs(vs),
+            self.direction * (np.abs(vs) - self.limit),
             0,
         )
 
@@ -57,7 +56,7 @@ class Trough(Criteria):
     def describe(self, unit: str = "") -> str:
         limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
         unit = re.sub(r"radians|radian|rad", "°", unit)
-        return f"{super().describe()}: Downgrades are assigned to the minimum value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
+        return f"{super().describe()}: One downgrade is assigned to the {'largest' if self.direction == 1 else 'smallest'} value for its distance {'below' if self.direction == 1 else 'above'} {limit:.2f} {unit}."
 
     def __call__(self, vs: npt.NDArray) -> npt.NDArray:
         idx = np.argmin(vs)
@@ -68,9 +67,7 @@ class Trough(Criteria):
             return errors, self.lookup(errors), np.array([idx])
 
     def prepare(self, vs):
-        return np.maximum(
-            vs - self.limit if self.direction == 1 else self.limit - vs, 0
-        )
+        return np.maximum(self.direction * (vs - self.limit), 0)
 
 
 @dataclass
@@ -80,9 +77,7 @@ class AbsTrough(Trough):
     def describe(self, unit: str = "") -> str:
         limit = np.degrees(self.limit) if unit.find("rad") > 0 else self.limit
         unit = re.sub(r"radians|radian|rad", "°", unit)
-        return f"AbsTrough Criteria: Downgrades are assigned to the minimum absolute value in the sample, for its distance {'above' if self.direction == 1 else 'below'} {limit:.2f} {unit}."
+        return f"{super().describe()}: One downgrade is assigned to the {'largest' if self.direction == 1 else 'smallest'} absolute value for its distance {'below' if self.direction == 1 else 'above'} {limit:.2f} {unit}."
 
     def prepare(self, vs):
-        return np.maximum(
-            np.abs(vs) - self.limit if self.direction == 1 else self.limit - np.abs(vs), 0
-        )
+        return np.maximum(self.direction * (np.abs(vs) - self.limit), 0)

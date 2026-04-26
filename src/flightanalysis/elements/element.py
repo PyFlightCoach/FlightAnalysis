@@ -131,8 +131,8 @@ class Element:
             elif g.point.is_perpendicular(wvel[-1], g.PZ())[0]:
                 tag.add(ElTag.HORIZONTALEXIT)
 
-        wbzup = g.point.is_parallel(tp.att.transform_point(g.PZ()), g.PZ())
-        wbzdown = g.point.is_anti_parallel(tp.att.transform_point(g.PZ()), g.PZ())
+        wbzup = g.point.is_parallel(tp.att.transform_point(g.PZ()), g.PZ(-1))
+        wbzdown = g.point.is_anti_parallel(tp.att.transform_point(g.PZ()), g.PZ(-1))
 
         if wbzup[0]:
             tag.add(ElTag.UPRIGHTENTRY)
@@ -153,6 +153,12 @@ class Element:
             # TODO to be complete this should consider the rolls and ke angles too
             if np.sign(self.angle) == np.sign(lastel.angle):
                 tag.add(ElTag.LOOPSEQUENCE)
+            
+        if ElTag.SNAP in tag:
+            if self.pitch > 0:
+                tag.add(ElTag.POSITIVE)
+            elif self.pitch < 0:
+                tag.add(ElTag.NEGATIVE)
 
         return tag
 
