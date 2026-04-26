@@ -40,6 +40,8 @@ class ElTag(Enum):
     VERTICALENTRY = auto()
     VERTICALEXIT = auto()
     LOOPSEQUENCE = auto()
+    POSITIVE = auto()
+    NEGATIVE = auto()
 
 
 class OnlyElTag(Enum):
