@@ -1,3 +1,4 @@
 a  , b    , c, d
 1  , test1, True, 4
 2  , test3, False, 20°
+3  , test3, False, 20°/s

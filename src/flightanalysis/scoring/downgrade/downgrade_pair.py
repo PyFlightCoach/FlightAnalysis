@@ -26,6 +26,7 @@ class PairedDowngrade(DG):
     def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
             name=self.name,
+            display_name=self.display_name,
             tags=self.tags.to_dict() if self.tags else None,
             first=self.first.to_dict(criteria_names),
             second=self.second.to_dict(criteria_names),
@@ -85,4 +86,4 @@ def pdg(
     tags: DGTags
 ) -> PairedDowngrade:
     """Create a paired downgrade from two downgrades"""
-    return PairedDowngrade(name, tags, first, second)
+    return PairedDowngrade(name, f"{first.display_name} -> {second.display_name}", tags, first, second)

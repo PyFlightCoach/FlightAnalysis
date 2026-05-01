@@ -10,9 +10,7 @@ from flightanalysis.base.utils import all_subclasses
 class Criteria:
     name: str
     lookup: Exponential = field(default_factory=lambda: free)
-    
-    def describe(self, unit: str = "") -> str:
-        return f"{self.__class__.__name__} Criteria"
+
 
     def prepare(self, value):
         return value
@@ -56,4 +54,8 @@ class Criteria:
             _so = f"{_so}, limit={self.limit}"
         return _so + ")"
 
+    def describe(self, unit: str = "") -> str:
+        return f"{self.__class__.__name__} Criteria"
 
+    def short_description(self, unit: str = "") -> str:
+        return self.__class__.__name__

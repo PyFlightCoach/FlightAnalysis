@@ -192,7 +192,7 @@ class ManDef:
         fig.add_traces(tp.plot(nmodels=20, scale=3, ribb=False, tips=True).data)
         return fig
 
-    def update_dgs(self, dgs: NamedTuple):
+    def update_dgs(self, dgs: DownGrades) -> ManDef:
         new_eds = []
 
         man = self.create()

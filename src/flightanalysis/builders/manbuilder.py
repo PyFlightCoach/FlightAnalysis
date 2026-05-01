@@ -8,7 +8,7 @@ from flightanalysis.base.utils import replace_any_depth_value
 from flightanalysis.definition.manparms import ManParms
 from flightanalysis.scoring.box import TriangularBox, RectangularBox
 from flightanalysis.scoring.criteria.exponential import parse_expos_from_csv
-from flightanalysis.scoring.downgrade.downgrades import parse_downgrade_csv
+from flightanalysis.scoring.downgrade.downgrades import DownGrades
 from flightanalysis.scoring.criteria import parse_criteria_csv, Combination
 from flightanalysis.scoring.box.parser import parse_box_downgrades, parse_box
 from loguru import logger
@@ -33,7 +33,7 @@ from flightanalysis.builders import elbuilders
 class ManBuilder:
     mps: ManParms
     mpmaps: dict[str, dict]
-    dgs: NamedTuple
+    dgs: DownGrades
     inter_criteria: NamedTuple
     box: TriangularBox | RectangularBox
 
@@ -193,7 +193,7 @@ class ManBuilder:
 
         lookups = parse_expos_from_csv(Path.resolve(file.parent / toml["lookups"]))
         criteria = parse_criteria_csv(Path.resolve(file.parent / toml["criteria"]), lookups)
-        intra_downgrades = parse_downgrade_csv(
+        intra_downgrades = DownGrades.parse_csv(
             Path.resolve(file.parent / toml["intra_downgrades"]), criteria.intra
         )
         box_downgrades = parse_box_downgrades(
