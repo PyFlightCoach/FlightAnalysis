@@ -46,6 +46,7 @@ class DownGrade(DG):
     def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(
             name=self.name,
+            display_name=self.display_name,
             tags=self.tags.to_dict() if self.tags else None,
             measure=str(self.measure),
             selectors=self.selectors.to_list(),
@@ -163,9 +164,10 @@ class DownGrade(DG):
 
 def dg(
     name: str,
+    display_name: str | None,
     meas: RefFunc,
     sels: RefFunc | list[RefFunc],
     criteria: AnyIntraCriteria,
     tags: DGTags,
 ):
-    return DownGrade(name, tags, meas, RefFuncs(sels), criteria)
+    return DownGrade(name, display_name, tags, meas, RefFuncs(sels), criteria)

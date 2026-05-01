@@ -8,6 +8,8 @@ from .criteria import Criteria
 from . import AnyInterCriteria, AnyIntraCriteria
 
 
+
+
 def parse_criteria_csv(file: str | Path, lookups: NamedTuple):
     df = parse_csv(file, sep=";")
 

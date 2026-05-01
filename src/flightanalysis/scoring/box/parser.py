@@ -4,9 +4,9 @@ from pathlib import Path
 from flightanalysis.base.utils import parse_csv
 from flightanalysis.scoring.box.box import BoxDG
 from flightanalysis.scoring.reffuncs import box_measures as measures
-from tomllib import load
 from .triangular_box import TriangularBox
 from .rectangular_box import RectangularBox
+
 
 def parse_box_downgrades(file: Path, box_criteria: NamedTuple):
     df = parse_csv(file, sep=";")

@@ -5,7 +5,9 @@ import pandas as pd
 from pathlib import Path
 import numpy as np
 from typing import Any
+import re
 
+from zmq import has
 
 def combine_args(names: list[str], *args, **kwargs) -> dict:
     """Combine the args and kwargs into a dict with the names as keys"""
@@ -43,10 +45,12 @@ def df_insert(df: pd.DataFrame, **kwargs) -> pd.DataFrame:
 
 def tryval(val):
     try:
-        if val[-1] == "°":
-            return np.radians(float(val[:-1]))
-        else:
-            return float(val)
+        hasdeg = val.find("°")
+        val = float(val.split("°")[0].strip())
+        if hasdeg >= 0:
+            val = np.radians(val)
+        return val
+
     except Exception:
         return val if len(val) else None
 
@@ -55,17 +59,20 @@ def process_series(ser: pd.Series):
     if sum(ser == "True") + sum(ser == "False") == len(ser):
         return ser == "True"
     elif ser.dtype == object or ser.dtype == "string":
+
         try:
-            deglocs = ser.str.endswith("°")
-            if sum(deglocs):
-                vals = ser.str.rstrip("°").astype(float)
-                return np.where(deglocs, np.radians(vals), vals)
-            else:
-                return ser.astype(float)
+            vals = ser.str.extract(r'^([\d+]*\.?[\d]+)').iloc[:,0].astype(np.float64)
+            if np.isnan(vals).any():
+                return ser.values
+            deglocs = ser.str.contains("°")
+            if deglocs.any():
+                pass
+            return np.where(deglocs, np.radians(vals), vals)
+            
         except Exception:
             return ser
     else:
-        return ser
+        return ser.values
 
 
 def parse_csv(file: Path | str | pd.DataFrame, **kwargs) -> pd.DataFrame:
@@ -105,3 +112,12 @@ def replace_any_depth_value(d: Any, old_value: Any, new_value: Any) -> dict:
         return new_value
     else:
         return d
+
+
+def display_unit(value: Number, unit: str="", precision: int = 2) -> str:
+    new_unit = re.sub(r"radians|radian|rad", "°", unit)
+    if unit.find("rad") >= 0:
+        val = f"{np.degrees(value):.{precision}f}"
+    else:
+        val = f"{value:.{precision}f}"
+    return f"{val} {new_unit}"
