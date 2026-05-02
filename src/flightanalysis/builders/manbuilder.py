@@ -153,6 +153,7 @@ class ManBuilder:
                             md.info.centre_points.append(c1 + ceid + int(fac))
                         else:
                             md.info.centred_els.append((ceid + c1, fac))
+        md.eds.add(self.line(force_name="exit_line", length=30)(md.eds, md.mps))
         collmps = md.mps.remove_unused()
         propmps = md.mps.subset(md.eds.list_props())
         md.mps = ManParms.merge([collmps, propmps])

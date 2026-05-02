@@ -35,7 +35,7 @@ class Continuous(Criteria):
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
     def __call__(
-        self, vs: npt.NDArray
+        self, vs: npt.NDArray,**kwargs
     ) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         if len(vs) <= 1:
             return np.array([]), np.array([]), np.array([], dtype=int)
