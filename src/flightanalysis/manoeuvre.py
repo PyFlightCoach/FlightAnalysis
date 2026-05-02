@@ -8,55 +8,24 @@ from flightanalysis.elements import Elements, Element, Line
 
 @dataclass
 class Manoeuvre:
-    elements: Elements  # now always includes the entry line
-    exit_line: Line
+    elements: Elements  # now always includes the entry line and the exit line
     uid: str = None
+
+    def __post_init__(self):
+        assert self.elements[0].uid == "entry_line", "First element must be an entry line"
+        assert self.elements[-1].uid == "exit_line", "Last element must be an exit line"
 
     @staticmethod
     def from_dict(data) -> Manoeuvre:
         return Manoeuvre(
             Elements.from_dicts(data["elements"]),
-            Line.from_dict(data["exit_line"]) if data["exit_line"] else None,
             data["uid"],
         )
 
     def to_dict(self):
         return dict(
             elements=self.elements.to_dicts(),
-            exit_line=self.exit_line.to_dict() if self.exit_line else None,
             uid=self.uid,
-        )
-
-    @staticmethod
-    def from_all_elements(uid: str, els: list[Element]) -> Manoeuvre:
-        hasexit = -1 if els[-1].uid.startswith("exit_") else None
-
-        return Manoeuvre(
-            Elements(els[0:hasexit]),
-            els[-1] if hasexit else None,
-            uid,
-        )
-
-    def all_elements(self, create_exit: bool = False) -> Elements:
-        els = Elements()
-
-        els.add(self.elements)
-
-        if self.exit_line:
-            els.add(self.exit_line)
-        elif create_exit:
-            els.add(Line("exit_line", self.elements[0].speed, 30, 0))
-
-        return els
-
-    def add_lines(self, add_exit=True) -> Manoeuvre:
-        return Manoeuvre.from_all_elements(self.uid, self.all_elements(add_exit))
-
-    def remove_exit_line(self) -> Manoeuvre:
-        return Manoeuvre(
-            self.elements,
-            None,
-            self.uid,
         )
 
     def create_template(
@@ -66,7 +35,7 @@ class Manoeuvre:
         freq: int = 20,
         npoints: int | Literal["min"] = 3,
     ) -> dict[str, State]:
-        return self.all_elements().create_templates(initial, aligned, freq, npoints)
+        return self.elements.create_templates(initial, aligned, freq, npoints)
 
     def match_intention(
         self,
@@ -78,22 +47,23 @@ class Manoeuvre:
     ) -> Tuple[Self, dict[str, State]]:
         """Create a new manoeuvre with all the elements scaled to match the corresponding
         flown element"""
-        elms, tpdict = self.all_elements().match_intention(
+        elms, tpdict = self.elements.match_intention(
             istate, aligned, freq, npoints, match_index
         )
 
-        return Manoeuvre.from_all_elements(self.uid, elms), tpdict
+        return Manoeuvre(elms, self.uid), tpdict
 
     def copy(self):
-        return Manoeuvre.from_all_elements(
-            self.uid, self.all_elements().copy(deep=True)
+        return Manoeuvre(
+            self.uid, self.elements.copy(deep=True)
         )
 
     def copy_directions(self, other: Manoeuvre) -> Self:
-        return Manoeuvre.from_all_elements(
-            self.uid,
-            Elements(self.all_elements().copy_directions(other.all_elements())),
-        )
+        return Manoeuvre(
+            self.elements.copy_directions(other.elements),
+            self.uid
+            )
+        
 
     def descriptions(self):
         return [e.describe() for e in self.elements]

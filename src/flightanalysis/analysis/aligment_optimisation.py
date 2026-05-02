@@ -40,9 +40,9 @@ def _optimise_split(
         )
 
         if include_inter:
-            oman = Manoeuvre.from_all_elements(
-                manoeuvre.uid,
+            oman = Manoeuvre(
                 Elements(manoeuvre.elements.data | {oel1.uid: oel1, oel2.uid: oel2}),
+                manoeuvre.uid,
             )
 
             omdef = mdef.update_defaults(oman)

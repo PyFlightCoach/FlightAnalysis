@@ -179,7 +179,6 @@ class ManDef:
         """Create the manoeuvre based on the default values in self.mps."""
         return Manoeuvre(
             Elements([ed(self.mps) for ed in self.eds]),
-            None,
             uid=self.info.short_name,
         )
 
@@ -196,10 +195,10 @@ class ManDef:
         new_eds = []
 
         man = self.create()
-        tps = man.add_lines(add_exit=True).create_template(
+        tps = man.create_template(
             g.Transformation(self.initial_rotation(Heading.LTOR))
         )
-        tags = man.all_elements(create_exit=True).generate_tags(tps)
+        tags = man.elements.generate_tags(tps)
         for i, ed in enumerate(self.eds):
             new_eds.append(
                 ElDef(
@@ -213,7 +212,7 @@ class ManDef:
                             if dg.tags(
                                 {ElTag.NONE} if i == 0 else tags[i - 1],
                                 tags[i],
-                                tags[i + 1],
+                                tags[i + 1] if i < len(self.eds) - 1 else {ElTag.NONE},
                             )
                         ]
                     ),

@@ -14,7 +14,7 @@ class Peak(Criteria):
         1  # 1 for distance above the limit, -1 for distance below the limit
     )
 
-    def __call__(self, vs: npt.NDArray) -> npt.NDArray:
+    def __call__(self, vs: npt.NDArray, **kwargs) -> npt.NDArray:
         idx = np.argmax(vs)
         errors = np.array([vs[idx]])
         if errors[0] == 0:
@@ -54,7 +54,7 @@ class Trough(Criteria):
         -1
     )  # 1 for distance above the limit, -1 for distance below the limit
 
-    def __call__(self, vs: npt.NDArray) -> npt.NDArray:
+    def __call__(self, vs: npt.NDArray, **kwargs) -> npt.NDArray:
         idx = np.argmin(vs)
         errors = np.array([vs[idx]])
         if errors[0] == 0:

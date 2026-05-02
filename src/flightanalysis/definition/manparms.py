@@ -27,7 +27,7 @@ class ManParms(Collection[ManParm]):
         return Results(
             "Inter",
             [
-                mp.get_downgrades(manoeuvre.all_elements(), state, box)
+                mp.get_downgrades(manoeuvre.elements, state, box)
                 for mp in self
                 if isinstance(mp.criteria, Comparison) and len(mp.collectors)
             ],
@@ -47,7 +47,7 @@ class ManParms(Collection[ManParm]):
         """
         mps = []
         for mp in self:
-            flown_parm = list(mp.collect(intended.all_elements()).values())
+            flown_parm = list(mp.collect(intended.elements).values())
             if len(flown_parm) > 0 and mp.defaul is not None:
                 if isinstance(mp.criteria, Combination):
                     defaul = mp.criteria.check_option(

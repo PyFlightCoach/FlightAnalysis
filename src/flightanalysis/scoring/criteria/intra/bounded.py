@@ -17,7 +17,7 @@ class Bounded(Criteria):
     min_bound: float = None  # values below the min bound will be downgraded
     max_bound: float = None  # values above the max bound will be downgraded
     
-    def __call__(self, vs: npt.NDArray):
+    def __call__(self, vs: npt.NDArray, **kwargs):
         """each downgrade corresponds to a group of values outside the bounds, ids
         correspond to the last value in each case"""
         # sample = self.prepare(vs)

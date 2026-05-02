@@ -124,7 +124,7 @@ class Analysis:
 
         options = []
         for md in mopt:
-            if len(elnames) == len(md.eds) + 1 and np.all(
+            if len(elnames) == len(md.eds) and np.all(
                 [elnames[i] == k for i, k in enumerate(md.eds.data.keys())]
             ):
                 options.append(md)
@@ -145,7 +145,7 @@ class Analysis:
     def _preliminary_alignment(
         self, mdef: ManDef, freq: int = 25, radius: AlignRadiusOption = 10
     ):
-        manoeuvre = mdef.create().add_lines()
+        manoeuvre = mdef.create()
         templates = manoeuvre.create_template(self.itrans, None, freq, "min")
         template = State.stack(templates, "element")
         res = Alignment.align(self.flown, template, radius, True)
@@ -184,12 +184,12 @@ class Analysis:
         )
 
     def prepare_scoring(self) -> Self:
-        manoeuvre = (self.manoeuvre or self.mdef.create().add_lines()).match_intention(
+        manoeuvre = (self.manoeuvre or self.mdef.create()).match_intention(
             self.itrans, self.flown, 0, "min", True
         )[0]
 
         mdef = self.mdef.update_defaults(manoeuvre)
-        corrected = mdef.create().add_lines()
+        corrected = mdef.create()
 
         manoeuvre = manoeuvre.copy_directions(corrected)
         templates = manoeuvre.create_template(self.itrans, self.flown)
