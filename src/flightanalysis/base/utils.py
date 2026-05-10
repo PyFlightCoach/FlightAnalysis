@@ -7,7 +7,6 @@ import numpy as np
 from typing import Any
 import re
 
-from zmq import has
 
 def combine_args(names: list[str], *args, **kwargs) -> dict:
     """Combine the args and kwargs into a dict with the names as keys"""

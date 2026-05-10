@@ -4,8 +4,6 @@ from flightanalysis.elements.tags import DGTags
 from dataclasses import dataclass
 from typing import ClassVar, Any
 
-from networkx import display
-
 from ..reffuncs import measures as me, selectors as se
 from ..criteria import Criteria
 
