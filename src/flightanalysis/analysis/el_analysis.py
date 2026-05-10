@@ -8,7 +8,7 @@ from typing import Self
 from flightanalysis import ElDef, Element
 from dataclasses import dataclass
 import geometry as g
-
+from flightanalysis.scoring.downgrade.dg_testing import DGTest
 
 @dataclass
 class ElementAnalysis:
@@ -48,7 +48,7 @@ class ElementAnalysis:
         )
 
     def score_dg(self, dg: str, limits: bool = True) -> Result:
-        return self.edef.dgs[dg](self.el, self.fl, self.tp, limits)
+        return self.edef.dgs[dg](self.el, self.fl, self.tp)
 
     def intra_score(self) -> Results:
         try:
@@ -69,6 +69,15 @@ class ElementAnalysis:
             len=len(self.fl),
             **(dict(intra=f"{self.results.total:.4f}") if self.results is not None else {}),
         )  # fmt: skip
+
+
+    def create_test_dataset(self, dg: str):
+        return DGTest(
+            self.edef.dgs[dg],
+            self.edef.els,
+            self.fl,
+            self.tp[0],
+        )
 
     def full_result_plot(self, name: str, showlegend=True, textposition: str = "bottom left"):
         """plot the actual result and the uncropped result on the same figure,
