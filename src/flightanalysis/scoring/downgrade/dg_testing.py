@@ -31,4 +31,4 @@ class DGTest:
         )
     
     def run(self) -> Result:
-        return self.dg(self.els, self.flown, self.template)
+        return self.dg(self.els[0], self.flown, self.template)

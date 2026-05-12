@@ -5,7 +5,7 @@ import numpy as np
 from flightanalysis.scoring.results import Results, Result
 from flightdata import State
 from typing import Self
-from flightanalysis import ElDef, Element
+from flightanalysis import ElDef, Element, Elements
 from dataclasses import dataclass
 import geometry as g
 from flightanalysis.scoring.downgrade.dg_testing import DGTest
@@ -74,9 +74,9 @@ class ElementAnalysis:
     def create_test_dataset(self, dg: str):
         return DGTest(
             self.edef.dgs[dg],
-            self.edef.els,
+            Elements([self.el]),
             self.fl,
-            self.tp[0],
+            self.tp,
         )
 
     def full_result_plot(self, name: str, showlegend=True, textposition: str = "bottom left"):
