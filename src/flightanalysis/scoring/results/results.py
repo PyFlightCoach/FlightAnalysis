@@ -110,6 +110,7 @@ class Results(Collection[Result]):
             height=150 * len(subset),
             template="plotly_white",
             margin=dict(l=0, r=0, t=30, b=0),   
+            hovermode="x unified",
         )
         fig.update_xaxes(title="Time (s)", row=len(subset), col=1)
         return fig
