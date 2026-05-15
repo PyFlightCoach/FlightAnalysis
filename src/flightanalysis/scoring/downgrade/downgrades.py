@@ -1,5 +1,4 @@
 from __future__ import annotations
-from collections import namedtuple
 from .base import DG
 from .downgrade import DownGrade, dg, SquashError
 from .downgrade_pair import PairedDowngrade, pdg
@@ -67,3 +66,9 @@ class DownGrades(Collection[DG]):
     
     def tags(self, last: set[ElTag], this: set[ElTag], next: set[ElTag]) -> DownGrades:
         return DownGrades({dg.name: dg for dg in self if dg.tags(last, this, next)})
+    
+    def lookup(self, display_name: str) -> DG | PairedDowngrade:
+        for _dg in self:
+            if _dg.display_name == display_name:
+                return _dg
+        raise ValueError(f"Downgrade with display name {display_name} not found")

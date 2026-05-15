@@ -12,7 +12,7 @@ elements collection.
 """
 
 from __future__ import annotations
-from typing import NamedTuple
+from typing import Literal
 from dataclasses import dataclass, replace
 
 from .manparms import ManParms
@@ -247,5 +247,16 @@ class ManDef:
             tp = el.create_template(tp[-1])
             yield ed, el, tp
 
+
+    def lookup_dg(self, kind: Literal["intra", "inter", "box"], el: str | None, display_name: str):
+        match kind:
+            case "intra":
+                return self.eds[el].dgs.lookup(display_name)
+            case "inter":
+                return self.mps[display_name]
+            case "box":
+                return self.box.bound_dgs.get(display_name)
+            case _:
+                raise ValueError(f"Invalid downgrade kind: {kind}")
 
 from .manoption import ManOption  # noqa: E402
