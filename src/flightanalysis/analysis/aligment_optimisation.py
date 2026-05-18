@@ -141,10 +141,8 @@ def optimise_alignment(
 
     elns = list(mdef.eds.data.keys())
 
-    
-
     for eln1, eln2 in zip(elns[:-1], elns[1:]):
-        for step_size in [5, 1]:
+        for step_size in [1]:#[5, 1]:
             itrans = g.Transformation(
                 templates[eln1][0].att,
                 flown.element[eln1][0].pos,
