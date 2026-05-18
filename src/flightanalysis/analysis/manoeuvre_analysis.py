@@ -8,7 +8,7 @@ from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.analysis.el_analysis import ElementAnalysis
 from flightanalysis.scoring.results import ElementsResults, ManoeuvreResults
 
-from .aligment_optimisation import optimise_alignment
+from .aligment_optimisation import optimise_alignment, optimise_alignment_old
 import numpy as np
 
 import geometry as g
@@ -196,9 +196,11 @@ class Analysis:
 
         return replace(self, mdef=mdef, manoeuvre=manoeuvre, templates=templates)
 
-    def optimise_alignment(self):
-        fl = optimise_alignment(self.flown, self.mdef, self.manoeuvre, self.templates)
-
+    def optimise_alignment(self, old_method: bool = False) -> Self:
+        _meth = optimise_alignment if not old_method else optimise_alignment_old
+        
+        fl = _meth(self.flown, self.mdef, self.manoeuvre, self.templates)
+        
         return replace(self, flown=fl)
 
     def intra(self):
