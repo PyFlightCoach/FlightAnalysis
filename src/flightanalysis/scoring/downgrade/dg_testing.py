@@ -1,10 +1,10 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from flightanalysis import Elements, measures as m, selectors as s, visors as v, Result
 from flightdata import State
 from .downgrade import DownGrade
-
+from tuning import load_builder
 
 @dataclass
 class DGTest:
@@ -30,5 +30,10 @@ class DGTest:
             template=State.from_dict(d["template"]),
         )
     
+    def reload(self, rule:str ):
+        mb = load_builder(rule)
+        
+        return replace(self, dg=mb.dgs[self.dg.name])
+
     def run(self) -> Result:
         return self.dg(self.els[0], self.flown, self.template)
