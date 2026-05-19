@@ -118,7 +118,7 @@ class DownGrade(DG):
             sample = self.create_sample(measurement.value, visibility)[_oids.astype(int)]
 
             return Result(
-                self.display_name,
+                self.name,
                 measurement,
                 visibility,
                 sample,

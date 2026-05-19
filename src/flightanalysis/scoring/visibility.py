@@ -15,6 +15,9 @@ def apply_visibility(val, factor: float, limit: float, kind: Literal["deviation"
         norm = np.abs(diff / limit)
 
         res = np.where(norm > 1, norm, norm**b) * limit * np.sign(diff) 
+
+        smoothed = res.cumsum()
+        return smoothed - np.mean(smoothed) + np.mean(val)
         return res.cumsum() + val[0]
     else:
         raise ValueError(f'kind {kind} not recognized')
