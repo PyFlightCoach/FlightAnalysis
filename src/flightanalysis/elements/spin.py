@@ -63,7 +63,7 @@ class Spin(Element):
     def create_template(
         self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3
     ) -> State:
-        istate = istate.copy(vel=g.PX(self.speed))
+        istate = istate.copy(vel=istate.vel.unit() * self.speed)
 
         _inverted = 1 if istate.transform.rotation.is_inverted()[0] else -1
         rate = self.rate
