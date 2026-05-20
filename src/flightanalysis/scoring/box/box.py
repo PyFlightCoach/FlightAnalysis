@@ -135,7 +135,7 @@ class Box:
     def score(self, info: ManInfo, fl: State, tp: State):
         res = Results("positioning")
 
-        if self.centre_dg and len(info.centre_points) and len(info.centred_els):
+        if self.centre_dg and (len(info.centre_points) or len(info.centred_els)):
             m, vis = self.centre_dg.measure(fl, tp, self)
 
             sample = apply_visibility(
