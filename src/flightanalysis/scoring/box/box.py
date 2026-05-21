@@ -1,4 +1,5 @@
 from __future__ import annotations
+from flightanalysis.elements.element import Elements
 import numpy as np
 from dataclasses import dataclass
 import geometry as g
@@ -132,11 +133,11 @@ class Box:
         p = g.P0() if p is None else p
         return g.PY(1), self.distance + self.depth - p.y
 
-    def score(self, info: ManInfo, fl: State, tp: State):
+    def score(self, info: ManInfo, els: Elements, fl: State, tp: State):
         res = Results("positioning")
 
         if self.centre_dg and (len(info.centre_points) or len(info.centred_els)):
-            m, vis = self.centre_dg.measure(fl, tp, self)
+            m, vis = self.centre_dg.measure(els, fl, tp, self)
 
             sample = apply_visibility(
                 m.value, vis, self.centre_dg.criteria.lookup.error_limit
@@ -169,7 +170,7 @@ class Box:
                 if abs(tp.pos.y.max() - tp.pos.y.min()) > 20:
                     continue
 
-            m, vis = dg.measure(fl, tp, self)
+            m, vis = dg.measure(els, fl, tp, self)
 
             sample = apply_visibility(
                 dg.criteria.prepare(m.value),
