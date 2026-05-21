@@ -210,7 +210,7 @@ class Analysis:
         return self.mdef.mps.collect(self.manoeuvre, self.flown, self.mdef.box)
 
     def positioning(self):
-        return self.mdef.box.score(self.mdef.info, self.flown, self.template)
+        return self.mdef.box.score(self.mdef.info, self.manoeuvre.elements, self.flown, self.template)
 
     def calculate_score(self) -> Self:
         def fun(group: Literal["inter", "intra", "positioning"]):
