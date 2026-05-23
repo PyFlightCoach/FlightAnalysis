@@ -6,7 +6,7 @@ from flightanalysis.definition import ManDef, ManOption
 from flightanalysis.elements import AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.analysis.el_analysis import ElementAnalysis
-from flightanalysis.scoring.results import ElementsResults, ManoeuvreResults
+from flightanalysis.scoring.results import ElementsResults, ManoeuvreResults, Results
 
 from .aligment_optimisation import optimise_alignment, optimise_alignment_old
 import numpy as np
@@ -77,12 +77,14 @@ class Analysis:
                         ) from ese
                     else:
                         logger.warning(f"{self.name}, {fun_name}: {ese}")
-                        stages[2] = (stages[2][0], True) 
-                        stages[3] = (stages[3][0], True) 
+                        stages[2] = (stages[2][0], True)
+                        stages[3] = (stages[3][0], True)
                 except Exception as e:
                     if throw_errors:
-                        raise Exception(f"Error running {self.name}, {fun_name}: {e}") from e
-                    else:                        
+                        raise Exception(
+                            f"Error running {self.name}, {fun_name}: {e}"
+                        ) from e
+                    else:
                         logger.error(f"{self.name}, {fun_name}: {e}")
                         break
             else:
@@ -116,7 +118,7 @@ class Analysis:
         If more than one option matches, select the one with the best score.
 
         # There is a problem if both options have the same element names
-        # in this case we need to score both and choose the best. 
+        # in this case we need to score both and choose the best.
         """
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 
@@ -198,9 +200,9 @@ class Analysis:
 
     def optimise_alignment(self, old_method: bool = False) -> Self:
         _meth = optimise_alignment if not old_method else optimise_alignment_old
-        
+
         fl = _meth(self.flown, self.mdef, self.manoeuvre, self.templates)
-        
+
         return replace(self, flown=fl)
 
     def intra(self):
@@ -210,7 +212,9 @@ class Analysis:
         return self.mdef.mps.collect(self.manoeuvre, self.flown, self.mdef.box)
 
     def positioning(self):
-        return self.mdef.box.score(self.mdef.info, self.manoeuvre.elements, self.flown, self.template)
+        return self.mdef.box.score(
+            self.mdef.info, self.manoeuvre.elements, self.flown, self.template
+        )
 
     def calculate_score(self) -> Self:
         def fun(group: Literal["inter", "intra", "positioning"]):
@@ -223,6 +227,55 @@ class Analysis:
             self,
             scores=ManoeuvreResults(fun("inter"), fun("intra"), fun("positioning")),
         )
+
+    def reload_element(self, name: str | int) -> Self:
+        ist = self.templates[name][0].relocate(self.flown.element[name][0].pos)
+        new_man = self.manoeuvre.replace_elements(
+            **{
+                name: self.manoeuvre.elements[name].match_intention(
+                    ist, self.flown.element[name]
+                )
+            }
+        )
+        new_templates = self.templates | {
+            new_man: new_man.elements[name].create_template(
+                ist, self.flown.element[ist].time
+            )
+        }
+
+        return replace(
+            self,
+            mdef=replace(self.mdef, mps=self.mdef.mps.update_defaults(new_man)),
+            manoeuvre=new_man,
+            templates=new_templates,
+            scores=None,
+        )
+
+    def update_boundaries(self, new_fl: State) -> Self:
+        changes = [
+            k
+            for k in self.manoeuvre.elements.keys()
+            if new_fl.labels.element[k] != self.flown.labels.element[k]
+        ]
+        _new: Self = replace(self, new_fl)
+        for change in changes:
+            _new = _new.reload_element(change)
+        return _new 
+
+    def shift_boundary(self, boundary: str, t: float) -> Self:
+        return self.update_boundaries(self.flown.move_label("element", boundary, t))
+    
+    def step_boundary(self, boundary: str, steps: int) -> Self:
+        return self.update_boundaries(self.flown.step_label("element", boundary, steps, 3))
+
+    def score_boundary(self, boundary: str, include_inter: bool=False):
+        next_el = self.manoeuvre.elnames[self.manoeuvre.elnames.index[boundary]+1]
+        return Results({
+            boundary: self[boundary].intra_score(),
+            next_el:self[next_el].intra_score(),
+            **({"inter":self.inter()} if include_inter else {})
+        })
+
 
     def get_ea(self, name: str | int) -> ElementAnalysis:
         el: AnyElement = self.manoeuvre.elements[name]
