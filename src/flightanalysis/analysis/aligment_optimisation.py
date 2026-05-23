@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 import numpy as np
 from flightanalysis.scoring.results import Results
 from flightanalysis.definition import ElDef, ManDef
@@ -7,6 +9,63 @@ from flightdata import State
 import geometry as g
 from loguru import logger
 
+
+
+@dataclass
+class SplitShift:
+    mdef: ManDef
+    manoeuvre: Manoeuvre
+    flown: State
+    its: g.Transformation
+
+    def shift_boundary(self, boundary: str, steps: int, min_len=3):
+        new_fl = self.flown.step_label("element", boundary, steps, self.flown.t, min_len)
+        
+
+
+    def score_split(self, boundary: str, steps: int, min_len:int=3, include_inter=True):
+        index = list(self.manoeuvre.elements.keys()).index(boundary)
+        new_fl = self.flown.step_label("element", boundary, steps, self.flown.t, min_len)
+        fle0: State = getattr(new_fl.element, boundary)
+
+        res1, oel1, tp1 = get_score(
+            self.mdef.eds[boundary], 
+            self.manoeuvre.elements[boundary], 
+            g.Transformation(fle0[0].pos, self.iqs[index]), 
+            fle0
+        )
+        next_el = list(self.manoeuvre.elements.keys())[index+1]
+        fle1 = getattr(new_fl.element, next_el)
+
+        res2, oel2, tp2 = get_score(
+            self.mdef.eds[next_el], 
+            self.manoeuvre.elements[next_el],
+            g.Transformation(self.iqs[index+1], fle1[0].pos), 
+            fle1
+        )
+
+        if include_inter:
+            oman = Manoeuvre(
+                Elements(manoeuvre.elements.data | {oel1.uid: oel1, oel2.uid: oel2}),
+                manoeuvre.uid,
+            )
+
+            omdef = mdef.update_defaults(oman)
+
+            inter = omdef.mps.collect(
+                oman,
+                State.stack(templates | {oel1.uid: tp1, oel2.uid: tp2}, "element"),
+                mdef.box,
+            )
+
+        logger.debug(f"split {steps} {res1.total + res2.total:.2f}")
+        logger.debug(
+            f"e1={oel1.uid}, e2={oel2.uid}, steps={steps}, intra={res1.total + res2.total:.2f}, inter={inter.total if include_inter else 'not included'}"
+        )
+        return res1.total + res2.total + (inter.total if include_inter else 0)
+
+    def minimise_dg(boundary: str):
+        pass
 
 def get_score(
     ed: ElDef, el: AnyElement, itrans: g.Transformation, fl: State
@@ -167,3 +226,9 @@ def optimise_alignment(
                 flown = flown.step_label("element", eln1, steps, flown.t, 3)
             
     return flown
+
+
+def boundary_sweep(flown: State, mdef: ManDef, manoeuvre: Manoeuvre, templates: dict[str, State], boundary: str, sweep_range: float, npoints: int ):
+    """boundary is defined by the name of the element preceding it. """
+    for step in np.linspace(-sweep_range /2, sweep_range/2, 2*npoints + 1):
+        pass

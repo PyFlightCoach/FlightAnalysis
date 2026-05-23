@@ -70,3 +70,13 @@ class Manoeuvre:
 
     def __repr__(self):
         return f"Manoeuvre({self.uid}, len={len(self.elements)})"
+
+    def replace_elements(self, **kwargs):
+        return Manoeuvre(
+            self.elements.replace(**kwargs),
+            self.uid
+        )
+    
+    @property
+    def elnames(self):  
+        return list(self.elements.keys())
