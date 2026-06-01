@@ -1,10 +1,9 @@
 from __future__ import annotations
+
 from flightanalysis.elements.tags import DGTags
 
 from dataclasses import dataclass, replace
 from typing import Tuple
-
-from loguru import logger
 
 from flightanalysis.elements.element import Elements
 from flightanalysis.scoring.criteria import (
@@ -18,7 +17,6 @@ from flightdata import State
 from geometry.utils import apply_index_slice
 
 from flightanalysis.base.ref_funcs import RefFunc, RefFuncs
-
 from ..reffuncs import measures as me, selectors as se, visors as vi
 from ..results import Result
 from ..visibility import apply_visibility
@@ -57,6 +55,7 @@ class DownGrade(DG):
             measure=str(self.measure),
             selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(criteria_names),
+            eds=self.eds
         )
 
     def select(self, fl: State, tp: State, **kwargs) -> Tuple[np.ndarray, State, State]:
@@ -195,4 +194,4 @@ def dg(
     criteria: AnyIntraCriteria,
     tags: DGTags,
 ):
-    return DownGrade(name, display_name, tags, meas, RefFuncs(sels), criteria)
+    return DownGrade(name, display_name, tags, None, meas, RefFuncs(sels), criteria)

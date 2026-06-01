@@ -1,13 +1,17 @@
 from __future__ import annotations
+
+import inspect
+from dataclasses import dataclass
+from json import load
+from typing import ClassVar, Literal, Self, Tuple
+
+import geometry as g
 import numpy as np
 import pandas as pd
-from flightdata import State, Collection
-import geometry as g
-from json import load
-import inspect
-from typing import Self, ClassVar, Tuple, Literal
-from dataclasses import dataclass
+from flightdata import Collection, State
+
 from .tags import ElTag
+
 
 class ElementError(Exception):
     pass

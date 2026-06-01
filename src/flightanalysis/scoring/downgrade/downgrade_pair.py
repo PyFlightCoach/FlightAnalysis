@@ -4,7 +4,7 @@ import numpy.typing as npt
 from dataclasses import dataclass, replace
 from .base import DG
 from .downgrade import DownGrade
-from ..results import Result
+from ...scoring.results import Result
 from flightanalysis.elements import Elements
 
 from flightanalysis.elements.tags import DGTags
@@ -99,4 +99,4 @@ def pdg(
     tags: DGTags
 ) -> PairedDowngrade:
     """Create a paired downgrade from two downgrades"""
-    return PairedDowngrade(name, f"{first.display_name} -> {second.display_name}", tags, first, second)
+    return PairedDowngrade(name, f"{first.display_name} -> {second.display_name}", tags, None, first, second)

@@ -1,11 +1,13 @@
 from __future__ import annotations
-import numpy as np
-import geometry as g
-from flightdata import State
-from .element import Element
+
 from dataclasses import dataclass
 from typing import ClassVar, Literal
-from flightanalysis.scoring.measurement import Measurement
+
+import geometry as g
+import numpy as np
+from flightdata import State
+
+from .element import Element
 
 
 @dataclass
@@ -44,8 +46,3 @@ class StallTurn(Element):
 
     def copy_direction(self, other) -> StallTurn:
         return self.set_parms(yaw_rate=abs(self.yaw_rate) * np.sign(other.yaw_rate))
-
-    def yaw_rate_visibility(self, st: State):
-        return Measurement._vector_vis(
-            st.att.transform_point(g.PZ(1)).mean(), st.pos.mean()
-        )

@@ -1,4 +1,6 @@
 from __future__ import annotations
+from dataclasses import replace
+
 from .base import DG
 from .downgrade import DownGrade, dg, SquashError
 from .downgrade_pair import PairedDowngrade, pdg
@@ -9,11 +11,8 @@ from typing import Any, NamedTuple
 from pathlib import Path
 from flightanalysis.scoring.reffuncs import measures as me, selectors as se
 from flightanalysis.base.utils import parse_csv
-from flightanalysis.elements.tags import DGTags, ElTag
+from flightanalysis.elements.tags import DGTags
 from loguru import logger
-
-
-
 
 
 class DownGrades(Collection[DG]):
@@ -63,12 +62,16 @@ class DownGrades(Collection[DG]):
                 raise ValueError(f"Expected 1 or 2 downgrades with unique name {name}, got {len(new_dgs)}")
 
         return DownGrades(downgrades)
-    
-    def tags(self, last: set[ElTag], this: set[ElTag], next: set[ElTag]) -> DownGrades:
-        return DownGrades({dg.name: dg for dg in self if dg.tags(last, this, next)})
-    
+        
     def lookup(self, display_name: str) -> DG | PairedDowngrade:
         for _dg in self:
             if _dg.display_name == display_name:
                 return _dg
         raise ValueError(f"Downgrade with display name {display_name} not found")
+    
+    @staticmethod
+    def from_dict(data: dict, eds: list[str]=None):
+        dgs = super().from_dict(data)
+        return DownGrades([
+            replace(dg, eds=eds)  for dg in dgs
+        ])

@@ -13,8 +13,9 @@ spaces are ignored
 returns a function that takes a set of ElTags and returns True or False
 """
 from __future__ import annotations
-from enum import Enum, auto
+
 from dataclasses import dataclass
+from enum import Enum, auto
 
 
 class ElTag(Enum):

@@ -3,7 +3,7 @@ import geometry as g
 from typing import Tuple, Literal, Self
 from dataclasses import dataclass
 from flightdata.state import State
-from flightanalysis.elements import Elements, Element, Line
+from flightanalysis.elements import Elements
 
 
 @dataclass

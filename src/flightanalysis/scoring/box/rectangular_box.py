@@ -1,11 +1,6 @@
-import numpy as np
 from dataclasses import dataclass
 import geometry as g
-from flightanalysis.scoring import DownGrades, DownGrade, Results
-from schemas.maninfo import ManInfo
-from flightdata import State
 from .box import Box
-from flightanalysis.scoring import Criteria, Results, Bounded, Single
 
 
 @dataclass

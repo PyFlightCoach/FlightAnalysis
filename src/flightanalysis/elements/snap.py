@@ -1,10 +1,13 @@
 from __future__ import annotations
-import numpy as np
-import geometry as g
-from flightdata import State
-from .element import Element
+
 from dataclasses import dataclass
 from typing import ClassVar, Literal
+
+import geometry as g
+import numpy as np
+from flightdata import State
+
+from .element import Element
 
 
 @dataclass

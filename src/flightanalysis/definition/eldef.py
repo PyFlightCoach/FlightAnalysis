@@ -8,9 +8,8 @@ from .manparms import ManParms
 import numpy as np
 from flightdata import Collection
 
-from flightanalysis.elements import Element, AnyElement
-from flightanalysis.scoring.downgrade import DownGrades
-
+from flightanalysis.elements.element import Element
+from flightanalysis.elements import AnyElement
 from . import Collector, Collectors, ItemOpp, ManParm, Opp, SumOpp
 
 
@@ -26,17 +25,15 @@ class ElDef:
     name: str  # the name of the Eldef, must be unique and work as an attribute
     Kind: AnyElement  # the class of the element (Loop, Line etc)
     props: dict[str, Number | Opp]  # The element property generators (Number, Opp)
-    dgs: DownGrades  # The DownGrades applicable this element
-
+    
     def get_collector(self, name: str, index: int | None = None) -> Collector:
         return Collector(self.name, name, index)
 
-    def to_dict(self, longdgs=True, criteria_names: bool = True) -> dict:
+    def to_dict(self) -> dict:
         return dict(
             name=self.name,
             Kind=self.Kind.__name__,
             props={k: str(v) for k, v in self.props.items()},
-            dgs=self.dgs.to_dict(criteria_names) if longdgs else self.dgs.to_list(),
         )
 
     def __repr__(self):
@@ -48,7 +45,6 @@ class ElDef:
             name=data["name"],
             Kind=Element.from_name(data["Kind"]),
             props={k: ManParm.parse(v, mps) for k, v in data["props"].items()},
-            dgs=DownGrades.from_dict(data["dgs"]),
         )
 
     def __call__(self, mps: ManParms) -> Element:
@@ -79,7 +75,7 @@ class ElDef:
     @staticmethod
     def build(Kind, name: str, props: list[Opp | Number]):
         pnames = getfullargspec(Kind.__init__).args[2:]
-        ed = ElDef(name, Kind, {k: v for k, v in zip(pnames, props)}, DownGrades([]))
+        ed = ElDef(name, Kind, {k: v for k, v in zip(pnames, props)})
 
         for key, value in zip(pnames, props):
             if isinstance(value, ManParm):

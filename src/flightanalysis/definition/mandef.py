@@ -12,23 +12,26 @@ elements collection.
 """
 
 from __future__ import annotations
-from typing import Literal
+
 from dataclasses import dataclass, replace
+from typing import Literal
 
-from .manparms import ManParms
-from loguru import logger
-
+from flightanalysis.elements.tags import ElTag
 import geometry as g
 from flightdata import State
+from loguru import logger
 from schemas.maninfo import ManInfo, Position
 from schemas.positioning import Heading
 
-from flightanalysis.elements import Elements, AnyElement
+from flightanalysis.elements import AnyElement, Elements
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
-from flightanalysis.scoring.downgrade import DownGrades
-from flightanalysis.elements.tags import ElTag
+
 from .eldef import ElDef, ElDefs
+
+from flightanalysis.scoring.downgrade import DownGrades
+
+from .manparms import ManParms
 
 
 @dataclass
@@ -43,6 +46,7 @@ class ManDef:
     info: ManInfo
     mps: ManParms
     eds: ElDefs
+    dgs: DownGrades
     box: Box
 
     def __repr__(self):
@@ -57,6 +61,7 @@ class ManDef:
             info=self.info.to_dict(),
             mps=self.mps.to_dict(criteria_names),
             eds=self.eds.to_dict(dgs, criteria_names),
+            dgs=self.dgs.to_dict(criteria_names) if dgs else self.dgs.to_list(),
             box=self.box.to_dict(criteria_names),
         )
 
@@ -76,6 +81,7 @@ class ManDef:
             info = ManInfo.from_dict(data["info"])
             mps = ManParms.from_dict(data["mps"])
             eds = ElDefs.from_dict(data["eds"], mps)
+            dgs = DownGrades.from_dict(data["dgs"], eds)
             box = Box.from_dict(data["box"])
             return ManDef(info, mps, eds, box)
 
@@ -197,26 +203,17 @@ class ManDef:
         man = self.create()
         tps = man.create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
         tags = man.elements.generate_tags(tps)
-        for i, ed in enumerate(self.eds):
-            new_eds.append(
-                ElDef(
-                    ed.name,
-                    ed.Kind,
-                    ed.props,
-                    DownGrades(
-                        [
-                            dg
-                            for dg in dgs
-                            if dg.tags(
-                                {ElTag.NONE} if i == 0 else tags[i - 1],
-                                tags[i],
-                                tags[i + 1] if i < len(self.eds) - 1 else {ElTag.NONE},
-                            )
-                        ]
-                    ),
-                )
-            )
-        return replace(self, eds=ElDefs(new_eds))
+        _dg_subset = []
+        for dg in dgs:
+            for i, tag in enumerate(tags):
+                if dg.tags(
+                    tags[i-1] if i>0 else set(ElTag.NONE),
+                    tag,
+                    tags[i+1] if i<len(tags) - 1 else set([ElTag.NONE])
+                ):
+                    # Now check its the same downgrade and element is similar
+                    pass
+        return ManDef(self.info, self.mps, ElDefs(new_eds), _dg_subset, self.box)
 
     def update_defaults(self, man: Manoeuvre) -> ManDef:
         """Pull the parameters from a manoeuvre object and update the defaults of self based on the result of
