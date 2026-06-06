@@ -48,6 +48,10 @@ class Loop(Element):
     def axis(self):
         return g.Point(0, np.cos(self.ke), np.sin(self.ke)) * np.sign(self.angle)
 
+    @property
+    def centre(self):
+        return g.point.cross(self.axis, g.PX()) * self.radius
+
     def create_template(self, istate: State, fl: State = None, freq=25, npoints: int | Literal["min"]=3) -> State:
         """Generate a template loop.
 

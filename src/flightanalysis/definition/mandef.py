@@ -16,7 +16,6 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Literal
 
-from flightanalysis.elements.tags import ElTag
 import geometry as g
 from flightdata import State
 from loguru import logger
@@ -24,13 +23,15 @@ from schemas.maninfo import ManInfo, Position
 from schemas.positioning import Heading
 
 from flightanalysis.elements import AnyElement, Elements
+from flightanalysis.elements.tags import ElTag
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.scoring.box import Box
+from flightanalysis.scoring.downgrade import AppliedDownGrades, DownGrades
+from flightanalysis.scoring.downgrade.linkers import Linkers
 
-from .eldef import ElDef, ElDefs
+from packages.FlightAnalysis.tests.test_schedule.test_manoeuvre import man
 
-from flightanalysis.scoring.downgrade import DownGrades
-
+from .eldef import ElDefs
 from .manparms import ManParms
 
 
@@ -46,7 +47,7 @@ class ManDef:
     info: ManInfo
     mps: ManParms
     eds: ElDefs
-    dgs: DownGrades
+    dgs: AppliedDownGrades
     box: Box
 
     def __repr__(self):
@@ -81,9 +82,9 @@ class ManDef:
             info = ManInfo.from_dict(data["info"])
             mps = ManParms.from_dict(data["mps"])
             eds = ElDefs.from_dict(data["eds"], mps)
-            dgs = DownGrades.from_dict(data["dgs"], eds)
+            dgs = AppliedDownGrades.from_dict(data["dgs"], eds)
             box = Box.from_dict(data["box"])
-            return ManDef(info, mps, eds, box)
+            return ManDef(info, mps, eds, dgs, box)
 
     def guess_ipos(self, target_depth: float, heading: Heading) -> g.Transformation:
         gpy = g.PY(target_depth)
@@ -197,23 +198,27 @@ class ManDef:
         fig.add_traces(tp.plot(nmodels=20, scale=3, ribb=False, tips=True).data)
         return fig
 
-    def update_dgs(self, dgs: DownGrades) -> ManDef:
-        new_eds = []
-
+    def update_dgs(self, dgs: DownGrades, linkers: Linkers) -> ManDef:
         man = self.create()
         tps = man.create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
         tags = man.elements.generate_tags(tps)
-        _dg_subset = []
-        for dg in dgs:
-            for i, tag in enumerate(tags):
+        adgs = AppliedDownGrades()
+        for i, (el, tag) in enumerate(zip(man.elements, tags)):
+            for dg in dgs:
                 if dg.tags(
-                    tags[i-1] if i>0 else set(ElTag.NONE),
+                    tags[i - 1] if i > 0 else set([ElTag.NONE]),
                     tag,
-                    tags[i+1] if i<len(tags) - 1 else set([ElTag.NONE])
+                    tags[i + 1] if i < len(tags) - 1 else set([ElTag.NONE]),
                 ):
-                    # Now check its the same downgrade and element is similar
-                    pass
-        return ManDef(self.info, self.mps, ElDefs(new_eds), _dg_subset, self.box)
+                    adgs = adgs.add_or_update(
+                        elements=man.elements,
+                        templates=tps,
+                        index=i,
+                        dg=dg,
+                        linkers=linkers,
+                    )
+
+        return replace(self, dgs=adgs)
 
     def update_defaults(self, man: Manoeuvre) -> ManDef:
         """Pull the parameters from a manoeuvre object and update the defaults of self based on the result of

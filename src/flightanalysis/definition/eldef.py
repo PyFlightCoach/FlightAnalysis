@@ -37,7 +37,7 @@ class ElDef:
         )
 
     def __repr__(self):
-        return f"ElDef({self.name}, {self.Kind.__name__}, {[f'{k[0]}={str(v)}' for k, v in self.props.items()]}, {[dg.name for dg in self.dgs]})"
+        return f"ElDef({self.name}, {self.Kind.__name__}, {[f'{k[0]}={str(v)}' for k, v in self.props.items()]})"
 
     @staticmethod
     def from_dict(data: dict, mps: ManParms):

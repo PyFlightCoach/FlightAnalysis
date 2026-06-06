@@ -10,7 +10,7 @@ from flightanalysis.elements import Elements
 from flightanalysis.elements.tags import DGTags
 
 @dataclass
-class PairedDowngrade(DG):
+class PairedDownGrade(DG):
     """A pair of downgrades, the result transitions from first to second at the point that
     gives the smallest downgrade
 
@@ -97,6 +97,6 @@ def pdg(
     first: DownGrade,
     second: DownGrade,
     tags: DGTags
-) -> PairedDowngrade:
+) -> PairedDownGrade:
     """Create a paired downgrade from two downgrades"""
-    return PairedDowngrade(name, f"{first.display_name} -> {second.display_name}", tags, None, first, second)
+    return PairedDownGrade(name, f"{first.display_name} -> {second.display_name}", tags, first, second)

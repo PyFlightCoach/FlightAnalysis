@@ -194,4 +194,4 @@ def dg(
     criteria: AnyIntraCriteria,
     tags: DGTags,
 ):
-    return DownGrade(name, display_name, tags, None, meas, RefFuncs(sels), criteria)
+    return DownGrade(name, display_name, tags, meas, RefFuncs(sels), criteria)

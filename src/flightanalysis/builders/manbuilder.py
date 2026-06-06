@@ -11,6 +11,7 @@ from flightanalysis.scoring.criteria.exponential import parse_expos_from_csv
 from flightanalysis.scoring.downgrade.downgrades import DownGrades
 from flightanalysis.scoring.criteria import parse_criteria_csv, Combination
 from flightanalysis.scoring.box.parser import parse_box_downgrades, parse_box
+from flightanalysis.scoring.downgrade.linkers import Linkers
 from loguru import logger
 from schemas import ManInfo, Figure, PE, Option, Sequence
 from inspect import getfullargspec
@@ -34,6 +35,7 @@ class ManBuilder:
     mps: ManParms
     mpmaps: dict[str, dict]
     dgs: DownGrades
+    linkers: Linkers
     inter_criteria: NamedTuple
     box: TriangularBox | RectangularBox
 
@@ -158,7 +160,7 @@ class ManBuilder:
         collmps = md.mps.remove_unused()
         propmps = md.mps.subset(md.eds.list_props())
         md.mps = ManParms.merge([collmps, propmps])
-        return md.update_dgs(self.dgs)
+        return md.update_dgs(self.dgs, self.linkers)
 
     @staticmethod
     def _parse_func(tomldata: dict):
@@ -198,6 +200,7 @@ class ManBuilder:
         intra_downgrades = DownGrades.parse_csv(
             Path.resolve(file.parent / toml["intra_downgrades"]), criteria.intra
         )
+        linkers = Linkers.from_csv(Path.resolve(file.parent.parent / "intra_linking.csv"))
         box_downgrades = parse_box_downgrades(
             Path.resolve(file.parent / toml["box_downgrades"]), criteria.box
         )
@@ -207,7 +210,7 @@ class ManBuilder:
         data = {
             k: ManBuilder._parse_func(v) for k, v in toml["builders"].items()
         }
-        return ManBuilder(mps, data, intra_downgrades, criteria.inter, box)
+        return ManBuilder(mps, data, intra_downgrades, linkers, criteria.inter, box)
 
 
     @staticmethod

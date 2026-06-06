@@ -120,3 +120,11 @@ def display_unit(value: Number, unit: str="", precision: int = 2) -> str:
     else:
         val = f"{value:.{precision}f}"
     return f"{val} {new_unit}"
+
+def increment_name(base_name: str, existing_names: set[str]) -> str:
+    if base_name not in existing_names:
+        return base_name
+    i = 1
+    while f"{base_name}_{i}" in existing_names:
+        i += 1
+    return f"{base_name}_{i}"

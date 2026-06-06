@@ -3,7 +3,7 @@ from dataclasses import replace
 
 from .base import DG
 from .downgrade import DownGrade, dg, SquashError
-from .downgrade_pair import PairedDowngrade, pdg
+from .downgrade_pair import PairedDownGrade, pdg
 
 from flightdata.base import Collection
 from ..results import Results
@@ -40,7 +40,7 @@ class DownGrades(Collection[DG]):
     @staticmethod
     def parse_csv(file: Path | str, intra_criteria: NamedTuple) -> DownGrades:
         df = parse_csv(file, sep=";")
-        downgrades: dict[str : DownGrade | PairedDowngrade] = {}
+        downgrades: dict[str : DownGrade | PairedDownGrade] = {}
         for name, dgs in df.groupby("unique_name"):
             new_dgs = [
                 dg(
@@ -63,7 +63,7 @@ class DownGrades(Collection[DG]):
 
         return DownGrades(downgrades)
         
-    def lookup(self, display_name: str) -> DG | PairedDowngrade:
+    def lookup(self, display_name: str) -> DG | PairedDownGrade:
         for _dg in self:
             if _dg.display_name == display_name:
                 return _dg
@@ -75,3 +75,4 @@ class DownGrades(Collection[DG]):
         return DownGrades([
             replace(dg, eds=eds)  for dg in dgs
         ])
+    
