@@ -35,7 +35,7 @@ class DG:
                 criteria=Criteria.from_dict(data["criteria"]),
             )
         else:
-            raise ValueError("Invalid downgrade data")
+            raise ValueError(f"Invalid downgrade data {data}")
 
 
 from .downgrade import DownGrade  # noqa: E402

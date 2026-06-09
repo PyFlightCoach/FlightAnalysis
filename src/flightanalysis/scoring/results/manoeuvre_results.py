@@ -2,7 +2,6 @@ from __future__ import annotations
 import pandas as pd
 from dataclasses import dataclass
 from .results import Results
-from .elements_results import ElementsResults
 from .dgplot import DGPlot
 from flightanalysis.scoring.criteria import Criteria
 from flightanalysis.base.utils import df_insert
@@ -10,7 +9,7 @@ from flightanalysis.base.utils import df_insert
 @dataclass
 class ManoeuvreResults:
     inter: Results
-    intra: ElementsResults
+    intra: Results
     positioning: Results
 
     def dg_dict(self):
@@ -36,8 +35,8 @@ class ManoeuvreResults:
         positioning = self.positioning.score(difficulty, "result" if truncate else None)
         return dict(
             intra=float(intra),
-            inter=float(float(inter)),
-            positioning=float(float(positioning)),
+            inter=float(inter),
+            positioning=float(positioning),
             total=float(max(10 - intra - inter - positioning, 0)),
         )
 
@@ -57,7 +56,7 @@ class ManoeuvreResults:
     def from_dict(data):
         return ManoeuvreResults(
             Results.from_dict(data["inter"]),
-            ElementsResults.from_dict(data["intra"]),
+            Results.from_dict(data["intra"]),
             Results.from_dict(data["positioning"]),
         )
 

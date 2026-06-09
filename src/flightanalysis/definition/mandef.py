@@ -29,8 +29,6 @@ from flightanalysis.scoring.box import Box
 from flightanalysis.scoring.downgrade import AppliedDownGrades, DownGrades
 from flightanalysis.scoring.downgrade.linkers import Linkers
 
-from packages.FlightAnalysis.tests.test_schedule.test_manoeuvre import man
-
 from .eldef import ElDefs
 from .manparms import ManParms
 
@@ -61,7 +59,7 @@ class ManDef:
         return dict(
             info=self.info.to_dict(),
             mps=self.mps.to_dict(criteria_names),
-            eds=self.eds.to_dict(dgs, criteria_names),
+            eds=self.eds.to_dict(),
             dgs=self.dgs.to_dict(criteria_names) if dgs else self.dgs.to_list(),
             box=self.box.to_dict(criteria_names),
         )
@@ -82,7 +80,7 @@ class ManDef:
             info = ManInfo.from_dict(data["info"])
             mps = ManParms.from_dict(data["mps"])
             eds = ElDefs.from_dict(data["eds"], mps)
-            dgs = AppliedDownGrades.from_dict(data["dgs"], eds)
+            dgs = AppliedDownGrades.from_dict(data["dgs"])
             box = Box.from_dict(data["box"])
             return ManDef(info, mps, eds, dgs, box)
 
@@ -229,7 +227,7 @@ class ManDef:
         """
         new_mps = self.mps.update_defaults(man)
         new_eds = ElDefs.from_dict(self.eds.to_dict(), new_mps)
-        return  replace(self, mps= new_mps, eds=new_eds, box=self.box)
+        return replace(self, mps=new_mps, eds=new_eds)  
 
     def set_mps(self, **kwargs):
         """set the manparm default values"""

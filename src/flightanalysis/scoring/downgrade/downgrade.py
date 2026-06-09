@@ -55,7 +55,6 @@ class DownGrade(DG):
             measure=str(self.measure),
             selectors=self.selectors.to_list(),
             criteria=self.criteria.to_dict(criteria_names),
-            eds=self.eds
         )
 
     def select(self, fl: State, tp: State, **kwargs) -> Tuple[np.ndarray, State, State]:
@@ -119,7 +118,9 @@ class DownGrade(DG):
 
             _oids = oids.copy()
             _oids[0] = int(np.ceil(oids[0]))
-            _oids[-1] = int(np.ceil(oids[-1]) + (0 if _oids[0] == oids[0] else 1))
+            _oids[-1] = int(np.ceil(oids[-1]) + (0 if _oids[0] == oids[0] else 1)) 
+            
+            measurement = self.measure(el, fl, tp, meta=meta)
 
             measurement = self.measure(Elements([el]), fl, tp, meta=meta)
             visibility = {}

@@ -7,7 +7,7 @@ from flightanalysis.definition import ManDef, ManOption
 from flightanalysis.elements import AnyElement
 from flightanalysis.manoeuvre import Manoeuvre
 from flightanalysis.analysis.el_analysis import ElementAnalysis
-from flightanalysis.scoring.results import ElementsResults, ManoeuvreResults
+from flightanalysis.scoring.results import ElementsResults, ManoeuvreResults, Results
 import numpy as np
 
 import geometry as g
@@ -211,8 +211,8 @@ class Analysis:
         return self
 
     def intra(self):
-        return ElementsResults([ea.intra_score() for ea in self])
-
+        return self.mdef.dgs.score(self.manoeuvre.elements, self.templates, self.flown)
+    
     def inter(self):
         return self.mdef.mps.collect(self.manoeuvre, self.flown, self.mdef.box)
 
@@ -235,7 +235,7 @@ class Analysis:
 
     def reload_element(self, name: str | int) -> Self:
         ist = self.templates[name][0].relocate(self.flown.element[name][0].pos)
-        new_man = self.manoeuvre.replace_elements(
+        new_man: Manoeuvre = self.manoeuvre.replace_elements(
             **{
                 name: self.manoeuvre.elements[name].match_intention(
                     ist, self.flown.element[name]
@@ -277,15 +277,13 @@ class Analysis:
             self.flown.step_label("element", boundary, steps, self.flown.t, 3)
         )
 
-    def score_boundary(self, boundary: str, include_inter: bool = True):
-        next_el = self.manoeuvre.elnames[self.manoeuvre.elnames.index(boundary) + 1]
-        return ElementsResults(
-            {
-                boundary: self[boundary].intra_score(),
-                next_el: self[next_el].intra_score(),
-                **({"inter": self.inter()} if include_inter else {}),
-            }
-        )
+    def score_boundary(self, boundary: str, include_inter: bool=True):
+        adgs = self.mdef.dgs.boundary_filter(self.manoeuvre.elements.index(boundary))
+
+        return ElementsResults({
+            "intra": adgs.score(self.manoeuvre.elements, self.templates, self.flown),
+            **({"inter":self.inter()} if include_inter else {})
+        })
 
     def optimise_boundary(
         self, boundary: str, include_inter: bool = True
@@ -335,7 +333,6 @@ class Analysis:
             fl,
             tp,
             tp[0].transform,
-            self.scores.intra[name] if self.scores else None,
         )
 
     def __getattr__(self, name: str) -> ElementAnalysis:

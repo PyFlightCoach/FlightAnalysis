@@ -5,13 +5,16 @@ Links a downgrade to consecutive elements
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from flightdata.base import Collection
-from flightdata import State
 
-from .downgrade import DownGrade
-from .downgrade_pair import PairedDownGrade
-from .linkers import Linkers, Linker
+from flightdata import State
+from flightdata.base import Collection
+
 from flightanalysis.elements import Elements
+from flightanalysis.scoring.results import Result, Results
+
+from .downgrade import DownGrade, SquashError
+from .downgrade_pair import PairedDownGrade
+from .linkers import Linker, Linkers
 
 
 @dataclass
@@ -27,6 +30,33 @@ class AppliedDownGrade:
     def dg_names(self) -> list[str]:
         return [dg.name for dg in self.dgs]
 
+    @property
+    def dg(self):
+        return self.dgs[0]
+
+    def score(
+        self, elements: Elements, templates: dict[str, State], flown: State
+    ) -> Result:
+        return self.dg(
+            elements.filter_indices(self.elements.__contains__),
+            State.stack([flown.element[elements[el].uid] for el in self.elements]),
+            State.stack([templates[elements[el].uid] for el in self.elements]),
+        )
+
+    def to_dict(self, criteria_names: bool = True) -> dict:
+        return dict(
+            name=self.name,
+            dgs=[dg.to_dict(criteria_names) for dg in self.dgs],
+            elements=self.elements,
+        )
+
+    @staticmethod
+    def from_dict(data: dict) -> AppliedDownGrade:
+        return AppliedDownGrade(
+            name=data["name"],
+            dgs=[DownGrade.from_dict(dg) for dg in data["dgs"]],
+            elements=data["elements"],
+        )
 
 class AppliedDownGrades(Collection[AppliedDownGrade]):
     uid = "name"
@@ -70,3 +100,14 @@ class AppliedDownGrades(Collection[AppliedDownGrade]):
                 ),
                 inplace,
             )
+
+    def score(
+        self, elements: Elements, templates: dict[str, State], flown: State
+    ) -> Results:
+        res = []
+        for adg in self.values():
+            res.append(adg.score(elements, templates, flown))
+        return Results("inta", res)
+
+    def boundary_filter(self, index: int) -> AppliedDownGrades:
+        return self.filter_values(lambda adg: index in [adg.elements[0]-1, adg.elements[-1]])

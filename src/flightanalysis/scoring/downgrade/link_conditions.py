@@ -13,6 +13,7 @@ type Condition = Callable[[AnyElement, State, AnyElement, State], bool]
 
 conditions: dict[str, Condition] = {}
 
+
 def condition(fun: Condition) -> Condition:
     conditions[fun.__name__] = fun
     return fun
@@ -23,11 +24,11 @@ def identical_axes(el1: Loop, tp1: State, el2: Loop, tp2: State) -> bool:
     """
     Compares two loop elements and returns true if their axes are identical (parallel and same centre point)
     """
-    axis_1 = tp1.att.transform_point(el1.axis())
-    axis_2 = tp2.att.transform_point(el2.axis())
-    return g.point.is_either_parallel(axis_1, axis_2) and tp1[0].body_to_world(
-        el1.centre
-    ) == tp2[0].body_to_world(el2.centre)
+    axis_1 = tp1[0].att.transform_point(el1.axis)
+    axis_2 = tp2[0].att.transform_point(el2.axis)
+    return g.point.is_either_parallel(axis_1, axis_2) and (
+        abs(tp1[0].body_to_world(el1.centre) - tp2[0].body_to_world(el2.centre))[0] < 1
+    )
 
 
 @condition
@@ -36,6 +37,7 @@ def zero_roll(el1: Loop | Line, tp1: State, el2: Loop | Line, tp2: State) -> boo
     Returns true if both roll values are zero
     """
     return el1.roll == 0 and el2.roll == 0
+
 
 @condition
 def zero_roll2(el1: Loop | Line, tp1: State, el2: Loop | Line, tp2: State) -> bool:
