@@ -195,9 +195,7 @@ class ManDef:
         new_eds = []
 
         man = self.create()
-        tps = man.create_template(
-            g.Transformation(self.initial_rotation(Heading.LTOR))
-        )
+        tps = man.create_template(g.Transformation(self.initial_rotation(Heading.LTOR)))
         tags = man.elements.generate_tags(tps)
         for i, ed in enumerate(self.eds):
             new_eds.append(
@@ -218,7 +216,7 @@ class ManDef:
                     ),
                 )
             )
-        return ManDef(self.info, self.mps, ElDefs(new_eds), self.box)
+        return replace(self, ElDefs(new_eds))
 
     def update_defaults(self, man: Manoeuvre) -> ManDef:
         """Pull the parameters from a manoeuvre object and update the defaults of self based on the result of
@@ -229,13 +227,13 @@ class ManDef:
         """
         new_mps = self.mps.update_defaults(man)
         new_eds = ElDefs.from_dict(self.eds.to_dict(), new_mps)
-        return ManDef(self.info, new_mps, new_eds, self.box)
+        return  replace(self, mps= new_mps, eds=new_eds, box=self.box)
 
     def set_mps(self, **kwargs):
         """set the manparm default values"""
         new_mps = self.mps.set_values(**kwargs)
         new_eds = ElDefs.from_dict(self.eds.to_dict(), new_mps)
-        return ManDef(self.info, new_mps, new_eds, self.box)
+        return replace(self, mps=new_mps, eds=new_eds, box=self.box)
 
     def __iter__(self):
         """Iterate over the eds, elements and templates."""
@@ -247,8 +245,9 @@ class ManDef:
             tp = el.create_template(tp[-1])
             yield ed, el, tp
 
-
-    def lookup_dg(self, kind: Literal["intra", "inter", "box"], el: str | None, display_name: str):
+    def lookup_dg(
+        self, kind: Literal["intra", "inter", "box"], el: str | None, display_name: str
+    ):
         match kind:
             case "intra":
                 return self.eds[el].dgs.lookup(display_name)
@@ -258,5 +257,6 @@ class ManDef:
                 return self.box.bound_dgs.get(display_name)
             case _:
                 raise ValueError(f"Invalid downgrade kind: {kind}")
+
 
 from .manoption import ManOption  # noqa: E402
