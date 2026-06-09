@@ -31,6 +31,7 @@ class Analysis:
     ]
     flown: State
     mdef: ManDef | ManOption
+    option: int | None = None
     itrans: g.Transformation | None = None
     manoeuvre: Manoeuvre | None = None
     templates: dict[str, State] | None = None
@@ -116,8 +117,12 @@ class Analysis:
         First find all the options that match the element sequence.
         If more than one option matches, select the one with the best score.
 
-        # There is a problem if both options have the same element names
-        # in this case we need to score both and choose the best.
+        There is a problem if both options have the same element names
+        in this case we need to score both and choose the best.
+
+        NOTE (0.5.1 on) - added option index to the class, so if that exists use that. 
+        If not then do the old check and set the option for next time.
+        This function can be simplified once all the old analyses have been updated with the option.
         """
         mopt = ManOption([self.mdef]) if isinstance(self.mdef, ManDef) else self.mdef
 
@@ -133,7 +138,8 @@ class Analysis:
             raise ElSequenceError(
                 f"{self.mdef.info.short_name} element sequence doesn't agree with {elnames}"
             )
-
+        elif self.option is not None:
+            option_id = self.option
         elif len(options) == 1:
             option_id = 0
         else:
@@ -141,7 +147,7 @@ class Analysis:
             for option in options:
                 scores.append(replace(self, mdef=option).run(False).scores.score())
             option_id = np.argmax(scores)
-        return replace(self, mdef=options[option_id])
+        return replace(self, mdef=options[option_id], option=option_id)
 
     def _preliminary_alignment(
         self, mdef: ManDef, freq: int = 25, radius: AlignRadiusOption = 10
