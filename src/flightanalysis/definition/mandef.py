@@ -216,7 +216,7 @@ class ManDef:
                     ),
                 )
             )
-        return replace(self, ElDefs(new_eds))
+        return replace(self, eds=ElDefs(new_eds))
 
     def update_defaults(self, man: Manoeuvre) -> ManDef:
         """Pull the parameters from a manoeuvre object and update the defaults of self based on the result of
