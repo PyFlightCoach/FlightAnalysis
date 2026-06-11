@@ -79,9 +79,8 @@ class Bounded(Criteria):
 
     def describe(self, unit: str = "") -> str:
         region=""
-        unit = re.sub(r"radians|radian|rad", "°", unit)
         if self.min_bound is not None and self.max_bound is not None:
-            if self.min_bound > self.max_bound:
+            if self.min_bound < self.max_bound:
                 region = f"Regions of the sample below {display_unit(self.min_bound, unit, 2)}, or above {display_unit(self.max_bound, unit, 2)} are downgraded." 
             else:
                 region =f"Regions of the sample between {display_unit(self.max_bound, unit, 2)} and {display_unit(self.min_bound, unit, 2)} are downgraded." 
