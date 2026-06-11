@@ -120,7 +120,7 @@ class Analysis:
         There is a problem if both options have the same element names
         in this case we need to score both and choose the best.
 
-        NOTE (0.5.1 on) - added option index to the class, so if that exists use that. 
+        NOTE (0.5.1 on) - added option index to the class, so if that exists use that.
         If not then do the old check and set the option for next time.
         This function can be simplified once all the old analyses have been updated with the option.
         """
@@ -203,13 +203,13 @@ class Analysis:
 
         return replace(self, mdef=mdef, manoeuvre=manoeuvre, templates=templates)
 
-    def optimise_alignment(self, include_inter: bool=True) -> Self:
-        steps={}
+    def optimise_alignment(self, include_inter: bool = True) -> Self:
+        steps = {}
         for el in list(self.manoeuvre.elements.keys())[:-1]:
             steps[el], self = self.optimise_boundary(el, include_inter)
         logger.debug(f"optimisation result:\n{dumps(steps, indent=2)}")
         return self
-    
+
     def intra(self):
         return ElementsResults([ea.intra_score() for ea in self])
 
@@ -243,9 +243,7 @@ class Analysis:
             }
         )
         new_templates = self.templates | {
-            name: new_man.elements[name].create_template(
-                ist, self.flown.element[name]
-            )
+            name: new_man.elements[name].create_template(ist, self.flown.element[name])
         }
 
         return replace(
@@ -265,25 +263,34 @@ class Analysis:
         _new: Self = replace(self, flown=new_fl)
         for change in changes:
             _new = _new.reload_element(change)
-        return _new 
+        return _new
 
     def shift_boundary(self, boundary: str, t: float) -> Self:
-        return self.update_boundaries(self.flown.move_label("element", boundary, self.flown.labels.element[boundary].stop + t))
-    
+        return self.update_boundaries(
+            self.flown.move_label(
+                "element", boundary, self.flown.labels.element[boundary].stop + t
+            )
+        )
+
     def step_boundary(self, boundary: str, steps: int) -> Self:
-        return self.update_boundaries(self.flown.step_label("element", boundary, steps, self.flown.t, 3))
+        return self.update_boundaries(
+            self.flown.step_label("element", boundary, steps, self.flown.t, 3)
+        )
 
-    def score_boundary(self, boundary: str, include_inter: bool=True):
-        next_el = self.manoeuvre.elnames[self.manoeuvre.elnames.index(boundary)+1]
-        return ElementsResults({
-            boundary: self[boundary].intra_score(),
-            next_el:self[next_el].intra_score(),
-            **({"inter":self.inter()} if include_inter else {})
-        })
+    def score_boundary(self, boundary: str, include_inter: bool = True):
+        next_el = self.manoeuvre.elnames[self.manoeuvre.elnames.index(boundary) + 1]
+        return ElementsResults(
+            {
+                boundary: self[boundary].intra_score(),
+                next_el: self[next_el].intra_score(),
+                **({"inter": self.inter()} if include_inter else {}),
+            }
+        )
 
-
-    def optimise_boundary(self, boundary: str, include_inter: bool=True) -> list[Self | int]:
-        next_el = self.manoeuvre.elnames[self.manoeuvre.elnames.index(boundary)+1]
+    def optimise_boundary(
+        self, boundary: str, include_inter: bool = True
+    ) -> list[Self | int]:
+        next_el = self.manoeuvre.elnames[self.manoeuvre.elnames.index(boundary) + 1]
 
         def score_step(_steps: int):
             try:
@@ -292,26 +299,30 @@ class Analysis:
                 return [_results.total, _new]
             except Exception as _:
                 return None
-                    
+
         best = score_step(0)
-        direction = -1 if self.flown.labels.element[boundary].width > self.flown.labels.element[next_el].width else 1
-        
+        direction = (
+            -1
+            if self.flown.labels.element[boundary].width
+            > self.flown.labels.element[next_el].width
+            else 1
+        )
+
         _check = score_step(direction)
         if _check is not None and _check[0] < best[0]:
-            best=_check
-            steps=direction
+            best = _check
+            steps = direction
         else:
-            direction = - direction
-            steps=0    
+            direction = -direction
+            steps = 0
 
         while True:
             steps += direction
             _check = score_step(steps)
             if _check is not None and _check[0] < best[0]:
-                best=_check
+                best = _check
             else:
                 return steps, best[1]
-
 
     def get_ea(self, name: str | int) -> ElementAnalysis:
         el: AnyElement = self.manoeuvre.elements[name]
@@ -375,22 +386,21 @@ class Analysis:
 
     @staticmethod
     def from_dict(data: dict):
-        if "manoeuvre" in data and data["manoeuvre"]:
-            manoeuvre = Manoeuvre.from_dict(data["manoeuvre"])
-        else:
-            manoeuvre = None
+        manoeuvre = (
+            Manoeuvre.from_dict(data["manoeuvre"]) if data.get("manoeuvre") else None
+        )
 
-        if "templates" in data and data["templates"]:
-            templates = {k: State.from_dict(v) for k, v in data["templates"].items()}
-        else:
-            templates = None
+        templates = (
+            {k: State.from_dict(v) for k, v in data["templates"].items()}
+            if data.get("templates")
+            else None
+        )
 
         itrans = list(templates.values())[0][0].transform if templates else None
 
-        if "scores" in data and data["scores"]:
-            scores = ManoeuvreResults.from_dict(data["scores"])
-        else:
-            scores = None
+        scores = (
+            ManoeuvreResults.from_dict(data["scores"]) if data.get("scores") else None
+        )
 
         return Analysis(
             data["id"],
@@ -399,6 +409,7 @@ class Analysis:
             else None,
             State.from_dict(data["flown"]),
             ManDef.from_dict(data["mdef"]),
+            data.get("option"),
             itrans,
             manoeuvre,
             templates,
@@ -412,6 +423,7 @@ class Analysis:
             if self.schedule_direction
             else None,
             flown=self.flown.to_dict(True),
+            option=self.option,
             **(
                 {}
                 if basic
