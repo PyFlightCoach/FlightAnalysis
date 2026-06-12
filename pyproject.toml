@@ -1,13 +1,13 @@
 [project]
 name = "flightanalysis"
-version="0.4.1.dev0"
+version="0.4.1"
 description = "Python tools for Analysis of Flight Data"
 readme = "README.md"
 authors = [{ name = "Thomas David", email = "thomasdavid0@gmail.com" }]
 requires-python = ">=3.12"
 dependencies = [
     "fastdtw>=0.3.4",
-    "flightdata>=0.3.5",
+    "flightdata>=0.3.6",
     "joblib>=1.4.2",
     "json-stream>=2.3.2",
     "loguru>=0.7.2",
