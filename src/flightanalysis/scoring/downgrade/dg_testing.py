@@ -30,8 +30,8 @@ class DGTest:
             template=State.from_dict(d["template"]),
         )
     
-    def reload(self, rule:str ):
-        mb = load_builder(rule)
+    def reload(self, rule:str, **options: dict) -> DGTest:
+        mb = load_builder(rule, **options)
         
         return replace(self, dg=mb.dgs[self.dg.name])
 
