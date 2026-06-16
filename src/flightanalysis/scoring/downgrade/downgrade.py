@@ -119,6 +119,7 @@ class DownGrade(DG):
 
             return Result(
                 self.name,
+                self.display_name,
                 measurement,
                 visibility,
                 sample,

@@ -156,6 +156,7 @@ class Box:
             res.add(
                 Result(
                     "centre_box",
+                    "centre",
                     m,
                     vis,
                     sample,
@@ -180,6 +181,7 @@ class Box:
             res.add(
                 Result(
                     f"{k}_box",
+                    "box",
                     m,
                     vis,
                     sample,

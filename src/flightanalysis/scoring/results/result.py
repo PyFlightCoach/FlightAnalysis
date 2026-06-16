@@ -37,6 +37,7 @@ class Result:
     """
 
     name: str
+    display_name: str
     measurement: Measurement  # the raw measured data
     visibility: npt.NDArray  # the visibility of the error
     sample: npt.NDArray  # the selected, visibility weighted sample used for scoring
@@ -66,6 +67,7 @@ class Result:
     def to_dict(self):
         return dict(
             name=self.name,
+            display_name=self.display_name,
             measurement=self.measurement.to_dict(),
             visibility=to_list(self.visibility),
             sample=to_list(self.sample),
@@ -82,9 +84,10 @@ class Result:
         return f"Result({self.name}, {self.total:.3f})"
 
     @staticmethod
-    def from_dict(data) -> Result:
+    def from_dict(data: dict) -> Result:
         return Result(
             data["name"],
+            data.get("display_name", data["name"]),
             Measurement.from_dict(data["measurement"]),
             np.array(data["visibility"]),
             np.array(data["sample"]),
