@@ -60,6 +60,7 @@ class PairedDowngrade(DG):
         return (
             Result(
                 f"{self.name}_{self.first.name}",
+                self.first.display_name,
                 m1,
                 v1,
                 rs1[: splitindex + 1],
@@ -69,6 +70,7 @@ class PairedDowngrade(DG):
             ),
             Result(
                 f"{self.name}_{self.second.name}",
+                self.second.display_name,
                 m2,
                 v2,
                 rs2[splitindex:],

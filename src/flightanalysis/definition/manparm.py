@@ -138,6 +138,7 @@ class ManParm(Opp):
 
         return Result(
             self.name,
+            self.name,
             measurement,
             visibility,
             measurement.value,
