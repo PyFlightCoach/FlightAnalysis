@@ -59,7 +59,7 @@ class PairedDowngrade(DG):
 
         return (
             Result(
-                f"{self.name}_{self.first.name}",
+                f"{self.name}_{self.first.display_name}",
                 self.first.display_name,
                 m1,
                 v1,
@@ -69,7 +69,7 @@ class PairedDowngrade(DG):
                 self.first.criteria,
             ),
             Result(
-                f"{self.name}_{self.second.name}",
+                f"{self.name}_{self.second.display_name}",
                 self.second.display_name,
                 m2,
                 v2,
