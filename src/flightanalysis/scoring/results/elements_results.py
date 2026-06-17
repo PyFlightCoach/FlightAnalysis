@@ -16,8 +16,11 @@ class ElementsResults(Collection[Results]):
         return f"ElementsResults, total = {self.total:.2f}, \n {super().__repr__()}"
 
     def score(self, difficulty=3, truncate=False):
-        return sum([r.score(difficulty, truncate) for r in self])
-
+        try:
+            return sum([r.score(difficulty, truncate) for r in self])
+        except Exception as ex:
+            pass
+            
     @property
     def total(self):
         return sum([r.total for r in self])

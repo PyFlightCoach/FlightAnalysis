@@ -75,21 +75,22 @@ class DownGrade(DG):
         """create a sample by reducing the measured error to account for the visibility weighting."""
         try:
             if DownGrade.ENABLE_VISIBILITY:
-                if isinstance(self.criteria, Deviation):
-                    value = measurement - 1
-                else:
-                    value = measurement
+                #if isinstance(self.criteria, AnyDeviationCriteria):
+                #    value = measurement - 1
+                #else:
+                #    value = measurement
+                value = measurement
                 sample = apply_visibility(
                     self.criteria.prepare(value),
                     visibility,
                     self.criteria.lookup.error_limit,
                     "deviation" if isinstance(self.criteria, AnyDeviationCriteria) else "value",
                 )
-                if isinstance(self.criteria, Deviation):
-                    return sample + 1
-                else:
-                    return sample
-
+                #if isinstance(self.criteria, AnyDeviationCriteria):
+                #    return sample + 1
+                #else:
+                #    return sample
+                return sample
             else:
                 return self.criteria.prepare(measurement)
         except Exception as e:
