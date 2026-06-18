@@ -7,7 +7,11 @@ from typing import Tuple
 from loguru import logger
 
 from flightanalysis.elements.element import Elements
-from flightanalysis.scoring.criteria import Deviation, AnyIntraCriteria, AnyDeviationCriteria
+from flightanalysis.scoring.criteria import (
+    Deviation,
+    AnyIntraCriteria,
+    AnyDeviationCriteria,
+)
 import numpy as np
 import numpy.typing as npt
 from flightdata import State
@@ -21,6 +25,7 @@ from ..visibility import apply_visibility
 
 from .base import DG
 
+
 class SquashError(Exception):
     pass
 
@@ -28,15 +33,16 @@ class SquashError(Exception):
 @dataclass
 class DownGrade(DG):
     """This is for Intra scoring, it sits within an El and defines how errors should be measured and the criteria to apply
-    measure - takes a measurement of the flown data 
+    measure - takes a measurement of the flown data
     visor - estimate of the visibility of the measurement
     selectors - a set of functions that extract a region of interest from the measurement
     criteria - takes a Measurement and calculates the score
     """
+
     measure: RefFunc
     selectors: RefFuncs
     criteria: AnyIntraCriteria
-    
+
     def __repr__(self):
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.selectors)}, {str(self.criteria)})"
 
@@ -66,36 +72,40 @@ class DownGrade(DG):
             if len(oids) > 0:
                 fl = State.splice([fl, fl.iloc[oids]])
                 tp = State.splice([tp, tp.iloc[oids]])
-                
+
             return oids, fl, tp
         except Exception as e:
             raise Exception(f"Selector: {e}") from e
 
-    def create_sample(self, measurement: npt.NDArray, visibility: npt.NDArray) -> npt.NDArray:
+    def create_sample(
+        self, measurement: npt.NDArray, visibility: npt.NDArray
+    ) -> npt.NDArray:
         """create a sample by reducing the measured error to account for the visibility weighting."""
         try:
             if DownGrade.ENABLE_VISIBILITY:
-                #if isinstance(self.criteria, AnyDeviationCriteria):
+                # if isinstance(self.criteria, AnyDeviationCriteria):
                 #    value = measurement - 1
-                #else:
+                # else:
                 #    value = measurement
                 value = measurement
                 sample = apply_visibility(
                     self.criteria.prepare(value),
                     visibility,
                     self.criteria.lookup.error_limit,
-                    "deviation" if isinstance(self.criteria, AnyDeviationCriteria) else "value",
+                    "deviation"
+                    if isinstance(self.criteria, AnyDeviationCriteria)
+                    else "value",
                 )
-                #if isinstance(self.criteria, AnyDeviationCriteria):
+                # if isinstance(self.criteria, AnyDeviationCriteria):
                 #    return sample + 1
-                #else:
+                # else:
                 #    return sample
                 return sample
             else:
                 return self.criteria.prepare(measurement)
         except Exception as e:
             raise Exception(f"Creating sample: {e}") from e
-        
+
     def __call__(
         self,
         el,
@@ -107,16 +117,22 @@ class DownGrade(DG):
             oids, fl, tp = self.select(fl, tp, meta=meta)
             if len(oids) == 0:
                 raise SquashError("No data selected by selectors")
-            
+
             _oids = oids.copy()
             _oids[0] = int(np.ceil(oids[0]))
-            _oids[-1] = int(np.ceil(oids[-1]) + (0 if _oids[0] == oids[0] else 1)) 
-            
-            measurement = self.measure(Elements([el]), fl, tp, meta=meta)
+            _oids[-1] = int(np.ceil(oids[-1]) + (0 if _oids[0] == oids[0] else 1))
 
-            visibility: npt.NDArray = self.measure.visor(fl, tp, measurement, meta=meta)
-            
-            sample = self.create_sample(measurement.value, visibility)[_oids.astype(int)]
+            measurement = self.measure(Elements([el]), fl, tp, meta=meta)
+            visibility = {}
+            for v in self.measure.visor:
+                visibility[v.__name__] = v(fl, tp, measurement, meta=meta)
+
+            meta["visibility"] = {k: v.tolist() for k, v in visibility.items()}
+            visibility = np.prod([v for v in visibility.values()], axis=0)
+
+            sample = self.create_sample(measurement.value, visibility)[
+                _oids.astype(int)
+            ]
 
             return Result(
                 self.name,
@@ -127,7 +143,7 @@ class DownGrade(DG):
                 oids,
                 *self.criteria(sample, dt=fl.dt[_oids.astype(int)]),
                 self.criteria,
-                meta
+                meta,
             )
         except (SquashError, Exception) as e:
             if type(e) is SquashError:
@@ -139,15 +155,19 @@ class DownGrade(DG):
 
         def var_to_title(var: str) -> str:
             return var.replace("_", " ").title()
-        
+
         odata = [f"# {rule.upper()} {var_to_title(self.name)}"]
 
         if description is not None:
             odata.append(description)
 
-        odata.append(f"### Measurement: {var_to_title(self.measure.__name__)}\n{self.measure.description}")
+        odata.append(
+            f"### Measurement: {var_to_title(self.measure.__name__)}\n{self.measure.description}"
+        )
 
-        odata.append(f"### Visibility: {var_to_title(self.measure.visor.__name__)}\n{self.measure.visor.description}")
+        odata.append(
+            f"### Visibility: {var_to_title(self.measure.visor.__name__)}\n{self.measure.visor.description}"
+        )
 
         if len(self.selectors) > 0:
             _seldata = []
@@ -156,13 +176,16 @@ class DownGrade(DG):
                 _seldata.append(f"- {var_to_title(sel.__name__)}\n{sel.description}")
             odata.extend("\n".join(_seldata))
 
-        odata.append(f"### Criteria: {self.criteria.__class__.__name__}\n{self.criteria.describe().split(":")[1]}")
+        odata.append(
+            f"### Criteria: {self.criteria.__class__.__name__}\n{self.criteria.describe().split(':')[1]}"
+        )
 
         odata.append("### Applicability")
         for k, v in self.tags.to_dict().items():
             odata.append(f"{k}: {v}\n")
 
         return "\n".join(odata)
+
 
 def dg(
     name: str,

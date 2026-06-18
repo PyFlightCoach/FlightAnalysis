@@ -46,8 +46,19 @@ class PairedDowngrade(DG):
         m1 = self.first.measure(Elements([el]), fl, tp, **(mkwargs or {}))
         m2 = self.second.measure(Elements([el]), fl, tp, **(mkwargs or {}))
 
-        v1: npt.NDArray = self.first.measure.visor(fl, tp, m1)
-        v2: npt.NDArray = self.second.measure.visor(fl, tp, m2)
+        v1 = np.prod(
+            np.array(
+                [v(fl, tp, m1) for v in self.first.measure.visor]
+            ),
+            axis=0,
+        )
+
+        v2 = np.prod(
+            np.array(
+                [v(fl, tp, m1) for v in self.first.measure.visor]
+            ),
+            axis=0,
+        )
 
         rs1 = self.first.create_sample(m1.value, v1)
         rs2 = self.second.create_sample(m2.value, v2)
