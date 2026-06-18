@@ -1,11 +1,13 @@
 from __future__ import annotations
-from typing import Callable
-import numpy.typing as npt
-from flightanalysis.elements import Elements
-from flightanalysis.scoring.measurement import Measure, Measurement
+from flightanalysis.scoring.measurement import (
+    Measure,
+    Measurement,
+    MeasureFunc,
+    VisorFunc,
+)
 from flightanalysis.base.ref_funcs import RFuncBuilders, RefFunc
 from flightdata import State
-
+import pandas as pd
 
 measures = RFuncBuilders({})
 selectors = RFuncBuilders({})
@@ -14,13 +16,22 @@ inter_visors = RFuncBuilders({})
 box_measures = RFuncBuilders({})
 box_visors = RFuncBuilders({})
 
+
 def measure(
     description: str,
-    visor: Callable[[State, State, Measurement], npt.NDArray],
+    visor: VisorFunc | list[VisorFunc] = [],
     unit: str = "",
 ) -> RefFunc:
-    def inner(func: Callable[[Elements, State, State], npt.NDArray]) -> Measurement:
-        return measures.add(description)(Measure(func.__name__, func, visor, unit))
+
+    def inner(func: MeasureFunc) -> Measurement:
+        return measures.add(description)(
+            Measure(
+                func.__name__,
+                func,
+                [visor] if not pd.api.types.is_list_like(visor) else visor,
+                unit,
+            )
+        )
 
     return inner
 

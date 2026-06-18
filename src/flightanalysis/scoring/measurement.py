@@ -70,11 +70,15 @@ class Measurement:
         return np.nan_to_num(res, 0)
 
 
+type MeasureFunc = Callable[[Elements, State, State], Tuple[g.Point, npt.NDArray]]
+type VisorFunc = Callable[[Elements, State, State, g.Point], npt.NDArray]
+
+
 @dataclass
 class Measure:
     name: str
-    measure: Callable[[Elements, State, State], Tuple[g.Point, npt.NDArray]]
-    visor: Callable[[Elements, State, State, g.Point], npt.NDArray]
+    measure: MeasureFunc
+    visor: list[VisorFunc]
     unit: str = ""
 
     @staticmethod
