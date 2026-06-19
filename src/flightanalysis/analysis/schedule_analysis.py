@@ -113,3 +113,8 @@ class ScheduleAnalysis(Collection[Analysis]):
     @property
     def tps(self):
         return {m.name: m.template for m in self}
+
+    def update_ajson(self, ajson: AJson, long: bool = False) -> AJson:
+        return ajson.model_copy(
+            update={"mans": [m.update_ma(ma, long) for m, ma in zip(self, ajson.mans)]}
+        )

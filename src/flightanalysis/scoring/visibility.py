@@ -44,5 +44,5 @@ def circular_visibility(x: npt.NDArray, v: npt.NDArray, **kwargs):
         return np.nan_to_num(np.where(x > 1, x, y), nan=x)
 
 
-def exponential_visibility(x: npt.NDArray, v: npt.NDArray, exponent: float = 6, **kwargs):
+def exponential_visibility(x: npt.NDArray, v: npt.NDArray, exponent: float = 5, **kwargs):
     return np.where(x > 1, x, (1 - v) * x**exponent + v * x)
