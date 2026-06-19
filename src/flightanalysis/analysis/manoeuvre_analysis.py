@@ -14,7 +14,7 @@ import geometry as g
 from flightdata import State, Alignment
 from flightdata.state.alignment import AlignRadiusOption
 from schemas.positioning import Direction, Heading
-
+from schemas import MA
 
 from loguru import logger
 
@@ -445,6 +445,11 @@ class Analysis:
                 for k, v in self.flown.labels.element.labels.items()
             ],
             results=self.scores.fcj_results(),
+        )
+
+    def update_ma(self, ma: MA, long: bool = False) -> MA:
+        return ma.model_copy(
+            update=self.to_dict(basic=not long)
         )
 
     @staticmethod
