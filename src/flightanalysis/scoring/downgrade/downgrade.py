@@ -122,7 +122,6 @@ class DownGrade(DG):
             
             measurement = self.measure(el, fl, tp, meta=meta)
 
-            measurement = self.measure(Elements([el]), fl, tp, meta=meta)
             visibility = {}
             for v in self.measure.visor:
                 visibility[v.__name__] = v(fl, tp, measurement, meta=meta)
