@@ -1,9 +1,7 @@
 from __future__ import annotations
 from dataclasses import replace
 
-from .base import DG
 from .downgrade import DownGrade, dg, SquashError
-from .downgrade_pair import PairedDownGrade, pdg
 
 from flightdata.base import Collection
 from ..results import Results
@@ -15,7 +13,7 @@ from flightanalysis.elements.tags import DGTags
 from loguru import logger
 
 
-class DownGrades(Collection[DG]):
+class DownGrades(Collection[DownGrade]):
     uid = "name"
 
     def apply(
@@ -40,7 +38,7 @@ class DownGrades(Collection[DG]):
     @staticmethod
     def parse_csv(file: Path | str, intra_criteria: NamedTuple) -> DownGrades:
         df = parse_csv(file, sep=";")
-        downgrades: dict[str : DownGrade | PairedDownGrade] = {}
+        downgrades: dict[str : DownGrade] = {}
         for name, dgs in df.groupby("unique_name"):
             new_dgs = [
                 dg(
@@ -55,15 +53,12 @@ class DownGrades(Collection[DG]):
             ]
             if len(new_dgs) == 1:
                 downgrades[name] = new_dgs[0]
-            elif len(new_dgs) == 2:
-                assert new_dgs[0].tags == new_dgs[1].tags, f"downgrades with same name ({name}) must have same tags"
-                downgrades[name] = pdg(name, *new_dgs, new_dgs[0].tags)
             else:
-                raise ValueError(f"Expected 1 or 2 downgrades with unique name {name}, got {len(new_dgs)}")
+                raise ValueError(f"Got {len(new_dgs)} downgrades named {name}")
 
         return DownGrades(downgrades)
         
-    def lookup(self, display_name: str) -> DG | PairedDownGrade:
+    def lookup(self, display_name: str) -> DownGrade:
         for _dg in self:
             if _dg.display_name == display_name:
                 return _dg

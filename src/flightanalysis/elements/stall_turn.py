@@ -46,3 +46,8 @@ class StallTurn(Element):
 
     def copy_direction(self, other) -> StallTurn:
         return self.set_parms(yaw_rate=abs(self.yaw_rate) * np.sign(other.yaw_rate))
+
+    @property
+    def axis(self) -> g.Point:
+        """return the axis of rotation for this element in world coordinates"""
+        return g.PZ()

@@ -113,7 +113,7 @@ class Element:
 
         wvel = tp.wvel
 
-        if (ElTag.LINE in tag or ElTag.LOOP in tag) and abs(self.roll) > 0:
+        if ((ElTag.LINE in tag or ElTag.LOOP in tag) and abs(self.roll) > 0) or (ElTag.SNAP in tag or ElTag.SPIN in tag):
             tag.add(ElTag.ROLL)
 
         if all(g.point.is_either_parallel(wvel, g.PZ())):
@@ -165,6 +165,7 @@ class Element:
                 tag.add(ElTag.NEGATIVE)
 
         return tag
+
 
 class Elements(Collection[Element]):
 

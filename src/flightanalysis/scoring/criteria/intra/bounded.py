@@ -3,7 +3,7 @@ import numpy as np
 import numpy.typing as npt
 from .. import Criteria
 from dataclasses import dataclass
-import re
+from typing import Literal
 from flightanalysis.base.utils import display_unit
 
 @dataclass
@@ -36,6 +36,14 @@ class Bounded(Criteria):
         dgs = self.lookup(np.abs(errors))
 
         return errors[dgs>0], dgs[dgs>0], dgids[dgs>0]
+
+    def local_error(
+        self,
+        sample: npt.NDArray,
+        dt: npt.NDArray,
+        direction: Literal["forward", "backward"] = "forward",
+    ):
+        pass
 
     def prepare(self, data: npt.NDArray):
         """prepare the sample for"""

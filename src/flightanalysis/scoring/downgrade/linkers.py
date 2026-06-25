@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from flightdata.base import Collection
 from flightdata import State
 from flightanalysis.base.utils import parse_csv

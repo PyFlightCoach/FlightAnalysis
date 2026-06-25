@@ -3,7 +3,7 @@ from __future__ import annotations
 from flightanalysis.elements.tags import DGTags
 
 from dataclasses import dataclass, replace
-from typing import Tuple
+from typing import Any, ClassVar, Tuple
 
 from flightanalysis.elements.element import Elements
 from flightanalysis.scoring.criteria import (
@@ -11,6 +11,7 @@ from flightanalysis.scoring.criteria import (
     AnyIntraCriteria,
     AnyDeviationCriteria,
 )
+from flightanalysis.scoring.criteria.criteria import Criteria
 import numpy as np
 import numpy.typing as npt
 from flightdata import State
@@ -21,25 +22,38 @@ from ..reffuncs import measures as me, selectors as se, visors as vi
 from ..results import Result
 from ..visibility import apply_visibility
 
-from .base import DG
-
-
 class SquashError(Exception):
     pass
 
 
 @dataclass
-class DownGrade(DG):
+class DownGrade:
     """This is for Intra scoring, it sits within an El and defines how errors should be measured and the criteria to apply
     measure - takes a measurement of the flown data
     visor - estimate of the visibility of the measurement
     selectors - a set of functions that extract a region of interest from the measurement
     criteria - takes a Measurement and calculates the score
     """
-
+    name: str
+    display_name: str | None
+    tags: DGTags | None
+    ENABLE_VISIBILITY: ClassVar[bool] = True
     measure: RefFunc
     selectors: RefFuncs
     criteria: AnyIntraCriteria
+
+    @staticmethod
+    def from_dict(data: dict[str, Any]) -> DownGrade:
+        tags = DGTags.from_dict(data["tags"]) if "tags" in data and data["tags"] else None
+        return DownGrade(
+            name=data["name"],
+            display_name=data.get("display_name"),
+            tags=tags,
+            measure=me.parse(data["measure"]),
+            selectors=se.parse(data["selectors"]),
+            criteria=Criteria.from_dict(data["criteria"]),
+        )
+
 
     def __repr__(self):
         return f"DownGrade({self.name}, {str(self.measure)}, {str(self.selectors)}, {str(self.criteria)})"

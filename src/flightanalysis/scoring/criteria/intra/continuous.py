@@ -35,7 +35,7 @@ class Continuous(Criteria):
         return np.concatenate([np.array([first_val]), peaks, np.array([last_val])])
 
     def __call__(
-        self, vs: npt.NDArray,**kwargs
+        self, vs: npt.NDArray, **kwargs
     ) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         if len(vs) <= 1:
             return np.array([]), np.array([]), np.array([], dtype=int)
@@ -68,6 +68,7 @@ class Continuous(Criteria):
     def local_error(
         self,
         sample: npt.NDArray,
+        dt: npt.NDArray,
         direction: Literal["forward", "backward"] = "forward",
     ):
         """Calculate the height of each point above the last trough. (below the next peak if direction==backward)
@@ -75,8 +76,8 @@ class Continuous(Criteria):
         at that point, otherwise it is calculated as if the sample ended at that point.
         """
         # how much does the error increase in each timestep
-        dsample = np.concatenate([np.array([0]), np.diff(np.abs(sample))])
-
+        dsample = np.diff(np.abs(sample), prepend=np.abs(sample[0]))
+        
         # cut at zero as the error cannot decrease
         error_increment = np.where(dsample > 0, dsample, 0)
 
@@ -93,50 +94,6 @@ class Continuous(Criteria):
 
         return local_error  # , local_dg
 
-    def incremental_downgrade(
-        self,
-        local_dg: npt.NDArray,  # local_dg = self.lookup(local_error, limits),
-        direction: Literal["forward", "backward"] = "forward",
-    ):
-        """Calculate the total downgrade for the element if the sample ended at each point."""
-
-        # the downgrade delta of each point
-        if direction == "forward":
-            dg_increment = np.concatenate([[0], np.diff(local_dg)])
-        else:
-            dg_increment = np.concatenate([np.diff(local_dg[::-1])[::-1], [0]])
-
-        # downgrade deltas cant be negative ( if it is negative its because of a different clump)
-        dg_increment = np.where(dg_increment > 0, dg_increment, 0)
-
-        return (
-            dg_increment.cumsum()
-            if direction == "forward"
-            else dg_increment[::-1].cumsum()[::-1]
-        )
-
-    def calculate_increments(
-        self, sample: npt.NDArray, direction: Literal["forward", "backward"]
-    ):
-        le = self.local_error(sample, direction)
-        ldg = self.lookup(le)
-        return self.incremental_downgrade(ldg, direction)
-
-    def process_increments(
-        self,
-        local_error: npt.NDArray,
-        local_dg: npt.NDArray,
-        direction: Literal["forward", "backward"] = "forward",
-    ):
-        """This takes the incremental outputs and returns something that looks like __call__"""
-        clumps = np.split(local_error, np.argwhere(local_error == 0).T[0])
-        clump_lengths = np.array([len(clump) for clump in clumps])
-        clump_locs = np.cumsum(clump_lengths) - 1  # the index of each clump
-        dgids = np.array(
-            [clump_locs[i] for i, b in enumerate([len(c) > 1 for c in clumps]) if b]
-        )  # the end of the non-zero clumps
-
-        return local_error[dgids], local_dg[dgids], dgids
 
 
 @dataclass

@@ -36,7 +36,8 @@ def zero_roll(el1: Loop | Line, tp1: State, el2: Loop | Line, tp2: State) -> boo
     """
     Returns true if both roll values are zero
     """
-    return el1.roll == 0 and el2.roll == 0
+
+    return ((not hasattr(el1, "roll")) or el1.roll == 0) and ((not hasattr(el2, "roll")) or el2.roll == 0)
 
 
 @condition
@@ -44,7 +45,7 @@ def zero_roll2(el1: Loop | Line, tp1: State, el2: Loop | Line, tp2: State) -> bo
     """
     return true if the second element has zero roll, regardless of the first element's roll value
     """
-    return el2.roll == 0
+    return ((not hasattr(el2, "roll")) or el2.roll == 0)
 
 
 @condition
