@@ -7,6 +7,7 @@ import numpy as np
 import numpy.typing as npt
 
 from .. import Criteria
+from flightanalysis.base.utils import insert_zero_crossings, remove_zero_crossings, remove_zero_crossing_ids
 
 
 @dataclass
@@ -40,14 +41,18 @@ class Continuous(Criteria):
         if len(vs) <= 1:
             return np.array([]), np.array([]), np.array([], dtype=int)
 
+        vs, crossings = insert_zero_crossings(vs)
+
         vs = np.abs(vs)
 
         peak_locs = Continuous.get_peak_locs(vs)
         trough_locs = Continuous.get_peak_locs(vs, True)
         mistakes = self.__class__.mistakes(vs, peak_locs, trough_locs)
+
         dgids = self.__class__.dgids(
             np.linspace(0, len(vs) - 1, len(vs)).astype(int), peak_locs, trough_locs
         )
+        dgids = remove_zero_crossing_ids(dgids, crossings)
         return mistakes, self.lookup(np.abs(mistakes)), dgids
 
     @staticmethod
@@ -69,15 +74,19 @@ class Continuous(Criteria):
         self,
         sample: npt.NDArray,
         dt: npt.NDArray,
-        direction: Literal["forward", "backward"] = "forward",
+        direction: Literal["left", "right"],
     ):
         """Calculate the height of each point above the last trough. (below the next peak if direction==backward)
-        if direction is 'backward' then the local error at each point is calculated as if the sample started
+        if direction is 'left' then the local error at each point is calculated as if the sample started
         at that point, otherwise it is calculated as if the sample ended at that point.
         """
-        # how much does the error increase in each timestep
+
+        sample, crossings = insert_zero_crossings(sample)
+            
         dsample = np.diff(np.abs(sample), prepend=np.abs(sample[0]))
-        
+        # how much does the error increase in each timestep
+       
+            
         # cut at zero as the error cannot decrease
         error_increment = np.where(dsample > 0, dsample, 0)
 
@@ -85,14 +94,39 @@ class Continuous(Criteria):
         clumps = np.split(error_increment, np.argwhere(error_increment == 0).T[0])
 
         # get the height of each point above the last trough
-        if direction == "forward":
+        if direction == "right":
             local_error = np.concatenate([np.cumsum(clump) for clump in clumps])
         else:
             local_error = np.concatenate(
                 [np.cumsum(clump[::-1])[::-1] for clump in clumps]
             )
 
+        local_error = remove_zero_crossings(local_error, crossings)
         return local_error  # , local_dg
+
+
+    def incremental_downgrade(
+        self,
+        local_dg: npt.NDArray,  # local_dg = self.lookup(local_error, limits),
+        direction: Literal["left", "right"],
+    ):
+        """Calculate the total downgrade for the element if the sample ended at each point."""
+
+        # the downgrade delta of each point
+        if direction == "right":
+            dg_increment = np.diff(local_dg, prepend=local_dg[0])
+        else:
+            dg_increment = np.diff(local_dg[::-1], prepend=local_dg[-1])[::-1]
+
+        # downgrade deltas cant be negative ( if it is negative its because of a different clump)
+        dg_increment = np.where(dg_increment > 0, dg_increment, 0)
+
+        return (
+            dg_increment.cumsum()
+            if direction == "right"
+            else dg_increment[::-1].cumsum()[::-1]
+        )
+
 
 
 

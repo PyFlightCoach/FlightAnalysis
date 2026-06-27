@@ -22,17 +22,21 @@ class Deviation(Criteria):
         dgid = len(vs) - 1
         return np.array([error]), np.array([dg]), np.array([dgid])
 
-    def local_error(sample: npt.NDArray, dt: npt.NDArray, direction: Literal["forward", "backward"] = "forward") -> npt.NDArray:
+    def local_error(
+        sample: npt.NDArray, dt: npt.NDArray, direction: Literal["left", "right"]
+    ) -> npt.NDArray:
         """The value of the error (coefficient of variation) if the sample were to be cut at each point in time.
-        if direction is forward, the sample starts at the start and goes to the point.
-        if backward it starts at the point and goes to the end of the sample. 
+        direction indicates the side of the sample that is being cropped.
         """
-        if direction == "forward":
+        if direction == "right":
             return np.abs(sample - np.cumsum(sample) / (np.arange(len(sample)) + 1))
-        elif direction == "backward":
-            return np.abs(sample - np.cumsum(sample[::-1]) / (np.arange(len(sample)) + 1))[::-1]
+        elif direction == "left":
+            return np.abs(
+                sample - np.cumsum(sample[::-1]) / (np.arange(len(sample)) + 1)
+            )[::-1]
         else:
-            raise ValueError("direction must be 'forward' or 'backward'")
+            raise ValueError("direction must be 'right' or 'left'")
+
 
 @dataclass
 class Total(Criteria):
@@ -41,20 +45,21 @@ class Total(Criteria):
     def describe(self, unit: str = "") -> str:
         return f"{super().describe()}: Downgrades are assigned based on the area under the sample."
 
-    def __call__(self, vs: npt.NDArray, dt: npt.NDArray) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
+    def __call__(
+        self, vs: npt.NDArray, dt: npt.NDArray
+    ) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         error = np.sum(np.abs(vs) * dt)
         dg = self.lookup(error)
         dgid = len(vs) - 1
         return np.array([error]), np.array([dg]), np.array([dgid])
 
-    def local_error(sample: npt.NDArray, dt: npt.NDArray, direction: Literal["forward", "backward"] = "forward") -> npt.NDArray:
-        """The value of the error (area under the curve) if the sample were to be cut at each point in time.
-        if direction is forward, the sample starts at the start and goes to the point.
-        if backward it starts at the point and goes to the end of the sample. 
-        """
-        if direction == "forward":
+    def local_error(
+        sample: npt.NDArray, dt: npt.NDArray, direction: Literal["left", "right"]
+    ) -> npt.NDArray:
+        """The value of the error (area under the curve) if the sample were to be cut at each point in time."""
+        if direction == "right":
             return np.cumsum(np.abs(sample) * dt)
-        elif direction == "backward":
+        elif direction == "left":
             return np.cumsum(np.abs(sample[::-1]) * dt[::-1])[::-1]
         else:
-            raise ValueError("direction must be 'forward' or 'backward'")
+            raise ValueError("direction must be 'right' or 'left'")

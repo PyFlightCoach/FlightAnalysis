@@ -3,7 +3,7 @@ Links a downgrade to consecutive elements
 """
 
 from __future__ import annotations
-
+from typing import Literal
 from dataclasses import dataclass, replace
 
 from flightdata import State
@@ -54,6 +54,7 @@ class AppliedDownGrade:
             return replace(res, name=self.name)
         else:
             return [replace(res, name=f"{self.name}_{i}") for i, res in enumerate(res)]
+
 
     def to_dict(self, criteria_names: bool = True) -> dict:
         return dict(

@@ -2,6 +2,7 @@ from __future__ import annotations
 import numpy as np
 import numpy.typing as npt
 from dataclasses import dataclass
+from typing import Literal
 from .. import Criteria
 
 
@@ -16,7 +17,8 @@ class Single(Criteria):
         errors = np.abs(vs)
         return errors, self.lookup(errors), np.arange(len(vs))
                 
-
+    def local_error(self, vs, dt, direction):
+        return np.abs(vs)
 
 @dataclass
 class Limit(Criteria):
@@ -33,6 +35,13 @@ class Limit(Criteria):
 
     def prepare(self, vs):
         return np.maximum(np.abs(vs) - self.limit, 0)
+
+    def local_error(self, vs, dt, direction: Literal["left", "right"]):
+        
+        mulmat = np.tril(np.ones((len(vs), len(vs)))) if direction == "left" else np.triu(np.ones((len(vs), len(vs))))
+
+        _vs = np.multiply(mulmat, np.abs(vs) - self.limit)
+        return np.abs(vs) - self.limit
 
 @dataclass
 class Threshold(Criteria):

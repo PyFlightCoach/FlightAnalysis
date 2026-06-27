@@ -41,7 +41,7 @@ class Bounded(Criteria):
         self,
         sample: npt.NDArray,
         dt: npt.NDArray,
-        direction: Literal["forward", "backward"] = "forward",
+        direction: Literal["left", "right"],
     ):
         pass
 

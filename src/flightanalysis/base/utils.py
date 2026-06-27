@@ -128,3 +128,25 @@ def increment_name(base_name: str, existing_names: set[str]) -> str:
     while f"{base_name}_{i}" in existing_names:
         i += 1
     return f"{base_name}_{i}"
+
+
+def insert_zero_crossings(arr: np.ndarray):
+    _positive = arr > 0
+    _negative = arr < 0
+
+    crossings = np.where((_positive[:-1] & _negative[1:]) + (_negative[:-1] & _positive[1:]))[0]
+
+    for _cross in crossings[::-1]:
+        arr = np.insert(arr, _cross + 1, 0)
+    
+    return arr, crossings
+
+def remove_zero_crossings(arr: np.ndarray, crossings: np.ndarray):
+    for _cross in crossings:
+        arr = np.delete(arr, _cross + 1)
+    return arr
+
+def remove_zero_crossing_ids(ids: np.ndarray, crossings: np.ndarray):
+    for _cross in crossings:
+        ids = np.where(ids > _cross, ids - 1, ids)
+    return ids
