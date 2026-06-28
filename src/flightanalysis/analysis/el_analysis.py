@@ -22,7 +22,7 @@ class ElementAnalysis:
 
     def update(self, new_fl: State):
         new_el = self.el.match_intention(self.ref_frame, new_fl)
-        new_tp = new_el.create_template(self.tp[0], new_fl.time)
+        new_tp = new_el.create_template(self.tp[0], new_fl)
         return ElementAnalysis(
             self.edef, self.mps, new_el, new_fl, new_tp, self.ref_frame
         )

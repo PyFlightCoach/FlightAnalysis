@@ -98,7 +98,7 @@ class Element:
     def length_vec(self, itrans, fl):
         return fl.pos[-1] - fl.pos[0]
 
-    def create_template(self, istate: State, time: g.Time = None) -> State:
+    def create_template(self, istate: State, fl: State = None) -> State:
         raise Exception("Not available on base class")
 
     def match_intention(self, itrans: g.Transformation, flown: State) -> Self:
