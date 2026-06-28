@@ -10,6 +10,7 @@ from flightanalysis.definition.eldef import ElDef, ElDefs, ManParm
 from flightanalysis.elements import Line, Loop, Snap, Spin, StallTurn, TailSlide
 from flightanalysis.scoring import inter_visors as visors
 from flightanalysis.scoring.criteria.inter.comparison import free_comparison
+from flightanalysis.scoring.criteria.inter.combination import Combination
 
 
 def line(name: str, speed, length, Inter):
@@ -60,7 +61,13 @@ def rolling_loop(name, speed, radius, angle, roll, ke, Inter):
 
 
 def stallturn(name, speed, yaw_rate, Inter):
-    return ElDef.build(StallTurn, name, [speed, yaw_rate]), ManParms()
+    yaw_rate = ManParm(
+        "stallturn_rate",
+        Combination("sturn_rate", desired=[[yaw_rate], [-yaw_rate]]),
+        0,
+        "rad/s",
+    )
+    return ElDef.build(StallTurn, name, [speed, yaw_rate[0]]), ManParms([yaw_rate])
 
 
 def tailslide(name, speed, direction, rate, over_flop, reset_rate, Inter):
