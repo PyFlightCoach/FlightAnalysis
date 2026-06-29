@@ -22,20 +22,20 @@ class Deviation(Criteria):
         dgid = len(vs) - 1
         return np.array([error]), np.array([dg]), np.array([dgid])
 
-    def local_error(
+    def local_downgrade(
         self, sample: npt.NDArray, dt: npt.NDArray, direction: Literal["left", "right"]
     ) -> npt.NDArray:
         """The value of the error (coefficient of variation) if the sample were to be cut at each point in time.
         direction indicates the side of the sample that is being cropped.
         """
-        if direction == "right":
-            return np.abs(sample - np.cumsum(sample) / (np.arange(len(sample)) + 1))
-        elif direction == "left":
-            return np.abs(
-                sample - np.cumsum(sample[::-1]) / (np.arange(len(sample)) + 1)
-            )[::-1]
-        else:
-            raise ValueError("direction must be 'right' or 'left'")
+        _s = sample if direction == "right" else sample[::-1]
+        _counts = np.arange(1, len(_s)+1)
+        _counts = _counts#[::-1] if direction == "left" else _counts
+        rolling_mean = np.cumsum(_s) / _counts
+        rolling_std = np.sqrt(np.cumsum((_s - rolling_mean) ** 2) / _counts) # this is where its wrong, need to make 2d array 
+        rolling_cv = rolling_std / rolling_mean
+        
+        return self.lookup(np.abs(rolling_cv if direction == "right" else rolling_cv[::-1]))
 
 
 @dataclass

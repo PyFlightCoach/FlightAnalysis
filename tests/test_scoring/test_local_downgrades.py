@@ -1,7 +1,7 @@
 from pytest import approx, fixture
 from flightanalysis.scoring.criteria import (
     AnyIntraCriteria,
-    Limit,
+    Deviation,
     Continuous,
     Bounded,
     Single,
@@ -31,7 +31,7 @@ def compare_idg_to_call(
     assert _right_ldg == approx(_right_local_dg)
 
 
-def test_continouus_right_local_error_matches__call__():
+def test_continouus_right_local_downgrade_matches__call__():
     crit = Continuous("t", Exponential(1, 1, None))
     # fmt: off
     #                    0, 1, 2, 3,  4,  5,  6, 7, 8, 9,10,11,12
@@ -42,7 +42,7 @@ def test_continouus_right_local_error_matches__call__():
     np.testing.assert_array_equal(_right_ldg, right_local_dg)
     compare_idg_to_call(crit, sample, "right")
 
-def test_continouus_left_local_error_matches__call__():
+def test_continouus_left_local_downgrade_matches__call__():
     crit = Continuous("t", Exponential(1, 1, None))
     # fmt: off
     #                   0, 1, 2, 3,  4,  5,  6, 7, 8, 9,10,11,12
@@ -54,13 +54,23 @@ def test_continouus_left_local_error_matches__call__():
     compare_idg_to_call(crit, sample, "left")
 
 
-def test_bounded_right_local_error_matches__call__():
+def test_bounded_right_local_downgrade_matches__call__():
     crit = Bounded("t", Exponential(1, 1, None), 2, -2)
     sample =   np.array([0, 1, 2, 1, -1, -2, -1, 0, 1, 2, 3, 2, 1]) 
     compare_idg_to_call(crit, sample, "right")
 
-def test_bounded_left_local_error_matches__call__():
+def test_bounded_left_local_downgrade_matches__call__():
     crit = Bounded("t", Exponential(1, 1, None), 2, -2)
     sample =   np.array([0, 1, 2, 1, -1, -2, -1, 0, 1, 2, 3, 2, 1]) 
     compare_idg_to_call(crit, sample, "left")
 
+
+def test_deviation_left_local_downgrade_matches__call__():
+    crit = Deviation("t", Exponential(1, 1, None))
+    sample =   np.array([0, 1, 2, 1, -1, -2, -1, 0, 1, 2, 3, 2, 1]) 
+    compare_idg_to_call(crit, sample, "left")
+
+def test_deviation_right_local_downgrade_matches__call__():
+    crit = Deviation("t", Exponential(1, 1, None))
+    sample =   np.array([0, 1, 2, 1, -1, -2, -1, 0, 1, 2, 3, 2, 1])  + 2
+    compare_idg_to_call(crit, sample, "right")
