@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass, field
 from json import dumps
 from typing import Literal
@@ -16,7 +15,6 @@ from .exponential import Exponential, free
 class Criteria:
     name: str
     lookup: Exponential = field(default_factory=lambda: free)
-
 
     def prepare(self, value):
         return value
@@ -66,24 +64,15 @@ class Criteria:
     def short_description(self, unit: str = "") -> str:
         return self.__class__.__name__
 
-    def local_error(
+    def local_downgrade(
         self,
         sample: npt.NDArray,
         dt: npt.NDArray,
         direction: Literal["left", "right"],
     ):
-        """The value of the error if the sample were to be cut at each point in time.
-        if direction is right, the sample starts at the start and goes to the point.
-        if right it starts at the point and goes to the end of the sample. 
+        """The value of the downgrade if the sample were to be cut at each datapoint
+        if direction is right, the sample starts at the start and goes to the point (right chopped).
+        if left it starts at the point and goes to the end (left is chopped).
         """
-        raise NotImplementedError("local_error must be implemented in subclasses")
-
-    def incremental_downgrade(
-        self,
-        local_dg: npt.NDArray,  # local_dg = self.lookup(local_error, limits),
-        direction: Literal["left", "right"],
-    ):
-        """Calculate the total downgrade for the element if the sample ended at each point."""
-        return local_dg
-
+        raise NotImplementedError("local_downgrade must be implemented in subclasses")
 

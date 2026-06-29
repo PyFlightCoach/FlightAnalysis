@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
+from typing import Literal
+
 import numpy as np
 import numpy.typing as npt
-from dataclasses import dataclass
+
 from flightanalysis.base.utils import display_unit
+
 from .. import Criteria
 
 
@@ -21,6 +25,14 @@ class Peak(Criteria):
             return np.array([]), np.array([]), np.array([], dtype=int)
         else:
             return errors, self.lookup(errors), np.array([idx])
+
+    def local_downgrade(
+        self,
+        sample: npt.NDArray,
+        dt: npt.NDArray,
+        direction: Literal["left", "right"],
+    ):
+        raise NotImplementedError("Not written yet")
 
     def prepare(self, vs):
         return np.maximum(self.direction * (vs - self.limit), 0)
@@ -62,10 +74,16 @@ class Trough(Criteria):
         else:
             return errors, self.lookup(errors), np.array([idx])
 
+    def local_downgrade(
+        self,
+        sample: npt.NDArray,
+        dt: npt.NDArray,
+        direction: Literal["left", "right"],
+    ):
+        raise NotImplementedError("Not written yet")
+
     def prepare(self, vs):
         return np.maximum(self.direction * (vs - self.limit), 0)
-
-
 
 
 @dataclass

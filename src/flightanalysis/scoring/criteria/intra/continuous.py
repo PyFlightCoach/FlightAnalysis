@@ -7,7 +7,11 @@ import numpy as np
 import numpy.typing as npt
 
 from .. import Criteria
-from flightanalysis.base.utils import insert_zero_crossings, remove_zero_crossings, remove_zero_crossing_ids
+from flightanalysis.base.utils import (
+    insert_zero_crossings,
+    remove_zero_crossings,
+    remove_zero_crossing_ids,
+)
 
 
 @dataclass
@@ -70,7 +74,7 @@ class Continuous(Criteria):
         first_peak = 1 if peaks[0] else 0
         return ids[first_peak:][peaks[first_peak:]]
 
-    def local_error(
+    def local_downgrade(
         self,
         sample: npt.NDArray,
         dt: npt.NDArray,
@@ -82,11 +86,10 @@ class Continuous(Criteria):
         """
 
         sample, crossings = insert_zero_crossings(sample)
-            
+
         dsample = np.diff(np.abs(sample), prepend=np.abs(sample[0]))
         # how much does the error increase in each timestep
-       
-            
+
         # cut at zero as the error cannot decrease
         error_increment = np.where(dsample > 0, dsample, 0)
 
@@ -101,38 +104,27 @@ class Continuous(Criteria):
                 [np.cumsum(clump[::-1])[::-1] for clump in clumps]
             )
 
-        local_error = remove_zero_crossings(local_error, crossings)
-        return local_error  # , local_dg
-
-
-    def incremental_downgrade(
-        self,
-        local_dg: npt.NDArray,  # local_dg = self.lookup(local_error, limits),
-        direction: Literal["left", "right"],
-    ):
-        """Calculate the total downgrade for the element if the sample ended at each point."""
-
-        # the downgrade delta of each point
+        local_dg = self.lookup(local_error)
         if direction == "right":
             dg_increment = np.diff(local_dg, prepend=local_dg[0])
         else:
             dg_increment = np.diff(local_dg[::-1], prepend=local_dg[-1])[::-1]
 
-        # downgrade deltas cant be negative ( if it is negative its because of a different clump)
         dg_increment = np.where(dg_increment > 0, dg_increment, 0)
 
-        return (
+        oarr = remove_zero_crossings(
             dg_increment.cumsum()
             if direction == "right"
-            else dg_increment[::-1].cumsum()[::-1]
+            else dg_increment[::-1].cumsum()[::-1],
+            crossings,
         )
 
-
-
+        if direction=="left":
+            oarr = np.concatenate([oarr, np.array([0])])[1:]
+        return oarr
 
 @dataclass
 class ContinuousValue(Continuous):
-
     def describe(self, unit: str = "") -> str:
         return "ContinuousValue Criteria: Downgrades are assigned to each change in the sample based on the size of the change."
 
@@ -145,3 +137,11 @@ class ContinuousValue(Continuous):
     @staticmethod
     def dgids(ids, peaks, troughs):
         return ids[peaks + troughs][1:]
+
+    def local_downgrade(
+        self,
+        sample: npt.NDArray,
+        dt: npt.NDArray,
+        direction: Literal["left", "right"],
+    ):
+        raise NotImplementedError("ContinuousValue does not support local_downgrade")

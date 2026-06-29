@@ -37,13 +37,17 @@ class Bounded(Criteria):
 
         return errors[dgs>0], dgs[dgs>0], dgids[dgs>0]
 
-    def local_error(
+    def local_downgrade(
         self,
         sample: npt.NDArray,
         dt: npt.NDArray,
         direction: Literal["left", "right"],
     ):
-        pass
+        if direction == "right":
+            return np.cumsum(sample) / np.arange(1, len(sample) + 1)
+        else:
+            return np.cumsum(sample[::-1])[::-1] / np.arange(len(sample), 0, -1)
+
 
     def prepare(self, data: npt.NDArray):
         """prepare the sample for"""

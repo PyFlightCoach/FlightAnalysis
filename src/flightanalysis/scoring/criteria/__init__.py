@@ -10,7 +10,6 @@ from .intra.continuous import Continuous, ContinuousValue
 from .intra.peak import Peak, Trough, AbsPeak, AbsTrough
 from .intra.single import Limit, Single, Threshold
 from .intra.deviation import Deviation, Total
-from .criteria_group import CriteriaGroup
 
 
 type AnyInterCriteria = Combination | Comparison
@@ -28,7 +27,6 @@ type AnyIntraCriteria = (
     | Threshold
     | Deviation
     | Total
-    | CriteriaGroup
 )
 
 AnyDeviationCriteria = (ContinuousValue , Deviation)

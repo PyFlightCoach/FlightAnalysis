@@ -16,14 +16,14 @@ class Deviation(Criteria):
     def describe(self, unit: str = "") -> str:
         return f"{super().describe()}: Downgrades are assigned based on the coefficient of variation (standard deviation divided by the mean) of the entire sample."
 
-    def __call__(self, vs: npt.NDArray) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
+    def __call__(self, vs: npt.NDArray, **kwargs) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         error = np.std(vs) / np.mean(vs)
         dg = self.lookup(np.abs(error))
         dgid = len(vs) - 1
         return np.array([error]), np.array([dg]), np.array([dgid])
 
     def local_error(
-        sample: npt.NDArray, dt: npt.NDArray, direction: Literal["left", "right"]
+        self, sample: npt.NDArray, dt: npt.NDArray, direction: Literal["left", "right"]
     ) -> npt.NDArray:
         """The value of the error (coefficient of variation) if the sample were to be cut at each point in time.
         direction indicates the side of the sample that is being cropped.
@@ -46,20 +46,20 @@ class Total(Criteria):
         return f"{super().describe()}: Downgrades are assigned based on the area under the sample."
 
     def __call__(
-        self, vs: npt.NDArray, dt: npt.NDArray
+        self, vs: npt.NDArray, dt: npt.NDArray, **kwargs
     ) -> Tuple[npt.NDArray, npt.NDArray, npt.NDArray]:
         error = np.sum(np.abs(vs) * dt)
         dg = self.lookup(error)
         dgid = len(vs) - 1
         return np.array([error]), np.array([dg]), np.array([dgid])
 
-    def local_error(
-        sample: npt.NDArray, dt: npt.NDArray, direction: Literal["left", "right"]
+    def local_downgrade(
+        self, sample: npt.NDArray, dt: npt.NDArray, direction: Literal["left", "right"]
     ) -> npt.NDArray:
         """The value of the error (area under the curve) if the sample were to be cut at each point in time."""
         if direction == "right":
-            return np.cumsum(np.abs(sample) * dt)
+            return self.lookup(np.cumsum(np.abs(sample) * dt))
         elif direction == "left":
-            return np.cumsum(np.abs(sample[::-1]) * dt[::-1])[::-1]
+            return self.lookup(np.cumsum(np.abs(sample[::-1]) * dt[::-1])[::-1])
         else:
             raise ValueError("direction must be 'right' or 'left'")

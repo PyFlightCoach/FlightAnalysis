@@ -17,8 +17,11 @@ class Single(Criteria):
         errors = np.abs(vs)
         return errors, self.lookup(errors), np.arange(len(vs))
                 
-    def local_error(self, vs, dt, direction):
-        return np.abs(vs)
+    def local_downgrade(self, vs, dt, direction):
+        if direction == "right":
+            return np.cumsum(self.lookup(np.abs(vs)))
+        else:
+            return np.cumsum(self.lookup(np.abs(vs))[::-1])[::-1]
 
 @dataclass
 class Limit(Criteria):
@@ -36,8 +39,8 @@ class Limit(Criteria):
     def prepare(self, vs):
         return np.maximum(np.abs(vs) - self.limit, 0)
 
-    def local_error(self, vs, dt, direction: Literal["left", "right"]):
-        
+    def local_downgrade(self, vs, dt, direction: Literal["left", "right"]):
+        raise NotImplementedError("Not written yet")
         mulmat = np.tril(np.ones((len(vs), len(vs)))) if direction == "left" else np.triu(np.ones((len(vs), len(vs))))
 
         _vs = np.multiply(mulmat, np.abs(vs) - self.limit)
@@ -55,6 +58,9 @@ class Threshold(Criteria):
     def __call__(self, vs: npt.NDArray, **kwargs) -> npt.NDArray:
         idx = np.arange(len(vs))
         return vs, self.lookup(vs), idx 
+
+    def local_downgrade(self, vs, dt, direction: Literal["left", "right"]):
+        raise NotImplementedError("Not written yet")
 
     def prepare(self, vs):
         return np.maximum(self.limit - np.abs(vs), 0)
