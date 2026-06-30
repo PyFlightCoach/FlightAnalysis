@@ -39,12 +39,12 @@ class Limit(Criteria):
     def prepare(self, vs):
         return np.maximum(np.abs(vs) - self.limit, 0)
 
-    def local_downgrade(self, vs, dt, direction: Literal["left", "right"]):
-        raise NotImplementedError("Not written yet")
-        mulmat = np.tril(np.ones((len(vs), len(vs)))) if direction == "left" else np.triu(np.ones((len(vs), len(vs))))
+    def local_downgrade(self, vs, dt, direction):
+        if direction == "right":
+            return np.cumsum(self.lookup(np.abs(vs)))
+        else:
+            return np.cumsum(self.lookup(np.abs(vs))[::-1])[::-1]
 
-        _vs = np.multiply(mulmat, np.abs(vs) - self.limit)
-        return np.abs(vs) - self.limit
 
 @dataclass
 class Threshold(Criteria):
@@ -59,8 +59,12 @@ class Threshold(Criteria):
         idx = np.arange(len(vs))
         return vs, self.lookup(vs), idx 
 
-    def local_downgrade(self, vs, dt, direction: Literal["left", "right"]):
-        raise NotImplementedError("Not written yet")
+    def local_downgrade(self, vs, dt, direction):
+        if direction == "right":
+            return np.cumsum(self.lookup(np.abs(vs)))
+        else:
+            return np.cumsum(self.lookup(np.abs(vs))[::-1])[::-1]
 
     def prepare(self, vs):
         return np.maximum(self.limit - np.abs(vs), 0)
+

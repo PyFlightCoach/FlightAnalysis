@@ -44,9 +44,9 @@ class Bounded(Criteria):
         direction: Literal["left", "right"],
     ):
         if direction == "right":
-            return np.cumsum(sample) / np.arange(1, len(sample) + 1)
+            return self.lookup(np.cumsum(sample) / np.arange(1, len(sample) + 1))
         else:
-            return np.cumsum(sample[::-1])[::-1] / np.arange(len(sample), 0, -1)
+            return self.lookup(np.cumsum(sample[::-1])[::-1] / np.arange(len(sample), 0, -1))
 
 
     def prepare(self, data: npt.NDArray):

@@ -28,13 +28,15 @@ class Peak(Criteria):
 
     def local_downgrade(
         self,
-        sample: npt.NDArray,
-        dt: npt.NDArray,
+        vs: npt.NDArray, # the prepared values (i.e. vs = self.prepare(sample)) 
         direction: Literal["left", "right"],
+        **kwargs,
     ):
-        raise NotImplementedError("Not written yet")
+        _res = np.maximum.accumulate(vs if direction == "right" else vs[::-1])
+        return self.lookup(_res if direction == "right" else _res[::-1])
 
     def prepare(self, vs):
+        
         return np.maximum(self.direction * (vs - self.limit), 0)
 
     def describe(self, unit: str = "") -> str:
@@ -76,11 +78,13 @@ class Trough(Criteria):
 
     def local_downgrade(
         self,
-        sample: npt.NDArray,
+        vs: npt.NDArray,
         dt: npt.NDArray,
         direction: Literal["left", "right"],
     ):
-        raise NotImplementedError("Not written yet")
+        _res = np.minimum.accumulate(vs if direction == "right" else vs[::-1])
+        return self.lookup(_res if direction == "right" else _res[::-1])
+
 
     def prepare(self, vs):
         return np.maximum(self.direction * (vs - self.limit), 0)

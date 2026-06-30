@@ -17,6 +17,8 @@ class Criteria:
     lookup: Exponential = field(default_factory=lambda: free)
 
     def prepare(self, value):
+        """a sample is prepared before applying the criteria. 
+                The prepared sample is in a form that visibility weightings can be applied to"""
         return value
 
     def to_dict(self, include_name: bool = True):
@@ -66,7 +68,7 @@ class Criteria:
 
     def local_downgrade(
         self,
-        sample: npt.NDArray,
+        vs: npt.NDArray,
         dt: npt.NDArray,
         direction: Literal["left", "right"],
     ):

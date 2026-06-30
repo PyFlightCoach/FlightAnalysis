@@ -29,13 +29,18 @@ class Deviation(Criteria):
         direction indicates the side of the sample that is being cropped.
         """
         _s = sample if direction == "right" else sample[::-1]
-        _counts = np.arange(1, len(_s)+1)
-        _counts = _counts#[::-1] if direction == "left" else _counts
-        rolling_mean = np.cumsum(_s) / _counts
-        rolling_std = np.sqrt(np.cumsum((_s - rolling_mean) ** 2) / _counts) # this is where its wrong, need to make 2d array 
-        rolling_cv = rolling_std / rolling_mean
-        
-        return self.lookup(np.abs(rolling_cv if direction == "right" else rolling_cv[::-1]))
+        counts = np.arange(1, len(_s)+1)
+
+        mean = np.cumsum(_s) / counts
+        variance = np.cumsum(_s**2) / counts - mean**2
+
+        # avoid tiny negative values from floating point
+        variance = np.maximum(variance, 0)
+
+        sd = np.sqrt(variance)
+        cv = sd / mean
+
+        return self.lookup(cv if direction == "right" else cv[::-1])
 
 
 @dataclass
