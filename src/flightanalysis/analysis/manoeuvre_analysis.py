@@ -206,7 +206,8 @@ class Analysis:
     def optimise_alignment(self, include_inter: bool = True) -> Self:
         steps = {}
         for el in list(self.manoeuvre.elements.keys())[:-1]:
-            steps[el], self = self.optimise_boundary(el, include_inter)
+            for step_size in [5, 1]:
+                steps[el], self = self.optimise_boundary(el, include_inter, step_size)
         logger.debug(f"optimisation result:\n{dumps(steps, indent=2)}")
         return self
 
@@ -288,7 +289,7 @@ class Analysis:
         )
 
     def optimise_boundary(
-        self, boundary: str, include_inter: bool = True
+        self, boundary: str, include_inter: bool = True, step_size: int = 1
     ) -> list[Self | int]:
         next_el = self.manoeuvre.elnames[self.manoeuvre.elnames.index(boundary) + 1]
 
@@ -308,16 +309,16 @@ class Analysis:
             else 1
         )
 
-        _check = score_step(direction)
+        _check = score_step(direction * step_size)
         if _check is not None and _check[0] < best[0]:
             best = _check
-            steps = direction
+            steps = direction * step_size
         else:
             direction = -direction
             steps = 0
 
         while True:
-            steps += direction
+            steps += direction * step_size
             _check = score_step(steps)
             if _check is not None and _check[0] < best[0]:
                 best = _check
