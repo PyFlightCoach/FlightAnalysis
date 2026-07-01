@@ -296,11 +296,15 @@ class Analysis:
             try:
                 _new = self.step_boundary(boundary, _steps)
                 _results = _new.score_boundary(boundary, include_inter)
+                if _results.total > 10:
+                    return None
                 return [_results.total, _new]
             except Exception as _:
                 return None
 
         best = score_step(0)
+        if best is None:
+            return 0, self
         direction = (
             -1
             if self.flown.labels.element[boundary].width
