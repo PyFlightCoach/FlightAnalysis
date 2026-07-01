@@ -206,8 +206,7 @@ class Analysis:
     def optimise_alignment(self, include_inter: bool = True) -> Self:
         steps = {}
         for el in list(self.manoeuvre.elements.keys())[:-1]:
-            for step_size in [5, 1]:
-                steps[el], self = self.optimise_boundary(el, include_inter, step_size)
+            steps[el], self = self.optimise_boundary(el, include_inter, 2)
         logger.debug(f"optimisation result:\n{dumps(steps, indent=2)}")
         return self
 
